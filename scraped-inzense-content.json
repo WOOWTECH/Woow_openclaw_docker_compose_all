@@ -1,0 +1,521 @@
+{
+  "scraped_date": "2026-03-20",
+  "source_site": "https://www.inzense.com.tw",
+
+  "activity_page": {
+    "url": "https://www.inzense.com.tw/activity/",
+    "og_image": "https://www.inzense.com.tw/wp-content/uploads/2023/11/c989bf0feb881bc3039dafd19bd859039_4801293462226158757_221007_5.jpg",
+    "meta_description": "生活香道，是一場透過呼吸找回專注的感官旅程。將帶領您學習如何透過穩定的溫度，喚醒沉睡在原木裡的百年靈魂。當香氣穿透呼吸，您將發現，平靜其實不必遠求，就在這一呼一吸之間。",
+    "hero_heading": "身心沉靜 享受清雅之趣",
+    "section_heading": "天然製香 禪香不二 — 課程介紹",
+
+    "courses": [
+      {
+        "name": "天然香椎手作課程",
+        "description": "帶你親手製作屬於自己的香椎✨ 透過焚香粉、調香、塑形的過程，你將感受到手作的專注與沉澱，將心意緩緩注入其中。完成後以貼心盒裝成品，讓香氣陪伴你度過時序的轉換，也成為祝福的寄託。\n無論是初學者，或對香文化充滿熱愛的朋友，都能在這裡重新建立與「香」的溫度連結。",
+        "highlights": [
+          "教你親手製作香椎",
+          "學習辨別天然材料",
+          "創造屬於你的香氣"
+        ],
+        "image": "https://www.inzense.com.tw/wp-content/uploads/2023/11/c989bf0feb881bc3039dafd19bd859039_4801293462226158757_221007_5.jpg",
+        "image_768": "https://www.inzense.com.tw/wp-content/uploads/2023/11/c989bf0feb881bc3039dafd19bd859039_4801293462226158757_221007_5-768x576.jpg"
+      },
+      {
+        "name": "生活茶道入門",
+        "description": "「在繁忙的城市中心，為自己按下一段時光的暫停鍵。」\n生活茶道，不只是泡好一杯茶，而是一場與自我靜心對話。\n我們將複雜的茶學化繁為簡，邀請您從認識一方茶席開始。\n透過指尖觸碰蓋碗的溫度，感受茶湯流動的韻律，重新找回對生活的掌控感。",
+        "highlights": [
+          "✧ 蓋碗心法｜從指法教學到出湯比例，掌握告別燙手、優雅泡茶的關鍵技巧",
+          "✧ 古樹茶辨識｜實際觀察茶葉條索與葉底，學會分辨千年古樹與一般茶葉的本質差異",
+          "✧ 茶席儀式｜體驗生活茶席佈置技巧",
+          "✧ Bonus 珍藏加碼｜特製古樹茶和菓子搭配，共賞一場特別的味覺盛宴"
+        ],
+        "image": "https://www.inzense.com.tw/wp-content/uploads/2026/01/DSC5515.jpg",
+        "image_768": "https://www.inzense.com.tw/wp-content/uploads/2026/01/DSC5515-768x512.jpg",
+        "image_1024": "https://www.inzense.com.tw/wp-content/uploads/2026/01/DSC5515-1024x683.jpg"
+      },
+      {
+        "name": "生活香道入門",
+        "description": "生活香道，是一場透過呼吸找回專注的感官旅程。\n將帶領您學習如何透過穩定的溫度，喚醒沉睡在原木裡的百年靈魂。\n當香氣穿透呼吸，您將發現，平靜其實不必遠求，就在這一呼一吸之間。",
+        "highlights": [
+          "✧ 基礎香學概論｜揭開沉香與檀香的神祕面紗，認識其歷史背景與珍稀價值",
+          "✧ 隔熱薰香原理｜學習如何掌握火候與溫度的平衡，讓香氣更純粹",
+          "✧ 深度辨香教學｜對比「天然野生」與「人工種植/化學合成」的香材，培養靈敏的嗅覺辨識力",
+          "✧ 實作演練｜親手操作香具，感受香材在不同熱度下的細微香氣變化",
+          "✧ Bonus 珍藏加碼｜特製古樹茶和菓子搭配，共賞一場特別的味覺盛宴"
+        ],
+        "image": "https://www.inzense.com.tw/wp-content/uploads/2026/01/DSC5347.jpg",
+        "image_768": "https://www.inzense.com.tw/wp-content/uploads/2026/01/DSC5347-768x512.jpg",
+        "image_1024": "https://www.inzense.com.tw/wp-content/uploads/2026/01/DSC5347-1024x683.jpg"
+      },
+      {
+        "name": "不定期多元感官講座",
+        "description": "我們相信：香氣不只是點綴，更是帶領心靈回歸平靜的引子。作為天然製香品牌，我們致力將這份「靜」延伸至日常。\n透過多元感官課程——無論品茶、習藝或觀照未來，這不僅是技能學習，更是一場「禪意生活」的實踐。\n讓我們在香氣中，看見更純粹的風景。",
+        "highlights": [],
+        "image": "https://www.inzense.com.tw/wp-content/uploads/2026/01/DSC5457.jpg",
+        "image_768": "https://www.inzense.com.tw/wp-content/uploads/2026/01/DSC5457-768x512.jpg",
+        "image_1024": "https://www.inzense.com.tw/wp-content/uploads/2026/01/DSC5457-1024x683.jpg"
+      }
+    ],
+
+    "testimonials": [
+      {
+        "author": "黃小姐",
+        "text": "謝謝您用心製作的香，我朋友拿回家點，沒有過敏耶!!!這是非常大的讚嘆~因為她使用外面標榜多天然的產品，手工皂或是市面上很多蠟燭她都無法使用，她今天一次點三支，竟然完好如初"
+      },
+      {
+        "author": "郭先生",
+        "text": "香氣很純正 比我之前買的好很多 燃燒起來比其他家的耐燃，大約快2小時才燒完，紮實。香灰也比較細緻。"
+      },
+      {
+        "author": "Patty",
+        "text": "我要感謝您分享了求財時辰方位，昨晚我有按時間點香，馬上就有不同講課案子來詢問"
+      },
+      {
+        "author": "陳小姐",
+        "text": "我冥想的時候點十方清淨，雜念有比較少，而且好香真的超讚"
+      },
+      {
+        "author": "Angely",
+        "text": "善緣香 搭配你給的方位真的很有用，我每天認識的新朋友，質都很好 我的發願就是扣除自己的開銷，剩下拿來做公益 謝謝老師"
+      },
+      {
+        "author": "高小姐",
+        "text": "跟您分享我點了香品的心得 昨天我點了壇城樂土。感覺特別可以把心靜下來。今天點了土神香，剛剛也很專心的，把事情陸續順利處理。線香燒完後，整個空間圍繞著靜謐的感覺"
+      },
+      {
+        "author": "Emily",
+        "text": "我朋友之前是買他牌的，但說聞起來會頭痛，你家的用起來完全不會。他也有說你家的煙很少，他很喜歡，下次讓他自己買XD"
+      }
+    ],
+
+    "partners": [
+      "光合生活",
+      "台中綠園道金典里想家",
+      "小島好日",
+      "青玄堂清暑靜心班",
+      "旗袍兒",
+      "桃園土地公文化館",
+      "鑫喜文創",
+      "禪生活",
+      "東洋生技公司",
+      "擇木良禽"
+    ],
+
+    "partner_message": "首先，我們衷心感謝以上合作夥伴的信任與支持，讓我們有機會在您的美好空間舉辦香椎手作課程。這不僅是對我們專業的認可，更是一種深刻的鼓勵，讓我們得以將香椎的藝術與香薰的美好帶給更多人。\n每一次的課程都是一次全新的探索和創造，我們見證了參與者從香薰中找到的靈感與喜悅。這些珍貴的時刻讓我們更加堅信，香椎不僅是一種生活的藝術，更是連接人與人之間的橋樑。\n在此，我們也熱烈歡迎更多的商家與機構加入我們的合作行列。無論是商業空間、文化場所還是教育機構，我們都期待與您共同探索更多合作的可能性，將這份獨特的香椎體驗帶給更廣泛的群體。\n讓我們攜手合作，共創更多美好的香氛時刻。\n誠摯地 禪香不二主理人 Matt",
+
+    "contact": {
+      "space_name": "禪香不二茶香空間",
+      "address": "台北市北投區光明路240號2樓之8",
+      "hours": "10:00-18:00(預約制）",
+      "facebook": "https://www.facebook.com/onlyinzense"
+    },
+
+    "all_activity_page_images": {
+      "course_photos": [
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/c989bf0feb881bc3039dafd19bd859039_4801293462226158757_221007_5.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2026/01/DSC5515.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2026/01/DSC5347.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2026/01/DSC5457.jpg"
+      ],
+      "workshop_kol_photos": [
+        "https://www.inzense.com.tw/wp-content/uploads/2026/01/LINE_ALBUM_1116香椎課Kol專場_260130_1-e1769755948699.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2026/01/LINE_ALBUM_1116香椎課Kol專場_260130_2-e1769755894486.jpg"
+      ],
+      "course_icon_graphics": [
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/未命名-1_工作區域-1-複本-2.png",
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/未命名-1_工作區域-1-複本-3.png",
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/未命名-1_工作區域-1-複本-5.png",
+        "https://www.inzense.com.tw/wp-content/uploads/2026/01/未命名-1.png"
+      ],
+      "customer_photos": [
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/禪香不二顧客照_工作區域-1.png",
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/禪香不二顧客照_工作區域-1-複本.png",
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/禪香不二顧客照_工作區域-1-複本-2.png",
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/禪香不二顧客照_工作區域-1-複本-3.png",
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/禪香不二顧客照_工作區域-1-複本-4.png",
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/禪香不二顧客照_工作區域-1-複本-5.png",
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/禪香不二顧客照_工作區域-1-複本-6.png"
+      ],
+      "banner_graphics": [
+        "https://www.inzense.com.tw/wp-content/uploads/2023/12/網站BN-07.png",
+        "https://www.inzense.com.tw/wp-content/uploads/2023/12/網站BN-08.png",
+        "https://www.inzense.com.tw/wp-content/uploads/2023/12/網站BN-09.png",
+        "https://www.inzense.com.tw/wp-content/uploads/2023/12/網站BN-10.png",
+        "https://www.inzense.com.tw/wp-content/uploads/2023/12/網站BN-11.png"
+      ],
+      "animated_gifs": [
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/ezgif-2-8645c154a3.gif",
+        "https://www.inzense.com.tw/wp-content/uploads/2023/12/01-Sequence-01_1.gif"
+      ],
+      "logos": [
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/禪香不二_LOGO_直式＋橫式_0510-04-2.png",
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/禪香不二_LOGO_直式＋橫式_0510-05.png",
+        "https://www.inzense.com.tw/wp-content/uploads/2021/01/inzense_logo_web.png"
+      ],
+      "background_image": "https://www.inzense.com.tw/wp-content/uploads/elementor/thumbs/aesthetic-incense-background-wallpaper-aromatic-spa-experience-1-qgggvvbg3ska4qanhbl2a5p94rie3pwgkbs9t6j1jc.jpg"
+    }
+  },
+
+  "blog_categories": {
+    "一縷香的靜心": {
+      "slug": "a-incense-mindfulness",
+      "url": "https://www.inzense.com.tw/category/a-incense-mindfulness/",
+      "total_pages": 14,
+      "articles": [
+        {
+          "title": "什麼是生命課題？如何知道自己此生要學什麼？（佛教 × 心識 × 前世因果 × 深度覺察）",
+          "url": "https://www.inzense.com.tw/what-are-life-lessons-how-to-know-what-you-are-here-to-learn/",
+          "date": "2025-11-19",
+          "first_paragraph": "不是懲罰、不是巧合、不是命中注定，而是「心識帶著前世的因果與今生的習氣」來到此生，準備學習某些功課。"
+        },
+        {
+          "title": "為什麼同樣的問題一直重複？業力循環 × 習氣模式 × 前世今生的生命迴圈解析",
+          "url": "https://www.inzense.com.tw/why-the-same-problems-repeat-karma-habits-past-life-and-current-life-cycle-analysis/",
+          "date": "2025-11-19",
+          "first_paragraph": "凡是反覆出現的情境，都是你尚未學會的生命課題。"
+        },
+        {
+          "title": "如何喚醒前世記憶？5 個安全方法解析｜催眠回溯、前世測驗、生日解析一次整理",
+          "url": "https://www.inzense.com.tw/how-to-awaken-past-life-memories-complete-guide-hypnosis-regression-tests-and-birthdate-analysis/",
+          "date": "2025-11-18",
+          "first_paragraph": "想知道自己的前世？想了解「如何知道自己的前世今生」或「如何知道自己前世情人」？近年愈來愈多人對前世議題感興趣，包括 看見前世的方法、用生日測驗你的前世、前世記憶測驗、催眠回溯 等工具，而「恢復前世記憶」最常被討論的方式，就是 前世催眠（Past Life Regression, PLR）。"
+        },
+        {
+          "title": "內觀覺察：透過「如實觀察」找回內在快樂的深度修心旅程",
+          "url": "https://www.inzense.com.tw/mindfulness-meditation-complete-guide-finding-inner-happiness-through-observation/",
+          "date": "2025-11-17",
+          "first_paragraph": "內觀覺察的核心就是「如實觀察」。不逃避、不批判、不反應，只是誠實地看見內在正在發生什麼。在十天內觀旅程中，透過靜默、透過深度專注、透過和自己相處，重新找回快樂與生命方向。"
+        },
+        {
+          "title": "五行與香氣身心療癒學：從臟腑到情緒的香氣調理法",
+          "url": "https://www.inzense.com.tw/five-elements-and-fragrance-therapy-complete-guide-aromatherapy-for-organs-and-emotions/",
+          "date": "2025-10-27",
+          "first_paragraph": "香氣，不只是氣味的感受，更是一種能量的呼吸。在中國傳統醫學與道家理氣系統中，「五行」代表人體與自然能量的運行法則——木、火、土、金、水分別主宰情緒、臟腑、心理傾向與氣場狀態。透過正確的香氣搭配，我們可以引導氣血、安定心神，達到「香入五臟、氣行百脈」的身心療癒。"
+        },
+        {
+          "title": "靈氣自然療法：喚醒身體自癒力的宇宙能量療癒法",
+          "url": "https://www.inzense.com.tw/reiki-natural-therapy-complete-guide-awakening-body-self-healing-with-universal-energy/",
+          "date": "2025-10-20",
+          "first_paragraph": "靈氣（Reiki）是一種流傳百年的自然療法，透過雙手按於身體各部位，將宇宙的自然能量導入人體，達到放鬆、淨化與修復的效果。對許多人而言，靈氣是一種重新喚醒「自癒能力」的方式，它強調「順其自然」，讓身體、心靈與能量重新平衡，恢復內在的和諧。"
+        },
+        {
+          "title": "靈氣結界全解析：打造能量防護盾、淨化空間的完整指南",
+          "url": "https://www.inzense.com.tw/reiki-protection-field-complete-guide-creating-energy-shield-and-space-cleansing/",
+          "date": "2025-10-20",
+          "first_paragraph": "「結界」一詞源於東方修行傳統..."
+        }
+      ]
+    },
+
+    "香與神明的對話": {
+      "slug": "incense-and-god",
+      "url": "https://www.inzense.com.tw/category/incense-and-god/",
+      "total_pages": 28,
+      "articles": [
+        {
+          "title": "為什麼某些人一見面就很熟？佛教說的宿緣 × 宿世業力 × 因果關係完整解析",
+          "url": "https://www.inzense.com.tw/why-some-people-feel-familiar-at-first-sight-buddhist-analysis-of-past-life-ties-karma-and-cause-effect/",
+          "date": "2025-11-19",
+          "first_paragraph": "你對某些人的「莫名熟悉感」不是幻覺，而是前世延續的結果。"
+        },
+        {
+          "title": "什麼是前世的「未了之事」？佛教如何看待未完因果、未盡緣分與未平衡的情緒（宿業 × 緣起 × 習氣 × 生命課題）",
+          "url": "https://www.inzense.com.tw/what-are-unfinished-past-life-matters-buddhist-view-of-unresolved-karma-relationships-and-emotions/",
+          "date": "2025-11-19",
+          "first_paragraph": "為什麼人生有些人、事、情感，就是「怎麼也放不下」？佛教早已..."
+        },
+        {
+          "title": "佛教說的生命課題是什麼？你今生必須完成的功課（業力 × 因果 × 習氣 × 前世延續）",
+          "url": "https://www.inzense.com.tw/buddhist-life-lessons-what-you-must-learn-this-life-karma-cause-effect-habits-and-past-life-continuation/",
+          "date": "2025-11-19",
+          "first_paragraph": "為什麼同樣的事總是發生？佛教給了一個最深的答案..."
+        },
+        {
+          "title": "前世如何影響今生？佛教 × 心理學 × 習氣 × 因果完整解析（生命課題、家庭、感情、恐懼、天賦、財富）",
+          "url": "https://www.inzense.com.tw/how-past-lives-affect-this-life-complete-analysis-buddhism-psychology-habits-and-karma/",
+          "date": "2025-11-19",
+          "first_paragraph": "你所遇到的每一件事，都不是偶然 佛教說：欲知前世因，今生受..."
+        },
+        {
+          "title": "什麼是前世記憶？佛教 × 心理學 × 跨國研究最完整解析（阿賴耶識 × 投胎 × 習氣 × 因果）",
+          "url": "https://www.inzense.com.tw/what-is-past-life-memory-complete-guide-buddhism-psychology-and-international-research/",
+          "date": "2025-11-19",
+          "first_paragraph": "為什麼越來越多孩子與成人「記得」前世？你可能聽過許多真實類..."
+        },
+        {
+          "title": "什麼是胎前記憶？佛教、心理學與兒童研究最完整解析（投胎 × 前世 × 中陰身 × 業力 × 兒童記憶科學）",
+          "url": "https://www.inzense.com.tw/what-is-pre-birth-memory-complete-guide-buddhism-psychology-child-research-and-reincarnation/",
+          "date": "2025-11-19",
+          "first_paragraph": "為什麼有那麼多孩子能描述「出生前的世界」？你可能聽過許多情..."
+        },
+        {
+          "title": "什麼是投胎？佛教如何描述入胎、選父母與投生瞬間（中陰身 × 業力 × 因果 × 六道 × 胎前記憶研究）",
+          "url": "https://www.inzense.com.tw/what-is-rebirth-how-buddhism-describes-conception-parent-selection-and-moment-of-reincarnation/",
+          "date": "2025-11-19",
+          "first_paragraph": "投胎不是神話，而是佛教對生命延續的完整描述..."
+        }
+      ]
+    },
+
+    "山醫命卜香": {
+      "slug": "fortune-telling-incense",
+      "url": "https://www.inzense.com.tw/category/fortune-telling-incense/",
+      "total_pages": 46,
+      "articles": [
+        {
+          "title": "【屬雞六合全解析】屬雞的六合貴人是誰？與龍、蛇、牛的三合六合關係、運勢助力一次看懂",
+          "url": "https://www.inzense.com.tw/rooster-liuhe-analysis-rooster-compatible-signs-dragon-snake-ox/",
+          "date": "2025-11-23",
+          "first_paragraph": "屬雞的人最需要掌握的關鍵運勢密碼，就是 『屬雞六合：龍』 與..."
+        },
+        {
+          "title": "安太歲有用嗎？線上安太歲功效、犯太歲禁忌、一次看懂安太歲真正意義",
+          "url": "https://www.inzense.com.tw/is-an-taisui-useful-online-an-taisui-benefits-taboos-meaning/",
+          "date": "2025-11-23",
+          "first_paragraph": "安太歲是否『真的有用』，關鍵不在於儀式本身，而在於 安定心神..."
+        },
+        {
+          "title": "【沖太歲意思2025全解析】犯太歲、破太歲、害太歲、值太歲差在哪？一文看懂沖太歲化解方法！",
+          "url": "https://www.inzense.com.tw/chong-taisui-2025-meaning-guide-fan-taisui-po-taisui-hai-taisui-zhi-taisui/",
+          "date": "2025-11-23",
+          "first_paragraph": "沖太歲，又稱『反吟太歲』，是十二生肖每年運勢中最受關注的議題..."
+        },
+        {
+          "title": "狗生肖配對全解析｜屬狗的最配、相衝、貴人、小人一次看懂",
+          "url": "https://www.inzense.com.tw/dog-compatibility-guide-best-matches-conflicts-benefactors-enemies/",
+          "date": "2025-11-23",
+          "first_paragraph": "屬狗的人想知道最佳姻緣配對，必須掌握『戌狗』的三合、六合與相..."
+        },
+        {
+          "title": "【流年命宮是什麼？紫微斗數流年命盤完整解析｜2025免費流年命盤、流年命盤分析一次看懂】",
+          "url": "https://www.inzense.com.tw/what-is-annual-life-palace-ziwei-complete-guide-2025-free-chart-and-analysis/",
+          "date": "2025-11-23",
+          "first_paragraph": "流年命宮，就是紫微斗數中用來判斷『當年度個人整體運勢』最核心..."
+        },
+        {
+          "title": "【屬豬的貴人全解析】掌握三合、六合、人際與守護神，旺運關鍵一次看懂",
+          "url": "https://www.inzense.com.tw/pig-zodiac-benefactors-complete-guide-three-harmony-six-harmony-relationships-and-protective-deities/",
+          "date": "2025-11-23",
+          "first_paragraph": "屬豬的人天生善良、與人無爭，又具備溫暖與包容特質，因此在十二..."
+        },
+        {
+          "title": "【流日怎麼看？紫微流日查詢全指南】精準掌握每日吉凶，用在談判、手術、斡旋、告白最準！",
+          "url": "https://www.inzense.com.tw/how-to-read-daily-fortune-ziwei-liuri-complete-guide-for-daily-auspicious-timing/",
+          "date": "2025-11-23",
+          "first_paragraph": "在紫微斗數中，『流年、流月、流日、流時』四層運勢層層相扣，而..."
+        }
+      ]
+    },
+
+    "時節香氣": {
+      "slug": "incense-time",
+      "url": "https://www.inzense.com.tw/category/incense-time/",
+      "total_pages": 19,
+      "articles": [
+        {
+          "title": "霜降節氣時間：2025霜降日期、節氣意義、習俗與二十四節氣完整解析",
+          "url": "https://www.inzense.com.tw/shuangjiang-2025-date-meaning-customs-24-solar-terms-guide/",
+          "date": "2025-11-23",
+          "first_paragraph": "2025年的霜降時間是國曆10月23日（星期四）上午約 06:04，太陽到達黃經210°即正式進入霜降節氣，也是秋季最後一個節氣。霜降落在農曆九月初十，象徵天氣由涼轉冷，大地即將步入冬季，是氣溫變化最明顯的轉折點。"
+        },
+        {
+          "title": "【屬雞六合全解析】屬雞的六合貴人是誰？與龍、蛇、牛的三合六合關係、運勢助力一次看懂",
+          "url": "https://www.inzense.com.tw/rooster-liuhe-analysis-rooster-compatible-signs-dragon-snake-ox/",
+          "date": "2025-11-23"
+        },
+        {
+          "title": "安太歲有用嗎？線上安太歲功效、犯太歲禁忌、一次看懂安太歲真正意義",
+          "url": "https://www.inzense.com.tw/is-an-taisui-useful-online-an-taisui-benefits-taboos-meaning/",
+          "date": "2025-11-23"
+        },
+        {
+          "title": "【沖太歲意思2025全解析】犯太歲、破太歲、害太歲、值太歲差在哪？一文看懂沖太歲化解方法！",
+          "url": "https://www.inzense.com.tw/chong-taisui-2025-meaning-guide-fan-taisui-po-taisui-hai-taisui-zhi-taisui/",
+          "date": "2025-11-23"
+        },
+        {
+          "title": "【流年命宮是什麼？紫微斗數流年命盤完整解析｜2025免費流年命盤、流年命盤分析一次看懂】",
+          "url": "https://www.inzense.com.tw/what-is-annual-life-palace-ziwei-complete-guide-2025-free-chart-and-analysis/",
+          "date": "2025-11-23"
+        },
+        {
+          "title": "【屬豬的貴人全解析】掌握三合、六合、人際與守護神，旺運關鍵一次看懂",
+          "url": "https://www.inzense.com.tw/pig-zodiac-benefactors-complete-guide-three-harmony-six-harmony-relationships-and-protective-deities/",
+          "date": "2025-11-23"
+        },
+        {
+          "title": "【流日怎麼看？紫微流日查詢全指南】精準掌握每日吉凶，用在談判、手術、斡旋、告白最準！",
+          "url": "https://www.inzense.com.tw/how-to-read-daily-fortune-ziwei-liuri-complete-guide-for-daily-auspicious-timing/",
+          "date": "2025-11-23"
+        }
+      ]
+    },
+
+    "食香知旅": {
+      "slug": "food-incense-intellectual-travel",
+      "url": "https://www.inzense.com.tw/category/food-incense-intellectual-travel/",
+      "total_pages": 3,
+      "articles": [
+        {
+          "title": "元宵吃湯圓的意義：團圓、美滿與歲歲平安的象徵",
+          "url": "https://www.inzense.com.tw/meaning-of-eating-tangyuan-on-lantern-festival-symbol-of-reunion-harmony-and-peace/",
+          "date": "2025-11-12",
+          "first_paragraph": "在台灣與華人世界，元宵節吃湯圓是最重要的節慶習俗之一。這個動作不僅是節日美食的享受，更是一種文化傳承與祝福象徵。湯圓的圓形代表「團圓」、「圓滿」、「幸福」，而在元宵節這個一年中第一個月圓之夜吃湯圓，更有「闔家團聚、花好月圓」的美好寓意。"
+        },
+        {
+          "title": "元宵與冬至的差別是什麼？湯圓、元宵別再搞混！從製作、口感到寓意一次看懂",
+          "url": "https://www.inzense.com.tw/lantern-festival-vs-winter-solstice-complete-guide-differences-in-tangyuan-production-texture-and-symbolism/",
+          "date": "2025-11-12",
+          "first_paragraph": "冬至吃湯圓，元宵節吃元宵，這句話幾乎家喻戶曉，但許多人仍分不..."
+        },
+        {
+          "title": "端午節粽子種類全指南：北部粽／南部粽、甜粽冰粽與必買推薦品牌清單",
+          "url": "https://www.inzense.com.tw/dragon-boat-festival-rice-dumpling-types-complete-guide-northern-southern-sweet-iced-zongzi-and-top-brand-recommendations/",
+          "date": "2025-11-10",
+          "first_paragraph": "以下為您整理「不同粽子種類」與「推薦品牌」兩大部分：先說種..."
+        },
+        {
+          "title": "五行顏色食物全解析：從五色入五臟的中醫飲食養生法與開運指南",
+          "url": "https://www.inzense.com.tw/five-elements-color-food-complete-guide-tcm-dietary-health-and-luck-through-five-colors-and-organs/",
+          "date": "2025-10-13",
+          "first_paragraph": "五行飲食法是中醫養生與開運的實踐方式之一，透過「五行五臟五色..."
+        },
+        {
+          "title": "中醫飲食營養學：從食物陰陽到現代營養的融合之道",
+          "url": "https://www.inzense.com.tw/traditional-chinese-medicine-dietary-nutrition-complete-guide-from-yin-yang-foods-to-modern-nutritional-integration/",
+          "date": "2025-10-13",
+          "first_paragraph": "中醫飲食營養學是一門結合「陰陽五行」與「食物屬性」的學科，強..."
+        },
+        {
+          "title": "代表台灣的元素：文化、食物、習俗與特色完整解析",
+          "url": "https://www.inzense.com.tw/representative-elements-of-taiwan-complete-analysis-of-culture-food-customs-and-uniqueness/",
+          "date": "2025-09-28",
+          "first_paragraph": "台灣是一個充滿多元色彩的島嶼，融合原住民文化、漢人傳統、日本..."
+        },
+        {
+          "title": "台灣特色建築：從傳統廟宇到現代摩天大樓的文化縮影",
+          "url": "https://www.inzense.com.tw/taiwanese-architecture-from-traditional-temples-to-modern-skyscrapers/",
+          "date": "2025-09-28",
+          "first_paragraph": "台灣的建築文化極具多樣性，從古老的台灣傳統建築到當代的前衛設..."
+        }
+      ]
+    },
+
+    "琴棋書畫茶酒花香道": {
+      "slug": "guqin-chess-book-painting-tea-wine-flowers-fragrance",
+      "url": "https://www.inzense.com.tw/category/guqin-chess-book-painting-tea-wine-flowers-fragrance/",
+      "total_pages": "unknown",
+      "articles": [
+        {
+          "title": "找到命定香氣：最完整的適合自己的香水測驗指南（2025版）",
+          "url": "https://www.inzense.com.tw/find-your-signature-scent-complete-guide-personalized-perfume-test-2025-edition/",
+          "date": "2025-10-21",
+          "first_paragraph": "香水是展現人格魅力與情緒氛圍的「第二層皮膚」。然而面對琳瑯滿目的香氛品牌與香調，許多人都會問：「我究竟該選哪瓶？」——其實，你可以透過心理測驗與香調人格分析，找到專屬於你的命定香氣。"
+        },
+        {
+          "title": "香水香調查詢全指南：掌握香調輪、香水調性與成分分類，一次搞懂香水的層次密碼",
+          "url": "https://www.inzense.com.tw/perfume-fragrance-search-complete-guide-master-fragrance-wheel-scent-profiles-and-ingredient-classification/",
+          "date": "2025-10-21",
+          "first_paragraph": "想要挑對一瓶香水，先學會「香調查詢」是關鍵。香水不只是單一味..."
+        },
+        {
+          "title": "香水味道形容大全：從香氣分類到英文用語，學會優雅描述每一種香味",
+          "url": "https://www.inzense.com.tw/perfume-scent-descriptions-complete-guide-from-fragrance-categories-to-english-terms-for-elegant-expression/",
+          "date": "2025-10-21",
+          "first_paragraph": "香水是一種無形的語言，能在無聲之間傳遞情緒與氣質。想準確形容..."
+        },
+        {
+          "title": "香水香調表全解析：從香調輪到香水前中後調，一次看懂香氣分類與香水調性指南",
+          "url": "https://www.inzense.com.tw/perfume-fragrance-chart-complete-guide-from-fragrance-wheel-to-top-middle-base-notes-and-scent-profiles/",
+          "date": "2025-10-21",
+          "first_paragraph": "香水的靈魂在於「香調」──那是一種結構性的語言，能精準描述氣..."
+        },
+        {
+          "title": "擴香石是什麼？全方位解析 Aroma Stone 的原理、用法與優缺點",
+          "url": "https://www.inzense.com.tw/what-is-an-aroma-stone-complete-guide-principles-usage-advantages-and-disadvantages/",
+          "date": "2025-10-20",
+          "first_paragraph": "擴香石（英文：Aroma Stone）是一種近年在台灣與日本相當流行的無火香氛擴散工具，因為兼具美觀、環保與安全性，成為許多人取代蠟燭、擴香瓶的新選擇。"
+        },
+        {
+          "title": "台灣香氛品牌大解析：從 香氛森林 到小眾手工香水、蠟燭推薦",
+          "url": "https://www.inzense.com.tw/taiwan-fragrance-brands-complete-guide-from-fragrance-forest-to-niche-perfumes-and-candles-recommendations/",
+          "date": "2025-10-20",
+          "first_paragraph": "在繁忙的城市裡，若能為日常注入一抹氣味的儀式感，就是生活質感..."
+        },
+        {
+          "title": "線香座全指南：材質、品牌、購買通路與設計比較（玻璃・陶瓷・金屬）",
+          "url": "https://www.inzense.com.tw/incense-holder-complete-guide-materials-brands-shopping-channels-and-design-comparison-glass-ceramic-metal/",
+          "date": "2025-10-18",
+          "first_paragraph": "線香座（英文：Incense Holder）是線香使用過程中不可或缺的香道器具，不僅能固定線香、防止香灰飛散，更是許多人打造「療癒系居家氛圍」的重要擺件。"
+        }
+      ]
+    }
+  },
+
+  "blog_post_og_images": {
+    "note": "All blog posts on inzense.com.tw use the same default og:image (the site favicon/logo). The site does NOT set individual featured images via og:image tags for blog posts.",
+    "default_og_image": "https://www.inzense.com.tw/wp-content/uploads/2025/04/cropped-inzense_工作區域-1-複本-2_0.png",
+    "posts_checked": [
+      "https://www.inzense.com.tw/what-are-life-lessons-how-to-know-what-you-are-here-to-learn/",
+      "https://www.inzense.com.tw/why-the-same-problems-repeat-karma-habits-past-life-and-current-life-cycle-analysis/",
+      "https://www.inzense.com.tw/mindfulness-meditation-complete-guide-finding-inner-happiness-through-observation/",
+      "https://www.inzense.com.tw/five-elements-and-fragrance-therapy-complete-guide-aromatherapy-for-organs-and-emotions/",
+      "https://www.inzense.com.tw/reiki-natural-therapy-complete-guide-awakening-body-self-healing-with-universal-energy/",
+      "https://www.inzense.com.tw/why-some-people-feel-familiar-at-first-sight-buddhist-analysis-of-past-life-ties-karma-and-cause-effect/",
+      "https://www.inzense.com.tw/rooster-liuhe-analysis-rooster-compatible-signs-dragon-snake-ox/",
+      "https://www.inzense.com.tw/shuangjiang-2025-date-meaning-customs-24-solar-terms-guide/",
+      "https://www.inzense.com.tw/meaning-of-eating-tangyuan-on-lantern-festival-symbol-of-reunion-harmony-and-peace/",
+      "https://www.inzense.com.tw/find-your-signature-scent-complete-guide-personalized-perfume-test-2025-edition/",
+      "https://www.inzense.com.tw/incense-holder-complete-guide-materials-brands-shopping-channels-and-design-comparison-glass-ceramic-metal/",
+      "https://www.inzense.com.tw/what-is-an-aroma-stone-complete-guide-principles-usage-advantages-and-disadvantages/"
+    ]
+  },
+
+  "image_download_list": {
+    "description": "Curated list of unique, meaningful images to download for Odoo deployment",
+    "activity_course_images": [
+      "https://www.inzense.com.tw/wp-content/uploads/2023/11/c989bf0feb881bc3039dafd19bd859039_4801293462226158757_221007_5.jpg",
+      "https://www.inzense.com.tw/wp-content/uploads/2026/01/DSC5515.jpg",
+      "https://www.inzense.com.tw/wp-content/uploads/2026/01/DSC5347.jpg",
+      "https://www.inzense.com.tw/wp-content/uploads/2026/01/DSC5457.jpg"
+    ],
+    "workshop_kol_photos": [
+      "https://www.inzense.com.tw/wp-content/uploads/2026/01/LINE_ALBUM_1116香椎課Kol專場_260130_1-e1769755948699.jpg",
+      "https://www.inzense.com.tw/wp-content/uploads/2026/01/LINE_ALBUM_1116香椎課Kol專場_260130_2-e1769755894486.jpg"
+    ],
+    "course_icon_graphics": [
+      "https://www.inzense.com.tw/wp-content/uploads/2023/11/未命名-1_工作區域-1-複本-2.png",
+      "https://www.inzense.com.tw/wp-content/uploads/2023/11/未命名-1_工作區域-1-複本-3.png",
+      "https://www.inzense.com.tw/wp-content/uploads/2023/11/未命名-1_工作區域-1-複本-5.png",
+      "https://www.inzense.com.tw/wp-content/uploads/2026/01/未命名-1.png"
+    ],
+    "customer_photos": [
+      "https://www.inzense.com.tw/wp-content/uploads/2023/11/禪香不二顧客照_工作區域-1.png",
+      "https://www.inzense.com.tw/wp-content/uploads/2023/11/禪香不二顧客照_工作區域-1-複本.png",
+      "https://www.inzense.com.tw/wp-content/uploads/2023/11/禪香不二顧客照_工作區域-1-複本-2.png",
+      "https://www.inzense.com.tw/wp-content/uploads/2023/11/禪香不二顧客照_工作區域-1-複本-3.png",
+      "https://www.inzense.com.tw/wp-content/uploads/2023/11/禪香不二顧客照_工作區域-1-複本-4.png",
+      "https://www.inzense.com.tw/wp-content/uploads/2023/11/禪香不二顧客照_工作區域-1-複本-5.png",
+      "https://www.inzense.com.tw/wp-content/uploads/2023/11/禪香不二顧客照_工作區域-1-複本-6.png"
+    ],
+    "banner_graphics": [
+      "https://www.inzense.com.tw/wp-content/uploads/2023/12/網站BN-07.png",
+      "https://www.inzense.com.tw/wp-content/uploads/2023/12/網站BN-08.png",
+      "https://www.inzense.com.tw/wp-content/uploads/2023/12/網站BN-09.png",
+      "https://www.inzense.com.tw/wp-content/uploads/2023/12/網站BN-10.png",
+      "https://www.inzense.com.tw/wp-content/uploads/2023/12/網站BN-11.png"
+    ],
+    "logos": [
+      "https://www.inzense.com.tw/wp-content/uploads/2023/11/禪香不二_LOGO_直式＋橫式_0510-04-2.png",
+      "https://www.inzense.com.tw/wp-content/uploads/2023/11/禪香不二_LOGO_直式＋橫式_0510-05.png",
+      "https://www.inzense.com.tw/wp-content/uploads/2021/01/inzense_logo_web.png",
+      "https://www.inzense.com.tw/wp-content/uploads/2025/04/cropped-inzense_工作區域-1-複本-2_0.png"
+    ],
+    "background_and_misc": [
+      "https://www.inzense.com.tw/wp-content/uploads/elementor/thumbs/aesthetic-incense-background-wallpaper-aromatic-spa-experience-1-qgggvvbg3ska4qanhbl2a5p94rie3pwgkbs9t6j1jc.jpg",
+      "https://www.inzense.com.tw/wp-content/uploads/2023/11/ezgif-2-8645c154a3.gif",
+      "https://www.inzense.com.tw/wp-content/uploads/2023/12/01-Sequence-01_1.gif"
+    ]
+  }
+}

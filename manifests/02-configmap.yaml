@@ -29,8 +29,8 @@ data:
     longpolling_port = 8072
     proxy_mode = True
 
-    ; Workers (0 = threaded mode)
-    workers = 0
+    ; Workers (multi-process mode for better concurrency)
+    workers = 2
     max_cron_threads = 1
 
     ; Resource limits

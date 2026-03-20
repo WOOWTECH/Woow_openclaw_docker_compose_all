@@ -1,0 +1,595 @@
+{
+  "scrape_date": "2026-03-20",
+  "source": "https://www.inzense.com.tw",
+  "total_products": 37,
+  "note": "Full-size images only (thumbnails with -600x600, -600x400 dimensions excluded). Site logo excluded from per-product lists but listed separately.",
+  "site_logo": "https://www.inzense.com.tw/wp-content/uploads/2022/10/cropped-禪香不二logo-1.png",
+  "products": [
+    {
+      "product_url": "https://www.inzense.com.tw/product/%e5%8a%9f%e8%83%bd%e7%b3%bb%e5%88%97-%e6%8e%92%e5%af%92%e9%a6%99/",
+      "product_name": "線香功能系列 - 排寒香",
+      "product_name_en": "Long Incense Functional Series - Cold-Dispelling Incense",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/線香功能系列＿封面圖＿排寒香.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/08/排寒長線香-scaled.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/08/排寒香＿線香插-scaled.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/07/排寒香-1.jpg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/%e5%8f%b0%e7%81%a3%e7%b3%bb%e5%88%97-%e8%82%96%e6%a5%a0/",
+      "product_name": "線香台灣系列 - 台灣肖楠",
+      "product_name_en": "Incense Taiwan Series - Taiwan Incense Cedar",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2025/01/線香台灣系列＿封面圖＿台灣肖楠.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2025/01/台灣肖楠-scaled.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/06/台灣肖楠＿線香插-scaled.jpg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/%e5%8f%b0%e7%81%a3%e7%b3%bb%e5%88%97-%e9%bb%84%e6%aa%9c/",
+      "product_name": "線香台灣系列 - 台灣黄檜",
+      "product_name_en": "Incense Taiwan Series - Taiwan Yellow Cypress",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2025/01/線香台灣系列＿封面圖＿台灣黃檜.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2025/01/台灣黃檜-scaled.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/06/台灣黃檜＿線香插-scaled.jpg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/%e8%84%88%e8%bc%aa%e7%b3%bb%e5%88%97-%e5%a4%aa%e9%99%bd%e8%bc%aa%e9%a6%99/",
+      "product_name": "線香脈輪系列 - 太陽輪香",
+      "product_name_en": "Long Incense Chakra Series - Solar Plexus Incense",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2024/03/線香脈輪系列＿封面圖＿太陽輪香.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/太陽輪香線香-scaled.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/太陽輪香＿線香插-scaled.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/03/LINE_ALBUM_240306_5_0.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/03/太陽輪開始使用.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/03/太陽輪使用7分鐘後.jpg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/mini-best-arrangement/",
+      "product_name": "迷你香功能系列 - 善緣香 (給想增加貴人運和事業運的您)",
+      "product_name_en": "Mini Incense Functional Series - Good Karma Incense",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/迷你香功能系列＿封面圖＿善緣香.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/08/善緣迷你香-scaled.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/10/IMG_1371-scaled.jpeg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/10/IMG_1373-scaled.jpeg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/mini-fortune/",
+      "product_name": "迷你香功能系列 - 財神香 (給想要招財、增加業績或業務的您)",
+      "product_name_en": "Mini Incense Functional Series - Fortune God Incense",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/迷你香功能系列＿封面圖＿財神香.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/08/財神迷你香-scaled.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/10/IMG_1371-scaled.jpeg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/10/IMG_1373-scaled.jpeg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/%e5%8a%9f%e8%83%bd%e7%b3%bb%e5%88%97-%e9%9d%88%e6%84%9f%e9%a6%99/",
+      "product_name": "線香功能系列 - 靈感香",
+      "product_name_en": "Long Incense Functional Series - Inspiration Incense",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/線香功能系列＿封面圖＿靈感香.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/08/靈感長線香-scaled.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/08/靈感香＿線香插-scaled.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/07/靈感香-1.jpg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/%e5%8a%9f%e8%83%bd%e7%b3%bb%e5%88%97-%e7%99%82%e5%bf%83%e9%a6%99/",
+      "product_name": "線香功能系列 - 療心香",
+      "product_name_en": "Long Incense Functional Series - Heart-Healing Incense",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/線香功能系列＿封面圖＿療心香.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/08/療心長線香-scaled.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/08/療心香＿線香插-scaled.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/07/療心香.jpg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/%e5%96%84%e7%b7%a3%e9%a6%99/",
+      "product_name": "線香功能系列 - 善緣香",
+      "product_name_en": "Long Incense Functional Series - Good Karma Incense",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/線香功能系列＿封面圖＿善緣香.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/08/善緣長線香-scaled.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/08/善緣香＿線香插-scaled.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/07/善緣香.jpg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/%e5%8a%9f%e8%83%bd%e7%b3%bb%e5%88%97-%e5%b9%b8%e9%81%8b%e9%a6%99/",
+      "product_name": "線香功能系列 - 幸運香",
+      "product_name_en": "Long Incense Functional Series - Lucky Incense",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/線香功能系列＿封面圖＿幸運香.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/08/幸運長線香-scaled.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/08/幸運香＿線香插-scaled.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/07/幸運香.jpg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/%e8%84%88%e8%bc%aa%e7%b3%bb%e5%88%97-%e9%a0%82%e8%bc%aa%e9%a6%99-%e4%bb%99%e5%a7%91%e8%a1%8c%e4%b8%8d%e8%a1%8c/",
+      "product_name": "脈輪系列 : 頂輪香 (仙姑行不行)",
+      "product_name_en": "Chakra Series: Crown Chakra Incense (Fairy Aunt)",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2024/03/LINE_ALBUM_240306_1_0.jpg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/%e8%84%88%e8%bc%aa%e7%b3%bb%e5%88%97-%e5%96%89%e8%bc%aa%e9%a6%99-%e4%bb%99%e5%a7%91%e8%a1%8c%e4%b8%8d%e8%a1%8c/",
+      "product_name": "脈輪系列 : 喉輪香 (仙姑行不行)",
+      "product_name_en": "Chakra Series: Throat Chakra Incense (Fairy Aunt)",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2024/03/LINE_ALBUM_240306_0_0.jpg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/%e8%84%88%e8%bc%aa%e7%b3%bb%e5%88%97-%e7%9c%89%e5%bf%83%e8%bc%aa%e9%a6%99-%e4%bb%99%e5%a7%91%e8%a1%8c%e4%b8%8d%e8%a1%8c/",
+      "product_name": "脈輪系列 : 眉心輪香 (仙姑行不行)",
+      "product_name_en": "Chakra Series: Third Eye Chakra Incense (Fairy Aunt)",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2024/03/LINE_ALBUM_240306_3_0.jpg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/%e8%84%88%e8%bc%aa%e7%b3%bb%e5%88%97-%e4%b8%b9%e7%94%b0-%e6%9c%ac%e6%88%91-%e8%bc%aa%e9%a6%99-%e4%bb%99%e5%a7%91%e8%a1%8c%e4%b8%8d%e8%a1%8c/",
+      "product_name": "脈輪系列 : 丹田輪/本我輪香 (仙姑行不行)",
+      "product_name_en": "Chakra Series: Sacral Chakra Incense (Fairy Aunt)",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2024/03/LINE_ALBUM_240306_6_0.jpg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/%e8%84%88%e8%bc%aa%e7%b3%bb%e5%88%97-%e5%a4%aa%e9%99%bd%e8%bc%aa%e9%a6%99-%e4%bb%99%e5%a7%91%e8%a1%8c%e4%b8%8d%e8%a1%8c/",
+      "product_name": "脈輪系列 : 太陽輪香 (仙姑行不行)",
+      "product_name_en": "Chakra Series: Solar Plexus Incense (Fairy Aunt)",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2024/03/LINE_ALBUM_240306_5_0.jpg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/%e8%84%88%e8%bc%aa%e7%b3%bb%e5%88%97-%e5%bf%83%e8%bc%aa%e9%a6%99-%e4%bb%99%e5%a7%91%e8%a1%8c%e4%b8%8d%e8%a1%8c/",
+      "product_name": "脈輪系列 : 心輪香 (仙姑行不行)",
+      "product_name_en": "Chakra Series: Heart Chakra Incense (Fairy Aunt)",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2024/03/LINE_ALBUM_240306_4_0.jpg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/%e8%84%88%e8%bc%aa%e7%b3%bb%e5%88%97-%e6%a0%b9-%e6%b5%b7%e5%ba%95%e8%bc%aa%e9%a6%99-%e4%bb%99%e5%a7%91%e8%a1%8c%e4%b8%8d%e8%a1%8c/",
+      "product_name": "脈輪系列 : 根輪/海底輪香 (仙姑行不行)",
+      "product_name_en": "Chakra Series: Root Chakra Incense (Fairy Aunt)",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2024/03/LINE_ALBUM_240306_2_0.jpg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/mini-remove-obstacles/",
+      "product_name": "迷你香功能系列 - 除障香 (給想要除去個人障礙、排除邪氣的您)",
+      "product_name_en": "Mini Incense Functional Series - Remove Obstacles Incense",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/迷你香功能系列＿封面圖＿除障香.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/08/除障迷你香-scaled.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/10/IMG_1371-scaled.jpeg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/10/IMG_1373-scaled.jpeg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/%e5%b7%b4%e6%8b%89%e5%9c%ad%e7%b6%a0%e6%aa%80-3/",
+      "product_name": "巴拉圭綠檀",
+      "product_name_en": "Paraguay Green Sandalwood",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/巴拉圭綠檀.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_47.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_44.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_35.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_25.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_24.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_2.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_3.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_16.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_15.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_4.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_33.jpg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/%e9%9d%9e%e6%b4%b2%e9%99%8d%e7%9c%9f%e6%aa%80%e9%a6%99-2/",
+      "product_name": "非洲降真檀香",
+      "product_name_en": "African Agarwood Sandalwood",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/非洲降真檀香.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/非洲降真檀香-2.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_47.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_44.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_35.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_25.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_24.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_2.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_3.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_16.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_15.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_4.jpg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/%e6%9f%ac%e5%9f%94%e5%af%a8%e6%b2%89%e9%a6%99-2/",
+      "product_name": "柬埔寨沉香",
+      "product_name_en": "Cambodian Agarwood",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/柬埔寨沉香.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/柬埔寨沉香-2.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_47.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_44.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_35.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_25.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_24.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_2.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_3.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_16.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_15.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_4.jpg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/%e9%87%8e%e7%94%9f%e6%b3%b0%e5%9c%8b%e6%b2%89%e9%a6%99/",
+      "product_name": "野生泰國沉香",
+      "product_name_en": "Wild Thai Agarwood",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/野生泰國沉香.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/野生泰國沉香-2.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_47.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_44.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_35.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_25.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_24.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_2.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_3.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_16.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_15.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_4.jpg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/mini-luck/",
+      "product_name": "迷你香功能系列 - 幸運香 (給想增加一些幸運能量、自信心的您)",
+      "product_name_en": "Mini Incense Functional Series - Lucky Incense",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/迷你香功能系列＿封面圖＿幸運香.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/08/幸運迷你香-scaled.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/10/IMG_1371-scaled.jpeg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/10/IMG_1373-scaled.jpeg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/%e5%8a%9f%e8%83%bd%e7%b3%bb%e5%88%97-%e8%b2%93%e9%86%89%e9%a6%99/",
+      "product_name": "線香特色系列 - 貓醉香",
+      "product_name_en": "Long Incense Special Series - Cat Drunk Fragrance",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2025/01/線香特色系列＿封面圖＿貓醉香.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2023/08/貓醉香線香-scaled.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2025/01/貓醉香＿線香插-scaled.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2023/04/幸運香.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2023/08/貓醉香開始使用.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2023/08/貓醉香使用5分鐘後.jpg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/decision-stability-set-fire-god-incense-third-eye-incense-ten-directions-purification/",
+      "product_name": "【決策穩心組】火神香 + 眉心輪香 + 十方清淨",
+      "product_name_en": "Decision Stability Set: Fire God Incense + Third Eye Incense + Ten Directions Purification",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2025/10/251016-組合系列商品圖_決策穩心組.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2026/01/火神香＿封面圖.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/03/迷你香脈輪系列＿封面圖＿眉心輪香.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/迷你香功能系列＿封面圖＿十方清淨.jpg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/%e5%8a%9f%e8%83%bd%e7%b3%bb%e5%88%97-%e5%b9%b3%e5%ae%89%e9%a6%99/",
+      "product_name": "線香功能系列 - 平安香",
+      "product_name_en": "Long Incense Functional Series - Peace Incense",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/線香功能系列＿封面圖＿平安香.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/08/平安長線香-scaled.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/08/平安香＿線香插-scaled.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/07/平安香.jpg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/mini-safety/",
+      "product_name": "迷你香功能系列 - 平安香 (給經常感到不安、想靜心的您)",
+      "product_name_en": "Mini Incense Functional Series - Peace Incense",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/迷你香功能系列＿封面圖＿平安香.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/08/平安迷你香-scaled.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/10/IMG_1371-scaled.jpeg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/10/IMG_1373-scaled.jpeg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/career-wealth-enhancement-set-golden-protection-stable-and-abundant-wealth/",
+      "product_name": "【事業&財富加成】金榜護財組｜財路穩又廣",
+      "product_name_en": "Career & Wealth Enhancement - Golden Protection Stable and Abundant Wealth Set",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2025/09/金榜護神組.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2025/08/迷你香神明系列＿封面圖＿關聖帝君.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2025/08/迷你香神明系列＿封面圖＿福德正神.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2025/08/迷你香神明系列＿封面圖＿財神爺.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2025/08/S__59105375.jpg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/%e9%87%8e%e7%94%9f%e8%a5%bf%e6%be%b3%e6%b4%b2%e6%aa%80%e9%a6%99%e6%a0%b9%e9%83%a8/",
+      "product_name": "野生西澳洲檀香根部",
+      "product_name_en": "Wild Western Australian Sandalwood Root",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/野生西澳洲檀香根部.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/野生西澳洲檀香根部-2.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_47.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_44.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_35.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_25.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_24.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_2.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_3.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_16.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_15.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_4.jpg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/mini-let-go/",
+      "product_name": "迷你香功能系列 - 三清檀香 (給身處恐懼,想要獲得溫暖能量的您)",
+      "product_name_en": "Mini Incense Functional Series - Three Purities Sandalwood",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/迷你香功能系列＿封面圖＿三清壇香.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/08/三清壇香迷你香-scaled.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/10/IMG_1371-scaled.jpeg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/10/IMG_1373-scaled.jpeg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/mini-throat-chakra/",
+      "product_name": "迷你香脈輪系列 - 喉輪香",
+      "product_name_en": "Mini Chakra Incense Series - Throat Chakra Incense",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2024/03/迷你香脈輪系列＿封面圖＿喉輪香.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/喉輪香迷你香-scaled.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/11/IMG_1427.jpeg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/11/IMG_1426.jpeg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/mini-heart-chakra/",
+      "product_name": "迷你香脈輪系列 - 心輪香",
+      "product_name_en": "Mini Chakra Incense Series - Heart Chakra Incense",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2024/03/迷你香脈輪系列＿封面圖＿心輪香.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/心輪香迷你香-scaled.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/11/IMG_1427.jpeg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/11/IMG_1426.jpeg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/energy-stabilization-set-root-chakra-incense-sacral-chakra-incense-solar-plexus-chakra-incense/",
+      "product_name": "【穩定能量組】根輪香 + 丹田輪香 + 太陽輪香",
+      "product_name_en": "Energy Stabilization Set: Root Chakra + Sacral Chakra + Solar Plexus Chakra Incense",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2025/10/251016-組合系列商品圖_穩定能量組.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/03/迷你香脈輪系列＿封面圖＿根輪香.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/03/迷你香脈輪系列＿封面圖＿丹田輪香.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/03/迷你香脈輪系列＿封面圖＿太陽輪香.jpg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/mini-crown-chakra/",
+      "product_name": "迷你香脈輪系列 - 頂輪香",
+      "product_name_en": "Mini Chakra Incense Series - Crown Chakra Incense",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2024/03/迷你香脈輪系列＿封面圖＿頂輪香.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/11/頂輪香迷你香-scaled.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/11/IMG_1427.jpeg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/11/IMG_1426.jpeg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/everything-goes-smoothly-all-purpose-set/",
+      "product_name": "神馬都順｜全能順遂組合",
+      "product_name_en": "Everything Goes Smoothly | All-Purpose Set",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2026/01/260113-年節禮盒_詳情頁_神馬都順_1（5）-scaled.jpeg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/%e8%b2%a1%e7%a5%9e%e9%a6%99/",
+      "product_name": "線香功能系列 - 財神香",
+      "product_name_en": "Long Incense Functional Series - God of Wealth Incense",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/線香功能系列＿封面圖＿財神香.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/08/財神長線香-scaled.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/08/財神香＿線香插-scaled.jpg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/%e5%8a%9f%e8%83%bd%e7%b3%bb%e5%88%97-%e6%ad%a3%e9%be%8d%e6%b2%89%e9%a6%99/",
+      "product_name": "線香功能系列 - 正龍沉香",
+      "product_name_en": "Long Incense Functional Series - Zheng Long Agarwood",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/線香功能系列＿封面圖＿正龍沉香.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/08/正龍沉香長線香-scaled.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/08/正龍沉香＿線香插-scaled.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/07/正龍沉香.jpg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/instant-wealth-new-year-luck-attracting-set/",
+      "product_name": "馬上有錢｜新年開運招財組合",
+      "product_name_en": "Instant Wealth | New Year Luck-Attracting Set",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2026/01/260113-年節禮盒_詳情頁_馬上有錢_1.jpg"
+      ]
+    },
+    {
+      "product_url": "https://www.inzense.com.tw/product/%e5%8a%9f%e8%83%bd%e7%b3%bb%e5%88%97-%e5%a7%bb%e7%b7%a3%e9%a6%99/",
+      "product_name": "線香功能系列 - 姻緣香",
+      "product_name_en": "Long Incense Functional Series - Romance Incense",
+      "images": [
+        "https://www.inzense.com.tw/wp-content/uploads/2023/11/線香功能系列＿封面圖＿姻緣香.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/08/姻緣長線香-scaled.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/08/姻緣香＿線香插-scaled.jpg",
+        "https://www.inzense.com.tw/wp-content/uploads/2024/07/姻緣香.jpg"
+      ]
+    }
+  ],
+  "unique_images_flat_list": [
+    "https://www.inzense.com.tw/wp-content/uploads/2022/10/cropped-禪香不二logo-1.png",
+    "https://www.inzense.com.tw/wp-content/uploads/2023/04/幸運香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2023/08/貓醉香線香-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2023/08/貓醉香開始使用.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2023/08/貓醉香使用5分鐘後.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2023/11/線香功能系列＿封面圖＿排寒香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2023/11/線香功能系列＿封面圖＿靈感香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2023/11/線香功能系列＿封面圖＿療心香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2023/11/線香功能系列＿封面圖＿善緣香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2023/11/線香功能系列＿封面圖＿幸運香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2023/11/線香功能系列＿封面圖＿財神香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2023/11/線香功能系列＿封面圖＿平安香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2023/11/線香功能系列＿封面圖＿正龍沉香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2023/11/線香功能系列＿封面圖＿姻緣香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2023/11/迷你香功能系列＿封面圖＿善緣香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2023/11/迷你香功能系列＿封面圖＿財神香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2023/11/迷你香功能系列＿封面圖＿除障香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2023/11/迷你香功能系列＿封面圖＿幸運香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2023/11/迷你香功能系列＿封面圖＿平安香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2023/11/迷你香功能系列＿封面圖＿三清壇香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2023/11/迷你香功能系列＿封面圖＿十方清淨.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2023/11/太陽輪香線香-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2023/11/太陽輪香＿線香插-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2023/11/喉輪香迷你香-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2023/11/心輪香迷你香-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/01/巴拉圭綠檀.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/01/非洲降真檀香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/01/非洲降真檀香-2.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/01/柬埔寨沉香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/01/柬埔寨沉香-2.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/01/野生泰國沉香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/01/野生泰國沉香-2.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/01/野生西澳洲檀香根部.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/01/野生西澳洲檀香根部-2.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_47.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_44.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_35.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_25.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_24.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_2.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_3.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_16.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_15.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_4.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/01/LINE_ALBUM_拜拜用香照片_240116_33.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/03/LINE_ALBUM_240306_0_0.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/03/LINE_ALBUM_240306_1_0.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/03/LINE_ALBUM_240306_2_0.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/03/LINE_ALBUM_240306_3_0.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/03/LINE_ALBUM_240306_4_0.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/03/LINE_ALBUM_240306_5_0.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/03/LINE_ALBUM_240306_6_0.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/03/線香脈輪系列＿封面圖＿太陽輪香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/03/太陽輪開始使用.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/03/太陽輪使用7分鐘後.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/03/迷你香脈輪系列＿封面圖＿喉輪香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/03/迷你香脈輪系列＿封面圖＿心輪香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/03/迷你香脈輪系列＿封面圖＿眉心輪香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/03/迷你香脈輪系列＿封面圖＿頂輪香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/03/迷你香脈輪系列＿封面圖＿根輪香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/03/迷你香脈輪系列＿封面圖＿丹田輪香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/03/迷你香脈輪系列＿封面圖＿太陽輪香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/07/排寒香-1.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/07/靈感香-1.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/07/療心香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/07/善緣香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/07/幸運香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/07/平安香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/07/正龍沉香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/07/姻緣香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/08/排寒長線香-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/08/排寒香＿線香插-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/08/靈感長線香-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/08/靈感香＿線香插-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/08/療心長線香-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/08/療心香＿線香插-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/08/善緣長線香-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/08/善緣香＿線香插-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/08/幸運長線香-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/08/幸運香＿線香插-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/08/財神長線香-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/08/財神香＿線香插-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/08/平安長線香-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/08/平安香＿線香插-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/08/正龍沉香長線香-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/08/正龍沉香＿線香插-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/08/姻緣長線香-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/08/姻緣香＿線香插-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/08/善緣迷你香-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/08/財神迷你香-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/08/除障迷你香-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/08/幸運迷你香-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/08/平安迷你香-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/08/三清壇香迷你香-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/10/IMG_1371-scaled.jpeg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/10/IMG_1373-scaled.jpeg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/11/頂輪香迷你香-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/11/IMG_1427.jpeg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/11/IMG_1426.jpeg",
+    "https://www.inzense.com.tw/wp-content/uploads/2025/01/線香台灣系列＿封面圖＿台灣肖楠.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2025/01/台灣肖楠-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/06/台灣肖楠＿線香插-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2025/01/線香台灣系列＿封面圖＿台灣黃檜.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2025/01/台灣黃檜-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2024/06/台灣黃檜＿線香插-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2025/01/線香特色系列＿封面圖＿貓醉香.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2025/01/貓醉香＿線香插-scaled.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2025/08/迷你香神明系列＿封面圖＿關聖帝君.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2025/08/迷你香神明系列＿封面圖＿福德正神.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2025/08/迷你香神明系列＿封面圖＿財神爺.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2025/08/S__59105375.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2025/09/金榜護神組.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2025/10/251016-組合系列商品圖_決策穩心組.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2025/10/251016-組合系列商品圖_穩定能量組.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2026/01/火神香＿封面圖.jpg",
+    "https://www.inzense.com.tw/wp-content/uploads/2026/01/260113-年節禮盒_詳情頁_神馬都順_1（5）-scaled.jpeg",
+    "https://www.inzense.com.tw/wp-content/uploads/2026/01/260113-年節禮盒_詳情頁_馬上有錢_1.jpg"
+  ],
+  "category_pages_note": "Category pages (long-incense, mini-incense, long-incense-gods) use lazy-loading with SVG placeholders. All product images are already captured from individual product pages above. No unique banner images were available from static HTML.",
+  "statistics": {
+    "total_unique_full_size_images": 113,
+    "total_products_scraped": 37,
+    "images_by_date_folder": {
+      "2022/10": 1,
+      "2023/04": 1,
+      "2023/08": 3,
+      "2023/11": 25,
+      "2024/01": 21,
+      "2024/03": 17,
+      "2024/06": 2,
+      "2024/07": 8,
+      "2024/08": 24,
+      "2024/10": 2,
+      "2024/11": 3,
+      "2025/01": 6,
+      "2025/08": 4,
+      "2025/09": 1,
+      "2025/10": 2,
+      "2026/01": 3
+    }
+  }
+}

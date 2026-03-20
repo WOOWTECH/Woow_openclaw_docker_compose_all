@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: odoo-config
+  namespace: inzense
+  labels:
+    app.kubernetes.io/name: inzense-odoo
+data:
+  odoo.conf: |
+    [options]
+    ; Database configuration
+    db_host = inzense-postgres
+    db_port = 5432
+    db_user = inzense
+    db_password = inzense
+    db_name = inzense
+    db_maxconn = 64
+    db_template = template1
+
+    ; Admin/Master password
+    admin_passwd = admin
+
+    ; Paths
+    addons_path = /mnt/extra-addons,/mnt/extra-addons/base_accounting_kit,/mnt/extra-addons/hide_menu_user,/mnt/extra-addons/odoo_color_customizer,/mnt/extra-addons/sh_document_management,/usr/lib/python3/dist-packages/odoo/addons
+    data_dir = /var/lib/odoo
+
+    ; Server configuration
+    http_port = 8069
+    longpolling_port = 8072
+    proxy_mode = True
+
+    ; Workers (0 = threaded mode)
+    workers = 0
+    max_cron_threads = 1
+
+    ; Resource limits
+    limit_memory_hard = 2684354560
+    limit_memory_soft = 2147483648
+    limit_time_cpu = 600
+    limit_time_real = 1200
+    limit_request = 8192
+
+    ; Logging
+    log_level = info
+    logfile = False
+
+    ; Security
+    list_db = False
+
+    ; Default language
+    load_language = zh_TW

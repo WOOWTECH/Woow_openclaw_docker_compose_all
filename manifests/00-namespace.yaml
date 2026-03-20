@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: inzense
+  labels:
+    app.kubernetes.io/name: inzense
+    app.kubernetes.io/part-of: inzense-odoo

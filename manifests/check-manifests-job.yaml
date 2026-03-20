@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: check-manifests
+  namespace: inzense
+spec:
+  ttlSecondsAfterFinished: 60
+  template:
+    spec:
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: "true"
+      restartPolicy: Never
+      containers:
+        - name: check
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - "find /mnt/extra-addons -name '__manifest__.py' | sort"
+          volumeMounts:
+            - name: addons
+              mountPath: /mnt/extra-addons
+      volumes:
+        - name: addons
+          persistentVolumeClaim:
+            claimName: inzense-odoo-addons-pvc

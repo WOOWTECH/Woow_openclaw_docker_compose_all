@@ -1,0 +1,77 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: clone-woowtech-addons-v2
+  namespace: inzense
+  labels:
+    app.kubernetes.io/name: inzense-odoo
+    app.kubernetes.io/component: setup
+spec:
+  ttlSecondsAfterFinished: 300
+  backoffLimit: 3
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: inzense-odoo
+        app.kubernetes.io/component: setup
+    spec:
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: "true"
+      restartPolicy: OnFailure
+      containers:
+        - name: git-clone
+          image: alpine/git:latest
+          command:
+            - sh
+            - -c
+            - |
+              set -e
+              cd /mnt/extra-addons
+
+              echo "=== Cloning WOOWTECH addons ==="
+
+              REPOS="
+              sh_document_management
+              odoo_color_customizer
+              Woow_odoo_barcode_scanner_base
+              Woow_odoo_barcode_scanner_base_sale
+              Woow_odoo_barcode_scanner_base_stock
+              Woow_odoo_barcode_scanner_base_purchase
+              hide_menu_user
+              base_accounting_kit
+              "
+
+              for repo in $REPOS; do
+                if [ -d "$repo" ]; then
+                  echo "Updating $repo..."
+                  cd "$repo"
+                  git pull || true
+                  cd /mnt/extra-addons
+                else
+                  echo "Cloning $repo..."
+                  git clone "https://x-access-token:${GH_TOKEN}@github.com/WOOWTECH/$repo.git" || echo "WARNING: Failed to clone $repo"
+                fi
+              done
+
+              echo "=== All addons cloned ==="
+              ls -la /mnt/extra-addons/
+          env:
+            - name: GH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: github-token
+                  key: token
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          volumeMounts:
+            - name: odoo-addons
+              mountPath: /mnt/extra-addons
+      volumes:
+        - name: odoo-addons
+          persistentVolumeClaim:
+            claimName: inzense-odoo-addons-pvc

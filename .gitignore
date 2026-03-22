@@ -1,0 +1,24 @@
+# Secrets
+.env
+.env.old
+cf-config.json
+
+# Test secrets
+tests/pre-launch/config.env
+
+# Runtime data
+node_modules/
+test-results/
+package-lock.json
+
+# Planning files
+task_plan.md
+findings.md
+progress.md
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Playwright
+playwright-report/

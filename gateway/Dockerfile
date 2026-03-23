@@ -1,8 +1,9 @@
-# Custom OpenClaw Gateway Image (K3s Edition)
+# Custom OpenClaw Gateway Image
 # Extends the official image with pre-installed skill CLI dependencies
-# so they survive pod recreation.
+# so they survive container recreation (podman compose down/up).
 #
-# Build: docker build -f Dockerfile.custom -t openclaw-custom .
+# Build: podman compose build gateway
+# Rebuild with upstream update: podman compose build --pull gateway
 
 ARG OPENCLAW_VERSION=latest
 FROM ghcr.io/openclaw/openclaw:${OPENCLAW_VERSION}
@@ -13,7 +14,7 @@ USER root
 RUN apt-get update && apt-get install -y --no-install-recommends \
         jq ffmpeg tmux ripgrep unzip \
         python3-venv python3-pip \
-        curl git gnupg ca-certificates libasound2-dev \
+        curl git libasound2-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # ─── 2. npm global CLIs ──────────────────────────────────────────────

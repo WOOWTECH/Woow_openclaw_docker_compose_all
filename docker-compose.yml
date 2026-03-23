@@ -1,0 +1,80 @@
+version: '3.8'
+name: openclaw
+
+services:
+  # -------------------------------------------------------
+  # PostgreSQL 16 + pgvector (vector database)
+  # -------------------------------------------------------
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: openclaw-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-openclaw}
+      - POSTGRES_USER=${POSTGRES_USER:-openclaw}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    networks:
+      - openclaw-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-openclaw} -d ${POSTGRES_DB:-openclaw}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # -------------------------------------------------------
+  # OpenClaw AI Gateway (custom image with skill CLI deps)
+  # Build: podman compose build gateway
+  # Rebuild with upstream: podman compose build --pull gateway
+  # -------------------------------------------------------
+  gateway:
+    build:
+      context: ./gateway
+      args:
+        OPENCLAW_VERSION: ${OPENCLAW_VERSION:-latest}
+    image: openclaw-gateway-custom:${OPENCLAW_VERSION:-latest}
+    container_name: openclaw-gateway
+    restart: unless-stopped
+    command: node openclaw.mjs gateway --allow-unconfigured --bind lan --port 18789
+    ports:
+      - "${GATEWAY_PORT:-18789}:18789"
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-openclaw}:${POSTGRES_PASSWORD:?required}@db:5432/${POSTGRES_DB:-openclaw}
+      # AI provider API keys (set values in .env file)
+      - MINIMAX_API_KEY=${MINIMAX_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
+      - QWEN_API_KEY=${QWEN_API_KEY:-}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
+    volumes:
+      - ./data/openclaw:/home/node/.openclaw
+      - ./data/whisper-cache:/home/node/.cache/whisper
+    networks:
+      - openclaw-net
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # -------------------------------------------------------
+  # Cloudflare Tunnel (persistent edge connector)
+  # Start with: podman-compose -f docker-compose.yml -f docker-compose.tunnel.yml up -d cloudflared
+  # -------------------------------------------------------
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: openclaw-tunnel
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN=${CF_TUNNEL_TOKEN:-}
+    networks:
+      - openclaw-net
+    depends_on:
+      - gateway
+
+networks:
+  openclaw-net:
+    name: openclaw-network
+    driver: bridge

@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: openclaw-tenant-1
-  labels:
-    app.kubernetes.io/part-of: openclaw-paas
-    tenant: tenant-1

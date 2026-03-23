@@ -1,31 +1,114 @@
-FROM ghcr.io/openclaw/openclaw:latest
+# Custom OpenClaw Gateway Image (K3s Edition)
+# Extends the official image with pre-installed skill CLI dependencies
+# so they survive pod recreation.
+#
+# Build: docker build -f Dockerfile.custom -t openclaw-custom .
+
+ARG OPENCLAW_VERSION=latest
+FROM ghcr.io/openclaw/openclaw:${OPENCLAW_VERSION}
 
 USER root
 
-# System packages: jq, ripgrep, tmux, ffmpeg
+# ─── 1. System packages ──────────────────────────────────────────────
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    jq ripgrep tmux ffmpeg curl gnupg ca-certificates \
+        jq ffmpeg tmux ripgrep unzip \
+        python3-venv python3-pip \
+        curl git gnupg ca-certificates libasound2-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# GitHub CLI (gh)
-RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
-    | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
-    && chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
-    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
-    > /etc/apt/sources.list.d/github-cli.list \
-    && apt-get update && apt-get install -y gh \
-    && rm -rf /var/lib/apt/lists/*
-
-# npm global CLIs for OpenClaw skills
-# Note: oracle, sag, xurl, obsidian-cli npm packages are NOT the OpenClaw CLIs
+# ─── 2. npm global CLIs ──────────────────────────────────────────────
 RUN npm install -g \
-    clawhub \
-    mcporter \
-    gog \
-    goplaces \
-    summarize
+        clawhub \
+        mcporter \
+        @steipete/oracle \
+        @xdevplatform/xurl \
+        @google/gemini-cli \
+        @steipete/summarize \
+        @openai/codex
 
-# uv (Python package manager, needed for nano-banana-pro skill)
-RUN curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR=/usr/local/bin sh
+# ─── 3. Install Go (not in base image) ────────────────────────────────
+ARG GO_VERSION=1.23.7
+RUN curl -fsSL "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" \
+        | tar xz -C /usr/local \
+    && ln -sf /usr/local/go/bin/go /usr/local/bin/go
 
+# ─── 4. Go binaries (installed via go install) ───────────────────────
+ENV GOBIN=/usr/local/bin
+RUN go install github.com/Hyaxia/blogwatcher/cmd/blogwatcher@latest \
+    && go install github.com/steipete/blucli/cmd/blu@latest \
+    && go install github.com/steipete/eightctl/cmd/eightctl@latest \
+    && go install github.com/steipete/sonoscli/cmd/sonos@latest \
+    && go install github.com/steipete/gifgrep/cmd/gifgrep@latest \
+    && go install github.com/steipete/ordercli/cmd/ordercli@latest \
+    && go install github.com/steipete/wacli/cmd/wacli@latest \
+    && go install github.com/steipete/goplaces/cmd/goplaces@latest \
+    && go install github.com/steipete/songsee/cmd/songsee@latest \
+    && go install github.com/steipete/gogcli/cmd/gog@latest \
+    && go install github.com/steipete/sag/cmd/sag@latest \
+    && go install github.com/steipete/spogo/cmd/spogo@latest \
+    && go install github.com/steipete/camsnap/cmd/camsnap@latest \
+    && rm -rf /root/go /tmp/*
+
+# ─── 5. GitHub CLI ───────────────────────────────────────────────────
+ARG GH_VERSION=2.67.0
+RUN curl -fsSL "https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_${GH_VERSION}_linux_amd64.tar.gz" \
+        | tar xz -C /tmp \
+    && cp /tmp/gh_${GH_VERSION}_linux_amd64/bin/gh /usr/local/bin/gh \
+    && rm -rf /tmp/gh_*
+
+# ─── 6. 1Password CLI (op) ───────────────────────────────────────────
+RUN curl -fsSL "https://cache.agilebits.com/dist/1P/op2/pkg/v2.30.3/op_linux_amd64_v2.30.3.zip" \
+        -o /tmp/op.zip \
+    && unzip -o /tmp/op.zip -d /tmp/op \
+    && cp /tmp/op/op /usr/local/bin/op \
+    && chmod +x /usr/local/bin/op \
+    && rm -rf /tmp/op /tmp/op.zip
+
+# ─── 7. Himalaya (email CLI) ─────────────────────────────────────────
+RUN curl -fsSL "https://github.com/pimalaya/himalaya/releases/latest/download/himalaya.x86_64-linux.tgz" \
+        | tar xz -C /tmp \
+    && cp /tmp/himalaya /usr/local/bin/himalaya \
+    && chmod +x /usr/local/bin/himalaya \
+    && rm -rf /tmp/himalaya
+
+# ─── 8. OpenHue CLI ──────────────────────────────────────────────────
+RUN OPENHUE_URL=$(curl -fsSL "https://api.github.com/repos/openhue/openhue-cli/releases/latest" \
+        | grep -oP '"browser_download_url":\s*"\K[^"]*Linux_x86_64\.tar\.gz') \
+    && curl -fsSL "$OPENHUE_URL" | tar xz -C /tmp \
+    && cp /tmp/openhue /usr/local/bin/openhue \
+    && chmod +x /usr/local/bin/openhue \
+    && rm -rf /tmp/openhue*
+
+# ─── 9. Obsidian CLI (notesmd-cli) ───────────────────────────────────
+ARG OBSIDIAN_CLI_VERSION=0.3.4
+RUN curl -fsSL "https://github.com/Yakitrak/obsidian-cli/releases/download/v${OBSIDIAN_CLI_VERSION}/notesmd-cli_${OBSIDIAN_CLI_VERSION}_linux_amd64.tar.gz" \
+        | tar xz -C /tmp \
+    && cp /tmp/notesmd-cli /usr/local/bin/obsidian-cli \
+    && chmod +x /usr/local/bin/obsidian-cli \
+    && rm -rf /tmp/notesmd-cli* /tmp/LICENSE /tmp/README.md
+
+# ─── 10. uv (Python tool manager) ────────────────────────────────────
+RUN curl -fsSL "https://github.com/astral-sh/uv/releases/latest/download/uv-x86_64-unknown-linux-gnu.tar.gz" \
+        | tar xz -C /tmp \
+    && cp /tmp/uv-x86_64-unknown-linux-gnu/uv /usr/local/bin/uv \
+    && cp /tmp/uv-x86_64-unknown-linux-gnu/uvx /usr/local/bin/uvx \
+    && chmod +x /usr/local/bin/uv /usr/local/bin/uvx \
+    && rm -rf /tmp/uv-*
+
+# ─── 11. OpenAI Whisper (CPU-only PyTorch) ───────────────────────────
+RUN uv venv /opt/whisper-venv --python 3.11 \
+    && uv pip install --python /opt/whisper-venv/bin/python \
+        torch torchaudio --index-url https://download.pytorch.org/whl/cpu \
+    && uv pip install --python /opt/whisper-venv/bin/python openai-whisper \
+    && ln -sf /opt/whisper-venv/bin/whisper /usr/local/bin/whisper
+
+# ─── 12. nano-pdf (pip) ──────────────────────────────────────────────
+RUN pip install --break-system-packages nano-pdf \
+    || uv pip install --system nano-pdf \
+    || echo "nano-pdf install failed, will retry at runtime"
+
+# ─── Cleanup build caches ────────────────────────────────────────────
+RUN rm -rf /tmp/* /root/.cache /root/go 2>/dev/null; true
+
+# ─── Restore non-root user ───────────────────────────────────────────
 USER node

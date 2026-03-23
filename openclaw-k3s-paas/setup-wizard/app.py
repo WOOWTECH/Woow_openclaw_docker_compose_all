@@ -41,10 +41,11 @@ AI_ENV_MAP = {
     "openai": "OPENAI_API_KEY",
     "anthropic": "ANTHROPIC_API_KEY",
     "google": "GEMINI_API_KEY",
-    "ollama": "OLLAMA_HOST",
     "minimax": "MINIMAX_API_KEY",
     "deepseek": "DEEPSEEK_API_KEY",
     "qwen": "QWEN_API_KEY",
+    "openrouter": "OPENROUTER_API_KEY",
+    "ollama": "OLLAMA_HOST",
 }
 
 # AI provider → model prefix
@@ -52,10 +53,11 @@ AI_MODEL_MAP = {
     "openai": "openai/gpt-4o",
     "anthropic": "anthropic/claude-sonnet-4-20250514",
     "google": "google/gemini-2.0-flash",
-    "ollama": "ollama/llama3",
     "minimax": "minimax/MiniMax-M2.5",
     "deepseek": "deepseek/deepseek-chat",
     "qwen": "qwen/qwen-max",
+    "openrouter": "openrouter/auto",
+    "ollama": "ollama/llama3",
 }
 
 # AI provider → auth-profiles.json key
@@ -66,13 +68,13 @@ AI_AUTH_KEY = {
     "minimax": "minimax",
     "deepseek": "deepseek",
     "qwen": "qwen",
+    "openrouter": "openrouter",
 }
 
 # Chat platform → env var / channel name
 CHAT_ENV_MAP = {
     "telegram": ("TELEGRAM_BOT_TOKEN", "telegram"),
     "discord": ("DISCORD_BOT_TOKEN", "discord"),
-    "line": ("LINE_CHANNEL_TOKEN", "line"),
     "slack": ("SLACK_BOT_TOKEN", "slack"),
     "whatsapp": ("WHATSAPP_ENABLED", "whatsapp"),
 }
@@ -165,19 +167,25 @@ def configure_gateway(ai_provider, ai_api_key, ai_model):
             log.warning(f"Exec failed [{cmd[:40]}]: {e}")
             return ""
 
-    # Merge API key into auth-profiles.json (preserve existing keys from PVC)
+    # Write auth-profiles.json with API key (v1 format, critical for AI to work)
     if ai_provider and ai_api_key:
         auth_key = AI_AUTH_KEY.get(ai_provider)
         if auth_key:
-            new_entry = json.dumps({auth_key: {"apiKey": ai_api_key}})
+            auth_json = json.dumps({
+                "version": 1,
+                "profiles": {
+                    auth_key: {
+                        "type": "api_key",
+                        "key": ai_api_key,
+                        "provider": auth_key,
+                    }
+                }
+            })
             exec_cmd(
                 f'mkdir -p /home/node/.openclaw/agents/main/agent && '
-                f'node -e "const fs=require(\'fs\'),f=\'/home/node/.openclaw/agents/main/agent/auth-profiles.json\';"'
-                f'"let o={{}};try{{o=JSON.parse(fs.readFileSync(f,\'utf8\'))}}catch(e){{}}"'
-                f'"Object.assign(o,{new_entry});"'
-                f'"fs.writeFileSync(f,JSON.stringify(o))"'
+                f'echo \'{auth_json}\' > /home/node/.openclaw/agents/main/agent/auth-profiles.json'
             )
-            log.info(f"Merged auth-profiles.json for {auth_key}")
+            log.info(f"Wrote auth-profiles.json for {auth_key}")
 
         # Set model with provider prefix
         raw_model = ai_model or AI_MODEL_MAP.get(ai_provider, "")
@@ -195,7 +203,7 @@ def configure_gateway(ai_provider, ai_api_key, ai_model):
     )
 
 
-def switch_cloudflare_route(retries=3):
+def switch_cloudflare_route():
     url = (
         f"https://api.cloudflare.com/client/v4/accounts/{CF_ACCOUNT_ID}"
         f"/cfd_tunnel/{CF_TUNNEL_ID}/configurations"
@@ -208,27 +216,16 @@ def switch_cloudflare_route(retries=3):
             ]
         }
     }
-    log.info(f"Switching CF route: tunnel={CF_TUNNEL_ID} domain={DOMAIN}")
-    last_error = None
-    for attempt in range(1, retries + 1):
-        try:
-            resp = http_requests.put(
-                url,
-                headers={"Authorization": f"Bearer {CF_API_TOKEN}", "Content-Type": "application/json"},
-                json=payload, timeout=20,
-            )
-            resp.raise_for_status()
-            data = resp.json()
-            if not data.get("success"):
-                raise RuntimeError(f"Cloudflare API error: {data.get('errors')}")
-            log.info(f"CF route switched successfully (attempt {attempt})")
-            return data
-        except Exception as e:
-            last_error = e
-            log.warning(f"CF route switch attempt {attempt}/{retries} failed: {e}")
-            if attempt < retries:
-                time.sleep(3)
-    raise RuntimeError(f"CF route switch failed after {retries} attempts: {last_error}")
+    resp = http_requests.put(
+        url,
+        headers={"Authorization": f"Bearer {CF_API_TOKEN}", "Content-Type": "application/json"},
+        json=payload, timeout=15,
+    )
+    resp.raise_for_status()
+    data = resp.json()
+    if not data.get("success"):
+        raise RuntimeError(f"Cloudflare API error: {data.get('errors')}")
+    return data
 
 
 def run_setup(params):

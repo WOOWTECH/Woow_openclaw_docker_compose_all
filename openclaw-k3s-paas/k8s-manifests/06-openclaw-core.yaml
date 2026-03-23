@@ -173,14 +173,16 @@ spec:
             - sh
             - -c
             - |
-              # Setup persistent dirs
+              # Setup persistent dirs — symlink all stateful dirs to PVC
               mkdir -p /home/node/.openclaw
-              ln -sfn /mnt/openclaw-agents /home/node/.openclaw/agents
-              mkdir -p /mnt/openclaw-agents/_workspace-skills
-              mkdir -p /home/node/.openclaw/workspace
-              ln -sfn /mnt/openclaw-agents/_workspace-skills /home/node/.openclaw/workspace/skills
-              mkdir -p /mnt/openclaw-agents/_managed-skills
-              ln -sfn /mnt/openclaw-agents/_managed-skills /home/node/.openclaw/skills
+              PVC="/mnt/openclaw-agents"
+              ln -sfn "$PVC" /home/node/.openclaw/agents
+              mkdir -p "$PVC/_workspace" "$PVC/_managed-skills" "$PVC/_memory" "$PVC/_cron" "$PVC/_telegram"
+              ln -sfn "$PVC/_workspace" /home/node/.openclaw/workspace
+              ln -sfn "$PVC/_managed-skills" /home/node/.openclaw/skills
+              ln -sfn "$PVC/_memory" /home/node/.openclaw/memory
+              ln -sfn "$PVC/_cron" /home/node/.openclaw/cron
+              ln -sfn "$PVC/_telegram" /home/node/.openclaw/telegram
               # Persist openclaw.json on PVC — only write default on first boot
               CONFIG_PVC="/mnt/openclaw-agents/_openclaw.json"
               CONFIG="/home/node/.openclaw/openclaw.json"
@@ -230,8 +232,7 @@ spec:
               [ -n "${DEEPSEEK_API_KEY:-}" ] && AUTH=$(echo "$AUTH" | node -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{const o=JSON.parse(d);o.deepseek={apiKey:process.env.DEEPSEEK_API_KEY};console.log(JSON.stringify(o))})")
               [ -n "${QWEN_API_KEY:-}" ] && AUTH=$(echo "$AUTH" | node -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{const o=JSON.parse(d);o.qwen={apiKey:process.env.QWEN_API_KEY};console.log(JSON.stringify(o))})")
               echo "$AUTH" > "$AUTH_FILE"
-              # Bootstrap all core workspace files (only if empty or missing)
-              mkdir -p /home/node/.openclaw/workspace
+              # Bootstrap all core workspace files (only if empty or missing, writes to PVC)
               [ -s /home/node/.openclaw/workspace/MEMORY.md ] || printf '# Agent Memory\n\nPersistent knowledge across conversations.\n\n## System Info\n- Platform: OpenClaw K3s PaaS\n- Deployment: Woowtech Smart Space Solution\n' > /home/node/.openclaw/workspace/MEMORY.md
               [ -s /home/node/.openclaw/workspace/SOUL.md ] || printf '# Soul\n\nYou are an AI assistant on Woowtech Smart Space platform.\nRespond in the same language the user uses. Default to Traditional Chinese.\nBe helpful, professional, and concise.\n' > /home/node/.openclaw/workspace/SOUL.md
               [ -s /home/node/.openclaw/workspace/IDENTITY.md ] || printf '# Identity\n\nName: Woowtech AI Assistant\nRole: Smart space AI assistant powered by OpenClaw\nChannels: LINE, Telegram, WhatsApp, Web\n' > /home/node/.openclaw/workspace/IDENTITY.md

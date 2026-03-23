@@ -243,12 +243,12 @@ spec:
               [ -s /home/node/.openclaw/workspace/BOOTSTRAP.md ] || printf '# Bootstrap\n\nOn first run: verify API key, check channels, confirm cron jobs.\n' > /home/node/.openclaw/workspace/BOOTSTRAP.md
               echo '[init] Core workspace files bootstrapped'
               rm -rf /home/node/.openclaw/devices/ 2>/dev/null || true
-              # Auto-approve pending devices every 3 seconds in background
-              (sleep 15; while true; do
+              # Auto-approve devices instantly (1 second loop)
+              (sleep 10; while true; do
                 openclaw devices list 2>/dev/null | grep -oP '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}' | while read req; do
                   openclaw devices approve "$req" 2>/dev/null && echo "[auto-approve] approved $req"
                 done
-                sleep 3
+                sleep 1
               done) &
               exec openclaw gateway --bind lan --port 18789 --auth token --token "$OPENCLAW_GATEWAY_TOKEN" --allow-unconfigured
           ports:

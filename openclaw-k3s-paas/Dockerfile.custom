@@ -1,0 +1,31 @@
+FROM ghcr.io/openclaw/openclaw:latest
+
+USER root
+
+# System packages: jq, ripgrep, tmux, ffmpeg
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    jq ripgrep tmux ffmpeg curl gnupg ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# GitHub CLI (gh)
+RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+    | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+    && chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
+    > /etc/apt/sources.list.d/github-cli.list \
+    && apt-get update && apt-get install -y gh \
+    && rm -rf /var/lib/apt/lists/*
+
+# npm global CLIs for OpenClaw skills
+# Note: oracle, sag, xurl, obsidian-cli npm packages are NOT the OpenClaw CLIs
+RUN npm install -g \
+    clawhub \
+    mcporter \
+    gog \
+    goplaces \
+    summarize
+
+# uv (Python package manager, needed for nano-banana-pro skill)
+RUN curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR=/usr/local/bin sh
+
+USER node

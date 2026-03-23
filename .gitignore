@@ -2,9 +2,11 @@
 .env
 .env.old
 cf-config.json
+**/cf-config.json
 
 # Test secrets
 tests/pre-launch/config.env
+**/config.env
 
 # Runtime data
 node_modules/
@@ -22,3 +24,6 @@ Thumbs.db
 
 # Playwright
 playwright-report/
+
+# Python
+__pycache__/

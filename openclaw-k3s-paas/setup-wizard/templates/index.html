@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenClaw Setup - Woowtech Smart Space</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #6183FC;
+            --bg-body: #f5f7fa;
+            --bg-card: rgba(255, 255, 255, 0.95);
+            --bg-input: #f0f2f5;
+            --border-card: rgba(97, 131, 252, 0.2);
+            --border-input: rgba(200, 210, 230, 0.6);
+            --text-primary: #1a1a2e;
+            --text-body: #333344;
+            --text-muted: #6b7280;
+            --text-hint: #9ca3af;
+            --green: #4ade80;
+            --error: #f87171;
+            --cyan: #7BDBE0;
+            --royal-blue: #6791DE;
+            --lavender: #C09FE0;
+            --sand: #F1C692;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-body);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-body);
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 20% 0%, rgba(97,131,252,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 100%, rgba(123,219,224,0.05) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(245,247,250,1) 0%, transparent 100%);
+            pointer-events: none;
+        }
+        .container { width: 100%; max-width: 520px; padding: 20px; position: relative; z-index: 1; }
+        .brand-bar { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px; }
+        .brand-bar .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--primary-blue); opacity: 0.5; }
+        .brand-bar span { font-size: 11px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); }
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 16px;
+            padding: 36px 32px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .logo { text-align: center; margin-bottom: 28px; }
+        .logo-icon {
+            width: 52px; height: 52px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--royal-blue));
+            border-radius: 14px;
+            display: inline-flex; align-items: center; justify-content: center;
+            margin-bottom: 14px;
+            box-shadow: 0 4px 16px rgba(97,131,252,0.3);
+        }
+        .logo-icon svg { width: 26px; height: 26px; fill: none; stroke: white; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .logo h1 { font-size: 22px; font-weight: 700; color: var(--text-primary); }
+        .logo p { color: var(--text-muted); font-size: 13px; font-weight: 400; margin-top: 4px; }
+
+        /* Section dividers */
+        .section-title {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 12px; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 1px; color: var(--text-muted);
+            margin: 24px 0 14px; padding-top: 20px;
+            border-top: 1px solid rgba(97,131,252,0.1);
+        }
+        .section-title:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+        .section-icon { font-size: 16px; }
+
+        /* Form */
+        .form-group { margin-bottom: 16px; }
+        label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 5px; }
+        input[type="password"], input[type="text"], select {
+            width: 100%; padding: 11px 13px;
+            background: var(--bg-input);
+            border: 1.5px solid var(--border-input);
+            border-radius: 10px; color: var(--text-body);
+            font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 400;
+            transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+            outline: none; -webkit-appearance: none;
+        }
+        input:focus, select:focus {
+            background: #ffffff;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(97,131,252,0.15);
+        }
+        input::placeholder { color: var(--text-hint); font-weight: 300; }
+        select { cursor: pointer; }
+        select option { background: #ffffff; color: var(--text-body); }
+        .hint { font-size: 11px; color: var(--text-hint); margin-top: 4px; font-weight: 300; }
+        .optional-tag { font-size: 10px; color: var(--text-hint); font-weight: 400; text-transform: none; letter-spacing: 0; }
+
+        .btn {
+            width: 100%; padding: 14px;
+            background: var(--primary-blue); border: none; border-radius: 10px;
+            color: #ffffff; font-family: 'Outfit', sans-serif;
+            font-size: 15px; font-weight: 600; cursor: pointer;
+            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+            margin-top: 12px;
+        }
+        .btn:hover { background: #4f6fef; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(97,131,252,0.35); }
+        .btn:active { transform: translateY(0); }
+        .btn:disabled { background: rgba(97,131,252,0.35); cursor: not-allowed; transform: none; box-shadow: none; color: rgba(255,255,255,0.7); }
+
+        /* Dynamic fields */
+        .dynamic-field { display: none; }
+        .dynamic-field.visible { display: block; }
+
+        /* Progress */
+        #progress-section { display: none; margin-top: 4px; }
+        .progress-step {
+            display: flex; align-items: center; gap: 10px;
+            font-size: 14px; font-weight: 400; color: var(--text-hint); padding: 7px 0; transition: color 0.3s;
+        }
+        .progress-step.active { color: var(--primary-blue); font-weight: 500; }
+        .progress-step.done { color: var(--green); font-weight: 500; }
+        .progress-step .icon { width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .check-circle {
+            width: 18px; height: 18px; border-radius: 50%; background: var(--green);
+            display: inline-flex; align-items: center; justify-content: center;
+        }
+        .check-circle::after { content: ''; width: 5px; height: 9px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg) translate(-1px, -1px); }
+        .spinner-inline {
+            display: inline-block; width: 18px; height: 18px;
+            border: 2.5px solid rgba(97,131,252,0.2); border-top-color: var(--primary-blue);
+            border-radius: 50%; animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .step-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(0,0,0,0.15); }
+
+        /* Results */
+        .result { display: none; text-align: center; padding: 20px 0 0; }
+        .result-icon { width: 52px; height: 52px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+        .result.success .result-icon { background: rgba(74,222,128,0.12); }
+        .result.success .result-icon::after { content: ''; width: 14px; height: 22px; border: solid var(--green); border-width: 0 3px 3px 0; transform: rotate(45deg) translate(-2px, -2px); }
+        .result.error .result-icon { background: rgba(248,113,113,0.12); color: var(--error); font-size: 28px; font-weight: 700; }
+        .result h2 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+        .result.success h2 { color: var(--text-primary); }
+        .result.error h2 { color: var(--error); }
+        .result p { font-size: 14px; line-height: 1.6; color: var(--text-muted); }
+        .result a { color: var(--primary-blue); font-weight: 500; text-decoration: none; }
+        .result a:hover { text-decoration: underline; }
+        .footer { text-align: center; margin-top: 16px; font-size: 11px; color: var(--text-hint); font-weight: 400; letter-spacing: 0.3px; }
+
+        /* Chat info box */
+        .chat-info-box {
+            background: rgba(97,131,252,0.06); border: 1px solid rgba(97,131,252,0.12);
+            border-radius: 10px; padding: 14px 16px; font-size: 13px; color: var(--text-muted);
+        }
+        .chat-info-box p { margin-bottom: 8px; }
+        .chat-info-box ul { list-style: none; padding: 0; }
+        .chat-info-box li { padding: 3px 0; font-size: 12px; }
+        .chat-info-box li::before { content: ''; display: inline-block; width: 4px; height: 4px; border-radius: 50%; background: var(--primary-blue); margin-right: 8px; vertical-align: middle; }
+        .chat-info-box strong { color: var(--text-body); }
+
+        /* Deploy status */
+        .deploy-status { margin: 16px 0; text-align: left; }
+        .status-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .status-row:last-child { border-bottom: none; }
+        .status-label { font-size: 13px; color: var(--text-muted); }
+        .status-badge { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .status-badge.ok { background: rgba(74,222,128,0.15); color: var(--green); }
+        .status-badge.pending { background: rgba(97,131,252,0.15); color: var(--primary-blue); }
+        .deploy-actions { display: flex; gap: 10px; margin: 16px 0; }
+        .action-btn { flex: 1; text-align: center; padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 600; text-decoration: none; transition: transform 0.15s, box-shadow 0.2s; }
+        .action-btn.primary { background: var(--primary-blue); color: #fff; }
+        .action-btn.primary:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(97,131,252,0.35); text-decoration: none; }
+        .action-btn.secondary { background: rgba(97,131,252,0.12); color: var(--primary-blue); border: 1px solid rgba(97,131,252,0.2); }
+        .action-btn.secondary:hover { background: rgba(97,131,252,0.2); text-decoration: none; }
+        .deploy-hint { font-size: 11px; color: var(--text-hint); margin-top: 8px; line-height: 1.5; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="brand-bar"><span class="dot"></span><span>Woowtech Smart Space</span><span class="dot"></span></div>
+    <div class="card">
+        <div class="logo">
+            <div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+            <h1>OpenClaw Setup</h1>
+            <p>Zero-touch AI gateway provisioning</p>
+        </div>
+
+        <form id="setup-form">
+            <!-- Section 1: Core -->
+            <div class="section-title"><span class="section-icon">&#128274;</span> Core Credentials</div>
+            <div class="form-group">
+                <label for="gateway_token">Gateway Token</label>
+                <input type="password" id="gateway_token" name="gateway_token" placeholder="Set your gateway access token" required autocomplete="new-password">
+            </div>
+            <div class="form-group">
+                <label for="db_password">Database Password</label>
+                <input type="password" id="db_password" name="db_password" placeholder="Set your database password" required autocomplete="new-password">
+            </div>
+
+            <!-- Section 2: AI Engine -->
+            <div class="section-title"><span class="section-icon">&#129302;</span> AI Engine</div>
+            <div class="form-group">
+                <label for="ai_provider">Provider</label>
+                <select id="ai_provider" name="ai_provider">
+                    <option value="">-- Select AI Provider --</option>
+                    <option value="openai">OpenAI (GPT-4o, o1, ...)</option>
+                    <option value="anthropic">Anthropic (Claude)</option>
+                    <option value="google">Google (Gemini)</option>
+                    <option value="minimax">MiniMax</option>
+                    <option value="deepseek">DeepSeek</option>
+                    <option value="qwen">Qwen (通義千問)</option>
+                    <option value="ollama">Ollama (Local)</option>
+                </select>
+            </div>
+            <div class="form-group dynamic-field" id="field-ai-key">
+                <label for="ai_api_key" id="ai-key-label">API Key</label>
+                <input type="password" id="ai_api_key" name="ai_api_key" placeholder="Enter API key" autocomplete="new-password">
+                <div class="hint" id="ai-key-hint"></div>
+            </div>
+            <div class="form-group dynamic-field" id="field-ai-model-select">
+                <label for="ai_model_select">Model</label>
+                <select id="ai_model_select" name="ai_model">
+                    <option value="">-- Select Model --</option>
+                </select>
+            </div>
+            <div class="form-group dynamic-field" id="field-ai-model-text">
+                <label for="ai_model_text">Model Name</label>
+                <input type="text" id="ai_model_text" name="ai_model" placeholder="e.g. llama3, mistral, codellama">
+                <div class="hint">Enter the model name you have pulled in Ollama</div>
+            </div>
+
+            <!-- Section 3: Chat Platform -->
+            <div class="section-title"><span class="section-icon">&#128172;</span> Chat Platform <span class="optional-tag">(post-deploy)</span></div>
+            <div class="chat-info-box">
+                <p>Chat platforms are configured in the <strong>OpenClaw Control UI</strong> after deployment:</p>
+                <ul>
+                    <li><strong>WhatsApp</strong> — Scan QR code in Control UI</li>
+                    <li><strong>Telegram</strong> — Enter Bot Token from @BotFather</li>
+                    <li><strong>Discord</strong> — Enter Bot Token from Developer Portal</li>
+                    <li><strong>Slack / LINE / Signal</strong> — Enter credentials in Channels settings</li>
+                </ul>
+            </div>
+
+            <button type="submit" class="btn" id="submit-btn">Deploy Instance</button>
+        </form>
+
+        <div id="progress-section">
+            <div class="progress-step" data-step="1"><span class="icon"><span class="step-dot"></span></span> Creating encryption keys</div>
+            <div class="progress-step" data-step="2"><span class="icon"><span class="step-dot"></span></span> Starting database engine</div>
+            <div class="progress-step" data-step="3"><span class="icon"><span class="step-dot"></span></span> Launching AI gateway</div>
+            <div class="progress-step" data-step="4"><span class="icon"><span class="step-dot"></span></span> Waiting for system readiness</div>
+            <div class="progress-step" data-step="5"><span class="icon"><span class="step-dot"></span></span> Configuring AI &amp; channels</div>
+            <div class="progress-step" data-step="6"><span class="icon"><span class="step-dot"></span></span> Switching network routes</div>
+            <div class="progress-step" data-step="7"><span class="icon"><span class="step-dot"></span></span> Finalizing deployment</div>
+        </div>
+
+        <div class="result success" id="result-success">
+            <div class="result-icon"></div>
+            <h2>Deployment Complete</h2>
+            <div class="deploy-status">
+                <div class="status-row"><span class="status-label">AI Engine</span><span class="status-badge ok" id="status-ai">Configured</span></div>
+                <div class="status-row"><span class="status-label">Database</span><span class="status-badge ok">Running</span></div>
+                <div class="status-row"><span class="status-label">Gateway</span><span class="status-badge ok">Online</span></div>
+                <div class="status-row"><span class="status-label">Chat Channels</span><span class="status-badge pending">Setup in Dashboard</span></div>
+            </div>
+            <div class="deploy-actions">
+                <a id="dashboard-link" href="#" target="_blank" class="action-btn primary">Open Dashboard</a>
+                <a id="channels-link" href="#" target="_blank" class="action-btn secondary">Configure Channels</a>
+            </div>
+            <p class="deploy-hint">WhatsApp: Open Dashboard → Channels → WhatsApp → Show QR → Scan with your phone</p>
+        </div>
+        <div class="result error" id="result-error">
+            <div class="result-icon">!</div>
+            <h2>Deployment Failed</h2>
+            <p id="error-detail"></p>
+        </div>
+    </div>
+    <div class="footer">Powered by Woowtech Smart Space Solution</div>
+</div>
+
+<script>
+const form = document.getElementById('setup-form');
+const btn = document.getElementById('submit-btn');
+const progressSection = document.getElementById('progress-section');
+const steps = document.querySelectorAll('.progress-step');
+let pollTimer = null;
+
+const stepLabels = {};
+steps.forEach(el => { stepLabels[el.dataset.step] = el.textContent.trim(); });
+
+// AI Provider dynamic fields
+const aiProvider = document.getElementById('ai_provider');
+const aiKeyField = document.getElementById('field-ai-key');
+const aiModelSelectField = document.getElementById('field-ai-model-select');
+const aiModelTextField = document.getElementById('field-ai-model-text');
+const aiKeyLabel = document.getElementById('ai-key-label');
+const aiKeyHint = document.getElementById('ai-key-hint');
+const aiKeyInput = document.getElementById('ai_api_key');
+const aiModelSelect = document.getElementById('ai_model_select');
+const aiModelTextInput = document.getElementById('ai_model_text');
+
+const aiConfig = {
+    openai:    { label: 'OpenAI API Key', hint: 'Starts with sk-...', placeholder: 'sk-proj-...' },
+    anthropic: { label: 'Anthropic API Key', hint: 'Starts with sk-ant-...', placeholder: 'sk-ant-api03-...' },
+    google:    { label: 'Gemini API Key', hint: 'Google AI Studio key', placeholder: 'AIzaSy...' },
+    minimax:   { label: 'MiniMax API Key', hint: 'MiniMax platform key', placeholder: 'Enter MiniMax API key' },
+    deepseek:  { label: 'DeepSeek API Key', hint: 'DeepSeek platform key', placeholder: 'sk-...' },
+    qwen:      { label: 'Qwen API Key', hint: 'Alibaba DashScope key', placeholder: 'sk-...' },
+    ollama:    { label: 'Ollama Host', hint: 'Default: http://localhost:11434', placeholder: 'http://localhost:11434' },
+};
+
+const aiModels = {
+    openai:    ['gpt-4o', 'gpt-4o-mini', 'o1', 'o1-mini', 'gpt-4-turbo'],
+    anthropic: ['claude-sonnet-4-20250514', 'claude-opus-4-20250514', 'claude-haiku-4-5-20251001'],
+    google:    ['gemini-2.0-flash', 'gemini-2.5-pro'],
+    minimax:   ['MiniMax-M2.5', 'MiniMax-M2.1'],
+    deepseek:  ['deepseek-chat', 'deepseek-reasoner'],
+    qwen:      ['qwen-max', 'qwen-plus', 'qwen-turbo'],
+};
+
+function populateModelDropdown(provider) {
+    const models = aiModels[provider] || [];
+    aiModelSelect.innerHTML = '<option value="">-- Select Model --</option>';
+    models.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m;
+        opt.textContent = m;
+        aiModelSelect.appendChild(opt);
+    });
+}
+
+aiProvider.addEventListener('change', () => {
+    const val = aiProvider.value;
+    const cfg = aiConfig[val];
+    if (cfg) {
+        aiKeyField.classList.add('visible');
+        aiKeyLabel.textContent = cfg.label;
+        aiKeyHint.textContent = cfg.hint;
+        aiKeyInput.placeholder = cfg.placeholder;
+
+        if (val === 'ollama') {
+            // Ollama: show free-text model input, hide dropdown
+            aiModelSelectField.classList.remove('visible');
+            aiModelTextField.classList.add('visible');
+            aiModelSelect.name = '';
+            aiModelTextInput.name = 'ai_model';
+        } else {
+            // Cloud providers: show dropdown, hide text input
+            aiModelTextField.classList.remove('visible');
+            aiModelSelectField.classList.add('visible');
+            aiModelSelect.name = 'ai_model';
+            aiModelTextInput.name = '';
+            populateModelDropdown(val);
+        }
+    } else {
+        aiKeyField.classList.remove('visible');
+        aiModelSelectField.classList.remove('visible');
+        aiModelTextField.classList.remove('visible');
+        aiModelSelect.name = 'ai_model';
+        aiModelTextInput.name = '';
+    }
+});
+
+// Chat Platform: no dynamic fields needed, info box is static
+
+// Progress
+function updateSteps(currentStep, done, success, stepLabel) {
+    steps.forEach(el => {
+        const s = parseInt(el.dataset.step);
+        const icon = el.querySelector('.icon');
+        const textNode = el.childNodes[el.childNodes.length - 1];
+        el.classList.remove('active', 'done');
+        if (s < currentStep) {
+            el.classList.add('done');
+            icon.innerHTML = '<span class="check-circle"></span>';
+            textNode.textContent = ' ' + stepLabels[s];
+        } else if (s === currentStep && !done) {
+            el.classList.add('active');
+            icon.innerHTML = '<span class="spinner-inline"></span>';
+            textNode.textContent = ' ' + (stepLabel || stepLabels[s]);
+        } else if (s === currentStep && done && success) {
+            el.classList.add('done');
+            icon.innerHTML = '<span class="check-circle"></span>';
+            textNode.textContent = ' ' + stepLabels[s];
+        } else {
+            icon.innerHTML = '<span class="step-dot"></span>';
+            textNode.textContent = ' ' + stepLabels[s];
+        }
+    });
+}
+
+async function pollStatus() {
+    try {
+        const resp = await fetch('/setup/status');
+        const data = await resp.json();
+        updateSteps(data.step, data.done, data.success, data.step_label);
+        if (data.done) {
+            clearInterval(pollTimer);
+            if (data.success) {
+                progressSection.style.display = 'none';
+                if (data.message) {
+                    document.getElementById('dashboard-link').href = data.message;
+                    // Channels link = same base URL without token fragment
+                    const baseUrl = data.message.split('#')[0];
+                    document.getElementById('channels-link').href = baseUrl + '#channels';
+                    autoRedirectWhenReady(data.message);
+                }
+                document.getElementById('result-success').style.display = 'block';
+            } else {
+                progressSection.style.display = 'none';
+                document.getElementById('error-detail').textContent = data.error;
+                document.getElementById('result-error').style.display = 'block';
+            }
+        }
+    } catch (e) { /* keep polling */ }
+}
+
+function autoRedirectWhenReady(targetUrl) {
+    const baseUrl = targetUrl.split('#')[0];
+    let attempts = 0;
+    const maxAttempts = 20;
+    const redirectInfo = document.createElement('div');
+    redirectInfo.style.cssText = 'text-align:center;margin-top:16px;color:#4ade80;font-size:14px;';
+    redirectInfo.textContent = '正在等待系統就緒，準備自動跳轉...';
+    document.getElementById('result-success').appendChild(redirectInfo);
+
+    const timer = setInterval(async () => {
+        attempts++;
+        try {
+            const res = await fetch(baseUrl, { mode: 'no-cors', cache: 'no-store' });
+            clearInterval(timer);
+            redirectInfo.textContent = '系統就緒，正在跳轉...';
+            setTimeout(() => { window.location.href = targetUrl; }, 1500);
+        } catch (e) {
+            if (attempts >= maxAttempts) {
+                clearInterval(timer);
+                redirectInfo.innerHTML = '自動跳轉逾時。<a href="' + targetUrl + '" style="color:#60a5fa;text-decoration:underline;">點擊此處手動開啟</a>';
+            } else {
+                redirectInfo.textContent = '正在等待系統就緒 (' + attempts + '/' + maxAttempts + ')...';
+            }
+        }
+    }, 3000);
+}
+
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    btn.disabled = true;
+    const formData = new FormData(form);
+
+    try {
+        const resp = await fetch('/setup', { method: 'POST', body: formData });
+        const data = await resp.json();
+        if (!data.success && !resp.ok) {
+            alert(data.error || 'Setup failed to start.');
+            btn.disabled = false;
+            return;
+        }
+        form.style.display = 'none';
+        progressSection.style.display = 'block';
+        pollTimer = setInterval(pollStatus, 2000);
+        pollStatus();
+    } catch (err) {
+        alert('Network error: ' + err.message);
+        btn.disabled = false;
+    }
+});
+</script>
+</body>
+</html>

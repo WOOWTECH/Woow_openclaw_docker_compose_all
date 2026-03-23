@@ -41,6 +41,10 @@ AI_ENV_MAP = {
     "openai": "OPENAI_API_KEY",
     "anthropic": "ANTHROPIC_API_KEY",
     "google": "GEMINI_API_KEY",
+    "minimax": "MINIMAX_API_KEY",
+    "deepseek": "DEEPSEEK_API_KEY",
+    "qwen": "QWEN_API_KEY",
+    "openrouter": "OPENROUTER_API_KEY",
     "ollama": "OLLAMA_HOST",
 }
 
@@ -49,6 +53,10 @@ AI_MODEL_MAP = {
     "openai": "openai/gpt-4o",
     "anthropic": "anthropic/claude-sonnet-4-20250514",
     "google": "google/gemini-2.0-flash",
+    "minimax": "minimax/MiniMax-M2.5",
+    "deepseek": "deepseek/deepseek-chat",
+    "qwen": "qwen/qwen-max",
+    "openrouter": "openrouter/auto",
     "ollama": "ollama/llama3",
 }
 
@@ -57,13 +65,16 @@ AI_AUTH_KEY = {
     "openai": "openai",
     "anthropic": "anthropic",
     "google": "google",
+    "minimax": "minimax",
+    "deepseek": "deepseek",
+    "qwen": "qwen",
+    "openrouter": "openrouter",
 }
 
 # Chat platform → env var / channel name
 CHAT_ENV_MAP = {
     "telegram": ("TELEGRAM_BOT_TOKEN", "telegram"),
     "discord": ("DISCORD_BOT_TOKEN", "discord"),
-    "line": ("LINE_CHANNEL_TOKEN", "line"),
     "slack": ("SLACK_BOT_TOKEN", "slack"),
     "whatsapp": ("WHATSAPP_ENABLED", "whatsapp"),
 }
@@ -156,11 +167,20 @@ def configure_gateway(ai_provider, ai_api_key, ai_model):
             log.warning(f"Exec failed [{cmd[:40]}]: {e}")
             return ""
 
-    # Write auth-profiles.json with API key (critical for AI to work)
+    # Write auth-profiles.json with API key (v1 format, critical for AI to work)
     if ai_provider and ai_api_key:
         auth_key = AI_AUTH_KEY.get(ai_provider)
         if auth_key:
-            auth_json = json.dumps({auth_key: {"apiKey": ai_api_key}})
+            auth_json = json.dumps({
+                "version": 1,
+                "profiles": {
+                    auth_key: {
+                        "type": "api_key",
+                        "key": ai_api_key,
+                        "provider": auth_key,
+                    }
+                }
+            })
             exec_cmd(
                 f'mkdir -p /home/node/.openclaw/agents/main/agent && '
                 f'echo \'{auth_json}\' > /home/node/.openclaw/agents/main/agent/auth-profiles.json'

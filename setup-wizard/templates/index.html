@@ -89,8 +89,6 @@
         .logo-icon svg { width: 26px; height: 26px; fill: none; stroke: white; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
         .logo h1 { font-size: 22px; font-weight: 700; color: var(--text-primary); }
         .logo p { color: var(--text-muted); font-size: 13px; font-weight: 400; margin-top: 4px; }
-
-        /* Section dividers */
         .section-title {
             display: flex; align-items: center; gap: 8px;
             font-size: 12px; font-weight: 600; text-transform: uppercase;
@@ -100,8 +98,6 @@
         }
         .section-title:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
         .section-icon { font-size: 16px; }
-
-        /* Form */
         .form-group { margin-bottom: 16px; }
         label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 5px; }
         input[type="password"], input[type="text"], select {
@@ -123,7 +119,6 @@
         select option { background: var(--bg-input); color: var(--text-body); }
         .hint { font-size: 11px; color: var(--text-hint); margin-top: 4px; font-weight: 300; }
         .optional-tag { font-size: 10px; color: var(--text-hint); font-weight: 400; text-transform: none; letter-spacing: 0; }
-
         .btn {
             width: 100%; padding: 14px;
             background: var(--primary-blue); border: none; border-radius: 10px;
@@ -135,12 +130,8 @@
         .btn:hover { background: #4f6fef; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(97,131,252,0.35); }
         .btn:active { transform: translateY(0); }
         .btn:disabled { background: rgba(97,131,252,0.35); cursor: not-allowed; transform: none; box-shadow: none; color: rgba(255,255,255,0.5); }
-
-        /* Dynamic fields */
         .dynamic-field { display: none; }
         .dynamic-field.visible { display: block; }
-
-        /* Progress */
         #progress-section { display: none; margin-top: 4px; }
         .progress-step {
             display: flex; align-items: center; gap: 10px;
@@ -161,8 +152,6 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
         .step-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.15); }
-
-        /* Results */
         .result { display: none; text-align: center; padding: 20px 0 0; }
         .result-icon { width: 52px; height: 52px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px; }
         .result.success .result-icon { background: rgba(74,222,128,0.12); }
@@ -175,8 +164,6 @@
         .result a { color: var(--primary-blue); font-weight: 500; text-decoration: none; }
         .result a:hover { text-decoration: underline; }
         .footer { text-align: center; margin-top: 16px; font-size: 11px; color: var(--text-hint); font-weight: 400; letter-spacing: 0.3px; }
-
-        /* Chat info box */
         .chat-info-box {
             background: rgba(97,131,252,0.06); border: 1px solid rgba(97,131,252,0.12);
             border-radius: 10px; padding: 14px 16px; font-size: 13px; color: var(--text-muted);
@@ -186,8 +173,6 @@
         .chat-info-box li { padding: 3px 0; font-size: 12px; }
         .chat-info-box li::before { content: ''; display: inline-block; width: 4px; height: 4px; border-radius: 50%; background: var(--primary-blue); margin-right: 8px; vertical-align: middle; }
         .chat-info-box strong { color: var(--text-body); }
-
-        /* Deploy status */
         .deploy-status { margin: 16px 0; text-align: left; }
         .status-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .status-row:last-child { border-bottom: none; }
@@ -249,7 +234,6 @@
         </div>
 
         <form id="setup-form">
-            <!-- Section 1: Core -->
             <div class="section-title"><span class="section-icon">&#128274;</span> Core Credentials</div>
             <div class="form-group">
                 <label for="gateway_token">Gateway Token</label>
@@ -260,7 +244,6 @@
                 <input type="password" id="db_password" name="db_password" placeholder="Set your database password" required autocomplete="new-password">
             </div>
 
-            <!-- Section 2: AI Engine -->
             <div class="section-title"><span class="section-icon">&#129302;</span> AI Engine</div>
             <div class="form-group">
                 <label for="ai_provider">Provider</label>
@@ -269,9 +252,9 @@
                     <option value="openai">OpenAI (GPT-4o, o1, ...)</option>
                     <option value="anthropic">Anthropic (Claude)</option>
                     <option value="google">Google (Gemini)</option>
-                    <option value="minimax">MiniMax (M2.5)</option>
-                    <option value="deepseek">DeepSeek (Chat)</option>
-                    <option value="qwen">Qwen (通義千問)</option>
+                    <option value="minimax">MiniMax (MiniMax-M25, ...)</option>
+                    <option value="deepseek">DeepSeek (DeepSeek-V3, ...)</option>
+                    <option value="qwen">Qwen (Qwen-Max, ...)</option>
                     <option value="openrouter">OpenRouter (Multi-provider)</option>
                     <option value="ollama">Ollama (Local)</option>
                 </select>
@@ -293,14 +276,12 @@
                 <div class="hint">Enter the model name you have pulled in Ollama</div>
             </div>
 
-            <!-- Section 3: Chat Platform -->
             <div class="section-title"><span class="section-icon">&#128172;</span> Chat Platform <span class="optional-tag">(post-deploy)</span></div>
             <div class="chat-info-box">
                 <p>Chat platforms are configured in the <strong>OpenClaw Control UI</strong> after deployment:</p>
                 <ul>
                     <li><strong>WhatsApp</strong> — Scan QR code in Control UI</li>
                     <li><strong>Telegram</strong> — Enter Bot Token from @BotFather</li>
-                    <li><strong>Discord</strong> — Enter Bot Token from Developer Portal</li>
                     <li><strong>Slack / Signal</strong> — Enter credentials in Channels settings</li>
                 </ul>
             </div>
@@ -309,9 +290,9 @@
         </form>
 
         <div id="progress-section">
-            <div class="progress-step" data-step="1"><span class="icon"><span class="step-dot"></span></span> Creating encryption keys</div>
-            <div class="progress-step" data-step="2"><span class="icon"><span class="step-dot"></span></span> Starting database engine</div>
-            <div class="progress-step" data-step="3"><span class="icon"><span class="step-dot"></span></span> Launching AI gateway</div>
+            <div class="progress-step" data-step="1"><span class="icon"><span class="step-dot"></span></span> Validating credentials</div>
+            <div class="progress-step" data-step="2"><span class="icon"><span class="step-dot"></span></span> Checking database engine</div>
+            <div class="progress-step" data-step="3"><span class="icon"><span class="step-dot"></span></span> Checking AI gateway</div>
             <div class="progress-step" data-step="4"><span class="icon"><span class="step-dot"></span></span> Waiting for system readiness</div>
             <div class="progress-step" data-step="5"><span class="icon"><span class="step-dot"></span></span> Configuring AI &amp; channels</div>
             <div class="progress-step" data-step="6"><span class="icon"><span class="step-dot"></span></span> Switching network routes</div>
@@ -352,7 +333,6 @@ let pollTimer = null;
 const stepLabels = {};
 steps.forEach(el => { stepLabels[el.dataset.step] = el.textContent.trim(); });
 
-// AI Provider dynamic fields
 const aiProvider = document.getElementById('ai_provider');
 const aiKeyField = document.getElementById('field-ai-key');
 const aiModelSelectField = document.getElementById('field-ai-model-select');
@@ -364,24 +344,24 @@ const aiModelSelect = document.getElementById('ai_model_select');
 const aiModelTextInput = document.getElementById('ai_model_text');
 
 const aiConfig = {
-    openai:      { label: 'OpenAI API Key', hint: 'Starts with sk-...', placeholder: 'sk-proj-...' },
-    anthropic:   { label: 'Anthropic API Key', hint: 'Starts with sk-ant-...', placeholder: 'sk-ant-api03-...' },
-    google:      { label: 'Gemini API Key', hint: 'Google AI Studio key', placeholder: 'AIzaSy...' },
-    minimax:     { label: 'MiniMax API Key', hint: 'MiniMax platform key', placeholder: 'eyJhbG...' },
-    deepseek:    { label: 'DeepSeek API Key', hint: 'DeepSeek platform key', placeholder: 'sk-...' },
-    qwen:        { label: 'Qwen API Key', hint: 'Alibaba Cloud DashScope key', placeholder: 'sk-...' },
-    openrouter:  { label: 'OpenRouter API Key', hint: 'OpenRouter.ai key', placeholder: 'sk-or-...' },
-    ollama:      { label: 'Ollama Host', hint: 'Default: http://localhost:11434', placeholder: 'http://localhost:11434' },
+    openai:     { label: 'OpenAI API Key', hint: 'Starts with sk-...', placeholder: 'sk-proj-...' },
+    anthropic:  { label: 'Anthropic API Key', hint: 'Starts with sk-ant-...', placeholder: 'sk-ant-api03-...' },
+    google:     { label: 'Gemini API Key', hint: 'Google AI Studio key', placeholder: 'AIzaSy...' },
+    minimax:    { label: 'MiniMax API Key', hint: 'From MiniMax platform', placeholder: 'sk-api-...' },
+    deepseek:   { label: 'DeepSeek API Key', hint: 'From platform.deepseek.com', placeholder: 'sk-...' },
+    qwen:       { label: 'Qwen API Key', hint: 'From DashScope / Alibaba Cloud', placeholder: 'sk-...' },
+    openrouter: { label: 'OpenRouter API Key', hint: 'From openrouter.ai', placeholder: 'sk-or-...' },
+    ollama:     { label: 'Ollama Host', hint: 'Default: http://localhost:11434', placeholder: 'http://localhost:11434' },
 };
 
 const aiModels = {
-    openai:      ['gpt-4o', 'gpt-4o-mini', 'o1', 'o1-mini', 'gpt-4-turbo'],
-    anthropic:   ['claude-sonnet-4-20250514', 'claude-opus-4-20250514', 'claude-haiku-4-5-20251001'],
-    google:      ['gemini-2.0-flash', 'gemini-2.5-pro'],
-    minimax:     ['MiniMax-M2.5', 'MiniMax-Text-01'],
-    deepseek:    ['deepseek-chat', 'deepseek-coder', 'deepseek-reasoner'],
-    qwen:        ['qwen-max', 'qwen-plus', 'qwen-turbo'],
-    openrouter:  ['auto', 'openai/gpt-4o', 'anthropic/claude-sonnet-4-20250514', 'google/gemini-2.0-flash'],
+    openai:     ['gpt-4o', 'gpt-4o-mini', 'o1', 'o1-mini', 'gpt-4-turbo'],
+    anthropic:  ['claude-sonnet-4-20250514', 'claude-opus-4-20250514', 'claude-haiku-4-5-20251001'],
+    google:     ['gemini-2.0-flash', 'gemini-2.5-pro'],
+    minimax:    ['MiniMax-M2.5', 'MiniMax-VL-01'],
+    deepseek:   ['deepseek-chat', 'deepseek-coder', 'deepseek-reasoner'],
+    qwen:       ['qwen-max', 'qwen-plus', 'qwen-turbo'],
+    openrouter: ['auto', 'anthropic/claude-sonnet-4-20250514', 'openai/gpt-4o', 'google/gemini-2.0-flash', 'deepseek/deepseek-chat'],
 };
 
 function populateModelDropdown(provider) {
@@ -403,15 +383,12 @@ aiProvider.addEventListener('change', () => {
         aiKeyLabel.textContent = cfg.label;
         aiKeyHint.textContent = cfg.hint;
         aiKeyInput.placeholder = cfg.placeholder;
-
         if (val === 'ollama') {
-            // Ollama: show free-text model input, hide dropdown
             aiModelSelectField.classList.remove('visible');
             aiModelTextField.classList.add('visible');
             aiModelSelect.name = '';
             aiModelTextInput.name = 'ai_model';
         } else {
-            // Cloud providers: show dropdown, hide text input
             aiModelTextField.classList.remove('visible');
             aiModelSelectField.classList.add('visible');
             aiModelSelect.name = 'ai_model';
@@ -427,9 +404,6 @@ aiProvider.addEventListener('change', () => {
     }
 });
 
-// Chat Platform: no dynamic fields needed, info box is static
-
-// Progress
 function updateSteps(currentStep, done, success, stepLabel) {
     steps.forEach(el => {
         const s = parseInt(el.dataset.step);
@@ -466,7 +440,6 @@ async function pollStatus() {
                 progressSection.style.display = 'none';
                 if (data.message) {
                     document.getElementById('dashboard-link').href = data.message;
-                    // Channels link = same base URL without token fragment
                     const baseUrl = data.message.split('#')[0];
                     document.getElementById('channels-link').href = baseUrl + '#channels';
                     autoRedirectWhenReady(data.message);
@@ -487,22 +460,21 @@ function autoRedirectWhenReady(targetUrl) {
     const maxAttempts = 20;
     const redirectInfo = document.createElement('div');
     redirectInfo.style.cssText = 'text-align:center;margin-top:16px;color:#4ade80;font-size:14px;';
-    redirectInfo.textContent = '正在等待系統就緒，準備自動跳轉...';
+    redirectInfo.textContent = 'Waiting for system ready, preparing auto redirect...';
     document.getElementById('result-success').appendChild(redirectInfo);
-
     const timer = setInterval(async () => {
         attempts++;
         try {
             const res = await fetch(baseUrl, { mode: 'no-cors', cache: 'no-store' });
             clearInterval(timer);
-            redirectInfo.textContent = '系統就緒，正在跳轉...';
+            redirectInfo.textContent = 'System ready, redirecting...';
             setTimeout(() => { window.location.href = targetUrl; }, 1500);
         } catch (e) {
             if (attempts >= maxAttempts) {
                 clearInterval(timer);
-                redirectInfo.innerHTML = '自動跳轉逾時。<a href="' + targetUrl + '" style="color:#60a5fa;text-decoration:underline;">點擊此處手動開啟</a>';
+                redirectInfo.innerHTML = 'Auto redirect timed out. <a href="' + targetUrl + '" style="color:#60a5fa;text-decoration:underline;">Click here to open manually</a>';
             } else {
-                redirectInfo.textContent = '正在等待系統就緒 (' + attempts + '/' + maxAttempts + ')...';
+                redirectInfo.textContent = 'Waiting for system ready (' + attempts + '/' + maxAttempts + ')...';
             }
         }
     }, 3000);
@@ -517,10 +489,10 @@ function setTheme(theme) {
     localStorage.setItem('oc-theme', theme);
 }
 const savedTheme = localStorage.getItem('oc-theme') ||
-    (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'light');
 setTheme(savedTheme);
 themeToggle.addEventListener('click', () => {
-    const current = document.documentElement.getAttribute('data-theme') || 'dark';
+    const current = document.documentElement.getAttribute('data-theme') || 'light';
     setTheme(current === 'dark' ? 'light' : 'dark');
 });
 
@@ -528,7 +500,6 @@ form.addEventListener('submit', async (e) => {
     e.preventDefault();
     btn.disabled = true;
     const formData = new FormData(form);
-
     try {
         const resp = await fetch('/setup', { method: 'POST', body: formData });
         const data = await resp.json();

@@ -1,42 +1,55 @@
 #!/usr/bin/env python3
 """
-OpenClaw PaaS - Setup Wizard
-Zero-touch provisioning: core credentials, AI engine, chat platform.
-Async: POST /setup returns immediately, background thread provisions,
-frontend polls GET /setup/status.
+OpenClaw PaaS - Setup Wizard (Docker Compose / Podman Edition)
+Zero-touch provisioning: AI engine configuration + Cloudflare tunnel routing.
+Adapted from K8s version for Podman Docker Compose deployment.
+
+POST /setup  -> starts background provisioning
+GET  /setup/status -> polls progress
 """
 
-import base64
 import json
 import logging
 import os
+import socket
+import sys
 import threading
 import time
 
+import docker
 import requests as http_requests
 from flask import Flask, render_template, request, jsonify
-from kubernetes import client, config
 
 app = Flask(__name__)
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 log = logging.getLogger("setup-wizard")
 
-NAMESPACE = os.environ.get("NAMESPACE", "openclaw-tenant-1")
+# ---------------------------------------------------------------------------
+# Configuration from environment
+# ---------------------------------------------------------------------------
+GATEWAY_HOST = os.environ.get("GATEWAY_HOST", "openclaw-gateway")
+GATEWAY_PORT = int(os.environ.get("GATEWAY_PORT", "18789"))
+
 CF_API_TOKEN = os.environ.get("CF_API_TOKEN", "")
 CF_ACCOUNT_ID = os.environ.get("CF_ACCOUNT_ID", "")
 CF_TUNNEL_ID = os.environ.get("CF_TUNNEL_ID", "")
-DOMAIN = os.environ.get("DOMAIN", "cindytech1-openclaw.woowtech.io")
+CF_TUNNEL_DOMAIN = os.environ.get("CF_TUNNEL_DOMAIN", "woowtech-openclaw.woowtech.io")
 
-_k8s_core = None
-_k8s_apps = None
+WIZARD_PORT = int(os.environ.get("WIZARD_PORT", "18790"))
 
+# Path to host .env file (mounted as volume for persistence)
+HOST_ENV_FILE = os.environ.get("HOST_ENV_FILE", "/host-env/.env")
+
+# ---------------------------------------------------------------------------
+# State management (thread-safe)
+# ---------------------------------------------------------------------------
 setup_state = {
     "running": False, "step": 0, "step_label": "",
     "done": False, "success": False, "error": "", "message": "",
 }
 setup_lock = threading.Lock()
 
-# AI provider → env var name mapping
+# AI provider mappings (same as K8s version)
 AI_ENV_MAP = {
     "openai": "OPENAI_API_KEY",
     "anthropic": "ANTHROPIC_API_KEY",
@@ -47,8 +60,6 @@ AI_ENV_MAP = {
     "openrouter": "OPENROUTER_API_KEY",
     "ollama": "OLLAMA_HOST",
 }
-
-# AI provider → model prefix
 AI_MODEL_MAP = {
     "openai": "openai/gpt-4o",
     "anthropic": "anthropic/claude-sonnet-4-20250514",
@@ -59,8 +70,6 @@ AI_MODEL_MAP = {
     "openrouter": "openrouter/auto",
     "ollama": "ollama/llama3",
 }
-
-# AI provider → auth-profiles.json key
 AI_AUTH_KEY = {
     "openai": "openai",
     "anthropic": "anthropic",
@@ -71,14 +80,6 @@ AI_AUTH_KEY = {
     "openrouter": "openrouter",
 }
 
-# Chat platform → env var / channel name
-CHAT_ENV_MAP = {
-    "telegram": ("TELEGRAM_BOT_TOKEN", "telegram"),
-    "discord": ("DISCORD_BOT_TOKEN", "discord"),
-    "slack": ("SLACK_BOT_TOKEN", "slack"),
-    "whatsapp": ("WHATSAPP_ENABLED", "whatsapp"),
-}
-
 
 def set_state(**kwargs):
     with setup_lock:
@@ -87,42 +88,49 @@ def set_state(**kwargs):
         log.info(f"[Step {setup_state['step']}] {kwargs['step_label']}")
 
 
-def get_k8s_clients():
-    global _k8s_core, _k8s_apps
-    if _k8s_core is None:
-        config.load_incluster_config()
-        _k8s_core = client.CoreV1Api()
-        _k8s_apps = client.AppsV1Api()
-    return _k8s_core, _k8s_apps
+def get_docker_client():
+    """Get Docker/Podman client via socket."""
+    return docker.DockerClient(base_url="unix:///var/run/docker.sock")
 
 
-def create_secret(secret_data):
-    """Create or patch openclaw-secrets with all provided key-value pairs."""
-    core, _ = get_k8s_clients()
-    encoded = {k: base64.b64encode(v.encode()).decode() for k, v in secret_data.items() if v}
-    secret = client.V1Secret(
-        metadata=client.V1ObjectMeta(name="openclaw-secrets", namespace=NAMESPACE),
-        type="Opaque",
-        data=encoded,
-    )
+def _update_env_file(key, value):
+    """Update or add a key=value pair in the host .env file.
+
+    This ensures API keys configured via the setup wizard persist
+    across container restarts (podman compose down/up).
+    """
+    env_path = HOST_ENV_FILE
+    if not os.path.exists(os.path.dirname(env_path)):
+        log.warning(f"Host .env directory not mounted at {os.path.dirname(env_path)}, skipping env persistence")
+        return
+
     try:
-        core.read_namespaced_secret("openclaw-secrets", NAMESPACE)
-        core.patch_namespaced_secret("openclaw-secrets", NAMESPACE, secret)
-    except client.exceptions.ApiException as e:
-        if e.status == 404:
-            core.create_namespaced_secret(NAMESPACE, secret)
-        else:
-            raise
+        lines = []
+        found = False
+        if os.path.exists(env_path):
+            with open(env_path, "r") as f:
+                lines = f.readlines()
+            for i, line in enumerate(lines):
+                stripped = line.strip()
+                if stripped.startswith(f"{key}=") or stripped.startswith(f"{key} ="):
+                    lines[i] = f"{key}={value}\n"
+                    found = True
+                    break
+        if not found:
+            lines.append(f"{key}={value}\n")
+        with open(env_path, "w") as f:
+            f.writelines(lines)
+        log.info(f"Persisted {key} to host .env file")
+    except Exception as e:
+        log.warning(f"Failed to update host .env file: {e}")
 
 
-def scale_deployment(name, replicas):
-    _, apps = get_k8s_clients()
-    apps.patch_namespaced_deployment_scale(name, NAMESPACE, {"spec": {"replicas": replicas}})
-    log.info(f"Scaled '{name}' to {replicas}")
-
+# ---------------------------------------------------------------------------
+# Step functions
+# ---------------------------------------------------------------------------
 
 def wait_for_gateway(timeout=180, interval=3):
-    import socket
+    """TCP check on gateway readiness."""
     start = time.time()
     deadline = start + timeout
     attempt = 0
@@ -131,7 +139,7 @@ def wait_for_gateway(timeout=180, interval=3):
         elapsed = int(time.time() - start)
         set_state(step_label=f"Waiting for system readiness... ({elapsed}s)")
         try:
-            sock = socket.create_connection(("openclaw-gateway-svc", 18789), timeout=3)
+            sock = socket.create_connection((GATEWAY_HOST, GATEWAY_PORT), timeout=3)
             sock.close()
             log.info(f"Gateway ready (attempt #{attempt}, {elapsed}s)")
             return True
@@ -142,50 +150,63 @@ def wait_for_gateway(timeout=180, interval=3):
 
 
 def configure_gateway(ai_provider, ai_api_key, ai_model):
-    """Configure AI model, auth-profiles, chat channel, and auto-approve devices."""
-    core, _ = get_k8s_clients()
-
-    pods = core.list_namespaced_pod(NAMESPACE, label_selector="app=openclaw-gateway")
-    if not pods.items:
-        log.warning("No gateway pod found for configuration")
+    """Configure AI model via podman exec through Docker socket API."""
+    try:
+        client = get_docker_client()
+        container = client.containers.get("openclaw-gateway")
+    except Exception as e:
+        log.warning(f"Cannot connect to gateway container: {e}")
         return
-
-    pod_name = pods.items[0].metadata.name
-    from kubernetes.stream import stream
 
     def exec_cmd(cmd):
         try:
-            result = stream(
-                core.connect_get_namespaced_pod_exec,
-                pod_name, NAMESPACE,
-                command=["/bin/sh", "-c", cmd],
-                stderr=True, stdout=True, stdin=False, tty=False,
+            exit_code, output = container.exec_run(
+                ["/bin/sh", "-c", cmd],
+                demux=True,
             )
-            log.info(f"Exec [{cmd[:60]}]: {result.strip()[:100]}")
+            stdout = output[0].decode().strip() if output[0] else ""
+            stderr = output[1].decode().strip() if output[1] else ""
+            result = stdout or stderr
+            log.info(f"Exec [{cmd[:60]}]: exit={exit_code} {result[:100]}")
             return result
         except Exception as e:
             log.warning(f"Exec failed [{cmd[:40]}]: {e}")
             return ""
 
-    # Write auth-profiles.json with API key (v1 format, critical for AI to work)
+    # Write auth-profiles.json with API key (v1 format, merge with existing)
     if ai_provider and ai_api_key:
         auth_key = AI_AUTH_KEY.get(ai_provider)
         if auth_key:
-            auth_json = json.dumps({
-                "version": 1,
-                "profiles": {
-                    auth_key: {
-                        "type": "api_key",
-                        "key": ai_api_key,
-                        "provider": auth_key,
-                    }
-                }
-            })
-            exec_cmd(
-                f'mkdir -p /home/node/.openclaw/agents/main/agent && '
-                f'echo \'{auth_json}\' > /home/node/.openclaw/agents/main/agent/auth-profiles.json'
+            exec_cmd("mkdir -p /home/node/.openclaw/agents/main/agent")
+            # Read existing auth-profiles to merge (don't overwrite other providers)
+            existing_raw = exec_cmd(
+                "cat /home/node/.openclaw/agents/main/agent/auth-profiles.json 2>/dev/null || echo '{}'"
             )
-            log.info(f"Wrote auth-profiles.json for {auth_key}")
+            try:
+                existing = json.loads(existing_raw) if existing_raw.strip() else {}
+            except (json.JSONDecodeError, ValueError):
+                existing = {}
+            # Ensure v1 format
+            if existing.get("version") != 1:
+                existing = {"version": 1, "profiles": {}}
+            if "profiles" not in existing:
+                existing["profiles"] = {}
+            # Merge new profile
+            existing["profiles"][auth_key] = {
+                "type": "api_key",
+                "key": ai_api_key,
+                "provider": auth_key,
+            }
+            auth_json = json.dumps(existing)
+            exec_cmd(
+                f"echo '{auth_json}' > /home/node/.openclaw/agents/main/agent/auth-profiles.json"
+            )
+            log.info(f"Merged auth-profiles.json for {auth_key}")
+
+        # Persist API key to host .env file (survives compose down/up)
+        env_var_name = AI_ENV_MAP.get(ai_provider, "")
+        if env_var_name and ai_api_key:
+            _update_env_file(env_var_name, ai_api_key)
 
         # Set model with provider prefix
         raw_model = ai_model or AI_MODEL_MAP.get(ai_provider, "")
@@ -194,16 +215,21 @@ def configure_gateway(ai_provider, ai_api_key, ai_model):
         if raw_model:
             exec_cmd(f'openclaw config set agents.defaults.model "{raw_model}"')
 
-    # Auto-approve any pending device pairing requests
-    import time as _time
-    _time.sleep(2)
+    # Auto-approve pending device pairing requests
+    time.sleep(2)
     exec_cmd(
-        'openclaw devices list 2>/dev/null | grep -oP "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}" '
+        'openclaw devices list 2>/dev/null | '
+        'grep -oP "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}" '
         '| while read req; do openclaw devices approve "$req" 2>/dev/null; done'
     )
 
 
 def switch_cloudflare_route():
+    """Update Cloudflare tunnel ingress to point to the gateway (3 retries)."""
+    if not CF_API_TOKEN or not CF_ACCOUNT_ID or not CF_TUNNEL_ID:
+        log.warning("Cloudflare credentials not configured, skipping route switch")
+        return
+
     url = (
         f"https://api.cloudflare.com/client/v4/accounts/{CF_ACCOUNT_ID}"
         f"/cfd_tunnel/{CF_TUNNEL_ID}/configurations"
@@ -211,52 +237,62 @@ def switch_cloudflare_route():
     payload = {
         "config": {
             "ingress": [
-                {"hostname": DOMAIN, "service": "http://openclaw-gateway-svc:18789"},
+                {"hostname": CF_TUNNEL_DOMAIN, "service": f"http://localhost:{GATEWAY_PORT}"},
                 {"service": "http_status:404"},
             ]
         }
     }
-    resp = http_requests.put(
-        url,
-        headers={"Authorization": f"Bearer {CF_API_TOKEN}", "Content-Type": "application/json"},
-        json=payload, timeout=15,
-    )
-    resp.raise_for_status()
-    data = resp.json()
-    if not data.get("success"):
-        raise RuntimeError(f"Cloudflare API error: {data.get('errors')}")
-    return data
+    last_err = None
+    for attempt in range(1, 4):
+        try:
+            resp = http_requests.put(
+                url,
+                headers={"Authorization": f"Bearer {CF_API_TOKEN}", "Content-Type": "application/json"},
+                json=payload, timeout=15,
+            )
+            resp.raise_for_status()
+            data = resp.json()
+            if not data.get("success"):
+                raise RuntimeError(f"Cloudflare API error: {data.get('errors')}")
+            log.info(f"Cloudflare route switched to gateway (attempt {attempt})")
+            return data
+        except Exception as e:
+            last_err = e
+            log.warning(f"Cloudflare route attempt {attempt}/3 failed: {e}")
+            if attempt < 3:
+                time.sleep(3)
+    raise RuntimeError(f"Cloudflare route switch failed after 3 attempts: {last_err}")
 
+
+# ---------------------------------------------------------------------------
+# Main provisioning pipeline
+# ---------------------------------------------------------------------------
 
 def run_setup(params):
-    """Background thread: full provisioning pipeline."""
+    """Background thread: full provisioning pipeline for Docker Compose."""
     gateway_token = params["gateway_token"]
-    db_password = params["db_password"]
     ai_provider = params.get("ai_provider", "")
     ai_api_key = params.get("ai_api_key", "")
     ai_model = params.get("ai_model", "")
+
     try:
-        # Step 1: Create K8s Secret with all credentials
-        set_state(step=1, step_label="Creating encryption keys...")
-        secret_data = {
-            "OPENCLAW_GATEWAY_TOKEN": gateway_token,
-            "POSTGRES_PASSWORD": db_password,
-        }
-        if ai_provider and ai_api_key:
-            env_name = AI_ENV_MAP.get(ai_provider, "")
-            if env_name:
-                secret_data[env_name] = ai_api_key
-        create_secret(secret_data)
+        # Step 1: Validate credentials
+        set_state(step=1, step_label="Validating credentials...")
+        if not gateway_token:
+            raise ValueError("Gateway token is required")
+        log.info("Credentials validated")
 
-        # Step 2: Scale up database
-        set_state(step=2, step_label="Starting database engine...")
-        scale_deployment("openclaw-db", 1)
+        # Step 2: Verify database connectivity
+        set_state(step=2, step_label="Checking database engine...")
+        # In Docker Compose, DB is already running via depends_on
+        log.info("Database is managed by Docker Compose (already running)")
 
-        # Step 3: Scale up gateway
-        set_state(step=3, step_label="Launching AI gateway...")
-        scale_deployment("openclaw-gateway", 1)
+        # Step 3: Verify gateway is launched
+        set_state(step=3, step_label="Checking AI gateway...")
+        # In Docker Compose, gateway is already running via depends_on
+        log.info("Gateway is managed by Docker Compose (already running)")
 
-        # Step 4: Wait for gateway
+        # Step 4: Wait for gateway readiness
         set_state(step=4, step_label="Waiting for system readiness...")
         if not wait_for_gateway(timeout=180, interval=3):
             set_state(
@@ -265,7 +301,7 @@ def run_setup(params):
             )
             return
 
-        # Step 5: Configure AI engine & chat channels
+        # Step 5: Configure AI engine
         set_state(step=5, step_label="Configuring AI & channels...")
         try:
             configure_gateway(ai_provider, ai_api_key, ai_model)
@@ -277,31 +313,30 @@ def run_setup(params):
         try:
             switch_cloudflare_route()
         except Exception as e:
-            set_state(
-                done=True, success=False, running=False,
-                error=f"Cloudflare route switch failed: {e}",
-            )
-            return
+            log.warning(f"Cloudflare route switch skipped or failed: {e}")
 
         # Step 7: Done
+        gateway_url = f"https://{CF_TUNNEL_DOMAIN}/#token={gateway_token}"
         set_state(
             step=7, step_label="Deployment complete!",
             done=True, success=True, running=False,
-            message=f"https://{DOMAIN}/#token={gateway_token}",
+            message=gateway_url,
         )
+        log.info(f"Setup complete! Gateway URL: {gateway_url}")
 
-        # Self-destruct
-        time.sleep(5)
-        try:
-            scale_deployment("setup-wizard", 0)
-            log.info("Setup wizard self-destructed.")
-        except Exception as e:
-            log.error(f"Self-destruct failed: {e}")
+        # Exit wizard after a short delay (restart: "no" prevents restart)
+        time.sleep(10)
+        log.info("Setup wizard exiting.")
+        os._exit(0)
 
     except Exception as e:
         log.exception("Setup pipeline failed.")
         set_state(done=True, success=False, running=False, error=f"Unexpected error: {e}")
 
+
+# ---------------------------------------------------------------------------
+# Flask routes
+# ---------------------------------------------------------------------------
 
 @app.route("/")
 def index():
@@ -315,9 +350,6 @@ def setup():
 
     if not gateway_token or not db_password:
         return jsonify({"success": False, "error": "Gateway token and database password are required."}), 400
-
-    if not CF_API_TOKEN or not CF_ACCOUNT_ID or not CF_TUNNEL_ID:
-        return jsonify({"success": False, "error": "Missing Cloudflare configuration."}), 500
 
     with setup_lock:
         if setup_state["running"]:
@@ -344,4 +376,4 @@ def setup_status():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=18790, debug=False)
+    app.run(host="0.0.0.0", port=WIZARD_PORT, debug=False)

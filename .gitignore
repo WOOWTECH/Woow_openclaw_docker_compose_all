@@ -1,29 +1,28 @@
-# Secrets
+# Environment files with secrets / 含敏感資訊的環境變數檔
 .env
-.env.old
-cf-config.json
-**/cf-config.json
 
-# Test secrets
-tests/pre-launch/config.env
-**/config.env
+# Data directories (bind mounts) / 資料目錄（掛載用）
+data/
 
-# Runtime data
-node_modules/
-test-results/
-package-lock.json
+# Backup files / 備份檔案
+*.tar.gz
+*.sql
+backups/
 
-# Planning files
-task_plan.md
-findings.md
-progress.md
-
-# OS files
+# OS generated files
 .DS_Store
 Thumbs.db
 
-# Playwright
-playwright-report/
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs / 日誌
+*.log
 
 # Python
 __pycache__/
+*.pyc
+*.pyo

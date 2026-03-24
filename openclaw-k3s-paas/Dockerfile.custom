@@ -2,10 +2,12 @@
 # Extends the official image with pre-installed skill CLI dependencies
 # so they survive pod recreation.
 #
-# Build: docker build -f Dockerfile.custom -t openclaw-custom .
+# IMPORTANT: Pinned to v2026.3.13 (sha256:a5a4c83b) — stable LINE support.
+# v2026.3.22+ has LINE plugin crash (Cannot redefine property: isSenderAllowed)
+#
+# Build: sudo buildah build -f Dockerfile.custom -t openclaw-custom:latest .
 
-ARG OPENCLAW_VERSION=latest
-FROM ghcr.io/openclaw/openclaw:${OPENCLAW_VERSION}
+FROM ghcr.io/openclaw/openclaw@sha256:a5a4c83b773aca85a8ba99cf155f09afa33946c0aa5cc6a9ccb6162738b5da02
 
 USER root
 
@@ -16,15 +18,22 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         curl git gnupg ca-certificates libasound2-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# ─── 2. npm global CLIs ──────────────────────────────────────────────
-RUN npm install -g \
+# ─── 2. npm CLIs (isolated prefix to avoid LINE plugin crash) ────────
+# CRITICAL: Do NOT use `npm install -g` — it overwrites system binaries
+# (acorn, semver, resolve) causing LINE extension isSenderAllowed crash.
+RUN mkdir -p /opt/openclaw-tools && \
+    npm install --prefix /opt/openclaw-tools \
         clawhub \
         mcporter \
         @steipete/oracle \
         @xdevplatform/xurl \
         @google/gemini-cli \
         @steipete/summarize \
-        @openai/codex
+        @openai/codex && \
+    for bin in clawhub mcporter oracle xurl gemini summarize codex; do \
+        [ -f /opt/openclaw-tools/node_modules/.bin/$bin ] && \
+        ln -sf /opt/openclaw-tools/node_modules/.bin/$bin /usr/local/bin/$bin; \
+    done; true
 
 # ─── 3. Install Go (not in base image) ────────────────────────────────
 ARG GO_VERSION=1.23.7

@@ -254,6 +254,13 @@ spec:
                 done
                 sleep 1
               done) &
+              # Load skill env vars from workspace .env (persisted on PVC)
+              if [ -f /home/node/.openclaw/workspace/.env ]; then
+                set -a
+                . /home/node/.openclaw/workspace/.env
+                set +a
+                echo '[init] Loaded skill env vars from workspace/.env'
+              fi
               exec openclaw gateway --bind lan --port 18789 --auth token --token "$OPENCLAW_GATEWAY_TOKEN" --allow-unconfigured
           ports:
             - containerPort: 18789

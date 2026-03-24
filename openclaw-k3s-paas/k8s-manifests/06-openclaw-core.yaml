@@ -219,7 +219,7 @@ spec:
                 # Only update gateway token (may change via K8s secret)
                 node -e "const fs=require('fs'),p='$CONFIG_PVC';const c=JSON.parse(fs.readFileSync(p,'utf8'));c.gateway.remote.password=process.env.OPENCLAW_GATEWAY_TOKEN;fs.writeFileSync(p,JSON.stringify(c,null,2))"
               fi
-              cp "$CONFIG_PVC" "$CONFIG"
+              ln -sf "$CONFIG_PVC" "$CONFIG"
               # Write auth-profiles.json: merge mode (preserve user-added keys, update env-var keys)
               mkdir -p /home/node/.openclaw/agents/main/agent
               AUTH_FILE="/home/node/.openclaw/agents/main/agent/auth-profiles.json"

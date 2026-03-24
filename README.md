@@ -116,13 +116,24 @@ main          ← This branch: overview + branch navigation
 
 ---
 
-## K3s v2.1 Highlights / K3s v2.1 亮點
+## K3s v2.2 Highlights / K3s v2.2 亮點
 
-- **Full Persistence**: All config (channels, agents, skills, memory, cron) survives pod restarts via PVC symlinks
-- **Pinned Base Image**: `ghcr.io/openclaw/openclaw@sha256:a5a4c83b` (v2026.3.13) — stable LINE channel support
-- **Isolated npm**: Skill CLIs installed to `/opt/openclaw-tools/` to prevent LINE plugin conflicts
-- **Auto-Approve Fix**: JSON-based device pairing approval (fixes multiline UUID grep failure)
-- **Config Symlink**: `openclaw.json` symlinked to PVC — all web GUI changes persist immediately
+### Persistence / 持久化
+- **Full PVC Persistence**: agents, workspace, memory, cron, telegram, config — all survive pod restarts
+- **Config Symlink**: `openclaw.json` symlinked directly to PVC — web GUI changes persist immediately
+- **Skill Env Auto-Save**: AI automatically writes skill parameters (API keys, URLs) to `workspace/.env` via SOUL.md instruction
+- **Workspace .env Loading**: Startup script sources `workspace/.env` before gateway launch
+
+### Stability / 穩定性
+- **Pinned Base Image**: `v2026.3.13` (sha256:a5a4c83b) — stable LINE channel support (v2026.3.22+ has LINE crash bug)
+- **Isolated npm**: Skill CLIs in `/opt/openclaw-tools/` — prevents LINE plugin `isSenderAllowed` conflict
+- **Auto-Approve Fix**: JSON-based device pairing (fixes multiline UUID grep failure in table output)
+
+### New in v2.2 / v2.2 新增
+- **v2026.2.22 Compatibility Check**: Confirmed incompatible (uses `node openclaw.mjs`, no CLI binary)
+- **Skill Env Persistence**: `workspace/.env` + SOUL.md instruction = skill params auto-saved by AI
+- **Telegram Open Policy**: Default `dmPolicy: open` for Telegram channel
+- **52→54 Skills**: Workspace skills (homeassistant, odoo) counted in total
 
 ---
 

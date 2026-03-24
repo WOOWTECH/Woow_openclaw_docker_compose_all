@@ -28,7 +28,7 @@ This repository contains deployment configurations for the OpenClaw AI gateway a
 | **Custom Dockerfile** | 12 sections, 52 skill deps | 12 sections, 52 skill deps |
 | **Cloudflare Tunnel** | Integrated | Integrated (3x retry) |
 | **Database** | PostgreSQL + pgvector (PVC) | PostgreSQL + pgvector (bind mount) |
-| **Persistence** | K8s PersistentVolumeClaim | Bind mounts + host .env sync |
+| **Persistence** | K8s PVC (agents, workspace, memory, cron, telegram, config) | Bind mounts + host .env sync |
 | **Chat Channels** | Telegram, WhatsApp, Discord, Slack, Signal | Telegram, WhatsApp, Discord, Slack, Signal |
 | **Auto-scaling** | K8s HPA/VPA supported | Manual (single instance) |
 | **RBAC** | K8s RBAC + ServiceAccount | Docker socket access |
@@ -113,6 +113,16 @@ main          ← This branch: overview + branch navigation
 ├── k3s       ← Kubernetes/K3s deployment (deploy.sh, k8s-manifests/, tests/)
 └── podman    ← Docker Compose/Podman deployment (docker-compose.yml, gateway/)
 ```
+
+---
+
+## K3s v2.1 Highlights / K3s v2.1 亮點
+
+- **Full Persistence**: All config (channels, agents, skills, memory, cron) survives pod restarts via PVC symlinks
+- **Pinned Base Image**: `ghcr.io/openclaw/openclaw@sha256:a5a4c83b` (v2026.3.13) — stable LINE channel support
+- **Isolated npm**: Skill CLIs installed to `/opt/openclaw-tools/` to prevent LINE plugin conflicts
+- **Auto-Approve Fix**: JSON-based device pairing approval (fixes multiline UUID grep failure)
+- **Config Symlink**: `openclaw.json` symlinked to PVC — all web GUI changes persist immediately
 
 ---
 

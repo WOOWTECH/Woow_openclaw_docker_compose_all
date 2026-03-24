@@ -2,7 +2,7 @@
 # Extends the official image with pre-installed skill CLI dependencies
 # so they survive pod recreation.
 #
-# IMPORTANT: Pinned to v2026.3.13 (sha256:a5a4c83b) — stable LINE support.
+# IMPORTANT: Pinned to v2026.3.13 (sha256:a5a4c83b) — last stable version with openclaw CLI + LINE support.
 # v2026.3.22+ has LINE plugin crash (Cannot redefine property: isSenderAllowed)
 #
 # Build: sudo buildah build -f Dockerfile.custom -t openclaw-custom:latest .

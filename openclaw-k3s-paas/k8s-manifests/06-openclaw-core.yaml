@@ -242,6 +242,22 @@ spec:
               [ -s /home/node/.openclaw/workspace/HEARTBEAT.md ] || printf '# Heartbeat\n\nInterval: 30m\nMonitor: channel status, error rate\n' > /home/node/.openclaw/workspace/HEARTBEAT.md
               [ -s /home/node/.openclaw/workspace/BOOTSTRAP.md ] || printf '# Bootstrap\n\nOn first run: verify API key, check channels, confirm cron jobs.\n' > /home/node/.openclaw/workspace/BOOTSTRAP.md
               echo '[init] Core workspace files bootstrapped'
+              # Install default skills (only if not already present on PVC)
+              SKILLS_DIR="/home/node/.openclaw/workspace/skills"
+              mkdir -p "$SKILLS_DIR"
+              if [ ! -d "$SKILLS_DIR/claude-skill-homeassistant" ]; then
+                echo '[init] Installing default skill: homeassistant'
+                git clone --depth 1 https://github.com/komal-SkyNET/claude-skill-homeassistant.git "$SKILLS_DIR/claude-skill-homeassistant" 2>/dev/null || true
+              fi
+              if [ ! -d "$SKILLS_DIR/odoo-manager" ]; then
+                echo '[init] Installing default skill: odoo-manager'
+                npx clawhub install odoo-manager --workdir /home/node/.openclaw/workspace --no-input 2>/dev/null || true
+              fi
+              if [ ! -d "$SKILLS_DIR/agent-browser-clawdbot" ]; then
+                echo '[init] Installing default skill: agent-browser'
+                npx clawhub install agent-browser-clawdbot --workdir /home/node/.openclaw/workspace --no-input 2>/dev/null || true
+              fi
+              echo '[init] Default skills verified'
               rm -rf /home/node/.openclaw/devices/ 2>/dev/null || true
               # Auto-approve pending devices every 1 second (uses JSON to avoid multiline UUID issue)
               (sleep 10; while true; do

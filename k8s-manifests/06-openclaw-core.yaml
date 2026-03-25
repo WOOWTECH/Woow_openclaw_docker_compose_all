@@ -377,6 +377,43 @@ spec:
                   name: openclaw-secrets
                   key: LINE_CHANNEL_SECRET
                   optional: true
+            # Skill env vars (HA, Odoo — stored in secret for all-process visibility)
+            - name: HASS_SERVER
+              valueFrom:
+                secretKeyRef:
+                  name: openclaw-secrets
+                  key: HASS_SERVER
+                  optional: true
+            - name: HASS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: openclaw-secrets
+                  key: HASS_TOKEN
+                  optional: true
+            - name: ODOO_URL
+              valueFrom:
+                secretKeyRef:
+                  name: openclaw-secrets
+                  key: ODOO_URL
+                  optional: true
+            - name: ODOO_DB
+              valueFrom:
+                secretKeyRef:
+                  name: openclaw-secrets
+                  key: ODOO_DB
+                  optional: true
+            - name: ODOO_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: openclaw-secrets
+                  key: ODOO_USERNAME
+                  optional: true
+            - name: ODOO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: openclaw-secrets
+                  key: ODOO_PASSWORD
+                  optional: true
           resources:
             requests:
               cpu: 500m

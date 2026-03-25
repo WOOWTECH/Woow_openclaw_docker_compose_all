@@ -383,10 +383,16 @@ spec:
           volumeMounts:
             - name: agents-data
               mountPath: /mnt/openclaw-agents
+            - name: dshm
+              mountPath: /dev/shm
       volumes:
         - name: agents-data
           persistentVolumeClaim:
             claimName: openclaw-agents-pvc
+        - name: dshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 512Mi
 ---
 # =============================================================
 # OpenClaw Gateway - Service

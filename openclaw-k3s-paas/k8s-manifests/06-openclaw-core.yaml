@@ -177,12 +177,14 @@ spec:
               mkdir -p /home/node/.openclaw
               PVC="/mnt/openclaw-agents"
               ln -sfn "$PVC" /home/node/.openclaw/agents
-              mkdir -p "$PVC/_workspace" "$PVC/_managed-skills" "$PVC/_memory" "$PVC/_cron" "$PVC/_telegram"
+              mkdir -p "$PVC/_workspace" "$PVC/_managed-skills" "$PVC/_memory" "$PVC/_cron" "$PVC/_telegram" "$PVC/_config"
               ln -sfn "$PVC/_workspace" /home/node/.openclaw/workspace
               ln -sfn "$PVC/_managed-skills" /home/node/.openclaw/skills
               ln -sfn "$PVC/_memory" /home/node/.openclaw/memory
               ln -sfn "$PVC/_cron" /home/node/.openclaw/cron
               ln -sfn "$PVC/_telegram" /home/node/.openclaw/telegram
+              # Persist ~/.config (GOG OAuth, Chromium profile, etc.)
+              ln -sfn "$PVC/_config" /home/node/.config
               # Persist openclaw.json on PVC — only write default on first boot
               CONFIG_PVC="/mnt/openclaw-agents/_openclaw.json"
               CONFIG="/home/node/.openclaw/openclaw.json"

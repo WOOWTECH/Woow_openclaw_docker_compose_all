@@ -18,6 +18,8 @@ spec:
       labels:
         app: cloudflared
     spec:
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: "true"
       terminationGracePeriodSeconds: 30
       containers:
         - name: cloudflared

@@ -282,6 +282,24 @@ spec:
                 done
                 sleep 1
               done) &
+              # Persistent tools on PVC — install once, survive restarts
+              TOOLS_VENV="/mnt/openclaw-agents/_tools/venv"
+              if [ ! -d "$TOOLS_VENV" ]; then
+                echo '[init] Creating persistent tools venv on PVC'
+                python3 -m venv "$TOOLS_VENV"
+              fi
+              # Ensure hass-cli is installed
+              if [ ! -f "$TOOLS_VENV/bin/hass-cli" ]; then
+                echo '[init] Installing hass-cli to PVC'
+                "$TOOLS_VENV/bin/pip" install -q homeassistant-cli 2>/dev/null
+              fi
+              # Add PVC tools to PATH
+              mkdir -p /home/node/.local/bin
+              for bin in "$TOOLS_VENV"/bin/*; do
+                [ -x "$bin" ] && ln -sf "$bin" "/home/node/.local/bin/$(basename "$bin")" 2>/dev/null
+              done
+              export PATH="/home/node/.local/bin:$PATH"
+              echo "[init] PVC tools on PATH ($(ls /home/node/.local/bin/ 2>/dev/null | wc -l) bins)"
               # Load skill env vars from workspace .env (persisted on PVC)
               if [ -f /home/node/.openclaw/workspace/.env ]; then
                 set -a
@@ -289,7 +307,7 @@ spec:
                 set +a
                 echo '[init] Loaded skill env vars from workspace/.env'
               fi
-              exec openclaw gateway --bind lan --port 18789 --auth token --token "$OPENCLAW_GATEWAY_TOKEN" --allow-unconfigured
+              exec env PATH="/home/node/.local/bin:$PATH" openclaw gateway --bind lan --port 18789 --auth token --token "$OPENCLAW_GATEWAY_TOKEN" --allow-unconfigured
           ports:
             - containerPort: 18789
           env:

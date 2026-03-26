@@ -414,6 +414,13 @@ spec:
                   name: openclaw-secrets
                   key: ODOO_PASSWORD
                   optional: true
+            # GOG (Google Workspace CLI) keyring password
+            - name: GOG_KEYRING_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: openclaw-secrets
+                  key: GOG_KEYRING_PASSWORD
+                  optional: true
           resources:
             requests:
               cpu: 500m

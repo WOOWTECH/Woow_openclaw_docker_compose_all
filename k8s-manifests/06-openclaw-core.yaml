@@ -1,7 +1,8 @@
 # =============================================================
 # OpenClaw Agents - PersistentVolumeClaim (1Gi)
-# Stores: config, agents, workspace, skills, memory, cron,
+# Stores: config, agents, workspace, skills, memory (LanceDB), cron,
 #         telegram state, ~/.config (GOG OAuth, Chromium)
+# NOTE: Increased from 1Gi to 5Gi to accommodate LanceDB vector data
 # =============================================================
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -15,7 +16,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi
+      storage: 5Gi
 ---
 # =============================================================
 # PostgreSQL (pgvector) - PersistentVolumeClaim (10Gi)
@@ -201,7 +202,7 @@ spec:
               if [ ! -s "$CONFIG_PVC" ]; then
                 echo '[init] First boot: writing default openclaw.json'
                 cat > "$CONFIG_PVC" << 'CFGEOF'
-              {"agents":{"defaults":{"model":"openai/gpt-4o"}},"gateway":{"mode":"local","controlUi":{"dangerouslyAllowHostHeaderOriginFallback":true},"remote":{"password":"PLACEHOLDER"},"trustedProxies":["10.42.0.0/16"]},"channels":{"telegram":{"enabled":true},"whatsapp":{"enabled":true},"line":{"enabled":true,"dmPolicy":"open","groupPolicy":"open","allowFrom":["*"]}},"commands":{"native":"auto","nativeSkills":"auto","restart":true,"ownerDisplay":"raw"}}
+              {"agents":{"defaults":{"model":"openai/gpt-4o"}},"gateway":{"mode":"local","controlUi":{"dangerouslyAllowHostHeaderOriginFallback":true},"remote":{"password":"PLACEHOLDER"},"trustedProxies":["10.42.0.0/16"]},"channels":{"telegram":{"enabled":true},"whatsapp":{"enabled":true},"line":{"enabled":true,"dmPolicy":"open","groupPolicy":"open","allowFrom":["*"]}},"commands":{"native":"auto","nativeSkills":"auto","restart":true,"ownerDisplay":"raw"},"plugins":{"slots":{"memory":"memory-lancedb-pro"},"entries":{"memory-lancedb-pro":{"enabled":true,"config":{"autoCapture":true,"autoRecall":true,"smartExtraction":true,"extractMinMessages":2,"extractMaxChars":8000,"embedding":{"provider":"openai-compatible","baseURL":"http://ollama-svc:11434/v1","model":"nomic-embed-text","apiKey":"ollama"},"llm":{"baseURL":"http://ollama-svc:11434/v1","model":"llama3:8b","apiKey":"ollama"},"retrieval":{"mode":"hybrid","vectorWeight":0.7,"bm25Weight":0.3,"minScore":0.3}}}}}}
               CFGEOF
                 sed -i "s/PLACEHOLDER/$OPENCLAW_GATEWAY_TOKEN/" "$CONFIG_PVC"
                 # Auto-detect default model from available API keys
@@ -269,6 +270,21 @@ spec:
                 echo '[init] Installing default skill: agent-browser'
                 npx clawhub install agent-browser-clawdbot --workdir /home/node/.openclaw/workspace --no-input 2>/dev/null || true
               fi
+              # Install memory-lancedb-pro skill (knowledge file for AI agents)
+              if [ ! -d "$SKILLS_DIR/memory-lancedb-pro-skill" ]; then
+                echo '[init] Installing skill: memory-lancedb-pro-skill'
+                git clone --depth 1 https://github.com/CortexReach/memory-lancedb-pro-skill.git "$SKILLS_DIR/memory-lancedb-pro-skill" 2>/dev/null || true
+              fi
+              # Install memory-lancedb-pro plugin (persisted on PVC)
+              PLUGIN_MARKER="/mnt/openclaw-agents/_memory/.lancedb-pro-installed"
+              if [ ! -f "$PLUGIN_MARKER" ]; then
+                echo '[init] Installing plugin: memory-lancedb-pro'
+                openclaw plugins install memory-lancedb-pro@beta 2>/dev/null || npm i -g memory-lancedb-pro@beta 2>/dev/null || true
+                touch "$PLUGIN_MARKER"
+                echo '[init] memory-lancedb-pro plugin installed'
+              else
+                echo '[init] memory-lancedb-pro plugin already installed'
+              fi
               echo '[init] Default skills verified'
               rm -rf /home/node/.openclaw/devices/ 2>/dev/null || true
               # Auto-approve pending devices every 1 second (uses JSON to avoid multiline UUID issue)
@@ -320,6 +336,11 @@ spec:
               value: "/usr/bin/chromium"
             - name: PUPPETEER_EXECUTABLE_PATH
               value: "/usr/bin/chromium"
+            # Ollama (local inference for memory-lancedb-pro)
+            - name: OLLAMA_BASE_URL
+              value: "http://ollama-svc:11434"
+            - name: OLLAMA_API_BASE
+              value: "http://ollama-svc:11434/v1"
             # Core secrets
             - name: OPENCLAW_GATEWAY_TOKEN
               valueFrom:

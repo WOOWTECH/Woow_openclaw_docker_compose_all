@@ -1,0 +1,94 @@
+# =============================================================
+# Ollama Model Init - Job
+# Pulls required models after Ollama service is ready.
+# Re-run after cleanup: kubectl delete job ollama-model-init -n openclaw-tenant-1
+# Then: kubectl apply -f 08-ollama-model-init.yaml
+#
+# Models pulled:
+#   - nomic-embed-text  (~274MB) — Embedding model for memory-lancedb-pro
+#   - llama3:8b         (~4.7GB) — LLM for smart memory extraction
+# =============================================================
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ollama-model-init
+  namespace: openclaw-tenant-1
+  labels:
+    app: ollama
+    app.kubernetes.io/component: init
+spec:
+  backoffLimit: 5
+  ttlSecondsAfterFinished: 600
+  template:
+    metadata:
+      labels:
+        app: ollama-init
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: "woowtechopenclaw-default-string"
+      restartPolicy: OnFailure
+      initContainers:
+        # Wait for Ollama to be ready before pulling
+        - name: wait-for-ollama
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - |
+              echo "[init] Waiting for Ollama service at ollama-svc:11434..."
+              until wget -qO- http://ollama-svc:11434/api/tags >/dev/null 2>&1; do
+                echo "[init] Ollama not ready, retrying in 5s..."
+                sleep 5
+              done
+              echo "[init] Ollama is ready!"
+          resources:
+            requests:
+              cpu: 50m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
+      containers:
+        - name: model-puller
+          image: ollama/ollama:latest
+          env:
+            - name: OLLAMA_HOST
+              value: "http://ollama-svc:11434"
+          command:
+            - sh
+            - -c
+            - |
+              echo "=========================================="
+              echo " Ollama Model Init — Pulling models"
+              echo "=========================================="
+
+              # Pull embedding model
+              echo "[1/2] Pulling nomic-embed-text (embedding model)..."
+              ollama pull nomic-embed-text
+              if [ $? -eq 0 ]; then
+                echo "[1/2] nomic-embed-text: OK"
+              else
+                echo "[1/2] nomic-embed-text: FAILED" >&2
+                exit 1
+              fi
+
+              # Pull LLM for memory extraction
+              echo "[2/2] Pulling llama3:8b (memory extraction LLM)..."
+              ollama pull llama3:8b
+              if [ $? -eq 0 ]; then
+                echo "[2/2] llama3:8b: OK"
+              else
+                echo "[2/2] llama3:8b: FAILED" >&2
+                exit 1
+              fi
+
+              echo "=========================================="
+              echo " All models pulled successfully!"
+              echo "=========================================="
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi

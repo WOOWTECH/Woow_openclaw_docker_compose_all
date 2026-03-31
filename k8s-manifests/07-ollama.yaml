@@ -1,0 +1,107 @@
+# =============================================================
+# Ollama - PersistentVolumeClaim (15Gi)
+# Stores downloaded models (nomic-embed-text, llama3:8b, etc.)
+# =============================================================
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ollama-models-pvc
+  namespace: openclaw-tenant-1
+  labels:
+    app: ollama
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 15Gi
+---
+# =============================================================
+# Ollama - Deployment (CPU mode)
+# Serves embedding (nomic-embed-text) and LLM (llama3:8b)
+# for memory-lancedb-pro local inference
+# =============================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ollama
+  namespace: openclaw-tenant-1
+  labels:
+    app: ollama
+    app.kubernetes.io/component: inference
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ollama
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: ollama
+    spec:
+      # Schedule on the 16GB worker node (woowtechopenclaw-default-string)
+      # which has 4 CPU / 16GB RAM and is mostly idle (~10% usage)
+      nodeSelector:
+        kubernetes.io/hostname: "woowtechopenclaw-default-string"
+      containers:
+        - name: ollama
+          image: ollama/ollama:latest
+          ports:
+            - containerPort: 11434
+          env:
+            - name: OLLAMA_HOST
+              value: "0.0.0.0"
+            - name: OLLAMA_NUM_PARALLEL
+              value: "2"
+            - name: OLLAMA_MAX_LOADED_MODELS
+              value: "2"
+          volumeMounts:
+            - name: ollama-models
+              mountPath: /root/.ollama
+          resources:
+            requests:
+              cpu: "2"
+              memory: 4Gi
+            limits:
+              cpu: "4"
+              memory: 14Gi
+          readinessProbe:
+            httpGet:
+              path: /api/tags
+              port: 11434
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 12
+          livenessProbe:
+            httpGet:
+              path: /api/tags
+              port: 11434
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 5
+      volumes:
+        - name: ollama-models
+          persistentVolumeClaim:
+            claimName: ollama-models-pvc
+---
+# =============================================================
+# Ollama - Service
+# Internal endpoint: http://ollama-svc:11434
+# =============================================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: ollama-svc
+  namespace: openclaw-tenant-1
+  labels:
+    app: ollama
+spec:
+  selector:
+    app: ollama
+  ports:
+    - protocol: TCP
+      port: 11434
+      targetPort: 11434
+  type: ClusterIP

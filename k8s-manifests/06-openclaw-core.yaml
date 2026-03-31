@@ -310,10 +310,10 @@ spec:
                       slots:{memory:'memory-lancedb-pro'},
                       entries:{'memory-lancedb-pro':{enabled:true,config:{
                         autoCapture:true,autoRecall:true,smartExtraction:true,
-                        extractMinMessages:2,extractMaxChars:8000,
+                        extractMinMessages:2,extractMaxChars:12000,
                         embedding:{provider:'openai-compatible',baseURL:'http://ollama-svc:11434/v1',model:'nomic-embed-text',apiKey:'ollama'},
                         llm:{baseURL:'http://ollama-svc:11434/v1',model:'llama3:8b',apiKey:'ollama'},
-                        retrieval:{mode:'hybrid',vectorWeight:0.7,bm25Weight:0.3,minScore:0.3}
+                        retrieval:{mode:'hybrid',vectorWeight:0.7,bm25Weight:0.3,minScore:0.2,hardMinScore:0.25,candidatePoolSize:30}
                       }}}
                     };
                     fs.writeFileSync(p,JSON.stringify(c,null,2));

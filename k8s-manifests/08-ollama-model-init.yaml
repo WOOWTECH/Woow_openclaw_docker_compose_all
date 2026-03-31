@@ -25,7 +25,7 @@ spec:
         app: ollama-init
     spec:
       nodeSelector:
-        node-role.kubernetes.io/control-plane: "true"
+        kubernetes.io/hostname: "woowtechopenclaw-default-string"
       restartPolicy: OnFailure
       initContainers:
         # Wait for Ollama to be ready before pulling

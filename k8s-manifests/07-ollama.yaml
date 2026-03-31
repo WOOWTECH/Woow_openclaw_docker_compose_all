@@ -41,8 +41,10 @@ spec:
       labels:
         app: ollama
     spec:
+      # Schedule on the 16GB worker node (woowtechopenclaw-default-string)
+      # which has 4 CPU / 16GB RAM and is mostly idle (~10% usage)
       nodeSelector:
-        node-role.kubernetes.io/control-plane: "true"
+        kubernetes.io/hostname: "woowtechopenclaw-default-string"
       containers:
         - name: ollama
           image: ollama/ollama:latest
@@ -51,16 +53,20 @@ spec:
           env:
             - name: OLLAMA_HOST
               value: "0.0.0.0"
+            - name: OLLAMA_NUM_PARALLEL
+              value: "2"
+            - name: OLLAMA_MAX_LOADED_MODELS
+              value: "2"
           volumeMounts:
             - name: ollama-models
               mountPath: /root/.ollama
           resources:
             requests:
-              cpu: 500m
-              memory: 2Gi
+              cpu: "2"
+              memory: 4Gi
             limits:
               cpu: "4"
-              memory: 8Gi
+              memory: 14Gi
           readinessProbe:
             httpGet:
               path: /api/tags

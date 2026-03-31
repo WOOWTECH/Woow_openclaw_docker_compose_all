@@ -12,6 +12,7 @@ metadata:
   labels:
     app: openclaw-gateway
 spec:
+  storageClassName: local-path
   accessModes:
     - ReadWriteOnce
   resources:
@@ -29,6 +30,7 @@ metadata:
   labels:
     app: openclaw-db
 spec:
+  storageClassName: local-path
   accessModes:
     - ReadWriteOnce
   resources:
@@ -98,8 +100,8 @@ spec:
               cpu: 100m
               memory: 256Mi
             limits:
-              cpu: 500m
-              memory: 512Mi
+              cpu: "2"
+              memory: 2Gi
           livenessProbe:
             exec:
               command:
@@ -167,6 +169,8 @@ spec:
   selector:
     matchLabels:
       app: openclaw-gateway
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -188,10 +192,17 @@ spec:
               mkdir -p /home/node/.openclaw
               PVC="/mnt/openclaw-agents"
               ln -sfn "$PVC" /home/node/.openclaw/agents
-              mkdir -p "$PVC/_workspace" "$PVC/_managed-skills" "$PVC/_memory" "$PVC/_cron" "$PVC/_telegram" "$PVC/_config"
+              mkdir -p "$PVC/_workspace" "$PVC/_managed-skills" "$PVC/_memory" "$PVC/_cron" "$PVC/_telegram" "$PVC/_config" "$PVC/_extensions"
               ln -sfn "$PVC/_workspace" /home/node/.openclaw/workspace
               ln -sfn "$PVC/_managed-skills" /home/node/.openclaw/skills
               ln -sfn "$PVC/_memory" /home/node/.openclaw/memory
+              # Extensions must be a real dir (not symlink) for openclaw plugins install
+              mkdir -p /home/node/.openclaw/extensions
+              # Restore plugins from PVC backup if previously installed
+              if [ -d "$PVC/_extensions/memory-lancedb-pro" ]; then
+                cp -a "$PVC/_extensions/memory-lancedb-pro" /home/node/.openclaw/extensions/
+                echo '[init] Restored memory-lancedb-pro plugin from PVC cache'
+              fi
               ln -sfn "$PVC/_cron" /home/node/.openclaw/cron
               ln -sfn "$PVC/_telegram" /home/node/.openclaw/telegram
               # Persist ~/.config (GOG OAuth, Chromium profile, etc.)
@@ -202,7 +213,7 @@ spec:
               if [ ! -s "$CONFIG_PVC" ]; then
                 echo '[init] First boot: writing default openclaw.json'
                 cat > "$CONFIG_PVC" << 'CFGEOF'
-              {"agents":{"defaults":{"model":"openai/gpt-4o"}},"gateway":{"mode":"local","controlUi":{"dangerouslyAllowHostHeaderOriginFallback":true},"remote":{"password":"PLACEHOLDER"},"trustedProxies":["10.42.0.0/16"]},"channels":{"telegram":{"enabled":true},"whatsapp":{"enabled":true},"line":{"enabled":true,"dmPolicy":"open","groupPolicy":"open","allowFrom":["*"]}},"commands":{"native":"auto","nativeSkills":"auto","restart":true,"ownerDisplay":"raw"},"plugins":{"slots":{"memory":"memory-lancedb-pro"},"entries":{"memory-lancedb-pro":{"enabled":true,"config":{"autoCapture":true,"autoRecall":true,"smartExtraction":true,"extractMinMessages":2,"extractMaxChars":8000,"embedding":{"provider":"openai-compatible","baseURL":"http://ollama-svc:11434/v1","model":"nomic-embed-text","apiKey":"ollama"},"llm":{"baseURL":"http://ollama-svc:11434/v1","model":"llama3:8b","apiKey":"ollama"},"retrieval":{"mode":"hybrid","vectorWeight":0.7,"bm25Weight":0.3,"minScore":0.3}}}}}}
+              {"agents":{"defaults":{"model":"openai/gpt-4o"}},"gateway":{"mode":"local","controlUi":{"dangerouslyAllowHostHeaderOriginFallback":true},"remote":{"password":"PLACEHOLDER"},"trustedProxies":["10.42.0.0/16"]},"channels":{"telegram":{"enabled":true},"whatsapp":{"enabled":true},"line":{"enabled":true,"dmPolicy":"open","groupPolicy":"open","allowFrom":["*"]}},"commands":{"native":"auto","nativeSkills":"auto","restart":true,"ownerDisplay":"raw"}}
               CFGEOF
                 sed -i "s/PLACEHOLDER/$OPENCLAW_GATEWAY_TOKEN/" "$CONFIG_PVC"
                 # Auto-detect default model from available API keys
@@ -275,15 +286,40 @@ spec:
                 echo '[init] Installing skill: memory-lancedb-pro-skill'
                 git clone --depth 1 https://github.com/CortexReach/memory-lancedb-pro-skill.git "$SKILLS_DIR/memory-lancedb-pro-skill" 2>/dev/null || true
               fi
-              # Install memory-lancedb-pro plugin (persisted on PVC)
-              PLUGIN_MARKER="/mnt/openclaw-agents/_memory/.lancedb-pro-installed"
-              if [ ! -f "$PLUGIN_MARKER" ]; then
+              # Install memory-lancedb-pro plugin
+              if [ ! -d "/home/node/.openclaw/extensions/memory-lancedb-pro" ]; then
                 echo '[init] Installing plugin: memory-lancedb-pro'
-                openclaw plugins install memory-lancedb-pro@beta 2>/dev/null || npm i -g memory-lancedb-pro@beta 2>/dev/null || true
-                touch "$PLUGIN_MARKER"
-                echo '[init] memory-lancedb-pro plugin installed'
+                openclaw plugins install memory-lancedb-pro@beta 2>/dev/null || true
+                # Backup to PVC for next restart
+                if [ -d "/home/node/.openclaw/extensions/memory-lancedb-pro" ]; then
+                  cp -a /home/node/.openclaw/extensions/memory-lancedb-pro "$PVC/_extensions/"
+                  echo '[init] memory-lancedb-pro installed and backed up to PVC'
+                else
+                  echo '[init] WARNING: memory-lancedb-pro install may have failed'
+                fi
               else
-                echo '[init] memory-lancedb-pro plugin already installed'
+                echo '[init] memory-lancedb-pro plugin ready (from PVC cache)'
+              fi
+              # Inject plugins config into openclaw.json (after plugin is confirmed present)
+              if [ -d "/home/node/.openclaw/extensions/memory-lancedb-pro" ]; then
+                node -e "
+                  const fs=require('fs'),p='$CONFIG_PVC';
+                  const c=JSON.parse(fs.readFileSync(p,'utf8'));
+                  if(!c.plugins||!c.plugins.entries){
+                    c.plugins={
+                      slots:{memory:'memory-lancedb-pro'},
+                      entries:{'memory-lancedb-pro':{enabled:true,config:{
+                        autoCapture:true,autoRecall:true,smartExtraction:true,
+                        extractMinMessages:2,extractMaxChars:8000,
+                        embedding:{provider:'openai-compatible',baseURL:'http://ollama-svc:11434/v1',model:'nomic-embed-text',apiKey:'ollama'},
+                        llm:{baseURL:'http://ollama-svc:11434/v1',model:'llama3:8b',apiKey:'ollama'},
+                        retrieval:{mode:'hybrid',vectorWeight:0.7,bm25Weight:0.3,minScore:0.3}
+                      }}}
+                    };
+                    fs.writeFileSync(p,JSON.stringify(c,null,2));
+                    console.log('[init] memory-lancedb-pro plugins config injected');
+                  } else { console.log('[init] memory-lancedb-pro plugins config already present'); }
+                " 2>/dev/null || true
               fi
               echo '[init] Default skills verified'
               rm -rf /home/node/.openclaw/devices/ 2>/dev/null || true
@@ -462,11 +498,11 @@ spec:
                   optional: true
           resources:
             requests:
-              cpu: 500m
-              memory: 2Gi
+              cpu: "2"
+              memory: 4Gi
             limits:
-              cpu: "4"
-              memory: 8Gi
+              cpu: "12"
+              memory: 12Gi
           readinessProbe:
             tcpSocket:
               port: 18789
@@ -491,7 +527,7 @@ spec:
         - name: dshm
           emptyDir:
             medium: Memory
-            sizeLimit: 512Mi
+            sizeLimit: 1Gi
 ---
 # =============================================================
 # OpenClaw Gateway - Service

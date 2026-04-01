@@ -57,11 +57,29 @@ Comprehensive end-to-end testing of the OpenClaw K3s deployment to validate comm
 | 4.3 | Memory-augmented conversation | Multi-turn: store preferences → recall → act on them | Context preserved across turns |
 | 4.4 | System administration | "檢查系統健康狀態：磁碟空間、記憶體使用、運行中的程序" | Exec tool returns system info |
 
+### Round 5: Extended Module Coverage
+| # | Test | Category | Method | Expected |
+|---|------|----------|--------|----------|
+| 5.1 | Odoo connectivity | Odoo | exec: xmlrpc version | Server version returned |
+| 5.2 | Odoo auth + read | Odoo | exec: xmlrpc res.partner | Customer names returned |
+| 5.3 | Odoo product categories | Odoo | exec: xmlrpc product.category | Category list returned |
+| 5.4 | GOG token check | Google | exec: grep .env | GOG env vars present |
+| 5.5 | GOG API test | Google | exec: curl userinfo | API response (valid/expired) |
+| 5.6 | Cron list jobs | Cron | exec: cat jobs.json | 2 active jobs shown |
+| 5.7 | Cron run history | Cron | exec: ls runs/ | Execution records |
+| 5.8 | Sessions list | Sessions | sessions_list tool | Active sessions counted |
+| 5.9 | Sessions spawn | Sessions | sessions_spawn tool | Sub-session created |
+| 5.10 | Browser tool | Browser | browser tool → Odoo URL | Page rendered |
+| 5.11 | Telegram delivery | Telegram | message tool → Telegram | Message delivered |
+| 5.12 | TTS generation | Media | tts tool | Audio generated |
+| 5.13 | PVC persistence | Persistence | exec: check .env + extensions | Data intact |
+
 ## Success Criteria
 - All Round 1 tests: 100% pass rate
 - All Round 2 tests: ≥80% pass rate (cross-module may have timing issues)
 - All Round 3 tests: 100% graceful handling (no crashes)
 - All Round 4 tests: ≥80% functional completion
+- All Round 5 tests: ≥80% pass rate (external services may be unavailable)
 - No pod restarts during testing
 - No OOM kills or resource exhaustion
 - All screenshots captured for audit trail

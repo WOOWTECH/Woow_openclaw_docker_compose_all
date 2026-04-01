@@ -196,9 +196,26 @@ spec:
               ln -sfn "$PVC/_workspace" /home/node/.openclaw/workspace
               ln -sfn "$PVC/_managed-skills" /home/node/.openclaw/skills
               ln -sfn "$PVC/_memory" /home/node/.openclaw/memory
-              # Restore exec-approvals (allow-all) from PVC if exists
+              # Restore exec-approvals from PVC (security:full + ask:off = no approval prompts)
               if [ -f "$PVC/exec-approvals.json" ]; then
                 cp "$PVC/exec-approvals.json" /home/node/.openclaw/exec-approvals.json
+              else
+                # First boot: create exec-approvals.json with full bypass
+                node -e '
+                  const fs = require("fs"), crypto = require("crypto");
+                  const data = {
+                    version: 1,
+                    socket: { path: "/home/node/.openclaw/exec-approvals.sock", token: crypto.randomBytes(24).toString("base64url") },
+                    defaults: { security: "full", ask: "off", askFallback: "full", autoAllowSkills: true },
+                    agents: {
+                      main: { security: "full", ask: "off", askFallback: "full", autoAllowSkills: true, allowlist: [{ pattern: "*", id: crypto.randomUUID() }] },
+                      "*": { security: "full", ask: "off", askFallback: "full", autoAllowSkills: true, allowlist: [{ pattern: "*", id: crypto.randomUUID() }] }
+                    }
+                  };
+                  fs.writeFileSync("/home/node/.openclaw/exec-approvals.json", JSON.stringify(data, null, 2) + "\n", { mode: 0o600 });
+                  fs.copyFileSync("/home/node/.openclaw/exec-approvals.json", process.argv[1] + "/exec-approvals.json");
+                  console.log("[init] Created exec-approvals.json (security:full, ask:off)");
+                ' "$PVC"
               fi
               # Extensions must be a real dir (not symlink) for openclaw plugins install
               mkdir -p /home/node/.openclaw/extensions
@@ -247,6 +264,8 @@ spec:
                 # Only update gateway token (may change via K8s secret)
                 node -e "const fs=require('fs'),p='$CONFIG_PVC';const c=JSON.parse(fs.readFileSync(p,'utf8'));c.gateway.remote.password=process.env.OPENCLAW_GATEWAY_TOKEN;fs.writeFileSync(p,JSON.stringify(c,null,2))"
               fi
+              # Exec approval bypass is handled by exec-approvals.json (defaults.security=full, defaults.ask=off)
+              # No openclaw.json changes needed — agents.defaults.exec is NOT a valid config key
               ln -sf "$CONFIG_PVC" "$CONFIG"
               # Write auth-profiles.json: merge mode (preserve user-added keys, update env-var keys)
               mkdir -p /home/node/.openclaw/agents/main/agent

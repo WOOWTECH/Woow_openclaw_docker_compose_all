@@ -224,6 +224,10 @@ spec:
                 cp -a "$PVC/_extensions/memory-lancedb-pro" /home/node/.openclaw/extensions/
                 echo '[init] Restored memory-lancedb-pro plugin from PVC cache'
               fi
+              if [ -d "$PVC/_extensions/openclaw-homeassistant" ]; then
+                cp -a "$PVC/_extensions/openclaw-homeassistant" /home/node/.openclaw/extensions/
+                echo '[init] Restored openclaw-homeassistant plugin from PVC cache'
+              fi
               ln -sfn "$PVC/_cron" /home/node/.openclaw/cron
               ln -sfn "$PVC/_telegram" /home/node/.openclaw/telegram
               # Persist ~/.config (GOG OAuth, Chromium profile, etc.)
@@ -323,6 +327,22 @@ spec:
               else
                 echo '[init] memory-lancedb-pro plugin ready (from PVC cache)'
               fi
+              # Install openclaw-homeassistant plugin
+              if [ ! -d "/home/node/.openclaw/extensions/openclaw-homeassistant" ]; then
+                echo '[init] Installing plugin: openclaw-homeassistant'
+                cd /tmp && npm pack @elvatis_com/openclaw-homeassistant 2>/dev/null
+                mkdir -p /home/node/.openclaw/extensions/openclaw-homeassistant
+                tar xzf /tmp/elvatis_com-openclaw-homeassistant-*.tgz -C /home/node/.openclaw/extensions/openclaw-homeassistant --strip-components=1 2>/dev/null
+                rm -f /tmp/elvatis_com-openclaw-homeassistant-*.tgz
+                if [ -f "/home/node/.openclaw/extensions/openclaw-homeassistant/package.json" ]; then
+                  cp -a /home/node/.openclaw/extensions/openclaw-homeassistant "$PVC/_extensions/"
+                  echo '[init] openclaw-homeassistant installed and backed up to PVC'
+                else
+                  echo '[init] WARNING: openclaw-homeassistant install may have failed'
+                fi
+              else
+                echo '[init] openclaw-homeassistant plugin ready (from PVC cache)'
+              fi
               # Inject plugins config into openclaw.json (after plugin is confirmed present)
               if [ -d "/home/node/.openclaw/extensions/memory-lancedb-pro" ]; then
                 node -e "
@@ -343,6 +363,24 @@ spec:
                     console.log('[init] memory-lancedb-pro plugins config injected');
                   } else { console.log('[init] memory-lancedb-pro plugins config already present'); }
                 " 2>/dev/null || true
+              fi
+              # Inject openclaw-homeassistant plugin config (uses HASS_SERVER + HASS_TOKEN env vars)
+              if [ -d "/home/node/.openclaw/extensions/openclaw-homeassistant" ] && [ -n "${HASS_SERVER:-}" ] && [ -n "${HASS_TOKEN:-}" ]; then
+                cat << 'HAEOF' | node -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{eval(d)})"
+                  const fs=require('fs'),p=process.env.HOME+'/../mnt/openclaw-agents/_openclaw.json';
+                  try {
+                    const c=JSON.parse(fs.readFileSync('/mnt/openclaw-agents/_openclaw.json','utf8'));
+                    if(!c.plugins) c.plugins={};
+                    if(!c.plugins.entries) c.plugins.entries={};
+                    if(!c.plugins.entries['openclaw-homeassistant']){
+                      c.plugins.entries['openclaw-homeassistant']={enabled:true,config:{
+                        url:process.env.HASS_SERVER,token:process.env.HASS_TOKEN,readOnly:false
+                      }};
+                      fs.writeFileSync('/mnt/openclaw-agents/_openclaw.json',JSON.stringify(c,null,2));
+                      console.log('[init] openclaw-homeassistant plugin config injected');
+                    } else { console.log('[init] openclaw-homeassistant plugin config already present'); }
+                  } catch(e){ console.log('[init] WARNING: HA plugin config injection failed:',e.message); }
+              HAEOF
               fi
               echo '[init] Default skills verified'
               rm -rf /home/node/.openclaw/devices/ 2>/dev/null || true
@@ -579,10 +617,12 @@ spec:
               ln -sf "$PVC/_openclaw.json" /root/.openclaw/openclaw.json
               # Extensions dir: copy from PVC so openclaw CLI can validate plugins
               mkdir -p /root/.openclaw/extensions
-              if [ -d "$PVC/_extensions/memory-lancedb-pro" ]; then
-                cp -a "$PVC/_extensions/memory-lancedb-pro" /root/.openclaw/extensions/
-                chown -R root:root /root/.openclaw/extensions/
-              fi
+              for plugin in memory-lancedb-pro openclaw-homeassistant; do
+                if [ -d "$PVC/_extensions/$plugin" ]; then
+                  cp -a "$PVC/_extensions/$plugin" /root/.openclaw/extensions/
+                fi
+              done
+              chown -R root:root /root/.openclaw/extensions/ 2>/dev/null || true
               ln -sfn "$PVC/_nerve" /root/.nerve
               # Add openclaw CLI from PVC runtime to PATH
               if [ -f "$PVC/_openclaw_runtime/bin/openclaw" ]; then

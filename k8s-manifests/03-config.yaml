@@ -7,3 +7,16 @@ data:
   CF_ACCOUNT_ID: "your-cloudflare-account-id"
   CF_TUNNEL_ID: "your-tunnel-id"
   DOMAIN: "your-domain.example.com"
+---
+# OpenClaw application config (non-secret values)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: openclaw-config
+  namespace: openclaw-tenant-1
+  labels:
+    app.kubernetes.io/part-of: openclaw-paas
+data:
+  # Nerve WebGUI public URL — used for CORS allowedOrigins
+  # Change this to your domain when deploying to a different cluster
+  NERVE_PUBLIC_URL: "https://cindytech1-nerve.woowtech.io"

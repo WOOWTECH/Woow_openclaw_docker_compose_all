@@ -228,6 +228,10 @@ spec:
                 cp -a "$PVC/_extensions/openclaw-homeassistant" /home/node/.openclaw/extensions/
                 echo '[init] Restored openclaw-homeassistant plugin from PVC cache'
               fi
+              if [ -d "$PVC/_extensions/lossless-claw-enhanced" ]; then
+                cp -a "$PVC/_extensions/lossless-claw-enhanced" /home/node/.openclaw/extensions/
+                echo '[init] Restored lossless-claw-enhanced plugin from PVC cache'
+              fi
               ln -sfn "$PVC/_cron" /home/node/.openclaw/cron
               ln -sfn "$PVC/_telegram" /home/node/.openclaw/telegram
               # Persist ~/.config (GOG OAuth, Chromium profile, etc.)
@@ -613,7 +617,7 @@ spec:
               ln -sf "$PVC/_openclaw.json" /root/.openclaw/openclaw.json
               # Extensions dir: copy from PVC so openclaw CLI can validate plugins
               mkdir -p /root/.openclaw/extensions
-              for plugin in memory-lancedb-pro openclaw-homeassistant; do
+              for plugin in memory-lancedb-pro openclaw-homeassistant lossless-claw-enhanced; do
                 if [ -d "$PVC/_extensions/$plugin" ]; then
                   cp -a "$PVC/_extensions/$plugin" /root/.openclaw/extensions/
                 fi

@@ -196,6 +196,10 @@ spec:
               ln -sfn "$PVC/_workspace" /home/node/.openclaw/workspace
               ln -sfn "$PVC/_managed-skills" /home/node/.openclaw/skills
               ln -sfn "$PVC/_memory" /home/node/.openclaw/memory
+              # Restore exec-approvals (allow-all) from PVC if exists
+              if [ -f "$PVC/exec-approvals.json" ]; then
+                cp "$PVC/exec-approvals.json" /home/node/.openclaw/exec-approvals.json
+              fi
               # Extensions must be a real dir (not symlink) for openclaw plugins install
               mkdir -p /home/node/.openclaw/extensions
               # Restore plugins from PVC backup if previously installed

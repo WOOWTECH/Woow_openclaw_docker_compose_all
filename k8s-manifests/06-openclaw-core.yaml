@@ -148,9 +148,9 @@ spec:
 # =============================================================
 # OpenClaw Gateway - Deployment (v2.2)
 #
-# Image: openclaw-custom:latest (pinned to v2026.3.13)
-#   - Built from Dockerfile.custom with Chromium, Go CLIs, etc.
-#   - MUST NOT upgrade past v2026.3.13 (LINE crash in v2026.3.22+)
+# Image: openclaw-custom:latest (base image with Chromium, Go CLIs, etc.)
+#   - OpenClaw runtime upgraded to latest via init script (npm i -g openclaw)
+#   - Upgrade cached at /home/node/.local/bin/openclaw on PVC
 #
 # Persistence: All stateful data symlinked to /mnt/openclaw-agents PVC
 # Auth profiles: Merge mode (preserves user-added keys across restarts)
@@ -352,6 +352,17 @@ spec:
               done
               export PATH="/home/node/.local/bin:$PATH"
               echo "[init] PVC tools on PATH ($(ls /home/node/.local/bin/ 2>/dev/null | wc -l) bins)"
+              # Use PVC-cached OpenClaw runtime (install once, persist across restarts)
+              OC_LOCAL="$PVC/_openclaw_runtime"
+              if [ ! -f "$OC_LOCAL/bin/openclaw" ]; then
+                echo '[init] Installing OpenClaw runtime to PVC (first time)...'
+                mkdir -p "$OC_LOCAL"
+                npm config set prefix "$OC_LOCAL"
+                npm i -g openclaw@latest --loglevel=error 2>&1 | tail -3
+                echo "[init] OpenClaw installed: $($OC_LOCAL/bin/openclaw --version 2>/dev/null)"
+              else
+                echo "[init] OpenClaw ready: $($OC_LOCAL/bin/openclaw --version 2>/dev/null)"
+              fi
               # Load skill env vars from workspace .env (persisted on PVC)
               if [ -f /home/node/.openclaw/workspace/.env ]; then
                 set -a
@@ -359,7 +370,8 @@ spec:
                 set +a
                 echo '[init] Loaded skill env vars from workspace/.env'
               fi
-              exec env PATH="/home/node/.local/bin:$PATH" openclaw gateway --bind lan --port 18789 --auth token --token "$OPENCLAW_GATEWAY_TOKEN" --allow-unconfigured
+              export PATH="$OC_LOCAL/bin:$PATH"
+              exec "$OC_LOCAL/bin/openclaw" gateway --bind lan --port 18789 --auth token --token "$OPENCLAW_GATEWAY_TOKEN" --allow-unconfigured
           ports:
             - containerPort: 18789
           env:

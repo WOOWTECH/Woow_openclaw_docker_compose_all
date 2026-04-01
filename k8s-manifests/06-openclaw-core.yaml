@@ -192,7 +192,7 @@ spec:
               mkdir -p /home/node/.openclaw
               PVC="/mnt/openclaw-agents"
               ln -sfn "$PVC" /home/node/.openclaw/agents
-              mkdir -p "$PVC/_workspace" "$PVC/_managed-skills" "$PVC/_memory" "$PVC/_cron" "$PVC/_telegram" "$PVC/_config" "$PVC/_extensions"
+              mkdir -p "$PVC/_workspace" "$PVC/_managed-skills" "$PVC/_memory" "$PVC/_cron" "$PVC/_telegram" "$PVC/_config" "$PVC/_extensions" "$PVC/_nerve"
               ln -sfn "$PVC/_workspace" /home/node/.openclaw/workspace
               ln -sfn "$PVC/_managed-skills" /home/node/.openclaw/skills
               ln -sfn "$PVC/_memory" /home/node/.openclaw/memory
@@ -520,6 +520,113 @@ spec:
               mountPath: /mnt/openclaw-agents
             - name: dshm
               mountPath: /dev/shm
+        # =============================================================
+        # Nerve WebGUI - Sidecar Container
+        # Shares PVC + pod network with gateway (localhost:18789)
+        # Uses node:22-slim + PVC-cached build (no custom image needed)
+        # =============================================================
+        - name: nerve
+          image: node:22-slim
+          command:
+            - sh
+            - -c
+            - |
+              # Install git + build tools (needed for first build)
+              apt-get update -qq && apt-get install -y -qq git make g++ python3 wget >/dev/null 2>&1
+              # Setup: symlink PVC paths so Nerve can find workspace/agents data
+              PVC="/mnt/openclaw-agents"
+              NERVE_APP="$PVC/_nerve_app"
+              mkdir -p /home/node/.openclaw
+              ln -sfn "$PVC" /home/node/.openclaw/agents
+              ln -sfn "$PVC/_workspace" /home/node/.openclaw/workspace
+              ln -sfn "$PVC/_memory" /home/node/.openclaw/memory
+              # Nerve state: persist ~/.nerve/ on PVC
+              ln -sfn "$PVC/_nerve" /home/node/.nerve
+              # Install or restore Nerve from PVC cache
+              if [ -f "$NERVE_APP/package.json" ] && [ -d "$NERVE_APP/dist" ]; then
+                echo "[nerve-init] Nerve found on PVC cache — skipping build"
+              else
+                echo "[nerve-init] First boot: cloning and building Nerve..."
+                rm -rf "$NERVE_APP"
+                git clone --depth 1 https://github.com/daggerhashimoto/openclaw-nerve.git "$NERVE_APP"
+                cd "$NERVE_APP"
+                npm ci --loglevel=error 2>&1 | tail -5
+                npm run build 2>&1 | tail -5
+                echo "[nerve-init] Nerve build complete and cached on PVC"
+              fi
+              cd "$NERVE_APP"
+              # Write .env for Nerve (gateway on localhost = same pod)
+              cat > .env << ENVEOF
+              GATEWAY_URL=http://127.0.0.1:18789
+              GATEWAY_TOKEN=${GATEWAY_TOKEN}
+              HOST=0.0.0.0
+              PORT=3080
+              NERVE_AUTH=true
+              NERVE_PASSWORD_HASH=${NERVE_PASSWORD_HASH}
+              NERVE_SESSION_SECRET=${NERVE_SESSION_SECRET}
+              NERVE_SESSION_TTL=30d
+              TRUSTED_PROXIES=10.42.0.0/16
+              STT_PROVIDER=none
+              ENVEOF
+              # Wait for gateway to be ready on localhost:18789
+              echo "[nerve-init] Waiting for gateway on localhost:18789..."
+              RETRIES=0
+              until wget -qO /dev/null http://127.0.0.1:18789/ 2>/dev/null || [ $RETRIES -ge 120 ]; do
+                RETRIES=$((RETRIES + 1))
+                sleep 2
+              done
+              if [ $RETRIES -ge 120 ]; then
+                echo "[nerve-init] WARNING: Gateway not ready after 240s, starting anyway"
+              else
+                echo "[nerve-init] Gateway is ready!"
+              fi
+              # Start Nerve in production mode
+              exec npm run prod
+          ports:
+            - containerPort: 3080
+              name: nerve-http
+          env:
+            - name: GATEWAY_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: openclaw-secrets
+                  key: OPENCLAW_GATEWAY_TOKEN
+            - name: NERVE_PASSWORD_HASH
+              valueFrom:
+                secretKeyRef:
+                  name: openclaw-secrets
+                  key: NERVE_PASSWORD_HASH
+                  optional: true
+            - name: NERVE_SESSION_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: openclaw-secrets
+                  key: NERVE_SESSION_SECRET
+                  optional: true
+          resources:
+            requests:
+              cpu: 200m
+              memory: 256Mi
+            limits:
+              cpu: "2"
+              memory: 2Gi
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 18
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3080
+            initialDelaySeconds: 180
+            periodSeconds: 30
+            failureThreshold: 5
+          volumeMounts:
+            - name: agents-data
+              mountPath: /mnt/openclaw-agents
       volumes:
         - name: agents-data
           persistentVolumeClaim:

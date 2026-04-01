@@ -1,0 +1,23 @@
+# =============================================================
+# Nerve WebGUI - Service
+# Exposes only the Nerve UI port (3080).
+# Gateway port 18789 remains on openclaw-gateway-svc (internal).
+# Both services share the same pod selector.
+# =============================================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: nerve-svc
+  namespace: openclaw-tenant-1
+  labels:
+    app: openclaw-gateway
+    app.kubernetes.io/component: nerve-ui
+spec:
+  selector:
+    app: openclaw-gateway
+  ports:
+    - protocol: TCP
+      port: 3080
+      targetPort: 3080
+      name: nerve-http
+  type: ClusterIP

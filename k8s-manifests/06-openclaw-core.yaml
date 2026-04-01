@@ -556,18 +556,7 @@ spec:
               fi
               cd "$NERVE_APP"
               # Write .env for Nerve (gateway on localhost = same pod)
-              cat > .env <<EOF
-GATEWAY_URL=http://127.0.0.1:18789
-GATEWAY_TOKEN=${GATEWAY_TOKEN}
-HOST=0.0.0.0
-PORT=3080
-NERVE_AUTH=true
-NERVE_PASSWORD_HASH="${NERVE_PASSWORD_HASH}"
-NERVE_SESSION_SECRET="${NERVE_SESSION_SECRET}"
-NERVE_SESSION_TTL=30d
-TRUSTED_PROXIES=10.42.0.0/16
-STT_PROVIDER=none
-EOF
+              printf 'GATEWAY_URL=http://127.0.0.1:18789\nGATEWAY_TOKEN=%s\nHOST=0.0.0.0\nPORT=3080\nNERVE_AUTH=true\nNERVE_PASSWORD_HASH=%s\nNERVE_SESSION_SECRET=%s\nNERVE_SESSION_TTL=2592000000\nTRUSTED_PROXIES=10.42.0.0/16\nSTT_PROVIDER=none\nALLOWED_ORIGINS=https://cindytech1-nerve.woowtech.io\nNERVE_PUBLIC_ORIGIN=https://cindytech1-nerve.woowtech.io\n' "$GATEWAY_TOKEN" "$NERVE_PASSWORD_HASH" "$NERVE_SESSION_SECRET" > .env
               # Wait for gateway to be ready on localhost:18789
               echo "[nerve-init] Waiting for gateway on localhost:18789..."
               RETRIES=0

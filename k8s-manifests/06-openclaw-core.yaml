@@ -219,7 +219,7 @@ spec:
                 # Auto-detect default model from available API keys
                 DEFAULT_MODEL=""
                 [ -n "${OPENAI_API_KEY:-}" ] && DEFAULT_MODEL="openai/gpt-4o"
-                [ -z "$DEFAULT_MODEL" ] && [ -n "${MINIMAX_API_KEY:-}" ] && DEFAULT_MODEL="minimax/MiniMax-M2.5"
+                [ -z "$DEFAULT_MODEL" ] && [ -n "${MINIMAX_API_KEY:-}" ] && DEFAULT_MODEL="minimax/MiniMax-M2.7"
                 [ -z "$DEFAULT_MODEL" ] && [ -n "${DEEPSEEK_API_KEY:-}" ] && DEFAULT_MODEL="deepseek/deepseek-chat"
                 [ -z "$DEFAULT_MODEL" ] && [ -n "${ANTHROPIC_API_KEY:-}" ] && DEFAULT_MODEL="anthropic/claude-sonnet-4-20250514"
                 [ -z "$DEFAULT_MODEL" ] && [ -n "${GEMINI_API_KEY:-}" ] && DEFAULT_MODEL="google/gemini-2.0-flash"

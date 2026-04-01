@@ -534,14 +534,15 @@ spec:
               # Install git + build tools (needed for first build)
               apt-get update -qq && apt-get install -y -qq git make g++ python3 wget >/dev/null 2>&1
               # Setup: symlink PVC paths so Nerve can find workspace/agents data
+              # Nerve runs as root in node:22-slim, so HOME=/root
               PVC="/mnt/openclaw-agents"
               NERVE_APP="$PVC/_nerve_app"
-              mkdir -p /home/node/.openclaw
-              ln -sfn "$PVC" /home/node/.openclaw/agents
-              ln -sfn "$PVC/_workspace" /home/node/.openclaw/workspace
-              ln -sfn "$PVC/_memory" /home/node/.openclaw/memory
-              # Nerve state: persist ~/.nerve/ on PVC
-              ln -sfn "$PVC/_nerve" /home/node/.nerve
+              mkdir -p /root/.openclaw
+              ln -sfn "$PVC" /root/.openclaw/agents
+              ln -sfn "$PVC/_workspace" /root/.openclaw/workspace
+              ln -sfn "$PVC/_memory" /root/.openclaw/memory
+              ln -sf "$PVC/_openclaw.json" /root/.openclaw/openclaw.json
+              ln -sfn "$PVC/_nerve" /root/.nerve
               # Install or restore Nerve from PVC cache
               if [ -f "$NERVE_APP/package.json" ] && [ -d "$NERVE_APP/dist" ]; then
                 echo "[nerve-init] Nerve found on PVC cache — skipping build"

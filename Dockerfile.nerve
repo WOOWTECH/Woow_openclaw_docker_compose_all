@@ -1,0 +1,64 @@
+# ============================================================
+# Dockerfile.nerve — OpenClaw Nerve WebGUI
+#
+# Build: docker build -t openclaw-nerve:latest -f Dockerfile.nerve .
+# The image is used as a sidecar in the openclaw-gateway pod.
+#
+# Multi-stage: clone repo → npm ci → build → slim runtime
+# ============================================================
+
+# --- Stage 1: Build ---
+FROM node:22-slim AS builder
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git make g++ python3 ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /build
+
+# Clone openclaw-nerve (pin version via build arg for reproducibility)
+ARG NERVE_VERSION=latest
+RUN if [ "$NERVE_VERSION" = "latest" ]; then \
+      git clone --depth 1 https://github.com/daggerhashimoto/openclaw-nerve.git .; \
+    else \
+      git clone --depth 1 --branch "$NERVE_VERSION" \
+        https://github.com/daggerhashimoto/openclaw-nerve.git .; \
+    fi
+
+# Install all dependencies (including dev for build)
+RUN npm ci --loglevel=error
+
+# Build frontend (Vite) + backend (TypeScript)
+RUN npm run build
+
+# Prune dev dependencies
+RUN npm prune --production
+
+# --- Stage 2: Runtime ---
+FROM node:22-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates wget \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy production build artifacts
+COPY --from=builder /build/dist ./dist
+COPY --from=builder /build/node_modules ./node_modules
+COPY --from=builder /build/package.json ./package.json
+COPY --from=builder /build/server ./server
+COPY --from=builder /build/bin ./bin
+COPY --from=builder /build/config ./config
+COPY --from=builder /build/skills ./skills
+
+# Create state dirs (will be overridden by PVC mount)
+RUN mkdir -p /home/node/.nerve /home/node/.openclaw \
+    && chown -R 1000:1000 /home/node
+
+USER 1000
+
+EXPOSE 3080
+
+# Default: start production server
+CMD ["npm", "run", "prod"]

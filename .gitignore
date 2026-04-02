@@ -1,11 +1,19 @@
 # Dependencies
 node_modules/
 .npm/
+package-lock.json
 
-# Environment files
+# Environment files / Secrets
 .env
 .env.*
+.env.old
 !.env.example
+cf-config.json
+**/cf-config.json
+
+# Test secrets
+tests/pre-launch/config.env
+**/config.env
 
 # OS files
 .DS_Store
@@ -17,8 +25,13 @@ Thumbs.db
 
 # Test artifacts
 /tmp/
-*.png
-!.vibe-attachments/
+test-results/
+playwright-report/
+
+# Runtime data
+task_plan.md
+findings.md
+progress.md
 
 # Python
 __pycache__/

@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+.npm/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Test artifacts
+/tmp/
+*.png
+!.vibe-attachments/
+
+# Python
+__pycache__/
+*.pyc
+venv/
+
+# Build
+dist/
+build/
+
+# Logs
+*.log
+
+# Secrets (never commit real values)
+**/secrets.yaml
+!k8s-manifests/02-secrets.yaml

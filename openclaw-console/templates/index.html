@@ -78,7 +78,10 @@
             background: rgba(26, 26, 46, 0.9);
             backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border-card);
+            overflow-x: auto; flex-wrap: nowrap;
+            -ms-overflow-style: none; scrollbar-width: none;
         }
+        .topnav::-webkit-scrollbar { display: none; }
         html[data-theme="light"] .topnav { background: rgba(255,255,255,0.9); }
         .topnav-logo {
             width: 28px; height: 28px;
@@ -92,7 +95,7 @@
         .topnav-tab {
             padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 500;
             color: var(--text-muted); cursor: pointer; border: none; background: none;
-            transition: background 0.2s, color 0.2s;
+            transition: background 0.2s, color 0.2s; white-space: nowrap; flex-shrink: 0;
         }
         .topnav-tab:hover { background: rgba(97,131,252,0.1); color: var(--text-body); }
         .topnav-tab.active { background: rgba(97,131,252,0.15); color: var(--primary-blue); font-weight: 600; }
@@ -312,6 +315,8 @@
     <span class="topnav-title">OpenClaw Console</span>
     <button class="topnav-tab active" data-tab="dashboard" id="tab-dashboard">Dashboard</button>
     <button class="topnav-tab" data-tab="setup" id="tab-setup">Setup</button>
+    <button class="topnav-tab" data-tab="nerve" id="tab-nerve">Nerve</button>
+    <button class="topnav-tab" data-tab="openclaw" id="tab-openclaw">OpenClaw</button>
     <button class="topnav-tab" data-tab="terminal" id="tab-terminal">Terminal</button>
     <button class="topnav-icon" id="theme-toggle" title="Toggle theme"><span id="theme-icon">&#9788;</span></button>
 </nav>
@@ -519,6 +524,32 @@
 </div>
 
 <!-- ============================================ -->
+<!-- Nerve WebGUI Page -->
+<!-- ============================================ -->
+<div class="page-view" id="view-nerve">
+    <div class="card" style="padding:16px">
+        <div class="card-header">
+            <div class="card-icon blue">&#128423;</div>
+            <div><div class="card-title">Nerve WebGUI</div><div class="card-subtitle">Chat interface and agent interaction</div></div>
+        </div>
+        <iframe id="nerve-iframe" class="terminal-frame" style="height:calc(100vh - 180px)" src="about:blank"></iframe>
+    </div>
+</div>
+
+<!-- ============================================ -->
+<!-- OpenClaw Control UI Page -->
+<!-- ============================================ -->
+<div class="page-view" id="view-openclaw">
+    <div class="card" style="padding:16px">
+        <div class="card-header">
+            <div class="card-icon purple">&#9881;</div>
+            <div><div class="card-title">OpenClaw Control UI</div><div class="card-subtitle">Gateway settings, channels and device management</div></div>
+        </div>
+        <iframe id="openclaw-iframe" class="terminal-frame" style="height:calc(100vh - 180px)" src="about:blank"></iframe>
+    </div>
+</div>
+
+<!-- ============================================ -->
 <!-- Terminal Page -->
 <!-- ============================================ -->
 <div class="page-view" id="view-terminal">
@@ -613,6 +644,8 @@ function switchTab(tab) {
     document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
     document.getElementById('view-' + tab).classList.add('active');
     if (tab === 'dashboard') loadDashboard();
+    if (tab === 'nerve') loadNerve();
+    if (tab === 'openclaw') loadOpenClaw();
     if (tab === 'terminal') loadTerminal();
 }
 document.querySelectorAll('.topnav-tab').forEach(btn => {
@@ -701,6 +734,24 @@ async function loadLogs(lines) {
     } catch (e) {
         document.getElementById('log-box').textContent = 'Error loading logs';
     }
+}
+
+// ========== Nerve ==========
+function loadNerve() {
+    const iframe = document.getElementById('nerve-iframe');
+    const host = window.location.hostname;
+    const nerveHost = host.replace('-tui.', '-nerve.');
+    const nerveUrl = window.location.protocol + '//' + nerveHost;
+    if (iframe.src !== nerveUrl) iframe.src = nerveUrl;
+}
+
+// ========== OpenClaw Control UI ==========
+function loadOpenClaw() {
+    const iframe = document.getElementById('openclaw-iframe');
+    const host = window.location.hostname;
+    const ocHost = host.replace('-tui.', '-openclaw.');
+    const ocUrl = window.location.protocol + '//' + ocHost;
+    if (iframe.src !== ocUrl) iframe.src = ocUrl;
 }
 
 // ========== Terminal ==========

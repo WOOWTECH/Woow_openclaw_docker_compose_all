@@ -100,10 +100,32 @@ def kexec(cmd):
              "--", "sh", "-c", cmd],
             capture_output=True, text=True, timeout=15,
         )
+        if result.returncode != 0 and result.stderr:
+            log.warning(f"kexec non-zero exit [{cmd[:60]}]: {result.stderr[:200]}")
         return result.stdout
     except Exception as e:
         log.warning(f"kexec failed [{cmd[:60]}]: {e}")
         return ""
+
+
+def kexec_write(file_path, content):
+    """Write content to a file inside the gateway pod using stdin pipe to avoid shell quoting issues."""
+    pod = get_gateway_pod()
+    if not pod:
+        return False
+    try:
+        result = subprocess.run(
+            ["kubectl", "exec", pod, "-n", NAMESPACE, "-c", "openclaw-gateway",
+             "-i", "--", "sh", "-c", f"cat > '{file_path}'"],
+            input=content, capture_output=True, text=True, timeout=15,
+        )
+        if result.returncode != 0:
+            log.warning(f"kexec_write failed [{file_path}]: {result.stderr[:200]}")
+            return False
+        return True
+    except Exception as e:
+        log.warning(f"kexec_write exception [{file_path}]: {e}")
+        return False
 
 
 def create_secret(secret_data):
@@ -208,25 +230,30 @@ def api_config_get():
 
 @app.route("/api/config", methods=["POST"])
 def api_config_post():
-    """Partial merge into openclaw.json."""
+    """Write to openclaw.json. Default: deep-merge. Use ?replace=1 for full replacement."""
     patch = request.get_json(force=True)
-    raw = kexec("cat /home/node/.openclaw/openclaw.json 2>/dev/null")
-    try:
-        cfg = json.loads(raw)
-    except Exception:
-        return jsonify({"error": "unable to read config"}), 500
+    full_replace = request.args.get("replace", "0") == "1"
 
-    def deep_merge(base, override):
-        for k, v in override.items():
-            if isinstance(v, dict) and isinstance(base.get(k), dict):
-                deep_merge(base[k], v)
-            else:
-                base[k] = v
+    if full_replace:
+        cfg = patch
+    else:
+        raw = kexec("cat /home/node/.openclaw/openclaw.json 2>/dev/null")
+        try:
+            cfg = json.loads(raw)
+        except Exception:
+            return jsonify({"error": "unable to read config"}), 500
 
-    deep_merge(cfg, patch)
-    escaped = json.dumps(json.dumps(cfg))
-    result = kexec(f"node -e \"require('fs').writeFileSync('/home/node/.openclaw/openclaw.json',{escaped})\"")
-    return jsonify({"ok": True})
+        def deep_merge(base, override):
+            for k, v in override.items():
+                if isinstance(v, dict) and isinstance(base.get(k), dict):
+                    deep_merge(base[k], v)
+                else:
+                    base[k] = v
+
+        deep_merge(cfg, patch)
+
+    ok = kexec_write("/home/node/.openclaw/openclaw.json", json.dumps(cfg, indent=2))
+    return jsonify({"ok": ok})
 
 
 @app.route("/api/config/model", methods=["POST"])
@@ -235,14 +262,19 @@ def api_config_model():
     model = data.get("model", "")
     if not model:
         return jsonify({"error": "model required"}), 400
-    escaped = json.dumps(model)
-    result = kexec(
-        f"node -e \"const fs=require('fs'),p='/home/node/.openclaw/openclaw.json';"
-        f"const c=JSON.parse(fs.readFileSync(p,'utf8'));"
-        f"c.agents.defaults.model={escaped};"
-        f"fs.writeFileSync(p,JSON.stringify(c,null,2));console.log('OK')\""
-    )
-    ok = "OK" in result
+    # Use openclaw CLI to set the model — this does a surgical JSON update
+    # without reformatting the file or losing runtime-added fields.
+    result = kexec(f'openclaw config set agents.defaults.model "{model}" 2>&1')
+    ok = "error" not in result.lower() if result else False
+    if not ok:
+        # Fallback: read-modify-write
+        raw = kexec("cat /home/node/.openclaw/openclaw.json 2>/dev/null")
+        try:
+            cfg = json.loads(raw)
+        except Exception:
+            return jsonify({"error": "unable to read config", "ok": False}), 500
+        cfg.setdefault("agents", {}).setdefault("defaults", {})["model"] = model
+        ok = kexec_write("/home/node/.openclaw/openclaw.json", json.dumps(cfg, indent=2))
     return jsonify({"ok": ok, "model": model})
 
 
@@ -256,9 +288,8 @@ def api_env_get():
 def api_env_post():
     data = request.get_json(force=True)
     content = data.get("content", "")
-    escaped = json.dumps(content)
-    kexec(f"node -e \"require('fs').writeFileSync('/home/node/.openclaw/workspace/.env',{escaped})\"")
-    return jsonify({"ok": True})
+    ok = kexec_write("/home/node/.openclaw/workspace/.env", content)
+    return jsonify({"ok": ok})
 
 
 @app.route("/api/soul", methods=["GET"])
@@ -271,9 +302,8 @@ def api_soul_get():
 def api_soul_post():
     data = request.get_json(force=True)
     content = data.get("content", "")
-    escaped = json.dumps(content)
-    kexec(f"node -e \"require('fs').writeFileSync('/home/node/.openclaw/workspace/SOUL.md',{escaped})\"")
-    return jsonify({"ok": True})
+    ok = kexec_write("/home/node/.openclaw/workspace/SOUL.md", content)
+    return jsonify({"ok": ok})
 
 
 @app.route("/api/channels")

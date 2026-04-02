@@ -706,8 +706,10 @@ async function loadLogs(lines) {
 // ========== Terminal ==========
 function loadTerminal() {
     const iframe = document.getElementById('terminal-iframe');
-    // ttyd runs on port 7681, same host
-    const ttydUrl = window.location.protocol + '//' + window.location.hostname + ':7681';
+    // ttyd is on a separate subdomain (cindytech1-terminal) routed via Cloudflare tunnel
+    const host = window.location.hostname; // e.g. cindytech1-tui.woowtech.io
+    const ttydHost = host.replace('-tui.', '-terminal.');
+    const ttydUrl = window.location.protocol + '//' + ttydHost;
     if (iframe.src !== ttydUrl) iframe.src = ttydUrl;
 }
 

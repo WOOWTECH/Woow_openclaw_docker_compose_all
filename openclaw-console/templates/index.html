@@ -315,8 +315,7 @@
     <span class="topnav-title">OpenClaw Console</span>
     <button class="topnav-tab active" data-tab="dashboard" id="tab-dashboard">Dashboard</button>
     <button class="topnav-tab" data-tab="setup" id="tab-setup">Setup</button>
-    <button class="topnav-tab" data-tab="nerve" id="tab-nerve">Nerve</button>
-    <button class="topnav-tab" data-tab="openclaw" id="tab-openclaw">OpenClaw</button>
+    <button class="topnav-tab" data-tab="webgui" id="tab-webgui">Web GUI</button>
     <button class="topnav-tab" data-tab="terminal" id="tab-terminal">Terminal</button>
     <button class="topnav-icon" id="theme-toggle" title="Toggle theme"><span id="theme-icon">&#9788;</span></button>
 </nav>
@@ -524,29 +523,40 @@
 </div>
 
 <!-- ============================================ -->
-<!-- Nerve WebGUI Page -->
+<!-- Web GUI Page -->
 <!-- ============================================ -->
-<div class="page-view" id="view-nerve">
-    <div class="card" style="padding:16px">
+<div class="page-view" id="view-webgui">
+
+    <div class="card" style="cursor:pointer" onclick="openWebGui('nerve')">
         <div class="card-header">
             <div class="card-icon blue">&#128423;</div>
-            <div><div class="card-title">Nerve WebGUI</div><div class="card-subtitle">Chat interface and agent interaction</div></div>
+            <div>
+                <div class="card-title">Nerve WebGUI</div>
+                <div class="card-subtitle">Chat interface and agent interaction</div>
+            </div>
         </div>
-        <iframe id="nerve-iframe" class="terminal-frame" style="height:calc(100vh - 180px)" src="about:blank"></iframe>
+        <div class="status-row">
+            <span class="status-label">URL</span>
+            <span class="status-value" id="nerve-url"></span>
+        </div>
+        <button class="btn btn-secondary btn-sm" style="margin-top:12px" onclick="event.stopPropagation(); openWebGui('nerve')">Open in new tab &rarr;</button>
     </div>
-</div>
 
-<!-- ============================================ -->
-<!-- OpenClaw Control UI Page -->
-<!-- ============================================ -->
-<div class="page-view" id="view-openclaw">
-    <div class="card" style="padding:16px">
+    <div class="card" style="cursor:pointer" onclick="openWebGui('openclaw')">
         <div class="card-header">
             <div class="card-icon purple">&#9881;</div>
-            <div><div class="card-title">OpenClaw Control UI</div><div class="card-subtitle">Gateway settings, channels and device management</div></div>
+            <div>
+                <div class="card-title">OpenClaw Control UI</div>
+                <div class="card-subtitle">Gateway settings, channels and device management</div>
+            </div>
         </div>
-        <iframe id="openclaw-iframe" class="terminal-frame" style="height:calc(100vh - 180px)" src="about:blank"></iframe>
+        <div class="status-row">
+            <span class="status-label">URL</span>
+            <span class="status-value" id="openclaw-url"></span>
+        </div>
+        <button class="btn btn-secondary btn-sm" style="margin-top:12px" onclick="event.stopPropagation(); openWebGui('openclaw')">Open in new tab &rarr;</button>
     </div>
+
 </div>
 
 <!-- ============================================ -->
@@ -644,8 +654,7 @@ function switchTab(tab) {
     document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
     document.getElementById('view-' + tab).classList.add('active');
     if (tab === 'dashboard') loadDashboard();
-    if (tab === 'nerve') loadNerve();
-    if (tab === 'openclaw') loadOpenClaw();
+    if (tab === 'webgui') loadWebGui();
     if (tab === 'terminal') loadTerminal();
 }
 document.querySelectorAll('.topnav-tab').forEach(btn => {
@@ -736,22 +745,20 @@ async function loadLogs(lines) {
     }
 }
 
-// ========== Nerve ==========
-function loadNerve() {
-    const iframe = document.getElementById('nerve-iframe');
+// ========== Web GUI ==========
+function getWebGuiUrl(target) {
     const host = window.location.hostname;
-    const nerveHost = host.replace('-tui.', '-nerve.');
-    const nerveUrl = window.location.protocol + '//' + nerveHost;
-    if (iframe.src !== nerveUrl) iframe.src = nerveUrl;
+    const proto = window.location.protocol;
+    if (target === 'nerve') return proto + '//' + host.replace('-tui.', '-nerve.');
+    if (target === 'openclaw') return proto + '//' + host.replace('-tui.', '-openclaw.');
+    return '#';
 }
-
-// ========== OpenClaw Control UI ==========
-function loadOpenClaw() {
-    const iframe = document.getElementById('openclaw-iframe');
-    const host = window.location.hostname;
-    const ocHost = host.replace('-tui.', '-openclaw.');
-    const ocUrl = window.location.protocol + '//' + ocHost;
-    if (iframe.src !== ocUrl) iframe.src = ocUrl;
+function loadWebGui() {
+    document.getElementById('nerve-url').textContent = getWebGuiUrl('nerve').replace(/^https?:\/\//, '');
+    document.getElementById('openclaw-url').textContent = getWebGuiUrl('openclaw').replace(/^https?:\/\//, '');
+}
+function openWebGui(target) {
+    window.open(getWebGuiUrl(target), '_blank');
 }
 
 // ========== Terminal ==========

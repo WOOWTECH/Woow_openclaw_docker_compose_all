@@ -1,0 +1,208 @@
+# =============================================================
+# OpenClaw Console — Unified Setup Wizard + Management UI
+#
+# Replaces both setup-wizard (05) and openclaw-web-tui (10).
+# Single pod: Flask (:18790) + ttyd (:7681), no custom image.
+# App code mounted via ConfigMaps, deps installed at startup.
+#
+# Features:
+#   - Auto-detect: shows Setup or Dashboard based on gateway state
+#   - Dashboard: status, config editor, model selector, plugins, logs
+#   - Setup: zero-touch provisioning (7-step pipeline)
+#   - Terminal: ttyd iframe for kubectl exec shell access
+#
+# Security: RBAC scoped to openclaw-gateway only.
+# Access: https://cindytech1-tui.woowtech.io
+# =============================================================
+
+# --- ServiceAccount ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: openclaw-console-sa
+  namespace: openclaw-tenant-1
+  labels:
+    app: openclaw-console
+---
+# --- RBAC Role ---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: openclaw-console-role
+  namespace: openclaw-tenant-1
+  labels:
+    app: openclaw-console
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["create", "get"]
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get"]
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    resourceNames: ["openclaw-gateway"]
+    verbs: ["get", "patch"]
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get", "list"]
+  - apiGroups: ["apps"]
+    resources: ["deployments/scale"]
+    verbs: ["get", "patch", "update"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["create", "update", "get", "patch"]
+---
+# --- RoleBinding ---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: openclaw-console-binding
+  namespace: openclaw-tenant-1
+  labels:
+    app: openclaw-console
+subjects:
+  - kind: ServiceAccount
+    name: openclaw-console-sa
+    namespace: openclaw-tenant-1
+roleRef:
+  kind: Role
+  name: openclaw-console-role
+  apiGroup: rbac.authorization.k8s.io
+---
+# --- Deployment ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openclaw-console
+  namespace: openclaw-tenant-1
+  labels:
+    app: openclaw-console
+    app.kubernetes.io/component: console
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openclaw-console
+  template:
+    metadata:
+      labels:
+        app: openclaw-console
+    spec:
+      serviceAccountName: openclaw-console-sa
+      containers:
+        - name: console
+          image: python:3.9-slim
+          command:
+            - sh
+            - -c
+            - |
+              set -e
+              echo '[console] Installing system packages...'
+              apt-get update -qq && apt-get install -y -qq --no-install-recommends curl ca-certificates > /dev/null 2>&1
+
+              echo '[console] Installing ttyd...'
+              curl -sLo /usr/local/bin/ttyd https://github.com/tsl0922/ttyd/releases/download/1.7.7/ttyd.x86_64
+              chmod +x /usr/local/bin/ttyd
+
+              echo '[console] Installing kubectl...'
+              KUBECTL_VER=$(curl -Ls https://dl.k8s.io/release/stable.txt)
+              curl -sLo /usr/local/bin/kubectl "https://dl.k8s.io/release/${KUBECTL_VER}/bin/linux/amd64/kubectl"
+              chmod +x /usr/local/bin/kubectl
+
+              echo '[console] Installing Python dependencies...'
+              pip install -q flask==3.1.0 requests==2.32.3 kubernetes==31.0.0 2>/dev/null
+
+              echo '[console] Starting entrypoint...'
+              mkdir -p /app/templates
+              cp /mnt/scripts/app.py /app/app.py
+              cp /mnt/scripts/connect.sh /app/connect.sh
+              cp /mnt/html/index.html /app/templates/index.html
+              chmod +x /app/connect.sh
+              cd /app
+              exec python /mnt/scripts/entrypoint.py
+          ports:
+            - containerPort: 18790
+              name: http
+            - containerPort: 7681
+              name: ttyd
+          env:
+            - name: NAMESPACE
+              value: "openclaw-tenant-1"
+            - name: TUI_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: openclaw-secrets
+                  key: OPENCLAW_GATEWAY_TOKEN
+            - name: DOMAIN
+              value: "cindytech1-openclaw.woowtech.io"
+            - name: CF_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: cf-secrets
+                  key: CF_API_TOKEN
+                  optional: true
+            - name: CF_ACCOUNT_ID
+              value: "9c27f623ee596e0b67be56263bcb1974"
+            - name: CF_TUNNEL_ID
+              value: "6cedc4aa-6956-43a3-8296-87a5c9702343"
+          volumeMounts:
+            - name: scripts
+              mountPath: /mnt/scripts
+              readOnly: true
+            - name: html
+              mountPath: /mnt/html
+              readOnly: true
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          readinessProbe:
+            tcpSocket:
+              port: 18790
+            initialDelaySeconds: 90
+            periodSeconds: 10
+            failureThreshold: 30
+          livenessProbe:
+            tcpSocket:
+              port: 18790
+            initialDelaySeconds: 180
+            periodSeconds: 30
+            failureThreshold: 10
+      volumes:
+        - name: scripts
+          configMap:
+            name: openclaw-console-scripts
+            defaultMode: 0755
+        - name: html
+          configMap:
+            name: openclaw-console-html
+            defaultMode: 0644
+---
+# --- Service ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openclaw-console-svc
+  namespace: openclaw-tenant-1
+  labels:
+    app: openclaw-console
+spec:
+  selector:
+    app: openclaw-console
+  ports:
+    - protocol: TCP
+      port: 18790
+      targetPort: 18790
+      name: http
+    - protocol: TCP
+      port: 7681
+      targetPort: 7681
+      name: ttyd
+  type: ClusterIP

@@ -1,139 +1,248 @@
-# Woow OpenClaw Docker Compose All
+# Woow OpenClaw K3s Deployment
 
-**OpenClaw AI Gateway — Multi-Platform Deployment**
-**OpenClaw AI 閘道器 — 多平台部署**
+**OpenClaw AI Gateway — Enterprise K3s Deployment**
+**OpenClaw AI 閘道器 — 企業級 K3s 部署**
 
-This repository contains deployment configurations for the OpenClaw AI gateway across different infrastructure platforms. Each branch provides a complete, production-ready deployment with 8 AI providers, Cloudflare Tunnel, and 52 skill CLI dependencies.
+Complete, reproducible deployment of OpenClaw AI platform on K3s with Nerve WebGUI, Ollama local inference, 3 plugins, 62 tools, and multi-channel support (Telegram, WhatsApp, LINE, Web).
 
-本倉庫包含 OpenClaw AI 閘道器在不同基礎設施平台上的部署配置。每個分支提供完整的生產就緒部署，支援 8 個 AI 供應商、Cloudflare Tunnel、52 個技能 CLI 依賴。
-
----
-
-## Deployment Branches / 部署分支
-
-| Branch | Platform | Use Case | 適用場景 |
-|--------|----------|----------|----------|
-| [`k3s`](../../tree/k3s) | Kubernetes (K3s) | Production clusters, multi-node, RBAC, auto-scaling | 生產叢集、多節點、RBAC、自動擴展 |
-| [`podman`](../../tree/podman) | Docker Compose / Podman | Single server, VPS, homelab, development | 單一伺服器、VPS、家庭實驗室、開發 |
+在 K3s 上完整可重現部署 OpenClaw AI 平台，包含 Nerve WebGUI、Ollama 本地推論、3 個插件、62 個工具、多頻道支援。
 
 ---
 
-## Feature Matrix / 功能對照
+## Architecture / 架構
 
-| Feature | k3s | podman |
-|---------|-----|--------|
-| **AI Providers** | 8 (OpenAI, Anthropic, Google, MiniMax, DeepSeek, Qwen, OpenRouter, Ollama) | 8 (same) |
-| **Auth Format** | v1 (per-provider profiles) | v1 (per-provider profiles + merge logic) |
-| **Setup Wizard** | Dark/light mode, 8 providers | Dark/light mode, 8 providers |
-| **Custom Dockerfile** | 12 sections, 52 skill deps | 12 sections, 52 skill deps |
-| **Cloudflare Tunnel** | Integrated | Integrated (3x retry) |
-| **Database** | PostgreSQL + pgvector (PVC) | PostgreSQL + pgvector (bind mount) |
-| **Persistence** | K8s PVC (agents, workspace, memory, cron, telegram, config) | Bind mounts + host .env sync |
-| **Chat Channels** | Telegram, WhatsApp, Discord, Slack, Signal | Telegram, WhatsApp, Discord, Slack, Signal |
-| **Auto-scaling** | K8s HPA/VPA supported | Manual (single instance) |
-| **RBAC** | K8s RBAC + ServiceAccount | Docker socket access |
-| **Automated Tests** | 67 pre-launch tests (6 rounds) | Manual verification |
-| **Self-Destruct Wizard** | Scales to 0 replicas | Process exit (restart: "no") |
+```
+Internet (HTTPS)
+    |
+    v
++---------------------------------------------+
+|  Cloudflare Edge (DDoS + TLS)               |
++---------------------------------------------+
+    |  QUIC Tunnel
+    v
++=============================================+
+| K3s Cluster — Namespace: openclaw-tenant-1  |
+|                                             |
+|  +----------------+   +------------------+ |
+|  | cloudflared    |-->| openclaw-gateway | |
+|  | (tunnel)       |   | :18789           | |
+|  +-----+----------+   |                  | |
+|        |               | +-- AI Agent    | |
+|        |               | +-- Telegram    | |
+|        |               | +-- WhatsApp    | |
+|        |               | +-- LINE        | |
+|        |               | +-- 62 Tools    | |
+|        |               | +-- Exec(full) | |
+|        |               +--------+--------+ |
+|        |                        |           |
+|        |  +----------------+   +--------+  |
+|        |  | Nerve WebGUI   |<--| sidecar|  |
+|        |  | :3080          |   +--------+  |
+|        |  | - Chat UI      |       |       |
+|        |  | - Agent Mgmt   |       |       |
+|        |  | - Memory View  |       v       |
+|        |  | - Cron/Tasks   |  +---------+  |
+|        |  +----------------+  |PostgreSQL|  |
+|        |                      |:5432+pgv |  |
+|        |                      |(10Gi PVC)|  |
+|        |                      +---------+   |
+|        |                                    |
+|        v                                    |
+|  +------------------------------------------+
+|  | OpenClaw Console (Management UI)          |
+|  | :18790 (Flask) + :7681 (ttyd)             |
+|  | cindytech1-tui.woowtech.io               |
+|  |                                           |
+|  | Tabs:                                     |
+|  |  +-- Dashboard  (status, model, config,   |
+|  |  |               plugins, logs, restart)  |
+|  |  +-- Setup      (zero-touch provisioning) |
+|  |  +-- Web GUI    (links to Nerve +         |
+|  |  |               OpenClaw Control UI)     |
+|  |  +-- Terminal   (kubectl exec shell)      |
+|  |                                           |
+|  | 14 API endpoints, glassmorphism UI        |
+|  | RBAC: scoped to openclaw-gateway only     |
+|  +------------------------------------------+
+|                                              |
+|  +------------------------------------------+
+|  | Ollama (Local Inference)                  |
+|  | :11434                                    |
+|  | +-- nomic-embed-text (274MB, embedding)   |
+|  | +-- llama3:8b (4.7GB, smart extraction)   |
+|  | (15Gi PVC)                                |
+|  +------------------------------------------+
+|                                              |
+|  +------------------------------------------+
+|  | Plugins (PVC-persisted)                   |
+|  | +-- memory-lancedb-pro    (vector memory) |
+|  | +-- openclaw-homeassistant (34 HA tools)  |
+|  | +-- lossless-claw-enhanced (DAG context)  |
+|  +------------------------------------------+
+|                                              |
+|  +------------------------------------------+
+|  | PVC: openclaw-agents-pvc (5Gi)            |
+|  | +-- _openclaw.json    (runtime config)    |
+|  | +-- _workspace/       (SOUL, .env, etc)   |
+|  | +-- _extensions/      (plugin backup)     |
+|  | +-- _memory/          (LanceDB vectors)   |
+|  | +-- _cron/            (scheduled jobs)    |
+|  | +-- _telegram/        (session state)     |
+|  | +-- _nerve_app/       (built Nerve app)   |
+|  +------------------------------------------+
++=============================================+
+```
 
 ---
 
-## Quick Comparison / 快速比較
+## Components / 元件清單
 
-### Choose K3s if / 選擇 K3s 如果：
-- You have a Kubernetes cluster (K3s, K8s, EKS, GKE, AKS)
-- You need auto-scaling, RBAC, and namespace isolation
-- You want automated pre-launch testing (67 tests)
-- Multi-tenant deployment
-
-### Choose Podman if / 選擇 Podman 如果：
-- You have a single server or VPS
-- You want simple `podman compose up -d` deployment
-- You prefer Docker Compose workflow
-- Development and testing environments
-- Homelab / self-hosted setup
-
----
-
-## Shared Features / 共同功能
-
-Both branches include:
-
-- **8 AI Providers**: OpenAI, Anthropic, Google Gemini, MiniMax, DeepSeek, Qwen, OpenRouter, Ollama
-- **v1 Auth-Profiles Format**: `{version: 1, profiles: {provider: {type: "api_key", key: ..., provider: ...}}}`
-- **Dark/Light Mode**: Setup wizard with CSS variable toggle + localStorage persistence
-- **Custom Gateway Image**: 12-section Dockerfile with:
-  - System packages (jq, ffmpeg, tmux, ripgrep)
-  - npm CLIs (clawhub, mcporter, oracle, gemini-cli, codex)
-  - Go 1.23.7 + 13 Go binaries
-  - GitHub CLI, 1Password CLI, Himalaya, OpenHue, Obsidian CLI
-  - uv (Python), Whisper (CPU), nano-pdf
-- **Cloudflare Tunnel**: Secure HTTPS access via Cloudflare edge
-- **Bilingual UI/Docs**: English and Traditional Chinese (繁體中文)
+| Manifest | Component | Description |
+|----------|-----------|-------------|
+| `00-namespace.yaml` | Namespace | `openclaw-tenant-1` |
+| `01-rbac.yaml` | RBAC | ServiceAccount + role bindings |
+| `02-secrets.yaml` | Secrets | LLM API keys, channel tokens, HASS/Odoo/GOG credentials |
+| `03-config.yaml` | ConfigMap | Cloudflare config + `NERVE_PUBLIC_URL` |
+| `04-cloudflared.yaml` | Cloudflare Tunnel | QUIC tunnel to Cloudflare edge |
+| `05-setup-wizard.yaml` | Setup Wizard | (Superseded by OpenClaw Console) |
+| `10-openclaw-console.yaml` | **OpenClaw Console** | Unified management UI + setup wizard (Flask + ttyd, 14 API endpoints) |
+| `06-openclaw-core.yaml` | **Gateway + Nerve** | AI gateway (2 containers: gateway + nerve sidecar), PVC, full init script |
+| `07-ollama.yaml` | **Ollama** | Local LLM inference (PVC 15Gi + Deployment + Service) |
+| `08-ollama-model-init.yaml` | **Model Init Job** | Pulls `nomic-embed-text` + `llama3:8b` on first deploy |
+| `09-nerve-svc.yaml` | **Nerve Service** | ClusterIP service for Nerve WebGUI (:3080) |
 
 ---
 
-## AI Provider Details / AI 供應商詳情
+## Plugins / 插件
 
-| Provider | Default Model | Key Format | Models |
-|----------|---------------|------------|--------|
-| **OpenAI** | `openai/gpt-4o` | `sk-proj-...` | GPT-4o, o1, GPT-4 Turbo |
-| **Anthropic** | `anthropic/claude-sonnet-4-20250514` | `sk-ant-api03-...` | Claude Sonnet, Opus, Haiku |
-| **Google** | `google/gemini-2.0-flash` | `AIzaSy...` | Gemini 2.0 Flash, 2.5 Pro |
-| **MiniMax** | `minimax/MiniMax-M2.5` | `eyJhbG...` | MiniMax M2.5, Text-01 |
-| **DeepSeek** | `deepseek/deepseek-chat` | `sk-...` | DeepSeek Chat, Coder, Reasoner |
-| **Qwen** | `qwen/qwen-max` | `sk-...` | Qwen Max, Plus, Turbo |
-| **OpenRouter** | `openrouter/auto` | `sk-or-...` | 100+ models via single key |
-| **Ollama** | `ollama/llama3` | Host URL | Llama 3, Mistral, CodeLlama, etc. |
+| Plugin | Source | Function |
+|--------|--------|----------|
+| **memory-lancedb-pro** | `openclaw plugins install` | Vector memory with Ollama embedding (nomic-embed-text) + smart extraction (llama3:8b) |
+| **openclaw-homeassistant** | `@elvatis_com/openclaw-homeassistant` | 34 native Home Assistant tools (lights, sensors, switches, climate, media, automation) |
+| **lossless-claw-enhanced** | `github.com/win4r/lossless-claw-enhanced` | DAG-based lossless context management with CJK token fix |
+
+All plugins are:
+- Auto-installed on first boot (from npm/GitHub)
+- Backed up to PVC `_extensions/`
+- Auto-restored on pod restart
+- Config auto-injected into `openclaw.json`
 
 ---
 
-## Getting Started / 開始使用
+## Tools (62) / 工具
+
+| Category | Tools |
+|----------|-------|
+| **Core** | exec, read, write, edit, web_fetch, web_search |
+| **Sessions** | sessions_list, sessions_history, sessions_spawn, sessions_send, sessions_yield, session_status |
+| **Memory** | memory_recall, memory_store, memory_forget, memory_update |
+| **Media** | browser, canvas, image, pdf, tts |
+| **System** | cron, agents_list, gateway, message, process, nodes, subagents |
+| **Home Assistant** (34) | ha_status, ha_light_on/off/toggle/list, ha_switch_on/off/toggle, ha_climate_set_temp/mode/preset/list, ha_media_play/pause/stop/volume/play_media, ha_cover_open/close/position, ha_scene_activate, ha_script_run, ha_automation_trigger, ha_sensor_list, ha_history, ha_logbook, ha_call_service, ha_fire_event, ha_render_template, ha_notify, ha_list_entities, ha_get_state, ha_search_entities, ha_list_services |
+
+---
+
+## Channels / 頻道
+
+| Channel | Status | Policy |
+|---------|--------|--------|
+| **Telegram** | Active | dmPolicy: open, groupPolicy: open, streaming: partial |
+| **WhatsApp** | Active | dmPolicy: pairing, groupPolicy: allowlist |
+| **LINE** | Error | runtime-line.contract module issue |
+| **Web (Nerve)** | Active | Full WebGUI with chat, memory, cron, agents |
+
+---
+
+## Quick Start / 快速開始
 
 ```bash
-# K3s deployment / K3s 部署
-git clone -b k3s https://github.com/WOOWTECH/Woow_openclaw_docker_compose_all.git
+# 1. Clone
+git clone https://github.com/WOOWTECH/Woow_openclaw_docker_compose_all.git
 cd Woow_openclaw_docker_compose_all
-cp .env.example .env  # Fill in credentials
-./deploy.sh
 
-# Podman deployment / Podman 部署
-git clone -b podman https://github.com/WOOWTECH/Woow_openclaw_docker_compose_all.git
-cd Woow_openclaw_docker_compose_all
-cp .env.example .env  # Fill in credentials
-podman compose build gateway
-podman compose up -d
+# 2. Configure secrets (edit with real credentials)
+vi k8s-manifests/02-secrets.yaml
+#    MINIMAX_API_KEY, TELEGRAM_BOT_TOKEN, HASS_SERVER, HASS_TOKEN, etc.
+
+# 3. Configure domain
+vi k8s-manifests/03-config.yaml
+#    NERVE_PUBLIC_URL: "https://your-nerve-domain.example.com"
+
+# 4. Update node selector for Ollama (match your node hostname)
+vi k8s-manifests/07-ollama.yaml
+vi k8s-manifests/08-ollama-model-init.yaml
+
+# 5. Deploy
+kubectl apply -f k8s-manifests/
+
+# 6. Wait for model init job to complete (~5min)
+kubectl logs -n openclaw-tenant-1 job/ollama-model-init -f
+
+# 7. Verify
+kubectl get pods -n openclaw-tenant-1
+# Expected: openclaw-gateway 2/2, ollama 1/1, openclaw-db 1/1, cloudflared 1/1
 ```
 
 ---
 
-## Repository Structure / 倉庫結構
+## First Boot Automation / 首次啟動自動化
 
-```
-main          ← This branch: overview + branch navigation
-├── k3s       ← Kubernetes/K3s deployment (deploy.sh, k8s-manifests/, tests/)
-└── podman    ← Docker Compose/Podman deployment (docker-compose.yml, gateway/)
-```
+On first boot with empty PVC, the init script automatically:
+
+1. Creates `openclaw.json` with default model (auto-detected from API keys), 62 tools, browser config
+2. Creates `exec-approvals.json` with `security: full`, `ask: off`
+3. Injects `tools.exec.security=full` for unrestricted exec
+4. Injects channel credentials (Telegram botToken, LINE tokens) from K8s secrets
+5. Sets gateway `allowedOrigins` from `NERVE_PUBLIC_URL`
+6. Writes auth-profiles.json for all configured LLM providers
+7. Bootstraps 8 workspace files (SOUL.md, IDENTITY.md, MEMORY.md, etc.)
+8. Installs 3 plugins (memory-lancedb-pro, openclaw-homeassistant, lossless-claw-enhanced)
+9. Injects plugin configs into `openclaw.json` (Ollama endpoints, HA credentials, LCM settings)
+10. Installs workspace skills (homeassistant, odoo-manager, agent-browser)
 
 ---
 
-## K3s v2.2 Highlights / K3s v2.2 亮點
+## Enterprise Test Results / 企業級測試結果
 
-### Persistence / 持久化
-- **Full PVC Persistence**: agents, workspace, memory, cron, telegram, config — all survive pod restarts
-- **Config Symlink**: `openclaw.json` symlinked directly to PVC — web GUI changes persist immediately
-- **Skill Env Auto-Save**: AI automatically writes skill parameters (API keys, URLs) to `workspace/.env` via SOUL.md instruction
-- **Workspace .env Loading**: Startup script sources `workspace/.env` before gateway launch
+29/29 tests passed (100% effective) across 5 rounds:
 
-### Stability / 穩定性
-- **Pinned Base Image**: `v2026.3.13` (sha256:a5a4c83b) — stable LINE channel support (v2026.3.22+ has LINE crash bug)
-- **Isolated npm**: Skill CLIs in `/opt/openclaw-tools/` — prevents LINE plugin `isSenderAllowed` conflict
-- **Auto-Approve Fix**: JSON-based device pairing (fixes multiline UUID grep failure in table output)
+| Round | Scope | Result |
+|-------|-------|--------|
+| Round 1 | Individual modules (exec, HA, memory) | 6/6 |
+| Round 2 | Cross-module interactions | 4/4 |
+| Round 3 | Edge cases & error handling | 3/3 |
+| Round 4 | End-to-end real-world scenarios | 3/3 |
+| Round 5 | Odoo, Google, Cron, Sessions, Browser, Telegram, TTS | 13/13 |
 
-### New in v2.2 / v2.2 新增
-- **v2026.2.22 Compatibility Check**: Confirmed incompatible (uses `node openclaw.mjs`, no CLI binary)
-- **Skill Env Persistence**: `workspace/.env` + SOUL.md instruction = skill params auto-saved by AI
-- **Telegram Open Policy**: Default `dmPolicy: open` for Telegram channel
-- **52→54 Skills**: Workspace skills (homeassistant, odoo) counted in total
+See `TEST-REPORT-enterprise.md` and `REPORT-minimax-m27-intelligence.md` for details.
+
+---
+
+## OpenClaw Console / 管理主控台
+
+A unified browser-based management UI that replaces the setup wizard and provides ongoing operational control.
+
+**URL**: `https://cindytech1-tui.woowtech.io`
+
+| Tab | Function | 功能 |
+|-----|----------|------|
+| **Dashboard** | Service status, model selector, config/env/soul editors, plugins, channels, logs, cron, restart | 服務狀態、模型切換、設定編輯、外掛、頻道、日誌、排程、重啟 |
+| **Setup** | Zero-touch 7-step provisioning (credentials, AI engine, deploy) | 零接觸 7 步驟部署（憑證、AI 引擎、部署） |
+| **Web GUI** | Link cards to Nerve WebGUI and OpenClaw Control UI (open in new tab) | 連結卡片跳轉至 Nerve 和 OpenClaw 控制介面 |
+| **Terminal** | Browser-based shell via ttyd + kubectl exec into gateway container | 瀏覽器終端機，透過 ttyd 進入 gateway 容器 |
+
+**API Endpoints (14)**:
+`/api/detect`, `/api/status`, `/api/config`, `/api/config/model`, `/api/env`, `/api/soul`, `/api/channels`, `/api/plugins`, `/api/cron`, `/api/logs`, `/api/restart`, `/setup`, `/setup/status`
+
+**Console Test Results**: 83/83 passed (2 rounds, 3 bugs found and fixed)
+
+| Round | Tests | Result |
+|-------|-------|--------|
+| R1: API Positive | 16 | 16/16 |
+| R1: Data Integrity | 20 | 20/20 |
+| R1: Frontend & Terminal | 15 | 15/15 |
+| R1: Error Handling | 14 | 14/14 |
+| R2: Regression | 18 | 18/18 |
 
 ---
 

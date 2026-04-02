@@ -23,7 +23,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: cloudflared
-          image: cloudflare/cloudflared:latest
+          image: cloudflare/cloudflared:2025.4.0
           args:
             - tunnel
             - run
@@ -33,6 +33,17 @@ spec:
                 secretKeyRef:
                   name: cf-secrets
                   key: CF_TUNNEL_TOKEN
+          livenessProbe:
+            exec:
+              command: ["cloudflared", "tunnel", "info"]
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            failureThreshold: 3
+          readinessProbe:
+            exec:
+              command: ["cloudflared", "tunnel", "info"]
+            initialDelaySeconds: 10
+            periodSeconds: 30
           lifecycle:
             preStop:
               exec:

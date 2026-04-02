@@ -48,9 +48,10 @@ spec:
         kubernetes.io/hostname: "woowtechopenclaw-default-string"
       containers:
         - name: ollama
-          image: ollama/ollama:latest
+          image: ollama/ollama:0.19.0
           ports:
             - containerPort: 11434
+              name: ollama-http
           env:
             - name: OLLAMA_HOST
               value: "0.0.0.0"
@@ -102,7 +103,8 @@ spec:
   selector:
     app: ollama
   ports:
-    - protocol: TCP
+    - name: ollama-http
+      protocol: TCP
       port: 11434
-      targetPort: 11434
+      targetPort: ollama-http
   type: ClusterIP

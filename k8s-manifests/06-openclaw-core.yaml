@@ -77,6 +77,7 @@ spec:
           image: pgvector/pgvector:pg16
           ports:
             - containerPort: 5432
+              name: postgres
           env:
             - name: POSTGRES_DB
               value: "openclaw"
@@ -140,9 +141,10 @@ spec:
   selector:
     app: openclaw-db
   ports:
-    - protocol: TCP
+    - name: postgres
+      protocol: TCP
       port: 5432
-      targetPort: 5432
+      targetPort: postgres
   type: ClusterIP
 ---
 # =============================================================
@@ -487,6 +489,7 @@ spec:
               exec "$OC_LOCAL/bin/openclaw" gateway --bind lan --port 18789 --auth token --token "$OPENCLAW_GATEWAY_TOKEN" --allow-unconfigured
           ports:
             - containerPort: 18789
+              name: gateway-http
           env:
             # Chromium / Puppeteer
             - name: CHROMIUM_FLAGS
@@ -658,7 +661,7 @@ spec:
         # Uses node:22-slim + PVC-cached build (no custom image needed)
         # =============================================================
         - name: nerve
-          image: node:22-slim
+          image: node:22.15-slim
           command:
             - sh
             - -c
@@ -794,7 +797,8 @@ spec:
   selector:
     app: openclaw-gateway
   ports:
-    - protocol: TCP
+    - name: gateway-http
+      protocol: TCP
       port: 18789
-      targetPort: 18789
+      targetPort: gateway-http
   type: ClusterIP

@@ -704,6 +704,31 @@ spec:
                 echo "[nerve-init] Nerve build complete and cached on PVC"
               fi
               cd "$NERVE_APP"
+              # Patch Nerve file serving for PVC symlink mounts
+              # Problem: workspace is symlinked /root/.openclaw/workspace → /mnt/openclaw-agents/_workspace
+              # Nerve's security checks resolve symlinks via fs.realpath() then reject paths
+              # outside /root/.openclaw. Fix: add PVC mount to allowed prefixes and resolve root realpath.
+              NERVE_FILES="$NERVE_APP/server/routes/files.ts"
+              NERVE_UTILS="$NERVE_APP/server/lib/file-utils.ts"
+              if ! grep -q '/mnt/openclaw-agents' "$NERVE_FILES" 2>/dev/null; then
+                sed -i 's|return \[|return [\n    "/mnt/openclaw-agents",|' "$NERVE_FILES"
+                echo '[nerve-init] Patched files.ts: added /mnt/openclaw-agents to allowed prefixes'
+              fi
+              if ! grep -q 'realRootPrefix' "$NERVE_UTILS" 2>/dev/null; then
+                sed -i '/\/\/ Resolve symlinks and re-check/,/return real;/c\
+  // Resolve symlinks and re-check (also resolving root for symlink-mounted workspaces)\
+  try {\
+    const real = await fs.realpath(resolved);\
+    let realRoot: string;\
+    try { realRoot = await fs.realpath(root); } catch { realRoot = root; }\
+    const realRootPrefix = realRoot.endsWith(path.sep) ? realRoot : realRoot + path.sep;\
+    if (!real.startsWith(rootPrefix) \&\& real !== root \&\& !real.startsWith(realRootPrefix) \&\& real !== realRoot) {\
+      return null;\
+    }\
+    return real;' "$NERVE_UTILS"
+                echo '[nerve-init] Patched file-utils.ts: symlink-aware workspace path resolution'
+                cd "$NERVE_APP" && npm run build 2>&1 | tail -3
+              fi
               # Write .env for Nerve (gateway on localhost = same pod)
               NERVE_ORIGIN="${NERVE_PUBLIC_URL:-https://localhost:3080}"
               printf 'GATEWAY_URL=http://127.0.0.1:18789\nGATEWAY_TOKEN=%s\nHOST=0.0.0.0\nPORT=3080\nNERVE_AUTH=true\nNERVE_PASSWORD_HASH=%s\nNERVE_SESSION_SECRET=%s\nNERVE_SESSION_TTL=2592000000\nTRUSTED_PROXIES=10.42.0.0/16\nSTT_PROVIDER=none\nALLOWED_ORIGINS=%s\nNERVE_PUBLIC_ORIGIN=%s\n' "$GATEWAY_TOKEN" "$NERVE_PASSWORD_HASH" "$NERVE_SESSION_SECRET" "$NERVE_ORIGIN" "$NERVE_ORIGIN" > .env

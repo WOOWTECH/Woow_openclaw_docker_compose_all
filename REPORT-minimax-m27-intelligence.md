@@ -2,7 +2,7 @@
 
 **Date**: 2026-04-01
 **Model**: `minimax/MiniMax-M2.7`
-**API Key**: `sk-cp-c-h9FWEhxj...` (new token, validated working)
+**API Key**: Validated working (MiniMax plan token)
 **Platform**: OpenClaw v2026.3.31 via Nerve WebGUI
 **Test Method**: Playwright automated browser tests, 19 designed / 11 completed
 

@@ -24,8 +24,9 @@ spec:
       labels:
         app: ollama-init
     spec:
+      # IMPORTANT: Must match the same node as 07-ollama.yaml
       nodeSelector:
-        kubernetes.io/hostname: "woowtechopenclaw-default-string"
+        kubernetes.io/hostname: "your-ollama-node-hostname"
       restartPolicy: OnFailure
       initContainers:
         # Wait for Ollama to be ready before pulling

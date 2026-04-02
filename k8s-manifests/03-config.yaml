@@ -19,4 +19,4 @@ metadata:
 data:
   # Nerve WebGUI public URL — used for CORS allowedOrigins
   # Change this to your domain when deploying to a different cluster
-  NERVE_PUBLIC_URL: "https://cindytech1-nerve.woowtech.io"
+  NERVE_PUBLIC_URL: "https://your-nerve-domain.example.com"

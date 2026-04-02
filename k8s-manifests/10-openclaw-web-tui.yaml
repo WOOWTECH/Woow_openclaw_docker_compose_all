@@ -1,0 +1,190 @@
+# =============================================================
+# OpenClaw Web TUI — Browser-based terminal into gateway container
+#
+# K8s adaptation of the Docker Compose "sidecar jump box" pattern:
+#   Docker Compose: alpine + docker.sock + docker exec
+#   K8s equivalent: alpine + ServiceAccount RBAC + kubectl exec
+#
+# Architecture:
+#   - Separate pod (not a sidecar) — zero changes to openclaw-gateway
+#   - Alpine installs ttyd + kubectl at startup (no custom image needed)
+#   - RBAC grants minimal exec-only access to pods in namespace
+#   - ttyd serves web terminal on port 7681
+#   - kubectl exec tunnels into the openclaw-gateway container
+#
+# Access: kubectl port-forward svc/openclaw-web-tui-svc 8080:7681
+#   or expose via NodePort / cloudflared tunnel
+# Auth: admin / <OPENCLAW_GATEWAY_TOKEN>
+# =============================================================
+
+# --- ServiceAccount for TUI pod ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: openclaw-web-tui-sa
+  namespace: openclaw-tenant-1
+  labels:
+    app: openclaw-web-tui
+    app.kubernetes.io/component: web-tui
+---
+# --- RBAC Role: minimal exec permissions ---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: openclaw-web-tui-exec
+  namespace: openclaw-tenant-1
+  labels:
+    app: openclaw-web-tui
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["create"]
+---
+# --- RoleBinding ---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: openclaw-web-tui-exec-binding
+  namespace: openclaw-tenant-1
+  labels:
+    app: openclaw-web-tui
+subjects:
+  - kind: ServiceAccount
+    name: openclaw-web-tui-sa
+    namespace: openclaw-tenant-1
+roleRef:
+  kind: Role
+  name: openclaw-web-tui-exec
+  apiGroup: rbac.authorization.k8s.io
+---
+# --- ConfigMap: connection wrapper script ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: openclaw-web-tui-scripts
+  namespace: openclaw-tenant-1
+  labels:
+    app: openclaw-web-tui
+data:
+  connect.sh: |
+    #!/bin/sh
+    # Wrapper script: finds the openclaw-gateway pod and exec into it.
+    # If the pod isn't running, retries until it comes up.
+    NAMESPACE="openclaw-tenant-1"
+    LABEL="app=openclaw-gateway"
+    CONTAINER="openclaw-gateway"
+
+    while true; do
+      POD=$(kubectl get pod -l "$LABEL" -n "$NAMESPACE" \
+        --field-selector=status.phase=Running \
+        -o jsonpath='{.items[0].metadata.name}' 2>/dev/null)
+      if [ -n "$POD" ]; then
+        echo "Connecting to $POD ($CONTAINER) ..."
+        kubectl exec -it "$POD" -n "$NAMESPACE" -c "$CONTAINER" -- sh
+        EXIT_CODE=$?
+        echo ""
+        echo "Session ended (exit code: $EXIT_CODE). Reconnecting in 2s..."
+        sleep 2
+      else
+        echo "Waiting for openclaw-gateway pod to become Running..."
+        sleep 5
+      fi
+    done
+---
+# --- Deployment ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openclaw-web-tui
+  namespace: openclaw-tenant-1
+  labels:
+    app: openclaw-web-tui
+    app.kubernetes.io/component: web-tui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openclaw-web-tui
+  template:
+    metadata:
+      labels:
+        app: openclaw-web-tui
+    spec:
+      serviceAccountName: openclaw-web-tui-sa
+      containers:
+        - name: web-tui
+          image: alpine:3.21
+          command:
+            - sh
+            - -c
+            - |
+              set -e
+              echo '[web-tui] Installing ttyd and kubectl...'
+              apk add --no-cache ttyd curl
+              KUBECTL_VER=$(curl -Ls https://dl.k8s.io/release/stable.txt)
+              curl -Lo /usr/local/bin/kubectl \
+                "https://dl.k8s.io/release/${KUBECTL_VER}/bin/linux/amd64/kubectl"
+              chmod +x /usr/local/bin/kubectl
+              echo "[web-tui] kubectl ${KUBECTL_VER} ready"
+              echo '[web-tui] Starting ttyd on :7681'
+              exec ttyd -p 7681 -c "admin:${TUI_PASSWORD}" -W \
+                /scripts/connect.sh
+          ports:
+            - containerPort: 7681
+              name: ttyd
+          env:
+            - name: TUI_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: openclaw-secrets
+                  key: OPENCLAW_GATEWAY_TOKEN
+          volumeMounts:
+            - name: scripts
+              mountPath: /scripts
+              readOnly: true
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
+          readinessProbe:
+            tcpSocket:
+              port: 7681
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 7681
+            initialDelaySeconds: 60
+            periodSeconds: 30
+      volumes:
+        - name: scripts
+          configMap:
+            name: openclaw-web-tui-scripts
+            defaultMode: 0755
+---
+# --- Service (ClusterIP) ---
+# To access from browser:
+#   kubectl port-forward svc/openclaw-web-tui-svc 8080:7681 -n openclaw-tenant-1
+# Or change type to NodePort for direct access.
+apiVersion: v1
+kind: Service
+metadata:
+  name: openclaw-web-tui-svc
+  namespace: openclaw-tenant-1
+  labels:
+    app: openclaw-web-tui
+spec:
+  selector:
+    app: openclaw-web-tui
+  ports:
+    - protocol: TCP
+      port: 7681
+      targetPort: 7681
+      name: ttyd
+  type: ClusterIP

@@ -50,7 +50,7 @@ spec:
               memory: 64Mi
       containers:
         - name: model-puller
-          image: ollama/ollama:latest
+          image: ollama/ollama:0.19.0
           env:
             - name: OLLAMA_HOST
               value: "http://ollama-svc:11434"

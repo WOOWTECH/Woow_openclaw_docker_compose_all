@@ -486,6 +486,104 @@ spec:
                 echo '[init] Loaded skill env vars from workspace/.env'
               fi
               export PATH="$OC_LOCAL/bin:$PATH"
+              # ── Fix 1: Ensure models allowlist for Nerve dropdown ──
+              node -e "
+                const fs=require('fs'),p='/mnt/openclaw-agents/_openclaw.json';
+                const c=JSON.parse(fs.readFileSync(p,'utf8'));
+                const model=c.agents?.defaults?.model||'minimax/MiniMax-M2.7';
+                if(!c.agents.defaults.models||!c.agents.defaults.models[model]){
+                  c.agents.defaults.models=c.agents.defaults.models||{};
+                  c.agents.defaults.models[model]={alias:model.split('/').pop()+' (default)'};
+                  fs.writeFileSync(p,JSON.stringify(c,null,2));
+                  console.log('[init] Injected models allowlist for Nerve dropdown: '+model);
+                }
+              " 2>/dev/null || true
+              # ── Fix 2: Symlink non-main agent workspaces to PVC ──
+              # ── Fix 3: Auto-register agent dirs + bootstrap sessions ──
+              cat << 'AGENTFIX' | node
+              const fs=require('fs'),path=require('path');
+              const PVC='/mnt/openclaw-agents';
+              const HOME=process.env.HOME;
+              const p=PVC+'/_openclaw.json';
+              const c=JSON.parse(fs.readFileSync(p,'utf8'));
+
+              // Fix 3a: Auto-register agent dirs into agents.list
+              if(!Array.isArray(c.agents.list)) c.agents.list=[];
+              const existingIds=new Set(c.agents.list.map(a=>a.id));
+              const agentsDir=HOME+'/.openclaw/agents';
+              try{
+                const dirs=fs.readdirSync(agentsDir).filter(d=>{
+                  if(d.startsWith('_')||d.startsWith('.'))return false;
+                  return fs.existsSync(path.join(agentsDir,d,'agent'))||fs.existsSync(path.join(agentsDir,d,'sessions'));
+                });
+                let changed=false;
+                for(const id of dirs){
+                  if(existingIds.has(id))continue;
+                  const entry={id};
+                  if(id==='main'){entry.default=true;entry.workspace='~/.openclaw/workspace';}
+                  else{entry.workspace='~/.openclaw/workspace-'+id;}
+                  c.agents.list.push(entry);
+                  changed=true;
+                  console.log('[init] Auto-registered agent: '+id);
+                }
+                if(changed) fs.writeFileSync(p,JSON.stringify(c,null,2));
+              }catch(e){console.log('[init] Agent registration error:',e.message)}
+
+              // Fix 2: Symlink non-main workspaces to PVC
+              const list=c.agents.list||[];
+              for(const entry of list){
+                const id=entry.id;
+                if(!id||id==='main')continue;
+                const ws=entry.workspace||('~/.openclaw/workspace-'+id);
+                const resolved=ws.replace(/^~/,HOME);
+                const pvcWs=path.join(PVC,'_workspace-'+id);
+                if(!fs.existsSync(pvcWs)){
+                  fs.mkdirSync(pvcWs,{recursive:true});
+                  fs.mkdirSync(path.join(pvcWs,'memory'),{recursive:true});
+                }
+                try{
+                  const stat=fs.lstatSync(resolved);
+                  if(!stat.isSymbolicLink()){
+                    const files=fs.readdirSync(resolved);
+                    for(const f of files){
+                      const src=path.join(resolved,f),dst=path.join(pvcWs,f);
+                      if(!fs.existsSync(dst)) fs.renameSync(src,dst);
+                    }
+                    fs.rmdirSync(resolved);
+                    fs.symlinkSync(pvcWs,resolved);
+                    console.log('[init] Symlinked workspace-'+id+' to PVC');
+                  }
+                }catch(e){
+                  try{
+                    fs.mkdirSync(path.dirname(resolved),{recursive:true});
+                    fs.symlinkSync(pvcWs,resolved);
+                    console.log('[init] Created workspace-'+id+' symlink to PVC');
+                  }catch(e2){}
+                }
+              }
+              AGENTFIX
+              # Bootstrap sessions (background, after gateway starts)
+              (sleep 30; cat << 'SESSFIX' | node
+              const fs=require('fs');
+              const c=JSON.parse(fs.readFileSync('/mnt/openclaw-agents/_openclaw.json','utf8'));
+              const list=Array.isArray(c.agents.list)?c.agents.list:[];
+              for(const entry of list){
+                const id=entry.id;
+                if(!id)continue;
+                const sessDir=process.env.HOME+'/.openclaw/agents/'+id+'/sessions';
+                try{
+                  fs.mkdirSync(sessDir,{recursive:true});
+                  const files=fs.readdirSync(sessDir).filter(f=>f.endsWith('.json'));
+                  if(files.length===0){
+                    const key='kb-'+id+'-'+Date.now().toString(36);
+                    const sess={key:key,agent:id,createdAt:Date.now(),label:id};
+                    fs.writeFileSync(sessDir+'/'+key+'.json',JSON.stringify(sess));
+                    console.log('[init] Bootstrap session for '+id+': '+key);
+                  }
+                }catch(e){}
+              }
+              SESSFIX
+              ) &
               exec "$OC_LOCAL/bin/openclaw" gateway --bind lan --port 18789 --auth token --token "$OPENCLAW_GATEWAY_TOKEN" --allow-unconfigured
           ports:
             - containerPort: 18789
@@ -677,6 +775,16 @@ spec:
               ln -sfn "$PVC/_workspace" /root/.openclaw/workspace
               ln -sfn "$PVC/_memory" /root/.openclaw/memory
               ln -sf "$PVC/_openclaw.json" /root/.openclaw/openclaw.json
+              # Symlink non-main agent workspaces to PVC (Fix 2: enables memory panel in Nerve)
+              for ws_dir in "$PVC"/_workspace-*/; do
+                [ -d "$ws_dir" ] || continue
+                agent_id=$(basename "$ws_dir" | sed 's/^_workspace-//')
+                target="/root/.openclaw/workspace-$agent_id"
+                if [ ! -e "$target" ]; then
+                  ln -sfn "$ws_dir" "$target"
+                  echo "[nerve-init] Symlinked workspace-$agent_id to PVC"
+                fi
+              done
               # Extensions dir: copy from PVC so openclaw CLI can validate plugins
               mkdir -p /root/.openclaw/extensions
               for plugin in memory-lancedb-pro openclaw-homeassistant lossless-claw-enhanced; do

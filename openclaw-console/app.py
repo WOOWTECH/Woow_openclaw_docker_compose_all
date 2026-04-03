@@ -36,6 +36,44 @@ setup_state = {
 }
 setup_lock = threading.Lock()
 
+# --- Health history state ---
+health_history = []  # list of {time, health, pod}, max 100 entries
+health_history_lock = threading.Lock()
+HEALTH_HISTORY_MAX = 100
+
+
+def health_check_loop():
+    """Background thread: check gateway health every 60 seconds."""
+    time.sleep(15)  # wait for Flask to start
+    while True:
+        try:
+            pod = get_gateway_pod()
+            entry = {
+                "time": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                "pod": pod or "",
+                "health": "0",
+            }
+            if pod:
+                result = subprocess.run(
+                    ["kubectl", "exec", pod, "-n", NAMESPACE, "-c", "openclaw-gateway",
+                     "--", "sh", "-c",
+                     "curl -s -o /dev/null -w '%{http_code}' http://localhost:18789/health 2>/dev/null || echo 0"],
+                    capture_output=True, text=True, timeout=10,
+                )
+                entry["health"] = result.stdout.strip() or "0"
+            with health_history_lock:
+                health_history.append(entry)
+                if len(health_history) > HEALTH_HISTORY_MAX:
+                    health_history.pop(0)
+        except Exception as e:
+            log.warning(f"Health check error: {e}")
+        time.sleep(60)
+
+
+# Start health check thread
+threading.Thread(target=health_check_loop, daemon=True).start()
+
+
 AI_ENV_MAP = {
     "openai": "OPENAI_API_KEY", "anthropic": "ANTHROPIC_API_KEY",
     "google": "GEMINI_API_KEY", "minimax": "MINIMAX_API_KEY",
@@ -217,6 +255,17 @@ def api_status():
         "disk": disk.strip(),
         "started": started,
     })
+
+
+@app.route("/api/health-history")
+def api_health_history():
+    """Return health check history (max 100 entries, 1 per minute)."""
+    with health_history_lock:
+        history = list(health_history)
+    total = len(history)
+    ok_count = sum(1 for h in history if h["health"] == "200")
+    uptime = round(ok_count / total * 100, 1) if total > 0 else 0
+    return jsonify({"history": history, "uptime": uptime, "total": total})
 
 
 @app.route("/api/config", methods=["GET"])

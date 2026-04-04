@@ -467,17 +467,16 @@ spec:
               rm -rf /mnt/openclaw-agents/_tools 2>/dev/null
               mkdir -p /home/node/.local/bin
               export PATH="/home/node/.local/bin:$PATH"
-              # Use PVC-cached OpenClaw runtime (install once, persist across restarts)
-              OC_LOCAL="$PVC/_openclaw_runtime"
-              if [ ! -f "$OC_LOCAL/bin/openclaw" ]; then
-                echo '[init] Installing OpenClaw runtime to PVC (first time)...'
-                mkdir -p "$OC_LOCAL"
-                npm config set prefix "$OC_LOCAL"
-                npm i -g openclaw@latest --loglevel=error 2>&1 | tail -3
-                echo "[init] OpenClaw installed: $($OC_LOCAL/bin/openclaw --version 2>/dev/null)"
-              else
-                echo "[init] OpenClaw ready: $($OC_LOCAL/bin/openclaw --version 2>/dev/null)"
+              # Use container's own OpenClaw binary (NOT PVC runtime — prevents version conflicts)
+              # The container image has /usr/local/bin/openclaw pinned to the correct version.
+              # Previously PVC-cached runtime would auto-update to latest, causing Thinking-stuck bug.
+              OC_BIN="/usr/local/bin/openclaw"
+              # Safety: remove any stale PVC runtime to prevent version conflicts
+              if [ -d "$PVC/_openclaw_runtime" ]; then
+                echo "[init] WARNING: Removing stale PVC runtime to prevent version conflict"
+                rm -rf "$PVC/_openclaw_runtime"
               fi
+              echo "[init] OpenClaw ready: $($OC_BIN --version 2>/dev/null)"
               # Load skill env vars from workspace .env (persisted on PVC)
               if [ -f /home/node/.openclaw/workspace/.env ]; then
                 set -a
@@ -485,7 +484,7 @@ spec:
                 set +a
                 echo '[init] Loaded skill env vars from workspace/.env'
               fi
-              export PATH="$OC_LOCAL/bin:$PATH"
+              export PATH="/usr/local/bin:$PATH"
               # ── Fix 1: Ensure models allowlist for Nerve dropdown ──
               node -e "
                 const fs=require('fs'),p='/mnt/openclaw-agents/_openclaw.json';
@@ -584,7 +583,7 @@ spec:
               }
               SESSFIX
               ) &
-              exec "$OC_LOCAL/bin/openclaw" gateway --bind lan --port 18789 --auth token --token "$OPENCLAW_GATEWAY_TOKEN" --allow-unconfigured
+              exec "$OC_BIN" gateway --bind lan --port 18789 --auth token --token "$OPENCLAW_GATEWAY_TOKEN" --allow-unconfigured
           ports:
             - containerPort: 18789
               name: gateway-http
@@ -794,11 +793,9 @@ spec:
               done
               chown -R root:root /root/.openclaw/extensions/ 2>/dev/null || true
               ln -sfn "$PVC/_nerve" /root/.nerve
-              # Add openclaw CLI from PVC runtime to PATH
-              if [ -f "$PVC/_openclaw_runtime/bin/openclaw" ]; then
-                ln -sf "$PVC/_openclaw_runtime/bin/openclaw" /usr/local/bin/openclaw
-                echo '[nerve-init] openclaw CLI linked to PATH'
-              fi
+              # openclaw CLI: no longer used from PVC runtime (version conflict risk)
+              # The gateway container has /usr/local/bin/openclaw but Nerve runs in a separate container
+              # Nerve does not need the openclaw CLI directly
               # Install or restore Nerve from PVC cache
               if [ -f "$NERVE_APP/package.json" ] && [ -d "$NERVE_APP/dist" ]; then
                 echo "[nerve-init] Nerve found on PVC cache — skipping build"
@@ -823,18 +820,16 @@ spec:
                 echo '[nerve-init] Patched files.ts: added /mnt/openclaw-agents to allowed prefixes'
               fi
               if ! grep -q 'realRootPrefix' "$NERVE_UTILS" 2>/dev/null; then
-                sed -i '/\/\/ Resolve symlinks and re-check/,/return real;/c\
-  // Resolve symlinks and re-check (also resolving root for symlink-mounted workspaces)\
-  try {\
-    const real = await fs.realpath(resolved);\
-    let realRoot: string;\
-    try { realRoot = await fs.realpath(root); } catch { realRoot = root; }\
-    const realRootPrefix = realRoot.endsWith(path.sep) ? realRoot : realRoot + path.sep;\
-    if (!real.startsWith(rootPrefix) \&\& real !== root \&\& !real.startsWith(realRootPrefix) \&\& real !== realRoot) {\
-      return null;\
-    }\
-    return real;' "$NERVE_UTILS"
-                echo '[nerve-init] Patched file-utils.ts: symlink-aware workspace path resolution'
+                node -e "
+                  const fs=require('fs');
+                  const f=fs.readFileSync('$NERVE_UTILS','utf8');
+                  const patched=f.replace(
+                    /\/\/ Resolve symlinks and re-check[\s\S]*?return real;/,
+                    '// Resolve symlinks and re-check (symlink-aware)\n  try {\n    const real = await fs.realpath(resolved);\n    let realRoot;\n    try { realRoot = await fs.realpath(root); } catch { realRoot = root; }\n    const realRootPrefix = realRoot.endsWith(path.sep) ? realRoot : realRoot + path.sep;\n    if (!real.startsWith(rootPrefix) && real !== root && !real.startsWith(realRootPrefix) && real !== realRoot) {\n      return null;\n    }\n    return real;'
+                  );
+                  fs.writeFileSync('$NERVE_UTILS',patched);
+                  console.log('[nerve-init] Patched file-utils.ts');
+                " 2>/dev/null
                 cd "$NERVE_APP" && npm run build 2>&1 | tail -3
               fi
               # Write .env for Nerve (gateway on localhost = same pod)
@@ -859,7 +854,7 @@ spec:
               name: nerve-http
           env:
             - name: OPENCLAW_BIN
-              value: "/mnt/openclaw-agents/_openclaw_runtime/bin/openclaw"
+              value: ""
             - name: GATEWAY_TOKEN
               valueFrom:
                 secretKeyRef:

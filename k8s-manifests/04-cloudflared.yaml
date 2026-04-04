@@ -23,7 +23,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: cloudflared
-          image: cloudflare/cloudflared:2025.4.0
+          image: cloudflare/cloudflared:latest
           args:
             - tunnel
             - run

@@ -467,16 +467,27 @@ spec:
               rm -rf /mnt/openclaw-agents/_tools 2>/dev/null
               mkdir -p /home/node/.local/bin
               export PATH="/home/node/.local/bin:$PATH"
-              # Use container's own OpenClaw binary (NOT PVC runtime — prevents version conflicts)
-              # The container image has /usr/local/bin/openclaw pinned to the correct version.
-              # Previously PVC-cached runtime would auto-update to latest, causing Thinking-stuck bug.
-              OC_BIN="/usr/local/bin/openclaw"
-              # Safety: remove any stale PVC runtime to prevent version conflicts
-              if [ -d "$PVC/_openclaw_runtime" ]; then
-                echo "[init] WARNING: Removing stale PVC runtime to prevent version conflict"
-                rm -rf "$PVC/_openclaw_runtime"
+              # Use PVC-cached OpenClaw runtime (pinned to v2026.3.31 for Nerve v1.5.2 compat)
+              # IMPORTANT: Do NOT use @latest — pin exact version to prevent Thinking-stuck bug
+              OC_LOCAL="$PVC/_openclaw_runtime"
+              OC_BIN="$OC_LOCAL/bin/openclaw"
+              PINNED_VER="2026.3.31"
+              if [ -f "$OC_BIN" ]; then
+                CUR_VER=$("$OC_BIN" --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+                if [ -n "$CUR_VER" ] && [ "$CUR_VER" != "$PINNED_VER" ]; then
+                  echo "[init] PVC runtime $CUR_VER != pinned $PINNED_VER — reinstalling"
+                  rm -rf "$OC_LOCAL"
+                fi
               fi
-              echo "[init] OpenClaw ready: $($OC_BIN --version 2>/dev/null)"
+              if [ ! -f "$OC_BIN" ]; then
+                echo "[init] Installing OpenClaw runtime v$PINNED_VER..."
+                mkdir -p "$OC_LOCAL"
+                npm config set prefix "$OC_LOCAL"
+                npm i -g "openclaw@$PINNED_VER" --loglevel=error 2>&1 | tail -3
+                echo "[init] OpenClaw installed: $($OC_BIN --version 2>/dev/null)"
+              else
+                echo "[init] OpenClaw ready: $($OC_BIN --version 2>/dev/null)"
+              fi
               # Load skill env vars from workspace .env (persisted on PVC)
               if [ -f /home/node/.openclaw/workspace/.env ]; then
                 set -a
@@ -484,7 +495,7 @@ spec:
                 set +a
                 echo '[init] Loaded skill env vars from workspace/.env'
               fi
-              export PATH="/usr/local/bin:$PATH"
+              export PATH="$OC_LOCAL/bin:$PATH"
               # ── Fix 1: Ensure models allowlist for Nerve dropdown ──
               node -e "
                 const fs=require('fs'),p='/mnt/openclaw-agents/_openclaw.json';
@@ -793,9 +804,11 @@ spec:
               done
               chown -R root:root /root/.openclaw/extensions/ 2>/dev/null || true
               ln -sfn "$PVC/_nerve" /root/.nerve
-              # openclaw CLI: no longer used from PVC runtime (version conflict risk)
-              # The gateway container has /usr/local/bin/openclaw but Nerve runs in a separate container
-              # Nerve does not need the openclaw CLI directly
+              # Add openclaw CLI from PVC runtime to PATH
+              if [ -f "$PVC/_openclaw_runtime/bin/openclaw" ]; then
+                ln -sf "$PVC/_openclaw_runtime/bin/openclaw" /usr/local/bin/openclaw
+                echo '[nerve-init] openclaw CLI linked to PATH'
+              fi
               # Install or restore Nerve from PVC cache
               if [ -f "$NERVE_APP/package.json" ] && [ -d "$NERVE_APP/dist" ]; then
                 echo "[nerve-init] Nerve found on PVC cache — skipping build"
@@ -854,7 +867,7 @@ spec:
               name: nerve-http
           env:
             - name: OPENCLAW_BIN
-              value: ""
+              value: "/mnt/openclaw-agents/_openclaw_runtime/bin/openclaw"
             - name: GATEWAY_TOKEN
               valueFrom:
                 secretKeyRef:

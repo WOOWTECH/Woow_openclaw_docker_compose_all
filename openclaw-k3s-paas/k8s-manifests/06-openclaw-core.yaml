@@ -176,6 +176,8 @@ spec:
               # Setup persistent dirs — symlink all stateful dirs to PVC
               mkdir -p /home/node/.openclaw
               PVC="/mnt/openclaw-agents"
+              # Clean stale runtime (from openclaw update) that breaks LINE
+              rm -rf "$PVC/_openclaw_runtime" 2>/dev/null
               ln -sfn "$PVC" /home/node/.openclaw/agents
               mkdir -p "$PVC/_workspace" "$PVC/_managed-skills" "$PVC/_memory" "$PVC/_cron" "$PVC/_telegram" "$PVC/_config"
               ln -sfn "$PVC/_workspace" /home/node/.openclaw/workspace

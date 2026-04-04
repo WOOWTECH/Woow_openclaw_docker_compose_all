@@ -348,13 +348,27 @@ spec:
                 echo '[init] Installing skill: memory-lancedb-pro-skill'
                 git clone --depth 1 https://github.com/CortexReach/memory-lancedb-pro-skill.git "$SKILLS_DIR/memory-lancedb-pro-skill" 2>/dev/null || true
               fi
-              # Install remaining clawhub skills (12 additional skills)
-              for skill in automation-workflows find-skills-skill n8n ontology openclaw-homeassistant playwright-mcp proactive-agent-skill self-improving-agent skill-vetter summarize weather lossless-claw-enhanced; do
+              # Install remaining clawhub skills
+              for skill in automation-workflows find-skills-skill n8n ontology openclaw-homeassistant playwright-mcp self-improving-agent skill-vetter weather; do
                 if [ ! -d "$SKILLS_DIR/$skill" ]; then
                   echo "[init] Installing skill: $skill"
                   npx clawhub install "$skill" --workdir /home/node/.openclaw/workspace --no-input 2>/dev/null || true
                 fi
               done
+              # Skills requiring --force (VirusTotal flagged) or not on clawhub registry
+              if [ ! -d "$SKILLS_DIR/proactive-agent-skill" ]; then
+                echo '[init] Installing skill: proactive-agent-skill'
+                npx clawhub install proactive-agent-skill --workdir /home/node/.openclaw/workspace --no-input --force 2>/dev/null || true
+              fi
+              if [ ! -d "$SKILLS_DIR/summarize" ]; then
+                echo '[init] Installing skill: summarize'
+                npx clawhub install @anthropic/summarize --workdir /home/node/.openclaw/workspace --no-input 2>/dev/null || \
+                npx clawhub install summarize-skill --workdir /home/node/.openclaw/workspace --no-input 2>/dev/null || true
+              fi
+              if [ ! -d "$SKILLS_DIR/lossless-claw-enhanced" ]; then
+                echo '[init] Installing skill: lossless-claw-enhanced (git)'
+                git clone --depth 1 https://github.com/win4r/lossless-claw-enhanced.git "$SKILLS_DIR/lossless-claw-enhanced" 2>/dev/null || true
+              fi
               # Install memory-lancedb-pro plugin
               if [ ! -d "/home/node/.openclaw/extensions/memory-lancedb-pro" ]; then
                 echo '[init] Installing plugin: memory-lancedb-pro'

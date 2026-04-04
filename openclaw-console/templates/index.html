@@ -337,6 +337,15 @@
 <!-- ============================================ -->
 <div class="page-view" id="view-dashboard">
 
+    <!-- Alerts Card (hidden when no alerts) -->
+    <div class="card" id="card-alerts" style="display:none; border-color: rgba(248,113,113,0.3)">
+        <div class="card-header">
+            <div class="card-icon" style="background:rgba(248,113,113,0.12)">&#9888;</div>
+            <div><div class="card-title">Alerts</div><div class="card-subtitle" id="alerts-count"></div></div>
+        </div>
+        <div id="alerts-list"></div>
+    </div>
+
     <!-- Service Status Card -->
     <div class="card" id="card-status">
         <div class="card-header">
@@ -347,6 +356,15 @@
         <div class="status-row"><span class="status-label">Node</span><span class="status-value" id="st-node"></span></div>
         <div class="status-row"><span class="status-label">Started</span><span class="status-value" id="st-started"></span></div>
         <div class="status-row"><span class="status-label">Disk (PVC)</span><span class="status-value" id="st-disk"></span></div>
+    </div>
+
+    <!-- Health History Card -->
+    <div class="card" id="card-health-history">
+        <div class="card-header">
+            <div class="card-icon green">&#128154;</div>
+            <div><div class="card-title">Health History</div><div class="card-subtitle" id="hh-subtitle">Loading...</div></div>
+        </div>
+        <div id="hh-list" style="max-height:200px;overflow-y:auto"></div>
     </div>
 
     <!-- AI Engine Card -->
@@ -723,16 +741,108 @@ async function loadDashboard() {
 
         // Cron
         const jobs = Array.isArray(cron) ? cron : (cron.jobs || []);
+        function fmtSchedule(s) {
+            if (!s || typeof s === 'string') return s || '-';
+            if (s.kind === 'cron' && s.cron) return s.cron;
+            if (s.kind === 'every' && s.everyMs) {
+                const mins = Math.round(s.everyMs / 60000);
+                return mins >= 60 ? 'every ' + Math.round(mins/60) + 'h' : 'every ' + mins + 'm';
+            }
+            return s.kind || '-';
+        }
         document.getElementById('cron-list').innerHTML = jobs.length
-            ? jobs.map(j => '<div class="status-row"><span class="status-label">' + (j.name || j.id || 'job') + '</span><span class="status-value">' + (j.schedule || j.cron || '-') + '</span></div>').join('')
+            ? jobs.map(j => '<div class="status-row"><span class="status-label">' + (j.name || j.id || 'job') + '</span><span class="status-value">' + fmtSchedule(j.schedule) + '</span></div>').join('')
             : '<span class="status-label">No scheduled jobs</span>';
 
         // Logs (last 30 lines)
         loadLogs(30);
+
+        // Health History
+        loadHealthHistory();
+
+        // Alerts (computed from status data)
+        updateAlerts(status);
     } catch (e) {
         console.error('Dashboard load error:', e);
     }
 }
+
+// ========== Alerts ==========
+function updateAlerts(status) {
+    const alerts = [];
+    if (!status.running) {
+        alerts.push({severity: 'err', msg: 'Gateway pod is offline'});
+    } else {
+        if (status.health !== '200') {
+            alerts.push({severity: 'err', msg: 'Gateway health check failed (HTTP ' + status.health + ')'});
+        }
+        if (!status.model) {
+            alerts.push({severity: 'warn', msg: 'No default AI model configured'});
+        }
+        // Parse disk usage percentage
+        const diskMatch = (status.disk || '').match(/(\d+)%/);
+        if (diskMatch && parseInt(diskMatch[1]) > 80) {
+            alerts.push({severity: 'warn', msg: 'Disk usage is ' + diskMatch[1] + '% (>80%)'});
+        }
+        // Check if pod restarted recently (within 10 min)
+        if (status.started) {
+            const startedMs = new Date(status.started).getTime();
+            const tenMinAgo = Date.now() - 10 * 60 * 1000;
+            if (startedMs > tenMinAgo) {
+                alerts.push({severity: 'info', msg: 'Pod restarted recently (' + new Date(status.started).toLocaleTimeString() + ')'});
+            }
+        }
+    }
+    const card = document.getElementById('card-alerts');
+    if (alerts.length === 0) {
+        card.style.display = 'none';
+        return;
+    }
+    card.style.display = 'block';
+    document.getElementById('alerts-count').textContent = alerts.length + ' active';
+    const severityIcon = {err: '<span class="badge err">Error</span>', warn: '<span class="badge warn">Warning</span>', info: '<span class="badge info">Info</span>'};
+    document.getElementById('alerts-list').innerHTML = alerts.map(a =>
+        '<div class="status-row"><span class="status-value">' + a.msg + '</span>' + severityIcon[a.severity] + '</div>'
+    ).join('');
+}
+
+// ========== Health History ==========
+async function loadHealthHistory() {
+    try {
+        const resp = await fetch('/api/health-history');
+        const data = await resp.json();
+        document.getElementById('hh-subtitle').textContent =
+            'Uptime: ' + data.uptime + '% (' + data.total + ' checks)';
+        if (data.history.length === 0) {
+            document.getElementById('hh-list').innerHTML = '<span class="status-label">No data yet (checks run every 60s)</span>';
+            return;
+        }
+        // Show last 20 entries, newest first
+        const recent = data.history.slice(-20).reverse();
+        document.getElementById('hh-list').innerHTML = recent.map(h => {
+            const t = new Date(h.time).toLocaleTimeString();
+            const badge = h.health === '200'
+                ? '<span class="badge ok">200</span>'
+                : '<span class="badge err">' + h.health + '</span>';
+            return '<div class="status-row"><span class="status-label">' + t + '</span>' + badge + '</div>';
+        }).join('');
+    } catch (e) {
+        document.getElementById('hh-subtitle').textContent = 'Error loading';
+    }
+}
+
+// ========== Auto-refresh (every 30s) ==========
+let autoRefreshTimer = null;
+function startAutoRefresh() {
+    if (autoRefreshTimer) clearInterval(autoRefreshTimer);
+    autoRefreshTimer = setInterval(() => {
+        const activeTab = document.querySelector('.topnav-tab.active');
+        if (activeTab && activeTab.dataset.tab === 'dashboard') {
+            loadDashboard();
+        }
+    }, 30000);
+}
+startAutoRefresh();
 
 async function loadLogs(lines) {
     try {

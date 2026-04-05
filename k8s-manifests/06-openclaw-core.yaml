@@ -293,17 +293,16 @@ spec:
                 # Only update gateway token (may change via K8s secret)
                 node -e "const fs=require('fs'),p='$CONFIG_PVC';const c=JSON.parse(fs.readFileSync(p,'utf8'));c.gateway.remote.password=process.env.OPENCLAW_GATEWAY_TOKEN;fs.writeFileSync(p,JSON.stringify(c,null,2))"
               fi
-              # Ensure exec security=full (bypass allowlist analysis for all channels including Telegram)
+              # Ensure exec security settings (allowlist + on-miss for Telegram approval flow)
               cat << 'EXECFIX' | node -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{eval(d)})"
                 const fs=require('fs'),p='/mnt/openclaw-agents/_openclaw.json';
                 const c=JSON.parse(fs.readFileSync(p,'utf8'));
                 if(!c.tools) c.tools={};
                 if(!c.tools.exec) c.tools.exec={};
-                if(c.tools.exec.security!=='full'||c.tools.exec.ask!=='off'){
-                  c.tools.exec.security='full'; c.tools.exec.ask='off';
-                  fs.writeFileSync(p,JSON.stringify(c,null,2));
-                  console.log('[init] Set tools.exec: security=full, ask=off');
-                }
+                c.tools.exec.security='allowlist';
+                c.tools.exec.ask='on-miss';
+                fs.writeFileSync(p,JSON.stringify(c,null,2));
+                console.log('[init] Set tools.exec: security=allowlist, ask=on-miss');
               EXECFIX
               ln -sf "$CONFIG_PVC" "$CONFIG"
               # Write auth-profiles.json: merge mode (preserve user-added keys, update env-var keys)

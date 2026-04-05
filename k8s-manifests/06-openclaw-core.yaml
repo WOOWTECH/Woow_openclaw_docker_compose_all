@@ -313,7 +313,7 @@ spec:
               [ -n "${OPENAI_API_KEY:-}" ] && AUTH=$(echo "$AUTH" | node -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{const o=JSON.parse(d);o.openai={apiKey:process.env.OPENAI_API_KEY};console.log(JSON.stringify(o))})")
               [ -n "${ANTHROPIC_API_KEY:-}" ] && AUTH=$(echo "$AUTH" | node -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{const o=JSON.parse(d);o.anthropic={apiKey:process.env.ANTHROPIC_API_KEY};console.log(JSON.stringify(o))})")
               [ -n "${GEMINI_API_KEY:-}" ] && AUTH=$(echo "$AUTH" | node -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{const o=JSON.parse(d);o.google={apiKey:process.env.GEMINI_API_KEY};console.log(JSON.stringify(o))})")
-              [ -n "${MINIMAX_API_KEY:-}" ] && AUTH=$(echo "$AUTH" | node -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{const o=JSON.parse(d);o.minimax={apiKey:process.env.MINIMAX_API_KEY,baseUrl:'https://api.minimaxi.chat/v1'};console.log(JSON.stringify(o))})")
+              [ -n "${MINIMAX_API_KEY:-}" ] && AUTH=$(echo "$AUTH" | node -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{const o=JSON.parse(d);o.minimax={apiKey:process.env.MINIMAX_API_KEY};console.log(JSON.stringify(o))})")
               [ -n "${DEEPSEEK_API_KEY:-}" ] && AUTH=$(echo "$AUTH" | node -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{const o=JSON.parse(d);o.deepseek={apiKey:process.env.DEEPSEEK_API_KEY};console.log(JSON.stringify(o))})")
               [ -n "${QWEN_API_KEY:-}" ] && AUTH=$(echo "$AUTH" | node -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{const o=JSON.parse(d);o.qwen={apiKey:process.env.QWEN_API_KEY};console.log(JSON.stringify(o))})")
               echo "$AUTH" > "$AUTH_FILE"
@@ -347,13 +347,34 @@ spec:
                 echo '[init] Installing skill: memory-lancedb-pro-skill'
                 git clone --depth 1 https://github.com/CortexReach/memory-lancedb-pro-skill.git "$SKILLS_DIR/memory-lancedb-pro-skill" 2>/dev/null || true
               fi
+              # Install remaining clawhub skills
+              for skill in automation-workflows find-skills-skill n8n ontology openclaw-homeassistant playwright-mcp self-improving-agent skill-vetter weather; do
+                if [ ! -d "$SKILLS_DIR/$skill" ]; then
+                  echo "[init] Installing skill: $skill"
+                  npx clawhub install "$skill" --workdir /home/node/.openclaw/workspace --no-input 2>/dev/null || true
+                fi
+              done
+              # Skills requiring --force (VirusTotal flagged) or not on clawhub registry
+              if [ ! -d "$SKILLS_DIR/proactive-agent-skill" ]; then
+                echo '[init] Installing skill: proactive-agent-skill'
+                npx clawhub install proactive-agent-skill --workdir /home/node/.openclaw/workspace --no-input --force 2>/dev/null || true
+              fi
+              if [ ! -d "$SKILLS_DIR/summarize" ]; then
+                echo '[init] Installing skill: summarize'
+                npx clawhub install @anthropic/summarize --workdir /home/node/.openclaw/workspace --no-input 2>/dev/null || \
+                npx clawhub install summarize-skill --workdir /home/node/.openclaw/workspace --no-input 2>/dev/null || true
+              fi
+              if [ ! -d "$SKILLS_DIR/lossless-claw-enhanced" ]; then
+                echo '[init] Installing skill: lossless-claw-enhanced (git)'
+                git clone --depth 1 https://github.com/win4r/lossless-claw-enhanced.git "$SKILLS_DIR/lossless-claw-enhanced" 2>/dev/null || true
+              fi
               # Install memory-lancedb-pro plugin
               if [ ! -d "/home/node/.openclaw/extensions/memory-lancedb-pro" ]; then
                 echo '[init] Installing plugin: memory-lancedb-pro'
                 openclaw plugins install memory-lancedb-pro@beta 2>/dev/null || true
                 # Backup to PVC for next restart
                 if [ -d "/home/node/.openclaw/extensions/memory-lancedb-pro" ]; then
-                  cp -a /home/node/.openclaw/extensions/memory-lancedb-pro "$PVC/_extensions/"
+                  tar cf - -C /home/node/.openclaw/extensions memory-lancedb-pro 2>/dev/null | tar xf - -C "$PVC/_extensions/" 2>/dev/null
                   echo '[init] memory-lancedb-pro installed and backed up to PVC'
                 else
                   echo '[init] WARNING: memory-lancedb-pro install may have failed'
@@ -361,15 +382,15 @@ spec:
               else
                 echo '[init] memory-lancedb-pro plugin ready (from PVC cache)'
               fi
-              # Install openclaw-homeassistant plugin
-              if [ ! -d "/home/node/.openclaw/extensions/openclaw-homeassistant" ]; then
+              # Install openclaw-homeassistant plugin (only if HA credentials are provided)
+              if [ ! -d "/home/node/.openclaw/extensions/openclaw-homeassistant" ] && [ -n "${HASS_SERVER:-}" ]; then
                 echo '[init] Installing plugin: openclaw-homeassistant'
                 cd /tmp && npm pack @elvatis_com/openclaw-homeassistant 2>/dev/null
                 mkdir -p /home/node/.openclaw/extensions/openclaw-homeassistant
                 tar xzf /tmp/elvatis_com-openclaw-homeassistant-*.tgz -C /home/node/.openclaw/extensions/openclaw-homeassistant --strip-components=1 2>/dev/null
                 rm -f /tmp/elvatis_com-openclaw-homeassistant-*.tgz
                 if [ -f "/home/node/.openclaw/extensions/openclaw-homeassistant/package.json" ]; then
-                  cp -a /home/node/.openclaw/extensions/openclaw-homeassistant "$PVC/_extensions/"
+                  tar cf - -C /home/node/.openclaw/extensions openclaw-homeassistant 2>/dev/null | tar xf - -C "$PVC/_extensions/" 2>/dev/null
                   echo '[init] openclaw-homeassistant installed and backed up to PVC'
                 else
                   echo '[init] WARNING: openclaw-homeassistant install may have failed'
@@ -383,9 +404,8 @@ spec:
                 cd /tmp && git clone --depth 1 https://github.com/win4r/lossless-claw-enhanced.git 2>/dev/null
                 if [ -d /tmp/lossless-claw-enhanced ]; then
                   cd /tmp/lossless-claw-enhanced && npm install --production 2>/dev/null
-                  cp -a /tmp/lossless-claw-enhanced /home/node/.openclaw/extensions/
-                  cp -a /tmp/lossless-claw-enhanced "$PVC/_extensions/"
-                  rm -rf /tmp/lossless-claw-enhanced
+                  mv /tmp/lossless-claw-enhanced /home/node/.openclaw/extensions/lossless-claw-enhanced
+                  tar cf - -C /home/node/.openclaw/extensions lossless-claw-enhanced 2>/dev/null | tar xf - -C "$PVC/_extensions/" 2>/dev/null
                   echo '[init] lossless-claw-enhanced installed and backed up to PVC'
                 else
                   echo '[init] WARNING: lossless-claw-enhanced clone failed'

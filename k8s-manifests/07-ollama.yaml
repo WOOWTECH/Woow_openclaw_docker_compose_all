@@ -49,7 +49,9 @@ spec:
         kubernetes.io/hostname: "your-ollama-node-hostname"
       containers:
         - name: ollama
-          image: ollama/ollama:latest
+          image: ollama/ollama:0.19.0
+          securityContext:
+            allowPrivilegeEscalation: false
           ports:
             - containerPort: 11434
           env:

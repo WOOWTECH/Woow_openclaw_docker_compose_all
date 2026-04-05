@@ -75,6 +75,8 @@ spec:
       containers:
         - name: postgres
           image: pgvector/pgvector:pg16
+          securityContext:
+            allowPrivilegeEscalation: false
           ports:
             - containerPort: 5432
               name: postgres
@@ -186,6 +188,8 @@ spec:
         - name: openclaw-gateway
           image: openclaw-custom:latest
           imagePullPolicy: Never
+          securityContext:
+            allowPrivilegeEscalation: false
           command:
             - sh
             - -c
@@ -202,21 +206,39 @@ spec:
               if [ -f "$PVC/exec-approvals.json" ]; then
                 cp "$PVC/exec-approvals.json" /home/node/.openclaw/exec-approvals.json
               else
-                # First boot: create exec-approvals.json with full bypass
+                # First boot: create exec-approvals.json with allowlist + on-miss + deny list
                 node -e '
                   const fs = require("fs"), crypto = require("crypto");
+                  const safeList = [
+                    {pattern:"echo *",id:crypto.randomUUID()},{pattern:"date",id:crypto.randomUUID()},
+                    {pattern:"python3 -c *",id:crypto.randomUUID()},{pattern:"python3 *",id:crypto.randomUUID()},
+                    {pattern:"node -e *",id:crypto.randomUUID()},
+                    {pattern:"cat /home/node/.openclaw/*",id:crypto.randomUUID()},
+                    {pattern:"cat /mnt/openclaw-agents/*",id:crypto.randomUUID()},
+                    {pattern:"ls /home/node/.openclaw/*",id:crypto.randomUUID()},
+                    {pattern:"ls /mnt/openclaw-agents/*",id:crypto.randomUUID()},
+                    {pattern:"curl https://*",id:crypto.randomUUID()},
+                    {pattern:"curl http://ollama-svc*",id:crypto.randomUUID()},
+                    {pattern:"curl http://127.0.0.1*",id:crypto.randomUUID()}
+                  ];
+                  const denyList = [
+                    "df","du","free","top","htop","uname","hostname","lsblk","fdisk","mount",
+                    "ifconfig","ip addr","ip route","netstat","ss","ps aux","ps -ef",
+                    "kubectl","k3s","crictl","docker","podman","systemctl","journalctl",
+                    "cat /etc/*","ls /etc/*","cat /proc/*","cat /sys/*","cat /root/*","ls /root/*",
+                    "apt","apt-get","dpkg","useradd","userdel","passwd",
+                    "iptables","shutdown","reboot","dd","mkfs","dmesg","sysctl"
+                  ];
+                  const agentCfg = {security:"allowlist",ask:"on-miss",askFallback:"deny",autoAllowSkills:false,allowlist:safeList,deny:denyList};
                   const data = {
                     version: 1,
                     socket: { path: "/home/node/.openclaw/exec-approvals.sock", token: crypto.randomBytes(24).toString("base64url") },
-                    defaults: { security: "full", ask: "off", askFallback: "full", autoAllowSkills: true },
-                    agents: {
-                      main: { security: "full", ask: "off", askFallback: "full", autoAllowSkills: true, allowlist: [{ pattern: "*", id: crypto.randomUUID() }] },
-                      "*": { security: "full", ask: "off", askFallback: "full", autoAllowSkills: true, allowlist: [{ pattern: "*", id: crypto.randomUUID() }] }
-                    }
+                    defaults: { security: "allowlist", ask: "on-miss", askFallback: "deny", autoAllowSkills: false },
+                    agents: { main: agentCfg, "*": agentCfg }
                   };
                   fs.writeFileSync("/home/node/.openclaw/exec-approvals.json", JSON.stringify(data, null, 2) + "\n", { mode: 0o600 });
                   fs.copyFileSync("/home/node/.openclaw/exec-approvals.json", process.argv[1] + "/exec-approvals.json");
-                  console.log("[init] Created exec-approvals.json (security:full, ask:off)");
+                  console.log("[init] Created exec-approvals.json (allowlist+on-miss, deny:" + denyList.length + " cmds, askFallback:deny)");
                 ' "$PVC"
               fi
               # Extensions must be a real dir (not symlink) for openclaw plugins install
@@ -244,7 +266,7 @@ spec:
               if [ ! -s "$CONFIG_PVC" ]; then
                 echo '[init] First boot: writing default openclaw.json'
                 cat > "$CONFIG_PVC" << 'CFGEOF'
-              {"agents":{"defaults":{"model":"openai/gpt-4o","sandbox":{"browser":{"enabled":true}}}},"gateway":{"mode":"local","controlUi":{"dangerouslyAllowHostHeaderOriginFallback":true,"dangerouslyDisableDeviceAuth":true},"remote":{"password":"PLACEHOLDER"},"trustedProxies":["10.42.0.0/16"],"tools":{"allow":["cron","sessions_list","sessions_history","sessions_spawn","sessions_send","sessions_yield","session_status","memory_recall","memory_store","memory_forget","memory_update","web_fetch","web_search","read","write","edit","exec","agents_list","gateway","message","browser","canvas","image","pdf","tts","process","nodes","subagents","ha_status","ha_list_entities","ha_get_state","ha_search_entities","ha_list_services","ha_light_on","ha_light_off","ha_light_toggle","ha_light_list","ha_switch_on","ha_switch_off","ha_switch_toggle","ha_climate_set_temp","ha_climate_set_mode","ha_climate_set_preset","ha_climate_list","ha_media_play","ha_media_pause","ha_media_stop","ha_media_volume","ha_media_play_media","ha_cover_open","ha_cover_close","ha_cover_position","ha_scene_activate","ha_script_run","ha_automation_trigger","ha_sensor_list","ha_history","ha_logbook","ha_call_service","ha_fire_event","ha_render_template","ha_notify"]}},"channels":{"telegram":{"enabled":true,"dmPolicy":"open","groupPolicy":"open","streaming":"partial","allowFrom":["*"]},"whatsapp":{"enabled":true,"dmPolicy":"pairing","groupPolicy":"allowlist","debounceMs":0,"mediaMaxMb":50},"line":{"enabled":true,"dmPolicy":"open","groupPolicy":"open","allowFrom":["*"]}},"commands":{"native":"auto","nativeSkills":"auto","restart":true,"ownerDisplay":"raw"},"browser":{"noSandbox":true,"headless":true},"approvals":{"exec":{"enabled":false}},"tools":{"exec":{"security":"full","ask":"off"}}}
+              {"agents":{"defaults":{"model":"openai/gpt-4o","sandbox":{"browser":{"enabled":true}}}},"gateway":{"mode":"local","controlUi":{"dangerouslyAllowHostHeaderOriginFallback":true},"remote":{"password":"PLACEHOLDER"},"trustedProxies":["10.42.0.0/16"],"tools":{"allow":["cron","sessions_list","sessions_history","sessions_spawn","sessions_send","sessions_yield","session_status","memory_recall","memory_store","memory_forget","memory_update","web_fetch","web_search","read","write","edit","exec","agents_list","gateway","message","browser","canvas","image","pdf","tts","process","nodes","subagents","ha_status","ha_list_entities","ha_get_state","ha_search_entities","ha_list_services","ha_light_on","ha_light_off","ha_light_toggle","ha_light_list","ha_switch_on","ha_switch_off","ha_switch_toggle","ha_climate_set_temp","ha_climate_set_mode","ha_climate_set_preset","ha_climate_list","ha_media_play","ha_media_pause","ha_media_stop","ha_media_volume","ha_media_play_media","ha_cover_open","ha_cover_close","ha_cover_position","ha_scene_activate","ha_script_run","ha_automation_trigger","ha_sensor_list","ha_history","ha_logbook","ha_call_service","ha_fire_event","ha_render_template","ha_notify"]}},"channels":{"telegram":{"enabled":true,"dmPolicy":"open","groupPolicy":"open","streaming":"partial","allowFrom":["*"]},"whatsapp":{"enabled":true,"dmPolicy":"pairing","groupPolicy":"allowlist","debounceMs":0,"mediaMaxMb":50},"line":{"enabled":true,"dmPolicy":"open","groupPolicy":"open","allowFrom":["*"]}},"commands":{"native":"auto","nativeSkills":"auto","restart":true,"ownerDisplay":"raw"},"browser":{"noSandbox":true,"headless":true},"approvals":{"exec":{"enabled":true,"mode":"targets","targets":[]}},"tools":{"exec":{"security":"allowlist","ask":"on-miss"}}}
               CFGEOF
                 sed -i "s/PLACEHOLDER/$OPENCLAW_GATEWAY_TOKEN/" "$CONFIG_PVC"
                 # Auto-detect default model from available API keys
@@ -256,32 +278,38 @@ spec:
                 [ -z "$DEFAULT_MODEL" ] && [ -n "${GEMINI_API_KEY:-}" ] && DEFAULT_MODEL="google/gemini-2.0-flash"
                 [ -z "$DEFAULT_MODEL" ] && [ -n "${QWEN_API_KEY:-}" ] && DEFAULT_MODEL="qwen/qwen-max"
                 [ -z "$DEFAULT_MODEL" ] && DEFAULT_MODEL="openai/gpt-4o"
-                node -e "const fs=require('fs'),p='$CONFIG_PVC';const c=JSON.parse(fs.readFileSync(p,'utf8'));c.agents.defaults.model='$DEFAULT_MODEL';fs.writeFileSync(p,JSON.stringify(c,null,2))"
+                DEFAULT_MODEL="$DEFAULT_MODEL" CONFIG_PVC="$CONFIG_PVC" node -e '
+                  const fs=require("fs");
+                  const c=JSON.parse(fs.readFileSync(process.env.CONFIG_PVC,"utf8"));
+                  c.agents.defaults.model=process.env.DEFAULT_MODEL;
+                  fs.writeFileSync(process.env.CONFIG_PVC,JSON.stringify(c,null,2));
+                '
                 echo "[init] Default model set to $DEFAULT_MODEL"
                 # Inject Nerve public URL into gateway controlUi allowedOrigins
                 if [ -n "${NERVE_PUBLIC_URL:-}" ]; then
-                  node -e "
-                    const fs=require('fs'),p='$CONFIG_PVC';
-                    const c=JSON.parse(fs.readFileSync(p,'utf8'));
+                  CONFIG_PVC="$CONFIG_PVC" node -e '
+                    const fs=require("fs");
+                    const c=JSON.parse(fs.readFileSync(process.env.CONFIG_PVC,"utf8"));
+                    if(!c.gateway.controlUi.allowedOrigins) c.gateway.controlUi.allowedOrigins=[];
                     c.gateway.controlUi.allowedOrigins=[process.env.NERVE_PUBLIC_URL];
-                    fs.writeFileSync(p,JSON.stringify(c,null,2));
-                  "
+                    fs.writeFileSync(process.env.CONFIG_PVC,JSON.stringify(c,null,2));
+                  '
                   echo "[init] Gateway allowedOrigins set to $NERVE_PUBLIC_URL"
                 fi
                 # Inject channel credentials from env vars into config
                 if [ -n "${TELEGRAM_BOT_TOKEN:-}" ]; then
-                  node -e "
-                    const fs=require('fs'),p='$CONFIG_PVC';
-                    const c=JSON.parse(fs.readFileSync(p,'utf8'));
+                  CONFIG_PVC="$CONFIG_PVC" node -e '
+                    const fs=require("fs"),p=process.env.CONFIG_PVC;
+                    const c=JSON.parse(fs.readFileSync(p,"utf8"));
                     c.channels.telegram.botToken=process.env.TELEGRAM_BOT_TOKEN;
                     fs.writeFileSync(p,JSON.stringify(c,null,2));
-                  "
+                  '
                   echo '[init] Telegram botToken injected from env'
                 fi
                 if [ -n "${LINE_CHANNEL_TOKEN:-}" ]; then
-                  node -e "
-                    const fs=require('fs'),p='$CONFIG_PVC';
-                    const c=JSON.parse(fs.readFileSync(p,'utf8'));
+                  CONFIG_PVC="$CONFIG_PVC" node -e '
+                    const fs=require("fs"),p=process.env.CONFIG_PVC;
+                    const c=JSON.parse(fs.readFileSync(p,"utf8"));
                     c.channels.line.channelAccessToken=process.env.LINE_CHANNEL_TOKEN;
                     if(process.env.LINE_CHANNEL_SECRET) c.channels.line.channelSecret=process.env.LINE_CHANNEL_SECRET;
                     fs.writeFileSync(p,JSON.stringify(c,null,2));
@@ -357,7 +385,7 @@ spec:
               # Skills requiring --force (VirusTotal flagged) or not on clawhub registry
               if [ ! -d "$SKILLS_DIR/proactive-agent-skill" ]; then
                 echo '[init] Installing skill: proactive-agent-skill'
-                npx clawhub install proactive-agent-skill --workdir /home/node/.openclaw/workspace --no-input --force 2>/dev/null || true
+                npx clawhub install proactive-agent-skill --workdir /home/node/.openclaw/workspace --no-input 2>/dev/null || true
               fi
               if [ ! -d "$SKILLS_DIR/summarize" ]; then
                 echo '[init] Installing skill: summarize'
@@ -508,11 +536,16 @@ spec:
                 echo "[init] OpenClaw ready: $($OC_BIN --version 2>/dev/null)"
               fi
               # Load skill env vars from workspace .env (persisted on PVC)
+              # Safety: only load KEY=VALUE lines, skip shell commands and comments
               if [ -f /home/node/.openclaw/workspace/.env ]; then
-                set -a
-                . /home/node/.openclaw/workspace/.env
-                set +a
-                echo '[init] Loaded skill env vars from workspace/.env'
+                while IFS='=' read -r key value; do
+                  case "$key" in
+                    ''|\#*|export\ *) continue ;;
+                    *[!A-Za-z0-9_]*) continue ;;
+                  esac
+                  [ -n "$value" ] && export "$key=$value"
+                done < /home/node/.openclaw/workspace/.env
+                echo '[init] Loaded skill env vars from workspace/.env (safe parser)'
               fi
               export PATH="$OC_LOCAL/bin:$PATH"
               # ── Fix 1: Ensure models allowlist for Nerve dropdown ──

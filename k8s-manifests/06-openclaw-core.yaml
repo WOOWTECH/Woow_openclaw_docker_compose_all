@@ -229,19 +229,31 @@ spec:
                   ];
                   const denyList = [
                     "/usr/bin/df","/usr/bin/du","/usr/bin/free","/usr/bin/top","/usr/bin/htop",
-                    "/usr/bin/uname","/usr/bin/hostname","/usr/bin/lsblk","/usr/sbin/fdisk",
-                    "/usr/bin/mount","/usr/bin/umount","/usr/sbin/ifconfig","/usr/bin/ip",
+                    "/usr/bin/vmstat","/usr/bin/iostat","/usr/bin/uptime","/usr/bin/w",
+                    "/usr/bin/who","/usr/bin/last","/usr/bin/lscpu","/usr/bin/lsmem",
+                    "/usr/bin/nproc","/usr/bin/arch","/usr/bin/getconf",
+                    "/usr/bin/uname","/usr/bin/hostname","/usr/bin/hostnamectl",
+                    "/usr/bin/dmesg","/usr/sbin/sysctl","/usr/sbin/lsmod","/usr/sbin/modprobe",
+                    "/usr/bin/lsblk","/usr/sbin/fdisk","/usr/sbin/blkid","/usr/sbin/mkfs",
+                    "/usr/bin/mount","/usr/bin/umount",
+                    "/usr/sbin/ifconfig","/usr/bin/ip","/usr/sbin/ip",
                     "/usr/bin/netstat","/usr/bin/ss","/usr/bin/ps",
-                    "/usr/local/bin/kubectl","/usr/bin/kubectl","/usr/local/bin/k3s",
-                    "/usr/bin/crictl","/usr/bin/docker","/usr/bin/podman",
+                    "/usr/local/bin/kubectl","/usr/bin/kubectl",
+                    "/usr/local/bin/k3s","/usr/bin/k3s",
+                    "/usr/bin/crictl","/usr/bin/ctr","/usr/bin/containerd",
+                    "/usr/bin/docker","/usr/bin/podman","/usr/bin/nerdctl",
                     "/usr/bin/systemctl","/usr/bin/journalctl","/usr/sbin/service",
+                    "/usr/sbin/shutdown","/usr/sbin/reboot","/usr/sbin/init",
                     "/usr/bin/apt","/usr/bin/apt-get","/usr/bin/dpkg",
+                    "/usr/bin/pip","/usr/bin/pip3","/usr/local/bin/pip","/usr/local/bin/pip3",
+                    "/usr/bin/npm",
                     "/usr/sbin/useradd","/usr/sbin/userdel","/usr/bin/passwd",
-                    "/usr/sbin/iptables","/usr/sbin/shutdown","/usr/sbin/reboot",
-                    "/usr/bin/dd","/usr/sbin/mkfs","/usr/bin/dmesg","/usr/sbin/sysctl",
-                    "/usr/bin/rm","/usr/bin/chmod","/usr/bin/chown",
-                    "/usr/bin/kill","/usr/bin/killall","/usr/bin/wget",
-                    "/usr/bin/ssh","/usr/bin/scp"
+                    "/usr/sbin/iptables","/usr/sbin/nftables","/usr/sbin/firewall-cmd",
+                    "/usr/bin/dd","/usr/bin/shred",
+                    "/usr/bin/rm","/usr/bin/chmod","/usr/bin/chown","/usr/bin/chgrp",
+                    "/usr/bin/kill","/usr/bin/killall","/usr/bin/pkill",
+                    "/usr/bin/wget","/usr/bin/ssh","/usr/bin/scp","/usr/bin/sftp",
+                    "/usr/sbin/dmidecode","/usr/bin/lspci","/usr/bin/lsusb"
                   ];
                   const agentCfg = {security:"allowlist",ask:"on-miss",askFallback:"deny",autoAllowSkills:false,allowlist:safeList,deny:denyList};
                   const data = {

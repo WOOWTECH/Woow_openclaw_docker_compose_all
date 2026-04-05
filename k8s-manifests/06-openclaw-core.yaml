@@ -210,16 +210,22 @@ spec:
                 node -e '
                   const fs = require("fs"), crypto = require("crypto");
                   const safeList = [
-                    {pattern:"echo *",id:crypto.randomUUID()},{pattern:"date",id:crypto.randomUUID()},
-                    {pattern:"python3 -c *",id:crypto.randomUUID()},{pattern:"python3 *",id:crypto.randomUUID()},
-                    {pattern:"node -e *",id:crypto.randomUUID()},
-                    {pattern:"cat /home/node/.openclaw/*",id:crypto.randomUUID()},
-                    {pattern:"cat /mnt/openclaw-agents/*",id:crypto.randomUUID()},
-                    {pattern:"ls /home/node/.openclaw/*",id:crypto.randomUUID()},
-                    {pattern:"ls /mnt/openclaw-agents/*",id:crypto.randomUUID()},
-                    {pattern:"curl https://*",id:crypto.randomUUID()},
-                    {pattern:"curl http://ollama-svc*",id:crypto.randomUUID()},
-                    {pattern:"curl http://127.0.0.1*",id:crypto.randomUUID()}
+                    {pattern:"/usr/bin/echo",id:crypto.randomUUID()},
+                    {pattern:"/usr/bin/date",id:crypto.randomUUID()},
+                    {pattern:"/usr/bin/python3",id:crypto.randomUUID()},
+                    {pattern:"/usr/local/bin/python3",id:crypto.randomUUID()},
+                    {pattern:"/usr/local/bin/node",id:crypto.randomUUID()},
+                    {pattern:"/usr/bin/node",id:crypto.randomUUID()},
+                    {pattern:"/usr/bin/cat",id:crypto.randomUUID()},
+                    {pattern:"/usr/bin/ls",id:crypto.randomUUID()},
+                    {pattern:"/usr/bin/curl",id:crypto.randomUUID()},
+                    {pattern:"/usr/bin/head",id:crypto.randomUUID()},
+                    {pattern:"/usr/bin/tail",id:crypto.randomUUID()},
+                    {pattern:"/usr/bin/grep",id:crypto.randomUUID()},
+                    {pattern:"/usr/bin/wc",id:crypto.randomUUID()},
+                    {pattern:"/usr/bin/sort",id:crypto.randomUUID()},
+                    {pattern:"/usr/bin/sed",id:crypto.randomUUID()},
+                    {pattern:"/usr/bin/awk",id:crypto.randomUUID()}
                   ];
                   const denyList = [
                     "df","du","free","top","htop","uname","hostname","lsblk","fdisk","mount",

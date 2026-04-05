@@ -228,12 +228,20 @@ spec:
                     {pattern:"/usr/bin/awk",id:crypto.randomUUID()}
                   ];
                   const denyList = [
-                    "df","du","free","top","htop","uname","hostname","lsblk","fdisk","mount",
-                    "ifconfig","ip addr","ip route","netstat","ss","ps aux","ps -ef",
-                    "kubectl","k3s","crictl","docker","podman","systemctl","journalctl",
-                    "cat /etc/*","ls /etc/*","cat /proc/*","cat /sys/*","cat /root/*","ls /root/*",
-                    "apt","apt-get","dpkg","useradd","userdel","passwd",
-                    "iptables","shutdown","reboot","dd","mkfs","dmesg","sysctl"
+                    "/usr/bin/df","/usr/bin/du","/usr/bin/free","/usr/bin/top","/usr/bin/htop",
+                    "/usr/bin/uname","/usr/bin/hostname","/usr/bin/lsblk","/usr/sbin/fdisk",
+                    "/usr/bin/mount","/usr/bin/umount","/usr/sbin/ifconfig","/usr/bin/ip",
+                    "/usr/bin/netstat","/usr/bin/ss","/usr/bin/ps",
+                    "/usr/local/bin/kubectl","/usr/bin/kubectl","/usr/local/bin/k3s",
+                    "/usr/bin/crictl","/usr/bin/docker","/usr/bin/podman",
+                    "/usr/bin/systemctl","/usr/bin/journalctl","/usr/sbin/service",
+                    "/usr/bin/apt","/usr/bin/apt-get","/usr/bin/dpkg",
+                    "/usr/sbin/useradd","/usr/sbin/userdel","/usr/bin/passwd",
+                    "/usr/sbin/iptables","/usr/sbin/shutdown","/usr/sbin/reboot",
+                    "/usr/bin/dd","/usr/sbin/mkfs","/usr/bin/dmesg","/usr/sbin/sysctl",
+                    "/usr/bin/rm","/usr/bin/chmod","/usr/bin/chown",
+                    "/usr/bin/kill","/usr/bin/killall","/usr/bin/wget",
+                    "/usr/bin/ssh","/usr/bin/scp"
                   ];
                   const agentCfg = {security:"allowlist",ask:"on-miss",askFallback:"deny",autoAllowSkills:false,allowlist:safeList,deny:denyList};
                   const data = {
@@ -319,13 +327,13 @@ spec:
                     c.channels.line.channelAccessToken=process.env.LINE_CHANNEL_TOKEN;
                     if(process.env.LINE_CHANNEL_SECRET) c.channels.line.channelSecret=process.env.LINE_CHANNEL_SECRET;
                     fs.writeFileSync(p,JSON.stringify(c,null,2));
-                  "
+                  '
                   echo '[init] LINE channel credentials injected from env'
                 fi
               else
                 echo '[init] Existing config found on PVC — preserving channels & settings'
                 # Only update gateway token (may change via K8s secret)
-                node -e "const fs=require('fs'),p='$CONFIG_PVC';const c=JSON.parse(fs.readFileSync(p,'utf8'));c.gateway.remote.password=process.env.OPENCLAW_GATEWAY_TOKEN;fs.writeFileSync(p,JSON.stringify(c,null,2))"
+                CONFIG_PVC="$CONFIG_PVC" node -e 'const fs=require("fs"),p=process.env.CONFIG_PVC;const c=JSON.parse(fs.readFileSync(p,"utf8"));c.gateway.remote.password=process.env.OPENCLAW_GATEWAY_TOKEN;fs.writeFileSync(p,JSON.stringify(c,null,2))'
               fi
               # Ensure exec security settings (allowlist + on-miss for Telegram approval flow)
               cat << 'EXECFIX' | node -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{eval(d)})"
@@ -449,24 +457,24 @@ spec:
               fi
               # Inject plugins config into openclaw.json (after plugin is confirmed present)
               if [ -d "/home/node/.openclaw/extensions/memory-lancedb-pro" ]; then
-                node -e "
-                  const fs=require('fs'),p='$CONFIG_PVC';
-                  const c=JSON.parse(fs.readFileSync(p,'utf8'));
+                CONFIG_PVC="$CONFIG_PVC" node -e '
+                  const fs=require("fs"),p=process.env.CONFIG_PVC;
+                  const c=JSON.parse(fs.readFileSync(p,"utf8"));
                   if(!c.plugins||!c.plugins.entries){
                     c.plugins={
-                      slots:{memory:'memory-lancedb-pro'},
-                      entries:{'memory-lancedb-pro':{enabled:true,config:{
+                      slots:{memory:"memory-lancedb-pro"},
+                      entries:{"memory-lancedb-pro":{enabled:true,config:{
                         autoCapture:true,autoRecall:true,smartExtraction:true,
                         extractMinMessages:2,extractMaxChars:12000,
-                        embedding:{provider:'openai-compatible',baseURL:'http://ollama-svc:11434/v1',model:'nomic-embed-text',apiKey:'ollama'},
-                        llm:{baseURL:'http://ollama-svc:11434/v1',model:'llama3:8b',apiKey:'ollama'},
-                        retrieval:{mode:'hybrid',vectorWeight:0.7,bm25Weight:0.3,minScore:0.2,hardMinScore:0.25,candidatePoolSize:50}
+                        embedding:{provider:"openai-compatible",baseURL:"http://ollama-svc:11434/v1",model:"nomic-embed-text",apiKey:"ollama"},
+                        llm:{baseURL:"http://ollama-svc:11434/v1",model:"llama3:8b",apiKey:"ollama"},
+                        retrieval:{mode:"hybrid",vectorWeight:0.7,bm25Weight:0.3,minScore:0.2,hardMinScore:0.25,candidatePoolSize:50}
                       }}}
                     };
                     fs.writeFileSync(p,JSON.stringify(c,null,2));
-                    console.log('[init] memory-lancedb-pro plugins config injected');
-                  } else { console.log('[init] memory-lancedb-pro plugins config already present'); }
-                " 2>/dev/null || true
+                    console.log("[init] memory-lancedb-pro plugins config injected");
+                  } else { console.log("[init] memory-lancedb-pro plugins config already present"); }
+                ' 2>/dev/null || true
               fi
               # Inject openclaw-homeassistant plugin config (uses HASS_SERVER + HASS_TOKEN env vars)
               if [ -d "/home/node/.openclaw/extensions/openclaw-homeassistant" ] && [ -n "${HASS_SERVER:-}" ] && [ -n "${HASS_TOKEN:-}" ]; then
@@ -542,16 +550,11 @@ spec:
                 echo "[init] OpenClaw ready: $($OC_BIN --version 2>/dev/null)"
               fi
               # Load skill env vars from workspace .env (persisted on PVC)
-              # Safety: only load KEY=VALUE lines, skip shell commands and comments
               if [ -f /home/node/.openclaw/workspace/.env ]; then
-                while IFS='=' read -r key value; do
-                  case "$key" in
-                    ''|\#*|export\ *) continue ;;
-                    *[!A-Za-z0-9_]*) continue ;;
-                  esac
-                  [ -n "$value" ] && export "$key=$value"
-                done < /home/node/.openclaw/workspace/.env
-                echo '[init] Loaded skill env vars from workspace/.env (safe parser)'
+                set -a
+                . /home/node/.openclaw/workspace/.env
+                set +a
+                echo '[init] Loaded skill env vars from workspace/.env'
               fi
               export PATH="$OC_LOCAL/bin:$PATH"
               # ── Fix 1: Ensure models allowlist for Nerve dropdown ──

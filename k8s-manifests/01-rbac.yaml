@@ -12,21 +12,29 @@ metadata:
   name: wizard-role
   namespace: openclaw-tenant-1
 rules:
+  # Restrict secret access to specific named secrets only
   - apiGroups: [""]
     resources: ["secrets"]
-    verbs: ["create", "update", "get", "patch"]
+    resourceNames: ["openclaw-secrets", "cf-secrets"]
+    verbs: ["get", "update", "patch"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["create"]
   - apiGroups: ["apps"]
     resources: ["deployments"]
+    resourceNames: ["openclaw-gateway"]
     verbs: ["get", "patch", "update"]
   - apiGroups: ["apps"]
     resources: ["deployments/scale"]
+    resourceNames: ["openclaw-gateway"]
     verbs: ["get", "patch", "update"]
   - apiGroups: [""]
     resources: ["pods"]
     verbs: ["list", "get"]
+  # pods/exec restricted to gateway pod only (needed for setup wizard)
   - apiGroups: [""]
     resources: ["pods/exec"]
-    verbs: ["create", "get"]
+    verbs: ["create"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding

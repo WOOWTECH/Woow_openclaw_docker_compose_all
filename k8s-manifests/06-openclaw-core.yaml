@@ -292,7 +292,7 @@ spec:
               if [ ! -s "$CONFIG_PVC" ]; then
                 echo '[init] First boot: writing default openclaw.json'
                 cat > "$CONFIG_PVC" << 'CFGEOF'
-              {"agents":{"defaults":{"model":"openai/gpt-4o","sandbox":{"browser":{"enabled":true}}}},"gateway":{"mode":"local","controlUi":{"dangerouslyAllowHostHeaderOriginFallback":true},"remote":{"password":"PLACEHOLDER"},"trustedProxies":["10.42.0.0/16"],"tools":{"allow":["cron","sessions_list","sessions_history","sessions_spawn","sessions_send","sessions_yield","session_status","memory_recall","memory_store","memory_forget","memory_update","web_fetch","web_search","read","write","edit","exec","agents_list","gateway","message","browser","canvas","image","pdf","tts","process","nodes","subagents","ha_status","ha_list_entities","ha_get_state","ha_search_entities","ha_list_services","ha_light_on","ha_light_off","ha_light_toggle","ha_light_list","ha_switch_on","ha_switch_off","ha_switch_toggle","ha_climate_set_temp","ha_climate_set_mode","ha_climate_set_preset","ha_climate_list","ha_media_play","ha_media_pause","ha_media_stop","ha_media_volume","ha_media_play_media","ha_cover_open","ha_cover_close","ha_cover_position","ha_scene_activate","ha_script_run","ha_automation_trigger","ha_sensor_list","ha_history","ha_logbook","ha_call_service","ha_fire_event","ha_render_template","ha_notify"]}},"channels":{"telegram":{"enabled":true,"dmPolicy":"open","groupPolicy":"open","streaming":"partial","allowFrom":["*"]},"whatsapp":{"enabled":true,"dmPolicy":"pairing","groupPolicy":"allowlist","debounceMs":0,"mediaMaxMb":50},"line":{"enabled":true,"dmPolicy":"open","groupPolicy":"open","allowFrom":["*"]}},"commands":{"native":"auto","nativeSkills":"auto","restart":true,"ownerDisplay":"raw"},"browser":{"noSandbox":true,"headless":true},"approvals":{"exec":{"enabled":true,"mode":"targets","targets":[]}},"tools":{"exec":{"security":"allowlist","ask":"on-miss"}}}
+              {"agents":{"defaults":{"model":"openai/gpt-4o","sandbox":{"browser":{"enabled":true}}}},"gateway":{"mode":"local","controlUi":{"dangerouslyAllowHostHeaderOriginFallback":true},"remote":{"password":"PLACEHOLDER"},"trustedProxies":["10.42.0.0/16"],"tools":{"allow":["cron","sessions_list","sessions_history","sessions_spawn","sessions_send","sessions_yield","session_status","memory_recall","memory_store","memory_forget","memory_update","web_fetch","web_search","read","write","edit","exec","agents_list","gateway","message","browser","canvas","image","pdf","tts","process","nodes","subagents","ha_status","ha_list_entities","ha_get_state","ha_search_entities","ha_list_services","ha_light_on","ha_light_off","ha_light_toggle","ha_light_list","ha_switch_on","ha_switch_off","ha_switch_toggle","ha_climate_set_temp","ha_climate_set_mode","ha_climate_set_preset","ha_climate_list","ha_media_play","ha_media_pause","ha_media_stop","ha_media_volume","ha_media_play_media","ha_cover_open","ha_cover_close","ha_cover_position","ha_scene_activate","ha_script_run","ha_automation_trigger","ha_sensor_list","ha_history","ha_logbook","ha_call_service","ha_fire_event","ha_render_template","ha_notify"]}},"channels":{"telegram":{"enabled":true,"dmPolicy":"open","groupPolicy":"open","streaming":"partial","allowFrom":["*"]},"whatsapp":{"enabled":true,"dmPolicy":"pairing","groupPolicy":"allowlist","debounceMs":0,"mediaMaxMb":50},"line":{"enabled":false,"dmPolicy":"open","groupPolicy":"open","allowFrom":["*"]}},"commands":{"native":"auto","nativeSkills":"auto","restart":true,"ownerDisplay":"raw"},"browser":{"noSandbox":true,"headless":true},"approvals":{"exec":{"enabled":true,"mode":"targets","targets":[]}},"tools":{"exec":{"security":"allowlist","ask":"on-miss"}}}
               CFGEOF
                 sed -i "s/PLACEHOLDER/$OPENCLAW_GATEWAY_TOKEN/" "$CONFIG_PVC"
                 # Auto-detect default model from available API keys
@@ -899,25 +899,28 @@ spec:
               # Problem: workspace is symlinked /root/.openclaw/workspace → /mnt/openclaw-agents/_workspace
               # Nerve's security checks resolve symlinks via fs.realpath() then reject paths
               # outside /root/.openclaw. Fix: add PVC mount to allowed prefixes and resolve root realpath.
-              NERVE_FILES="$NERVE_APP/server/routes/files.ts"
-              NERVE_UTILS="$NERVE_APP/server/lib/file-utils.ts"
-              if ! grep -q '/mnt/openclaw-agents' "$NERVE_FILES" 2>/dev/null; then
-                sed -i 's|return \[|return [\n    "/mnt/openclaw-agents",|' "$NERVE_FILES"
-                echo '[nerve-init] Patched files.ts: added /mnt/openclaw-agents to allowed prefixes'
-              fi
-              if ! grep -q 'realRootPrefix' "$NERVE_UTILS" 2>/dev/null; then
-                node -e "
-                  const fs=require('fs');
-                  const f=fs.readFileSync('$NERVE_UTILS','utf8');
-                  const patched=f.replace(
-                    /\/\/ Resolve symlinks and re-check[\s\S]*?return real;/,
-                    '// Resolve symlinks and re-check (symlink-aware)\n  try {\n    const real = await fs.realpath(resolved);\n    let realRoot;\n    try { realRoot = await fs.realpath(root); } catch { realRoot = root; }\n    const realRootPrefix = realRoot.endsWith(path.sep) ? realRoot : realRoot + path.sep;\n    if (!real.startsWith(rootPrefix) && real !== root && !real.startsWith(realRootPrefix) && real !== realRoot) {\n      return null;\n    }\n    return real;'
-                  );
-                  fs.writeFileSync('$NERVE_UTILS',patched);
-                  console.log('[nerve-init] Patched file-utils.ts');
-                " 2>/dev/null
-                cd "$NERVE_APP" && npm run build 2>&1 | tail -3
-              fi
+              # Patch Nerve file serving in background (non-blocking — startup continues even if patch fails)
+              (
+                NERVE_FILES="$NERVE_APP/server/routes/files.ts"
+                NERVE_UTILS="$NERVE_APP/server/lib/file-utils.ts"
+                if ! grep -q '/mnt/openclaw-agents' "$NERVE_FILES" 2>/dev/null; then
+                  sed -i 's|return \[|return [\n    "/mnt/openclaw-agents",|' "$NERVE_FILES"
+                  echo '[nerve-patch] Patched files.ts'
+                fi
+                if ! grep -q 'realRootPrefix' "$NERVE_UTILS" 2>/dev/null; then
+                  NERVE_UTILS="$NERVE_UTILS" node -e '
+                    const fs=require("fs"),p=process.env.NERVE_UTILS;
+                    const f=fs.readFileSync(p,"utf8");
+                    const patched=f.replace(
+                      /\/\/ Resolve symlinks and re-check[\s\S]*?return real;/,
+                      "// Resolve symlinks and re-check (symlink-aware)\n  try {\n    const real = await fs.realpath(resolved);\n    let realRoot;\n    try { realRoot = await fs.realpath(root); } catch { realRoot = root; }\n    const realRootPrefix = realRoot.endsWith(path.sep) ? realRoot : realRoot + path.sep;\n    if (!real.startsWith(rootPrefix) && real !== root && !real.startsWith(realRootPrefix) && real !== realRoot) {\n      return null;\n    }\n    return real;"
+                    );
+                    fs.writeFileSync(p,patched);
+                    console.log("[nerve-patch] Patched file-utils.ts");
+                  ' 2>/dev/null
+                  cd "$NERVE_APP" && npm run build 2>&1 | tail -2
+                fi
+              ) &
               # Write .env for Nerve (gateway on localhost = same pod)
               NERVE_ORIGIN="${NERVE_PUBLIC_URL:-https://localhost:3080}"
               printf 'GATEWAY_URL=http://127.0.0.1:18789\nGATEWAY_TOKEN=%s\nHOST=0.0.0.0\nPORT=3080\nNERVE_AUTH=true\nNERVE_PASSWORD_HASH=%s\nNERVE_SESSION_SECRET=%s\nNERVE_SESSION_TTL=2592000000\nTRUSTED_PROXIES=10.42.0.0/16\nSTT_PROVIDER=none\nALLOWED_ORIGINS=%s\nNERVE_PUBLIC_ORIGIN=%s\nCSP_CONNECT_EXTRA=wss://%s wss://*.woowtech.io\n' "$GATEWAY_TOKEN" "$NERVE_PASSWORD_HASH" "$NERVE_SESSION_SECRET" "$NERVE_ORIGIN" "$NERVE_ORIGIN" "$(echo $NERVE_ORIGIN | sed 's|https://||')" > .env
@@ -975,7 +978,7 @@ spec:
             httpGet:
               path: /
               port: 3080
-            initialDelaySeconds: 30
+            initialDelaySeconds: 90
             periodSeconds: 10
             failureThreshold: 18
           livenessProbe:

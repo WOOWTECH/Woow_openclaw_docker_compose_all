@@ -1,0 +1,159 @@
+# =============================================================
+# PostgreSQL Backup CronJob
+# Runs pg_dump daily at 03:00 UTC, keeps last 7 backups on PVC
+# =============================================================
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgres-backup
+  namespace: openclaw-tenant-1
+  labels:
+    app: openclaw-db
+    app.kubernetes.io/component: backup
+spec:
+  schedule: "0 3 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        metadata:
+          labels:
+            app: postgres-backup
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: backup
+              image: pgvector/pgvector:pg16
+              securityContext:
+                allowPrivilegeEscalation: false
+              env:
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: openclaw-secrets
+                      key: POSTGRES_PASSWORD
+              command:
+                - sh
+                - -c
+                - |
+                  BACKUP_DIR="/backups"
+                  DATE=$(date +%Y%m%d-%H%M%S)
+                  BACKUP_FILE="$BACKUP_DIR/openclaw-$DATE.sql.gz"
+
+                  echo "[backup] Starting PostgreSQL backup..."
+                  pg_dump -h openclaw-db-svc -U openclaw -d openclaw | gzip > "$BACKUP_FILE"
+
+                  if [ $? -eq 0 ]; then
+                    SIZE=$(du -h "$BACKUP_FILE" | cut -f1)
+                    echo "[backup] Success: $BACKUP_FILE ($SIZE)"
+                  else
+                    echo "[backup] FAILED"
+                    exit 1
+                  fi
+
+                  # Keep only last 7 backups
+                  ls -t "$BACKUP_DIR"/openclaw-*.sql.gz 2>/dev/null | tail -n +8 | xargs rm -f 2>/dev/null
+                  REMAINING=$(ls "$BACKUP_DIR"/openclaw-*.sql.gz 2>/dev/null | wc -l)
+                  echo "[backup] Retained $REMAINING backups"
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 128Mi
+                limits:
+                  cpu: 500m
+                  memory: 512Mi
+              volumeMounts:
+                - name: backup-storage
+                  mountPath: /backups
+          volumes:
+            - name: backup-storage
+              persistentVolumeClaim:
+                claimName: openclaw-agents-pvc
+---
+# =============================================================
+# PVC Disk Space Monitor CronJob
+# Checks disk usage every 6 hours, logs warning if >80%
+# =============================================================
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: pvc-disk-monitor
+  namespace: openclaw-tenant-1
+  labels:
+    app: openclaw-gateway
+    app.kubernetes.io/component: monitoring
+spec:
+  schedule: "0 */6 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        metadata:
+          labels:
+            app: pvc-monitor
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: monitor
+              image: busybox:1.36
+              securityContext:
+                allowPrivilegeEscalation: false
+              command:
+                - sh
+                - -c
+                - |
+                  echo "=== PVC Disk Usage Report ==="
+                  echo "Time: $(date -u)"
+                  echo ""
+
+                  check_pvc() {
+                    MOUNT="$1"
+                    NAME="$2"
+                    if [ -d "$MOUNT" ]; then
+                      USAGE=$(df "$MOUNT" | tail -1 | awk '{print $5}' | tr -d '%')
+                      AVAIL=$(df -h "$MOUNT" | tail -1 | awk '{print $4}')
+                      echo "$NAME: ${USAGE}% used, $AVAIL available"
+                      if [ "$USAGE" -gt 90 ]; then
+                        echo "  CRITICAL: $NAME is over 90% full!"
+                        return 1
+                      elif [ "$USAGE" -gt 80 ]; then
+                        echo "  WARNING: $NAME is over 80% full"
+                      fi
+                    else
+                      echo "$NAME: mount not found"
+                    fi
+                    return 0
+                  }
+
+                  FAIL=0
+                  check_pvc /mnt/openclaw-agents "openclaw-agents-pvc" || FAIL=1
+                  check_pvc /mnt/db "openclaw-db-pvc" || FAIL=1
+
+                  echo ""
+                  if [ "$FAIL" -eq 1 ]; then
+                    echo "STATUS: CRITICAL — disk space low"
+                    exit 1
+                  else
+                    echo "STATUS: OK"
+                  fi
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 16Mi
+                limits:
+                  cpu: 50m
+                  memory: 32Mi
+              volumeMounts:
+                - name: agents-data
+                  mountPath: /mnt/openclaw-agents
+                  readOnly: true
+          volumes:
+            - name: agents-data
+              persistentVolumeClaim:
+                claimName: openclaw-agents-pvc

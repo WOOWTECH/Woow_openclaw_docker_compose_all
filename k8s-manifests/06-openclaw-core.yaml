@@ -423,6 +423,23 @@ spec:
                 echo '[init] Installing skill: lossless-claw-enhanced (git)'
                 git clone --depth 1 https://github.com/win4r/lossless-claw-enhanced.git "$SKILLS_DIR/lossless-claw-enhanced" 2>/dev/null || true
               fi
+              # Install openclaw-superpowers skill pack (52 skills)
+              if [ ! -d "$SKILLS_DIR/brainstorming" ]; then
+                echo '[init] Installing superpowers skill pack (52 skills)...'
+                git clone --depth 1 https://github.com/ArchieIndian/openclaw-superpowers.git /tmp/openclaw-superpowers 2>/dev/null
+                if [ -d /tmp/openclaw-superpowers/skills ]; then
+                  for category in core openclaw-native community; do
+                    for skill_dir in /tmp/openclaw-superpowers/skills/$category/*/; do
+                      [ -d "$skill_dir" ] || continue
+                      name=$(basename "$skill_dir")
+                      [ -d "$SKILLS_DIR/$name" ] || cp -a "$skill_dir" "$SKILLS_DIR/$name"
+                    done
+                  done
+                  SCOUNT=$(ls -d "$SKILLS_DIR"/*/SKILL.md 2>/dev/null | wc -l)
+                  echo "[init] Superpowers installed: $SCOUNT skills in workspace"
+                fi
+                rm -rf /tmp/openclaw-superpowers
+              fi
               # Install memory-lancedb-pro plugin
               if [ ! -d "/home/node/.openclaw/extensions/memory-lancedb-pro" ]; then
                 echo '[init] Installing plugin: memory-lancedb-pro'

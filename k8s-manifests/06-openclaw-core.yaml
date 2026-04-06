@@ -255,11 +255,11 @@ spec:
                     "/usr/bin/wget","/usr/bin/ssh","/usr/bin/scp","/usr/bin/sftp",
                     "/usr/sbin/dmidecode","/usr/bin/lspci","/usr/bin/lsusb"
                   ];
-                  const agentCfg = {security:"allowlist",ask:"on-miss",askFallback:"deny",autoAllowSkills:false,allowlist:safeList,deny:denyList};
+                  const agentCfg = {security:"full",ask:"off",askFallback:"deny",autoAllowSkills:true,allowlist:safeList,deny:denyList};
                   const data = {
                     version: 1,
                     socket: { path: "/home/node/.openclaw/exec-approvals.sock", token: crypto.randomBytes(24).toString("base64url") },
-                    defaults: { security: "allowlist", ask: "on-miss", askFallback: "deny", autoAllowSkills: false },
+                    defaults: { security: "full", ask: "off", askFallback: "deny", autoAllowSkills: true },
                     agents: { main: agentCfg, "*": agentCfg }
                   };
                   fs.writeFileSync("/home/node/.openclaw/exec-approvals.json", JSON.stringify(data, null, 2) + "\n", { mode: 0o600 });
@@ -293,7 +293,7 @@ spec:
               if [ ! -s "$CONFIG_PVC" ]; then
                 echo '[init] First boot: writing default openclaw.json'
                 cat > "$CONFIG_PVC" << 'CFGEOF'
-              {"agents":{"defaults":{"model":"openai/gpt-4o","sandbox":{"browser":{"enabled":true}}}},"gateway":{"mode":"local","controlUi":{"dangerouslyAllowHostHeaderOriginFallback":true},"remote":{"password":"PLACEHOLDER"},"trustedProxies":["10.42.0.0/16"],"tools":{"allow":["cron","sessions_list","sessions_history","sessions_spawn","sessions_send","sessions_yield","session_status","memory_recall","memory_store","memory_forget","memory_update","web_fetch","web_search","read","write","edit","exec","agents_list","gateway","message","browser","canvas","image","pdf","tts","process","nodes","subagents","ha_status","ha_list_entities","ha_get_state","ha_search_entities","ha_list_services","ha_light_on","ha_light_off","ha_light_toggle","ha_light_list","ha_switch_on","ha_switch_off","ha_switch_toggle","ha_climate_set_temp","ha_climate_set_mode","ha_climate_set_preset","ha_climate_list","ha_media_play","ha_media_pause","ha_media_stop","ha_media_volume","ha_media_play_media","ha_cover_open","ha_cover_close","ha_cover_position","ha_scene_activate","ha_script_run","ha_automation_trigger","ha_sensor_list","ha_history","ha_logbook","ha_call_service","ha_fire_event","ha_render_template","ha_notify"]}},"channels":{"telegram":{"enabled":true,"dmPolicy":"open","groupPolicy":"open","streaming":"partial","allowFrom":["*"]},"whatsapp":{"enabled":true,"dmPolicy":"pairing","groupPolicy":"allowlist","debounceMs":0,"mediaMaxMb":50},"line":{"enabled":false,"dmPolicy":"open","groupPolicy":"open","allowFrom":["*"]}},"commands":{"native":"auto","nativeSkills":"auto","restart":true,"ownerDisplay":"raw"},"browser":{"noSandbox":true,"headless":true},"approvals":{"exec":{"enabled":true,"mode":"targets","targets":[]}},"tools":{"exec":{"security":"allowlist","ask":"on-miss"}}}
+              {"agents":{"defaults":{"model":"openai/gpt-4o","sandbox":{"browser":{"enabled":true}}}},"gateway":{"mode":"local","controlUi":{"dangerouslyAllowHostHeaderOriginFallback":true},"remote":{"password":"PLACEHOLDER"},"trustedProxies":["10.42.0.0/16"],"tools":{"allow":["cron","sessions_list","sessions_history","sessions_spawn","sessions_send","sessions_yield","session_status","memory_recall","memory_store","memory_forget","memory_update","web_fetch","web_search","read","write","edit","exec","agents_list","gateway","message","browser","canvas","image","pdf","tts","process","nodes","subagents","ha_status","ha_list_entities","ha_get_state","ha_search_entities","ha_list_services","ha_light_on","ha_light_off","ha_light_toggle","ha_light_list","ha_switch_on","ha_switch_off","ha_switch_toggle","ha_climate_set_temp","ha_climate_set_mode","ha_climate_set_preset","ha_climate_list","ha_media_play","ha_media_pause","ha_media_stop","ha_media_volume","ha_media_play_media","ha_cover_open","ha_cover_close","ha_cover_position","ha_scene_activate","ha_script_run","ha_automation_trigger","ha_sensor_list","ha_history","ha_logbook","ha_call_service","ha_fire_event","ha_render_template","ha_notify"]}},"channels":{"telegram":{"enabled":true,"dmPolicy":"open","groupPolicy":"open","streaming":"partial","allowFrom":["*"]},"whatsapp":{"enabled":true,"dmPolicy":"pairing","groupPolicy":"allowlist","debounceMs":0,"mediaMaxMb":50},"line":{"enabled":false,"dmPolicy":"open","groupPolicy":"open","allowFrom":["*"]}},"commands":{"native":"auto","nativeSkills":"auto","restart":true,"ownerDisplay":"raw"},"browser":{"noSandbox":true,"headless":true},"approvals":{"exec":{"enabled":true,"mode":"targets","targets":[]}},"tools":{"exec":{"security":"full","ask":"off"}}}
               CFGEOF
                 sed -i "s/PLACEHOLDER/$OPENCLAW_GATEWAY_TOKEN/" "$CONFIG_PVC"
                 # Auto-detect default model from available API keys
@@ -354,10 +354,10 @@ spec:
                 const c=JSON.parse(fs.readFileSync(p,'utf8'));
                 if(!c.tools) c.tools={};
                 if(!c.tools.exec) c.tools.exec={};
-                c.tools.exec.security='allowlist';
-                c.tools.exec.ask='on-miss';
+                c.tools.exec.security='full';
+                c.tools.exec.ask='off';
                 fs.writeFileSync(p,JSON.stringify(c,null,2));
-                console.log('[init] Set tools.exec: security=allowlist, ask=on-miss');
+                console.log('[init] Set tools.exec: security=full, ask=off (deny list in exec-approvals)');
               EXECFIX
               ln -sf "$CONFIG_PVC" "$CONFIG"
               # Write auth-profiles.json: merge mode (preserve user-added keys, update env-var keys)

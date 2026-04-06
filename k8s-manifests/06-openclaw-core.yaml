@@ -282,6 +282,10 @@ spec:
                 cp -a "$PVC/_extensions/lossless-claw-enhanced" /home/node/.openclaw/extensions/
                 echo '[init] Restored lossless-claw-enhanced plugin from PVC cache'
               fi
+              if [ -d "$PVC/_extensions/superpowers" ]; then
+                cp -a "$PVC/_extensions/superpowers" /home/node/.openclaw/extensions/
+                echo '[init] Restored superpowers skill pack from PVC cache'
+              fi
               ln -sfn "$PVC/_cron" /home/node/.openclaw/cron
               ln -sfn "$PVC/_telegram" /home/node/.openclaw/telegram
               # Persist ~/.config (GOG OAuth, Chromium profile, etc.)
@@ -870,7 +874,7 @@ spec:
               done
               # Extensions dir: copy from PVC so openclaw CLI can validate plugins
               mkdir -p /root/.openclaw/extensions
-              for plugin in memory-lancedb-pro openclaw-homeassistant lossless-claw-enhanced; do
+              for plugin in memory-lancedb-pro openclaw-homeassistant lossless-claw-enhanced superpowers; do
                 if [ -d "$PVC/_extensions/$plugin" ]; then
                   cp -a "$PVC/_extensions/$plugin" /root/.openclaw/extensions/
                 fi

@@ -281,16 +281,17 @@ spec:
                 set +a
                 echo '[init] Loaded skill env vars from workspace/.env'
               fi
-              # Nerve UI (port 3080) — start from PVC if available
+              # Nerve UI (port 3080) — start from PVC after gateway is ready
               if [ -d /mnt/openclaw-agents/_nerve_app/server-dist ]; then
-                (cd /mnt/openclaw-agents/_nerve_app && \
-                  env PORT=3080 HOST=0.0.0.0 \
+                NERVE_GW_TOKEN="$OPENCLAW_GATEWAY_TOKEN"
+                (sleep 30; cd /mnt/openclaw-agents/_nerve_app && \
+                  PORT=3080 HOST=0.0.0.0 \
                   GATEWAY_URL="http://127.0.0.1:18789" \
-                  GATEWAY_TOKEN="$OPENCLAW_GATEWAY_TOKEN" \
+                  GATEWAY_TOKEN="$NERVE_GW_TOKEN" \
                   NERVE_AUTH=none \
                   NERVE_ALLOW_INSECURE=true \
-                  node server-dist/index.js >> /tmp/nerve.log 2>&1) &
-                echo "[init] Nerve UI started on port 3080 (pid $!)"
+                  exec node server-dist/index.js >> /tmp/nerve.log 2>&1) &
+                echo "[init] Nerve UI will start in 30s on port 3080"
               fi
               exec openclaw gateway --bind lan --port 18789 --auth token --token "$OPENCLAW_GATEWAY_TOKEN" --allow-unconfigured
           ports:

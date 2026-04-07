@@ -143,11 +143,11 @@ spec:
   type: ClusterIP
 ---
 # =============================================================
-# OpenClaw Gateway - Deployment (v2.2)
+# OpenClaw Gateway - Deployment (v2026.4.5 — Nerve + LINE fix)
 #
-# Image: openclaw-custom:latest (pinned to v2026.3.13)
+# Image: openclaw-custom:latest (based on ghcr.io/openclaw/openclaw:latest)
+#   - v2026.4.5: Nerve UI on port 3080, LINE isSenderAllowed bug fixed
 #   - Built from Dockerfile.custom with Chromium, Go CLIs, etc.
-#   - MUST NOT upgrade past v2026.3.13 (LINE crash in v2026.3.22+)
 #
 # Persistence: All stateful data symlinked to /mnt/openclaw-agents PVC
 # Auth profiles: Merge mode (preserves user-added keys across restarts)
@@ -183,6 +183,8 @@ spec:
             - sh
             - -c
             - |
+              # Clean stale runtime from previous version (v2026.3.x residue)
+              rm -rf /mnt/openclaw-agents/_openclaw_runtime 2>/dev/null || true
               # Setup persistent dirs — symlink all stateful dirs to PVC
               mkdir -p /home/node/.openclaw
               PVC="/mnt/openclaw-agents"
@@ -246,13 +248,18 @@ spec:
               echo "$AUTH" > "$AUTH_FILE"
               # Bootstrap all core workspace files (only if empty or missing, writes to PVC)
               [ -s /home/node/.openclaw/workspace/MEMORY.md ] || printf '# Agent Memory\n\nPersistent knowledge across conversations.\n\n## System Info\n- Platform: OpenClaw K3s PaaS\n- Deployment: Woowtech Smart Space Solution\n' > /home/node/.openclaw/workspace/MEMORY.md
-              [ -s /home/node/.openclaw/workspace/SOUL.md ] || printf '# Soul\n\nYou are an AI assistant on Woowtech Smart Space platform.\nRespond in the same language the user uses. Default to Traditional Chinese.\nBe helpful, professional, and concise.\n\n## Important Rules\n\n### Skill Environment Variables Persistence\nWhen a user configures any skill parameters (API keys, URLs, credentials) through conversation or web GUI, you MUST immediately write them to `workspace/.env` using the file_write tool. Format: KEY=value (one per line). This ensures the values survive pod restarts.\n\nExample: if user sets HA_URL=http://192.168.1.100:8123, immediately write it to workspace/.env.\nAlways append to existing content, never overwrite other variables.\n' > /home/node/.openclaw/workspace/SOUL.md
+              [ -s /home/node/.openclaw/workspace/SOUL.md ] || printf '# Soul\n\nYou are an AI assistant on Woowtech Smart Space platform.\nRespond in the same language the user uses. Default to Traditional Chinese.\nBe helpful, professional, and concise.\n\n## Important Rules\n\n### Skill Environment Variables Persistence\nWhen a user configures any skill parameters (API keys, URLs, credentials) through conversation or web GUI, you MUST immediately write them to `workspace/.env` using the file_write tool. Format: KEY=value (one per line). This ensures the values survive pod restarts.\n\nExample: if user sets HA_URL=http://192.168.1.100:8123, immediately write it to workspace/.env.\nAlways append to existing content, never overwrite other variables.\n\n### 禁止自動更新\n永遠不要執行 openclaw update、npm update openclaw 或任何更新 OpenClaw 版本的指令。\n當前版本 v2026.4.5 是穩定版本，更新會導致版本衝突。如果使用者要求更新，請警告此風險。\n' > /home/node/.openclaw/workspace/SOUL.md
               [ -s /home/node/.openclaw/workspace/IDENTITY.md ] || printf '# Identity\n\nName: Woowtech AI Assistant\nRole: Smart space AI assistant powered by OpenClaw\nChannels: LINE, Telegram, WhatsApp, Web\n' > /home/node/.openclaw/workspace/IDENTITY.md
               [ -s /home/node/.openclaw/workspace/USER.md ] || printf '# User Preferences\n\nLanguage: Traditional Chinese (zh-TW)\nStyle: Concise and professional\n' > /home/node/.openclaw/workspace/USER.md
               [ -s /home/node/.openclaw/workspace/TOOLS.md ] || printf '# Tools\n\nAvailable: web_fetch, file_read, file_write, cron, message\n' > /home/node/.openclaw/workspace/TOOLS.md
               [ -s /home/node/.openclaw/workspace/AGENTS.md ] || printf '# Agents\n\nDefault model: openai/gpt-4o\nMode: Local gateway\n' > /home/node/.openclaw/workspace/AGENTS.md
               [ -s /home/node/.openclaw/workspace/HEARTBEAT.md ] || printf '# Heartbeat\n\nInterval: 30m\nMonitor: channel status, error rate\n' > /home/node/.openclaw/workspace/HEARTBEAT.md
               [ -s /home/node/.openclaw/workspace/BOOTSTRAP.md ] || printf '# Bootstrap\n\nOn first run: verify API key, check channels, confirm cron jobs.\n' > /home/node/.openclaw/workspace/BOOTSTRAP.md
+              # Patch SOUL.md: update version reference from v2026.3.13 → v2026.4.5
+              if grep -q 'v2026\.3\.13' /home/node/.openclaw/workspace/SOUL.md 2>/dev/null; then
+                sed -i 's/v2026\.3\.13/v2026.4.5/g' /home/node/.openclaw/workspace/SOUL.md
+                echo '[init] SOUL.md version reference updated to v2026.4.5'
+              fi
               echo '[init] Core workspace files bootstrapped'
               # Install default skills (only if not already present on PVC)
               SKILLS_DIR="/home/node/.openclaw/workspace/skills"
@@ -307,9 +314,24 @@ spec:
                 set +a
                 echo '[init] Loaded skill env vars from workspace/.env'
               fi
+              # Nerve UI (port 3080) — start if installed
+              # NOTE: Nerve has upstream build issues (radix-ui dep bug).
+              # Deploy separately when openclaw-nerve fixes its package-lock.json.
+              if [ -d /opt/nerve/server-dist ]; then
+                export PORT=3080 HOST=0.0.0.0
+                export GATEWAY_URL="ws://127.0.0.1:18789"
+                export GATEWAY_TOKEN="$OPENCLAW_GATEWAY_TOKEN"
+                export NERVE_PUBLIC_ORIGIN="${NERVE_PUBLIC_URL:-https://cindytech1-nerve.woowtech.io}"
+                export NERVE_AUTH=none NERVE_ALLOW_INSECURE=true
+                (cd /opt/nerve && node server-dist/index.js >> /tmp/nerve.log 2>&1) &
+                echo "[init] Nerve UI started on port 3080 (pid $!)"
+              fi
               exec env PATH="/home/node/.local/bin:$PATH" openclaw gateway --bind lan --port 18789 --auth token --token "$OPENCLAW_GATEWAY_TOKEN" --allow-unconfigured
           ports:
             - containerPort: 18789
+              name: gateway
+            - containerPort: 3080
+              name: nerve
           env:
             # Chromium / Puppeteer
             - name: CHROMIUM_FLAGS
@@ -439,6 +461,13 @@ spec:
                   name: openclaw-secrets
                   key: GOG_KEYRING_PASSWORD
                   optional: true
+            # Nerve UI public URL (for CORS / allowed origins)
+            - name: NERVE_PUBLIC_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: openclaw-config
+                  key: NERVE_PUBLIC_URL
+                  optional: true
           resources:
             requests:
               cpu: 500m
@@ -473,7 +502,7 @@ spec:
             sizeLimit: 512Mi
 ---
 # =============================================================
-# OpenClaw Gateway - Service
+# OpenClaw Gateway - Service (API / Control UI)
 # =============================================================
 apiVersion: v1
 kind: Service
@@ -486,7 +515,42 @@ spec:
   selector:
     app: openclaw-gateway
   ports:
-    - protocol: TCP
+    - name: gateway
+      protocol: TCP
       port: 18789
       targetPort: 18789
   type: ClusterIP
+---
+# =============================================================
+# OpenClaw Nerve - Service (Nerve UI on port 3080)
+# =============================================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: nerve-svc
+  namespace: openclaw-tenant-1
+  labels:
+    app: openclaw-gateway
+    app.kubernetes.io/component: nerve-ui
+spec:
+  selector:
+    app: openclaw-gateway
+  ports:
+    - name: nerve-http
+      protocol: TCP
+      port: 3080
+      targetPort: 3080
+  type: ClusterIP
+---
+# =============================================================
+# OpenClaw Config - ConfigMap (Nerve public URL, etc.)
+# =============================================================
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: openclaw-config
+  namespace: openclaw-tenant-1
+  labels:
+    app.kubernetes.io/part-of: openclaw-paas
+data:
+  NERVE_PUBLIC_URL: "https://cindytech1-nerve.woowtech.io"

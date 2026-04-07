@@ -283,15 +283,13 @@ spec:
               fi
               # Nerve UI (port 3080) — start from PVC if available
               if [ -d /mnt/openclaw-agents/_nerve_app/server-dist ]; then
-                (PORT=3080 HOST=0.0.0.0 \
-                GATEWAY_URL="http://127.0.0.1:18789" \
-                GATEWAY_WS="ws://127.0.0.1:18789" \
-                GATEWAY_TOKEN="$OPENCLAW_GATEWAY_TOKEN" \
-                OPENCLAW_GATEWAY_TOKEN="$OPENCLAW_GATEWAY_TOKEN" \
-                NERVE_AUTH=none NERVE_ALLOW_INSECURE=true \
-                OPENCLAW_BIN=/usr/local/bin/openclaw \
-                OPENCLAW_CONFIG_PATH=/home/node/.openclaw \
-                cd /mnt/openclaw-agents/_nerve_app && node server-dist/index.js >> /tmp/nerve.log 2>&1) &
+                (cd /mnt/openclaw-agents/_nerve_app && \
+                  env PORT=3080 HOST=0.0.0.0 \
+                  GATEWAY_URL="http://127.0.0.1:18789" \
+                  GATEWAY_TOKEN="$OPENCLAW_GATEWAY_TOKEN" \
+                  NERVE_AUTH=none \
+                  NERVE_ALLOW_INSECURE=true \
+                  node server-dist/index.js >> /tmp/nerve.log 2>&1) &
                 echo "[init] Nerve UI started on port 3080 (pid $!)"
               fi
               exec openclaw gateway --bind lan --port 18789 --auth token --token "$OPENCLAW_GATEWAY_TOKEN" --allow-unconfigured

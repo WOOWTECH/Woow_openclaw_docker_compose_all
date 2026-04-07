@@ -690,6 +690,9 @@ spec:
             - containerPort: 18789
               name: gateway-http
           env:
+            # Force IPv4 for Node.js (K3s pods can't route IPv6, causes Telegram ETIMEDOUT)
+            - name: NODE_OPTIONS
+              value: "--dns-result-order=ipv4first"
             # Chromium / Puppeteer
             - name: CHROMIUM_FLAGS
               value: "--no-sandbox --disable-gpu --disable-dev-shm-usage"

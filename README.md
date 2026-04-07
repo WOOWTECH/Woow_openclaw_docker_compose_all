@@ -116,7 +116,12 @@ main          ← This branch: overview + branch navigation
 
 ---
 
-## K3s v2.2 Highlights / K3s v2.2 亮點
+## K3s v2026.4.5 Highlights / K3s v2026.4.5 亮點
+
+### What's New / 新功能
+- **Nerve UI**: Built-in Nerve dashboard on port 3080 (`cindytech1-nerve.woowtech.io`)
+- **LINE Bug Fixed**: `isSenderAllowed` crash resolved in v2026.4.5
+- **Base Image**: `ghcr.io/openclaw/openclaw:latest` (v2026.4.5)
 
 ### Persistence / 持久化
 - **Full PVC Persistence**: agents, workspace, memory, cron, telegram, config — all survive pod restarts
@@ -125,15 +130,9 @@ main          ← This branch: overview + branch navigation
 - **Workspace .env Loading**: Startup script sources `workspace/.env` before gateway launch
 
 ### Stability / 穩定性
-- **Pinned Base Image**: `v2026.3.13` (sha256:a5a4c83b) — stable LINE channel support (v2026.3.22+ has LINE crash bug)
-- **Isolated npm**: Skill CLIs in `/opt/openclaw-tools/` — prevents LINE plugin `isSenderAllowed` conflict
+- **Isolated npm**: Skill CLIs in `/opt/openclaw-tools/` — prevents global install conflicts
 - **Auto-Approve Fix**: JSON-based device pairing (fixes multiline UUID grep failure in table output)
-
-### New in v2.2 / v2.2 新增
-- **v2026.2.22 Compatibility Check**: Confirmed incompatible (uses `node openclaw.mjs`, no CLI binary)
-- **Skill Env Persistence**: `workspace/.env` + SOUL.md instruction = skill params auto-saved by AI
-- **Telegram Open Policy**: Default `dmPolicy: open` for Telegram channel
-- **52→54 Skills**: Workspace skills (homeassistant, odoo) counted in total
+- **SOUL.md Guard**: AI instructed to never run `openclaw update` — prevents version conflicts
 
 ---
 

@@ -284,6 +284,8 @@ spec:
               # Nerve UI (port 3080) — start from PVC after gateway is ready
               if [ -d /mnt/openclaw-agents/_nerve_app/server-dist ]; then
                 NERVE_GW_TOKEN="$OPENCLAW_GATEWAY_TOKEN"
+                # Pre-cache skills list (takes ~60s via CLI, Nerve timeout is 15s)
+                (sleep 45; openclaw skills list --json > /tmp/skills-cache.json 2>/dev/null && echo "[init] Skills cache created ($(wc -c < /tmp/skills-cache.json) bytes)"; while true; do sleep 300; openclaw skills list --json > /tmp/skills-cache.json 2>/dev/null; done) &
                 (sleep 30; cd /mnt/openclaw-agents/_nerve_app && \
                   PORT=3080 HOST=0.0.0.0 \
                   GATEWAY_URL="http://127.0.0.1:18789" \

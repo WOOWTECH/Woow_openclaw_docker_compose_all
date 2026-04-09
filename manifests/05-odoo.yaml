@@ -42,6 +42,30 @@ spec:
             limits:
               cpu: 50m
               memory: 32Mi
+        - name: patch-websocket-origin
+          image: odoo:18.0
+          securityContext:
+            runAsUser: 0
+          command:
+            - sh
+            - -c
+            - |
+              echo "Patching bus/websocket.py to remove origin header requirement..."
+              WS_FILE="/usr/lib/python3/dist-packages/odoo/addons/bus/websocket.py"
+              if grep -q "'sec-websocket-version', 'upgrade', 'origin'," "$WS_FILE"; then
+                sed -i "s/'sec-websocket-version', 'upgrade', 'origin',/'sec-websocket-version', 'upgrade',/" "$WS_FILE"
+                echo "Patched successfully"
+              else
+                echo "Already patched or different format"
+              fi
+              grep -A2 "_REQUIRED_HANDSHAKE_HEADERS" "$WS_FILE" | head -5
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 50m
+              memory: 64Mi
       containers:
         - name: odoo
           image: odoo:18.0

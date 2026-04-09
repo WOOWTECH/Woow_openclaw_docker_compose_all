@@ -29,11 +29,9 @@ data:
     longpolling_port = 8072
     proxy_mode = True
 
-    ; Workers (threaded mode: WebSocket works on same port via Cloudflare Tunnel)
-    ; workers=2 breaks WebSocket because Odoo requires Origin header
-    ; which gets stripped by Cloudflare Tunnel proxy chain.
-    ; Threaded mode handles HTTP + WebSocket on port 8069.
-    workers = 0
+    ; Workers (multi-process with gevent for WebSocket/POS support)
+    ; Origin header check patched via initContainer in deployment
+    workers = 2
     max_cron_threads = 1
 
     ; Resource limits

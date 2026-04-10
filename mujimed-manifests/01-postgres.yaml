@@ -39,6 +39,17 @@ spec:
       labels:
         app: mujimed-db
     spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - woowtech-ai-coder-asus-tuf-gaming-f15-fx507zu4-fx507zu4
+                      - woowtechcluster1-aorus-15p-xd
       containers:
         - name: postgres
           image: postgres:16

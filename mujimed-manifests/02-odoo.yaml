@@ -1,0 +1,371 @@
+# =============================================================
+# Odoo 18 - PersistentVolumeClaim (10Gi)
+# Stores: filestore, sessions, extra-addons
+# =============================================================
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mujimed-odoo-pvc
+  namespace: mujimed-odoo
+  labels:
+    app: mujimed-odoo
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+# =============================================================
+# Odoo 18 - Deployment
+#
+# Image: odoo:18
+# Modules: contacts, project, calendar, discuss, accounting,
+#          inventory, website, ecommerce, loyalty/ewallet, blog,
+#          attendance, expense, employees, livechat, l10n_tw
+# Custom: WOOWTECH addons (6 repos)
+# Taiwan: zh_TW language, TWD currency, Asia/Taipei timezone
+# Admin: admin / admin
+# =============================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mujimed-odoo
+  namespace: mujimed-odoo
+  labels:
+    app: mujimed-odoo
+    app.kubernetes.io/component: erp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mujimed-odoo
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mujimed-odoo
+    spec:
+      securityContext:
+        fsGroup: 101
+      containers:
+        - name: odoo
+          image: odoo:18
+          command:
+            - /bin/bash
+            - -c
+            - |
+              set -e
+              ADDONS_DIR="/mnt/extra-addons"
+              DATA_DIR="/var/lib/odoo"
+              MARKER="$DATA_DIR/.mujimed-initialized"
+
+              echo "[mujimed] ==========================================="
+              echo "[mujimed] Odoo 18 - Mujimed SaaS Platform"
+              echo "[mujimed] ==========================================="
+
+              # ─── Wait for PostgreSQL ────────────────────────────────
+              echo "[mujimed] Waiting for PostgreSQL..."
+              python3 -c "
+              import socket, time, sys
+              for i in range(90):
+                  try:
+                      s = socket.create_connection(('mujimed-db-svc', 5432), timeout=5)
+                      s.close()
+                      print('[mujimed] PostgreSQL is ready')
+                      sys.exit(0)
+                  except Exception:
+                      time.sleep(2)
+              print('[mujimed] ERROR: PostgreSQL not ready after 3 minutes')
+              sys.exit(1)
+              "
+
+              # ─── Download WOOWTECH custom addons ───────────────────
+              echo "[mujimed] Checking WOOWTECH custom addons..."
+              python3 << 'PYEOF'
+              import urllib.request, tarfile, io, os, ssl
+
+              addons_dir = "/mnt/extra-addons"
+              repos = [
+                  "sh_document_management",
+                  "odoo_color_customizer",
+                  "hide_menu_user",
+                  "hr_payslip_monthly_report",
+                  "woow_odoo_livechat_line",
+                  "Woow_odoo_office_enhance",
+              ]
+
+              ctx = ssl.create_default_context()
+
+              for repo in repos:
+                  dest = os.path.join(addons_dir, repo)
+                  if os.path.exists(dest) and os.listdir(dest):
+                      print(f"  [ok] {repo} already present")
+                      continue
+
+                  downloaded = False
+                  for branch in ["18.0", "main", "master", "17.0", "16.0"]:
+                      url = f"https://github.com/WOOWTECH/{repo}/archive/refs/heads/{branch}.tar.gz"
+                      try:
+                          req = urllib.request.Request(url)
+                          response = urllib.request.urlopen(req, context=ctx, timeout=60)
+                          tar_data = io.BytesIO(response.read())
+                          tar = tarfile.open(fileobj=tar_data, mode="r:gz")
+
+                          os.makedirs(dest, exist_ok=True)
+                          for member in tar.getmembers():
+                              parts = member.name.split("/", 1)
+                              if len(parts) > 1 and parts[1]:
+                                  member.name = parts[1]
+                                  if hasattr(tarfile, 'data_filter'):
+                                      tar.extract(member, dest, filter='data')
+                                  else:
+                                      tar.extract(member, dest)
+
+                          print(f"  [ok] {repo} downloaded (branch: {branch})")
+                          downloaded = True
+                          break
+                      except Exception as e:
+                          continue
+
+                  if not downloaded:
+                      print(f"  [WARN] {repo} could not be downloaded - skipping")
+              PYEOF
+
+              # ─── Build dynamic addons_path ──────────────────────────
+              ADDONS_PATH="/mnt/extra-addons"
+              for dir in /mnt/extra-addons/*/; do
+                  [ -d "$dir" ] && ADDONS_PATH="$ADDONS_PATH,${dir%/}"
+              done
+
+              # ─── Generate odoo.conf ─────────────────────────────────
+              cat > /etc/odoo/odoo.conf << CONF
+              [options]
+              addons_path = $ADDONS_PATH
+              data_dir = /var/lib/odoo
+              db_host = mujimed-db-svc
+              db_port = 5432
+              db_user = mujimed
+              db_password = mujimed
+              db_name = mujimed
+              admin_passwd = admin
+              http_port = 8069
+              proxy_mode = True
+              without_demo = all
+              list_db = False
+              db_maxconn = 64
+              workers = 0
+              max_cron_threads = 1
+              limit_memory_hard = 2684354560
+              limit_memory_soft = 2147483648
+              limit_time_cpu = 600
+              limit_time_real = 1200
+              log_level = info
+              CONF
+
+              # ─── First boot: initialize database ────────────────────
+              if [ ! -f "$MARKER" ]; then
+                  echo "[mujimed] ============================================"
+                  echo "[mujimed] FIRST BOOT - Initializing database..."
+                  echo "[mujimed] This will take 5-10 minutes."
+                  echo "[mujimed] ============================================"
+
+                  # Standard Odoo 18 modules
+                  MODULES="base,web,contacts,project,calendar,mail"
+                  MODULES="$MODULES,account,sale_management,purchase"
+                  MODULES="$MODULES,stock"
+                  MODULES="$MODULES,website,website_sale"
+                  MODULES="$MODULES,loyalty,website_sale_loyalty"
+                  MODULES="$MODULES,website_blog"
+                  MODULES="$MODULES,hr,hr_attendance,hr_expense"
+                  MODULES="$MODULES,im_livechat,website_livechat"
+                  MODULES="$MODULES,l10n_tw"
+
+                  # Discover WOOWTECH modules
+                  for dir in /mnt/extra-addons/*/; do
+                      if [ -f "${dir}__manifest__.py" ]; then
+                          modname=$(basename "$dir")
+                          MODULES="$MODULES,$modname"
+                          echo "  [addon] $modname"
+                      fi
+                      # Check subdirectories for multi-module repos
+                      for subdir in "$dir"*/; do
+                          if [ -f "${subdir}__manifest__.py" ]; then
+                              modname=$(basename "$subdir")
+                              MODULES="$MODULES,$modname"
+                              echo "  [addon] $modname (sub-module)"
+                          fi
+                      done
+                  done
+
+                  echo "[mujimed] Installing modules: $MODULES"
+
+                  # Initialize database with modules + Traditional Chinese
+                  odoo -c /etc/odoo/odoo.conf \
+                      -d mujimed \
+                      -i "$MODULES" \
+                      --load-language=zh_TW \
+                      --stop-after-init \
+                      --without-demo=all \
+                      --no-http \
+                      || echo "[mujimed] WARNING: Some modules may have failed"
+
+                  # ─── Configure Taiwan settings ──────────────────────
+                  echo "[mujimed] Configuring Taiwan locale..."
+                  python3 << 'PYEOF2'
+              import psycopg2
+
+              conn = psycopg2.connect(
+                  host="mujimed-db-svc",
+                  port=5432,
+                  dbname="mujimed",
+                  user="mujimed",
+                  password="mujimed"
+              )
+              cur = conn.cursor()
+
+              # Activate TWD currency
+              cur.execute("UPDATE res_currency SET active = true WHERE name = 'TWD'")
+
+              # Get Taiwan country ID
+              cur.execute("SELECT id FROM res_country WHERE code = 'TW'")
+              row = cur.fetchone()
+              tw_id = row[0] if row else None
+
+              # Get TWD currency ID
+              cur.execute("SELECT id FROM res_currency WHERE name = 'TWD'")
+              row = cur.fetchone()
+              twd_id = row[0] if row else None
+
+              if tw_id and twd_id:
+                  # Update main company
+                  cur.execute("""
+                      UPDATE res_company
+                      SET name = 'Mujimed',
+                          country_id = %s,
+                          currency_id = %s
+                      WHERE id = 1
+                  """, (tw_id, twd_id))
+
+                  # Update company partner
+                  cur.execute("""
+                      UPDATE res_partner
+                      SET name = 'Mujimed',
+                          country_id = %s,
+                          lang = 'zh_TW',
+                          tz = 'Asia/Taipei'
+                      WHERE id = (SELECT partner_id FROM res_company WHERE id = 1)
+                  """, (tw_id,))
+
+              # Update admin user preferences
+              cur.execute("""
+                  UPDATE res_users
+                  SET lang = 'zh_TW',
+                      tz = 'Asia/Taipei'
+                  WHERE id = 2
+              """)
+
+              # Update admin partner
+              cur.execute("""
+                  UPDATE res_partner
+                  SET lang = 'zh_TW',
+                      tz = 'Asia/Taipei',
+                      country_id = %s
+                  WHERE id IN (
+                      SELECT partner_id FROM res_users WHERE id = 2
+                  )
+              """, (tw_id,))
+
+              # Set default timezone system parameter
+              cur.execute("""
+                  INSERT INTO ir_config_parameter (key, value, create_uid, write_uid, create_date, write_date)
+                  VALUES ('web.default_timezone', 'Asia/Taipei', 1, 1, NOW(), NOW())
+                  ON CONFLICT (key) DO UPDATE SET value = 'Asia/Taipei', write_date = NOW()
+              """)
+
+              conn.commit()
+              conn.close()
+              print("[mujimed] Taiwan configuration applied:")
+              print(f"  Country:  Taiwan (ID: {tw_id})")
+              print(f"  Currency: TWD (ID: {twd_id})")
+              print(f"  Language: zh_TW (Traditional Chinese)")
+              print(f"  Timezone: Asia/Taipei")
+              PYEOF2
+
+                  touch "$MARKER"
+                  echo "[mujimed] Database initialization complete!"
+              else
+                  echo "[mujimed] Database already initialized"
+              fi
+
+              # ─── Start Odoo ─────────────────────────────────────────
+              echo "[mujimed] Starting Odoo 18 server..."
+              exec odoo -c /etc/odoo/odoo.conf
+          ports:
+            - containerPort: 8069
+              name: http
+          env:
+            - name: HOST
+              value: "mujimed-db-svc"
+            - name: PORT
+              value: "5432"
+            - name: USER
+              value: "mujimed"
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mujimed-secrets
+                  key: POSTGRES_PASSWORD
+          volumeMounts:
+            - name: odoo-storage
+              mountPath: /var/lib/odoo
+              subPath: odoo-data
+            - name: odoo-storage
+              mountPath: /mnt/extra-addons
+              subPath: extra-addons
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              cpu: "2"
+              memory: 4Gi
+          readinessProbe:
+            httpGet:
+              path: /web/health
+              port: 8069
+            initialDelaySeconds: 120
+            periodSeconds: 15
+            failureThreshold: 40
+          livenessProbe:
+            httpGet:
+              path: /web/health
+              port: 8069
+            initialDelaySeconds: 300
+            periodSeconds: 30
+            failureThreshold: 10
+      volumes:
+        - name: odoo-storage
+          persistentVolumeClaim:
+            claimName: mujimed-odoo-pvc
+---
+# =============================================================
+# Odoo 18 - Service
+# =============================================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: mujimed-odoo-svc
+  namespace: mujimed-odoo
+  labels:
+    app: mujimed-odoo
+spec:
+  selector:
+    app: mujimed-odoo
+  ports:
+    - protocol: TCP
+      port: 8069
+      targetPort: 8069
+      name: http
+  type: ClusterIP

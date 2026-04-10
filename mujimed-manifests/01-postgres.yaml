@@ -1,0 +1,107 @@
+# =============================================================
+# PostgreSQL 16 - PersistentVolumeClaim (10Gi)
+# Database: mujimed | User: mujimed | Password: mujimed
+# =============================================================
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mujimed-db-pvc
+  namespace: mujimed-odoo
+  labels:
+    app: mujimed-db
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+# =============================================================
+# PostgreSQL 16 - Deployment
+# =============================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mujimed-db
+  namespace: mujimed-odoo
+  labels:
+    app: mujimed-db
+    app.kubernetes.io/component: database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mujimed-db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mujimed-db
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: "mujimed"
+            - name: POSTGRES_USER
+              value: "mujimed"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mujimed-secrets
+                  key: POSTGRES_PASSWORD
+            - name: PGDATA
+              value: "/var/lib/postgresql/data/pgdata"
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - mujimed
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - mujimed
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: mujimed-db-pvc
+---
+# =============================================================
+# PostgreSQL - Service
+# =============================================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: mujimed-db-svc
+  namespace: mujimed-odoo
+  labels:
+    app: mujimed-db
+spec:
+  selector:
+    app: mujimed-db
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+  type: ClusterIP

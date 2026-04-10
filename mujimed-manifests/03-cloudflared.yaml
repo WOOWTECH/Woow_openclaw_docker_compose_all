@@ -1,0 +1,51 @@
+# =============================================================
+# Cloudflare Tunnel - mujimed-odoo.woowtech.io
+# Routes external HTTPS traffic to Odoo service
+# =============================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mujimed-cloudflared
+  namespace: mujimed-odoo
+  labels:
+    app: mujimed-cloudflared
+    app.kubernetes.io/component: tunnel
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: mujimed-cloudflared
+  template:
+    metadata:
+      labels:
+        app: mujimed-cloudflared
+    spec:
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: "true"
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: cloudflared
+          image: cloudflare/cloudflared:latest
+          args:
+            - tunnel
+            - run
+          env:
+            - name: TUNNEL_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: mujimed-secrets
+                  key: CF_TUNNEL_TOKEN
+          lifecycle:
+            preStop:
+              exec:
+                command: ["sh", "-c", "sleep 5"]
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+      restartPolicy: Always

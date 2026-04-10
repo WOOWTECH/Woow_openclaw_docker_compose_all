@@ -39,34 +39,24 @@ done
 # ─── Step 1: Cloudflare Tunnel Setup ─────────────────────────────────────
 echo "[1/5] Setting up Cloudflare Tunnel..."
 
-# Get account ID
-CF_ACCOUNTS=$(curl -sf -X GET "https://api.cloudflare.com/client/v4/accounts" \
-    -H "Authorization: Bearer $CF_API_TOKEN" \
-    -H "Content-Type: application/json")
-CF_ACCOUNT_ID=$(echo "$CF_ACCOUNTS" | jq -r '.result[0].id')
-
-if [ -z "$CF_ACCOUNT_ID" ] || [ "$CF_ACCOUNT_ID" = "null" ]; then
-    echo "  ERROR: Could not retrieve Cloudflare account ID"
-    echo "  Check your CF_API_TOKEN"
-    exit 1
-fi
-echo "  Account ID: $CF_ACCOUNT_ID"
-
-# Get zone ID for woowtech.io
+# Get account ID from zone (zone-scoped tokens don't list accounts)
 CF_ZONES=$(curl -sf -X GET "https://api.cloudflare.com/client/v4/zones?name=woowtech.io" \
     -H "Authorization: Bearer $CF_API_TOKEN" \
     -H "Content-Type: application/json")
 CF_ZONE_ID=$(echo "$CF_ZONES" | jq -r '.result[0].id')
+CF_ACCOUNT_ID=$(echo "$CF_ZONES" | jq -r '.result[0].account.id')
 
 if [ -z "$CF_ZONE_ID" ] || [ "$CF_ZONE_ID" = "null" ]; then
     echo "  ERROR: Could not find zone for woowtech.io"
+    echo "  Check your CF_API_TOKEN"
     exit 1
 fi
+echo "  Account ID: $CF_ACCOUNT_ID"
 echo "  Zone ID: $CF_ZONE_ID"
 
 # Check if tunnel already exists
 EXISTING_TUNNEL=$(curl -sf -X GET \
-    "https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT_ID/cfd_tunnel?name=$TUNNEL_NAME&is_deleted=false" \
+    "https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT_ID/tunnels?name=$TUNNEL_NAME&is_deleted=false" \
     -H "Authorization: Bearer $CF_API_TOKEN" \
     -H "Content-Type: application/json")
 TUNNEL_ID=$(echo "$EXISTING_TUNNEL" | jq -r '.result[0].id // empty')
@@ -75,10 +65,10 @@ if [ -z "$TUNNEL_ID" ]; then
     echo "  Creating tunnel: $TUNNEL_NAME"
     TUNNEL_SECRET=$(openssl rand -base64 32)
     CREATE_RESULT=$(curl -sf -X POST \
-        "https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT_ID/cfd_tunnel" \
+        "https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT_ID/tunnels" \
         -H "Authorization: Bearer $CF_API_TOKEN" \
         -H "Content-Type: application/json" \
-        --data "{\"name\":\"$TUNNEL_NAME\",\"tunnel_secret\":\"$TUNNEL_SECRET\"}")
+        --data "{\"name\":\"$TUNNEL_NAME\",\"tunnel_secret\":\"$TUNNEL_SECRET\",\"config_src\":\"cloudflare\"}")
     TUNNEL_ID=$(echo "$CREATE_RESULT" | jq -r '.result.id')
 
     if [ -z "$TUNNEL_ID" ] || [ "$TUNNEL_ID" = "null" ]; then

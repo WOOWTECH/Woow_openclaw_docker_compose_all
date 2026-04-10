@@ -12,8 +12,6 @@ metadata:
     app.kubernetes.io/component: tunnel
 spec:
   replicas: 1
-  strategy:
-    type: Recreate
   selector:
     matchLabels:
       app: mujimed-cloudflared
@@ -22,25 +20,23 @@ spec:
       labels:
         app: mujimed-cloudflared
     spec:
-      nodeSelector:
-        node-role.kubernetes.io/control-plane: "true"
-      terminationGracePeriodSeconds: 30
       containers:
         - name: cloudflared
           image: cloudflare/cloudflared:latest
           args:
             - tunnel
+            - --no-autoupdate
+            - --metrics
+            - 0.0.0.0:2000
             - run
+            - --token
+            - $(TUNNEL_TOKEN)
           env:
             - name: TUNNEL_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: mujimed-secrets
                   key: CF_TUNNEL_TOKEN
-          lifecycle:
-            preStop:
-              exec:
-                command: ["sh", "-c", "sleep 5"]
           resources:
             requests:
               cpu: 50m
@@ -48,4 +44,3 @@ spec:
             limits:
               cpu: 200m
               memory: 128Mi
-      restartPolicy: Always

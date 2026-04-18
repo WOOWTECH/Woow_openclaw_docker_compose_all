@@ -1,0 +1,279 @@
+# =============================================================
+# Paperclip AI — Enterprise Agent Orchestration Platform
+#
+# Connects to OpenClaw gateway via WebSocket adapter.
+# Domain: cindytech1-paperclip.woowtech.io
+# Port: 3100 (API + UI + WebSocket)
+#
+# Prerequisites:
+#   1. Build image: see ../Dockerfile.paperclip
+#   2. Import to k3s: sudo k3s ctr images import /tmp/paperclip.tar
+#   3. Add CF tunnel route: cindytech1-paperclip.woowtech.io → paperclip-svc:3100
+#   4. Create BETTER_AUTH_SECRET in openclaw-secrets (or paperclip-secrets)
+#
+# OpenClaw integration:
+#   After deploy, create an agent in Paperclip UI with:
+#     Adapter: openclaw_gateway
+#     URL: ws://openclaw-gateway-svc:18789
+#     Token: (your OPENCLAW_GATEWAY_TOKEN)
+# =============================================================
+
+---
+# =============================================================
+# Paperclip - PostgreSQL PVC (5Gi)
+# =============================================================
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: paperclip-db-pvc
+  namespace: openclaw-tenant-1
+  labels:
+    app: paperclip-db
+spec:
+  storageClassName: local-path
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+# =============================================================
+# Paperclip - Data PVC (2Gi — config, secrets, logs, storage)
+# =============================================================
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: paperclip-data-pvc
+  namespace: openclaw-tenant-1
+  labels:
+    app: paperclip
+spec:
+  storageClassName: local-path
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+# =============================================================
+# Paperclip - Secrets
+# =============================================================
+apiVersion: v1
+kind: Secret
+metadata:
+  name: paperclip-secrets
+  namespace: openclaw-tenant-1
+  labels:
+    app: paperclip
+type: Opaque
+stringData:
+  # REQUIRED: Random secret for BetterAuth session encryption
+  # Generate: openssl rand -hex 32
+  BETTER_AUTH_SECRET: "CHANGE_ME_GENERATE_WITH_openssl_rand_hex_32"
+  # PostgreSQL password
+  PAPERCLIP_DB_PASSWORD: "paperclip-k3s-2026"
+---
+# =============================================================
+# Paperclip - PostgreSQL 17 Deployment
+# =============================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paperclip-db
+  namespace: openclaw-tenant-1
+  labels:
+    app: paperclip-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: paperclip-db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: paperclip-db
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:17-alpine
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: "paperclip"
+            - name: POSTGRES_USER
+              value: "paperclip"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: paperclip-secrets
+                  key: PAPERCLIP_DB_PASSWORD
+            - name: PGDATA
+              value: "/var/lib/postgresql/data/pgdata"
+          volumeMounts:
+            - name: db-data
+              mountPath: /var/lib/postgresql/data
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          livenessProbe:
+            exec:
+              command: ["pg_isready", "-U", "paperclip"]
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command: ["pg_isready", "-U", "paperclip"]
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: db-data
+          persistentVolumeClaim:
+            claimName: paperclip-db-pvc
+---
+# =============================================================
+# Paperclip - PostgreSQL Service
+# =============================================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: paperclip-db-svc
+  namespace: openclaw-tenant-1
+  labels:
+    app: paperclip-db
+spec:
+  selector:
+    app: paperclip-db
+  ports:
+    - name: postgres
+      protocol: TCP
+      port: 5432
+      targetPort: 5432
+  type: ClusterIP
+---
+# =============================================================
+# Paperclip - Server Deployment
+#
+# Single container: Express API + React UI + WebSocket
+# Connects to OpenClaw gateway via openclaw_gateway adapter
+# =============================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paperclip
+  namespace: openclaw-tenant-1
+  labels:
+    app: paperclip
+    app.kubernetes.io/component: orchestration
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: paperclip
+  template:
+    metadata:
+      labels:
+        app: paperclip
+    spec:
+      containers:
+        - name: paperclip
+          image: paperclip:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3100
+              name: http
+          env:
+            # Database
+            - name: PAPERCLIP_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: paperclip-secrets
+                  key: PAPERCLIP_DB_PASSWORD
+            - name: DATABASE_URL
+              value: "postgres://paperclip:$(PAPERCLIP_DB_PASSWORD)@paperclip-db-svc:5432/paperclip"
+            # Server
+            - name: PORT
+              value: "3100"
+            - name: HOST
+              value: "0.0.0.0"
+            - name: SERVE_UI
+              value: "true"
+            - name: NODE_ENV
+              value: "production"
+            # Paperclip config
+            - name: PAPERCLIP_HOME
+              value: "/paperclip"
+            - name: PAPERCLIP_INSTANCE_ID
+              value: "default"
+            - name: PAPERCLIP_DEPLOYMENT_MODE
+              value: "authenticated"
+            - name: PAPERCLIP_DEPLOYMENT_EXPOSURE
+              value: "private"
+            - name: PAPERCLIP_PUBLIC_URL
+              value: "https://cindytech1-paperclip.woowtech.io"
+            - name: PAPERCLIP_MIGRATION_AUTO_APPLY
+              value: "true"
+            # Auth
+            - name: BETTER_AUTH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: paperclip-secrets
+                  key: BETTER_AUTH_SECRET
+            # Telemetry
+            - name: PAPERCLIP_TELEMETRY_DISABLED
+              value: "true"
+          volumeMounts:
+            - name: paperclip-data
+              mountPath: /paperclip
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+            limits:
+              cpu: "2"
+              memory: 2Gi
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3100
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 12
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3100
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            failureThreshold: 5
+      volumes:
+        - name: paperclip-data
+          persistentVolumeClaim:
+            claimName: paperclip-data-pvc
+---
+# =============================================================
+# Paperclip - Service
+# =============================================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: paperclip-svc
+  namespace: openclaw-tenant-1
+  labels:
+    app: paperclip
+    app.kubernetes.io/component: orchestration
+spec:
+  selector:
+    app: paperclip
+  ports:
+    - name: http
+      protocol: TCP
+      port: 3100
+      targetPort: 3100
+  type: ClusterIP

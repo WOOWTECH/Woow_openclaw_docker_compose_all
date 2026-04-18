@@ -6,10 +6,8 @@
 # Port: 3100 (API + UI + WebSocket)
 #
 # Prerequisites:
-#   1. Build image: see ../Dockerfile.paperclip
-#   2. Import to k3s: sudo k3s ctr images import /tmp/paperclip.tar
-#   3. Add CF tunnel route: cindytech1-paperclip.woowtech.io → paperclip-svc:3100
-#   4. Create BETTER_AUTH_SECRET in openclaw-secrets (or paperclip-secrets)
+#   1. Add CF tunnel route: cindytech1-paperclip.woowtech.io → paperclip-svc:3100
+#   2. Image: ghcr.io/paperclipai/paperclip (pre-built, no local build needed)
 #
 # OpenClaw integration:
 #   After deploy, create an agent in Paperclip UI with:
@@ -69,7 +67,9 @@ type: Opaque
 stringData:
   # REQUIRED: Random secret for BetterAuth session encryption
   # Generate: openssl rand -hex 32
-  BETTER_AUTH_SECRET: "CHANGE_ME_GENERATE_WITH_openssl_rand_hex_32"
+  BETTER_AUTH_SECRET: "d14fb0a99b83f896c1ba65e8025da27fe704290d013ea6996e202e83a237b315"
+  # Agent JWT secret (for agent runtime auth)
+  PAPERCLIP_AGENT_JWT_SECRET: "5abd10d88ed22d58c1d351d3280738c7c8d68fb35396e466f92716c7956a4766"
   # PostgreSQL password
   PAPERCLIP_DB_PASSWORD: "paperclip-k3s-2026"
 ---
@@ -176,6 +176,8 @@ spec:
   selector:
     matchLabels:
       app: paperclip
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -183,8 +185,8 @@ spec:
     spec:
       containers:
         - name: paperclip
-          image: paperclip:latest
-          imagePullPolicy: Never
+          image: ghcr.io/paperclipai/paperclip:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3100
               name: http
@@ -225,6 +227,12 @@ spec:
                 secretKeyRef:
                   name: paperclip-secrets
                   key: BETTER_AUTH_SECRET
+            # Agent JWT
+            - name: PAPERCLIP_AGENT_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: paperclip-secrets
+                  key: PAPERCLIP_AGENT_JWT_SECRET
             # Telemetry
             - name: PAPERCLIP_TELEMETRY_DISABLED
               value: "true"
@@ -239,17 +247,15 @@ spec:
               cpu: "2"
               memory: 2Gi
           readinessProbe:
-            httpGet:
-              path: /
+            tcpSocket:
               port: 3100
-            initialDelaySeconds: 30
+            initialDelaySeconds: 20
             periodSeconds: 10
             failureThreshold: 12
           livenessProbe:
-            httpGet:
-              path: /
+            tcpSocket:
               port: 3100
-            initialDelaySeconds: 60
+            initialDelaySeconds: 40
             periodSeconds: 30
             failureThreshold: 5
       volumes:

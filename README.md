@@ -202,6 +202,15 @@ On first boot with empty PVC, the init script automatically:
 
 ---
 
+## K3s v2026.4.5 Highlights / K3s v2026.4.5 亮點
+
+### What's New / 新功能
+- **Nerve UI**: Built-in Nerve dashboard on port 3080 (`cindytech1-nerve.woowtech.io`)
+- **LINE Bug Fixed**: `isSenderAllowed` crash resolved in v2026.4.5
+- **Base Image**: `ghcr.io/openclaw/openclaw:latest` (v2026.4.5)
+- **Isolated npm**: Skill CLIs in `/opt/openclaw-tools/` — prevents global install conflicts
+- **SOUL.md Guard**: AI instructed to never run `openclaw update` — prevents version conflicts
+
 ## Enterprise Test Results / 企業級測試結果
 
 29/29 tests passed (100% effective) across 5 rounds:

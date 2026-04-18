@@ -62,9 +62,60 @@ spec:
       ports:
         - port: 18789
         - port: 3080
+    # Paperclip can access gateway via WebSocket adapter
+    - from:
+        - podSelector:
+            matchLabels:
+              app: paperclip
+      ports:
+        - port: 18789
     # Allow internal cluster traffic (for Telegram webhook etc)
     - from:
         - namespaceSelector: {}
       ports:
         - port: 18789
         - port: 3080
+---
+# =============================================================
+# Paperclip DB — only Paperclip server can access
+# =============================================================
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: paperclip-db-policy
+  namespace: openclaw-tenant-1
+spec:
+  podSelector:
+    matchLabels:
+      app: paperclip-db
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: paperclip
+      ports:
+        - port: 5432
+---
+# =============================================================
+# Paperclip — only cloudflared can access UI
+# =============================================================
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: paperclip-policy
+  namespace: openclaw-tenant-1
+spec:
+  podSelector:
+    matchLabels:
+      app: paperclip
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: cloudflared
+      ports:
+        - port: 3100

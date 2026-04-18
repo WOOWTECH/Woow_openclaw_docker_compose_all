@@ -233,6 +233,9 @@ spec:
                 secretKeyRef:
                   name: paperclip-secrets
                   key: PAPERCLIP_AGENT_JWT_SECRET
+            # Trusted origins (allows both HTTPS via CF tunnel and HTTP via port-forward)
+            - name: BETTER_AUTH_TRUSTED_ORIGINS
+              value: "http://cindytech1-paperclip.woowtech.io:13100,http://127.0.0.1:13100,http://localhost:3100"
             # Telemetry
             - name: PAPERCLIP_TELEMETRY_DISABLED
               value: "true"

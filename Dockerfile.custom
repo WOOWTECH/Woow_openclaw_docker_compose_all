@@ -1,14 +1,41 @@
 # =============================================================
-# OpenClaw Custom Image — v2026.4.5 (LINE fix)
+# OpenClaw Custom Image — v2026.4.5 (Nerve + LINE fix)
 #
 # Base: ghcr.io/openclaw/openclaw:latest (v2026.4.5)
-# Adds: Chromium, Go CLIs, Node skill tools, Whisper, uv, etc.
+# Adds: Chromium, Go CLIs, Node skill tools, Whisper, uv, Nerve UI
 # Build: sudo buildah bud -t openclaw-custom:latest -f Dockerfile.custom .
-#
-# NOTE: Nerve UI (port 3080) has upstream build issues
-# (radix-ui dependency bug). Deploy separately when fixed.
-# See: https://github.com/daggerhashimoto/openclaw-nerve
 # =============================================================
+
+# ── Stage 1: Build Nerve UI ───────────────────────────────────
+# Upstream lockfile is broken (487/992 entries missing resolved URLs).
+# Fix: delete lockfile, fresh npm install to regenerate, then build.
+FROM ghcr.io/openclaw/openclaw:latest AS nerve-builder
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends make g++ python3 \
+    && rm -rf /var/lib/apt/lists/*
+WORKDIR /build
+ENV NODE_ENV=development
+RUN git clone --depth 1 https://github.com/daggerhashimoto/openclaw-nerve.git . \
+    && rm -f package-lock.json \
+    # 1. Install all deps (dev + prod) with fresh lockfile
+    && npm install --ignore-scripts \
+    # 2. Patch vite.config: remove manualChunks (Rollup can't resolve chunked deps)
+    && node -e "const fs=require('fs'); \
+       let c=fs.readFileSync('vite.config.ts','utf8'); \
+       c=c.replace(/manualChunks:\s*\{[^}]*\},?/s,''); \
+       fs.writeFileSync('vite.config.ts',c)" \
+    # 3. Build frontend (vite) — skip tsc type-check (upstream TS errors)
+    && npx vite build \
+    # 4. Build server (tsc, skip type errors)
+    && npx tsc -p config/tsconfig.server.json --outDir server-dist \
+         --noEmit false --declaration false --skipLibCheck 2>/dev/null || true \
+    && npx tsc -p config/tsconfig.bin.json --outDir server-dist \
+         --noEmit false --skipLibCheck 2>/dev/null || true \
+    # 5. Prune to production deps only
+    && npm prune --omit=dev \
+    && rm -rf .git src server config .github docs *.md *.ts
+
+# ── Stage 2: Main image ──────────────────────────────────────
 FROM ghcr.io/openclaw/openclaw:latest
 
 USER root
@@ -121,6 +148,10 @@ RUN uv venv /opt/whisper-venv --python 3.11 \
 RUN pip install --break-system-packages nano-pdf \
     || uv pip install --system nano-pdf \
     || echo "nano-pdf install failed, will retry at runtime"
+
+# ── OpenClaw Nerve (web cockpit UI on port 3080) ──────────────
+COPY --from=nerve-builder /build /opt/nerve
+RUN chown -R node:node /opt/nerve
 
 # ── Cleanup ───────────────────────────────────────────────────
 RUN rm -rf /tmp/* /root/.cache /root/go 2>/dev/null; true

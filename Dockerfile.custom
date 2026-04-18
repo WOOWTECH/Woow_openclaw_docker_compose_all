@@ -1,0 +1,159 @@
+# =============================================================
+# OpenClaw Custom Image — v2026.4.5 (Nerve + LINE fix)
+#
+# Base: ghcr.io/openclaw/openclaw:latest (v2026.4.5)
+# Adds: Chromium, Go CLIs, Node skill tools, Whisper, uv, Nerve UI
+# Build: sudo buildah bud -t openclaw-custom:latest -f Dockerfile.custom .
+# =============================================================
+
+# ── Stage 1: Build Nerve UI ───────────────────────────────────
+# Upstream lockfile is broken (487/992 entries missing resolved URLs).
+# Fix: delete lockfile, fresh npm install to regenerate, then build.
+FROM ghcr.io/openclaw/openclaw:latest AS nerve-builder
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends make g++ python3 \
+    && rm -rf /var/lib/apt/lists/*
+WORKDIR /build
+ENV NODE_ENV=development
+RUN git clone --depth 1 https://github.com/daggerhashimoto/openclaw-nerve.git . \
+    && rm -f package-lock.json \
+    # 1. Install all deps (dev + prod) with fresh lockfile
+    && npm install --ignore-scripts \
+    # 2. Patch vite.config: remove manualChunks (Rollup can't resolve chunked deps)
+    && node -e "const fs=require('fs'); \
+       let c=fs.readFileSync('vite.config.ts','utf8'); \
+       c=c.replace(/manualChunks:\s*\{[^}]*\},?/s,''); \
+       fs.writeFileSync('vite.config.ts',c)" \
+    # 3. Build frontend (vite) — skip tsc type-check (upstream TS errors)
+    && npx vite build \
+    # 4. Build server (tsc, skip type errors)
+    && npx tsc -p config/tsconfig.server.json --outDir server-dist \
+         --noEmit false --declaration false --skipLibCheck 2>/dev/null || true \
+    && npx tsc -p config/tsconfig.bin.json --outDir server-dist \
+         --noEmit false --skipLibCheck 2>/dev/null || true \
+    # 5. Prune to production deps only
+    && npm prune --omit=dev \
+    && rm -rf .git src server config .github docs *.md *.ts
+
+# ── Stage 2: Main image ──────────────────────────────────────
+FROM ghcr.io/openclaw/openclaw:latest
+
+USER root
+
+# ── System packages: Chromium, ffmpeg, python3, dev tools ─────
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        jq ffmpeg tmux ripgrep unzip \
+        python3-venv python3-pip \
+        curl git gnupg ca-certificates libasound2-dev \
+        chromium \
+        libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 \
+        libcups2 libdrm2 libxkbcommon0 libxrandr2 \
+        libxcomposite1 libxcursor1 libxdamage1 libxfixes3 \
+        libxi6 libgbm1 libpango-1.0-0 libcairo2 \
+    && rm -rf /var/lib/apt/lists/*
+
+# ── Node.js skill tools (isolated prefix, not global) ────────
+RUN mkdir -p /opt/openclaw-tools && \
+    npm install --prefix /opt/openclaw-tools \
+        clawhub \
+        mcporter \
+        @steipete/oracle \
+        @xdevplatform/xurl \
+        @google/gemini-cli \
+        @steipete/summarize \
+        @openai/codex && \
+    for bin in clawhub mcporter oracle xurl gemini summarize codex; do \
+        [ -f /opt/openclaw-tools/node_modules/.bin/$bin ] && \
+        ln -sf /opt/openclaw-tools/node_modules/.bin/$bin /usr/local/bin/$bin; \
+    done; true
+
+# ── Go toolchain ──────────────────────────────────────────────
+ARG GO_VERSION=1.23.7
+RUN curl -fsSL "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" \
+        | tar xz -C /usr/local \
+    && ln -sf /usr/local/go/bin/go /usr/local/bin/go
+
+ENV GOBIN=/usr/local/bin
+
+# ── Go CLI tools ──────────────────────────────────────────────
+RUN go install github.com/Hyaxia/blogwatcher/cmd/blogwatcher@latest \
+    && go install github.com/steipete/blucli/cmd/blu@latest \
+    && go install github.com/steipete/eightctl/cmd/eightctl@latest \
+    && go install github.com/steipete/sonoscli/cmd/sonos@latest \
+    && go install github.com/steipete/gifgrep/cmd/gifgrep@latest \
+    && go install github.com/steipete/ordercli/cmd/ordercli@latest \
+    && go install github.com/steipete/wacli/cmd/wacli@latest \
+    && go install github.com/steipete/goplaces/cmd/goplaces@latest \
+    && go install github.com/steipete/songsee/cmd/songsee@latest \
+    && go install github.com/steipete/gogcli/cmd/gog@latest \
+    && go install github.com/steipete/sag/cmd/sag@latest \
+    && go install github.com/steipete/spogo/cmd/spogo@latest \
+    && go install github.com/steipete/camsnap/cmd/camsnap@latest \
+    && rm -rf /root/go /tmp/*
+
+# ── GitHub CLI ────────────────────────────────────────────────
+ARG GH_VERSION=2.67.0
+RUN curl -fsSL "https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_${GH_VERSION}_linux_amd64.tar.gz" \
+        | tar xz -C /tmp \
+    && cp /tmp/gh_${GH_VERSION}_linux_amd64/bin/gh /usr/local/bin/gh \
+    && rm -rf /tmp/gh_*
+
+# ── 1Password CLI ─────────────────────────────────────────────
+RUN curl -fsSL "https://cache.agilebits.com/dist/1P/op2/pkg/v2.30.3/op_linux_amd64_v2.30.3.zip" \
+        -o /tmp/op.zip \
+    && unzip -o /tmp/op.zip -d /tmp/op \
+    && cp /tmp/op/op /usr/local/bin/op \
+    && chmod +x /usr/local/bin/op \
+    && rm -rf /tmp/op /tmp/op.zip
+
+# ── Himalaya (email CLI) ─────────────────────────────────────
+RUN curl -fsSL "https://github.com/pimalaya/himalaya/releases/latest/download/himalaya.x86_64-linux.tgz" \
+        | tar xz -C /tmp \
+    && cp /tmp/himalaya /usr/local/bin/himalaya \
+    && chmod +x /usr/local/bin/himalaya \
+    && rm -rf /tmp/himalaya
+
+# ── OpenHue CLI ───────────────────────────────────────────────
+RUN OPENHUE_URL=$(curl -fsSL "https://api.github.com/repos/openhue/openhue-cli/releases/latest" \
+        | grep -oP '"browser_download_url":\s*"\K[^"]*Linux_x86_64\.tar\.gz') \
+    && curl -fsSL "$OPENHUE_URL" | tar xz -C /tmp \
+    && cp /tmp/openhue /usr/local/bin/openhue \
+    && chmod +x /usr/local/bin/openhue \
+    && rm -rf /tmp/openhue*
+
+# ── Obsidian CLI ──────────────────────────────────────────────
+ARG OBSIDIAN_CLI_VERSION=0.3.4
+RUN curl -fsSL "https://github.com/Yakitrak/obsidian-cli/releases/download/v${OBSIDIAN_CLI_VERSION}/notesmd-cli_${OBSIDIAN_CLI_VERSION}_linux_amd64.tar.gz" \
+        | tar xz -C /tmp \
+    && cp /tmp/notesmd-cli /usr/local/bin/obsidian-cli \
+    && chmod +x /usr/local/bin/obsidian-cli \
+    && rm -rf /tmp/notesmd-cli* /tmp/LICENSE /tmp/README.md
+
+# ── uv (Python package manager) ──────────────────────────────
+RUN curl -fsSL "https://github.com/astral-sh/uv/releases/latest/download/uv-x86_64-unknown-linux-gnu.tar.gz" \
+        | tar xz -C /tmp \
+    && cp /tmp/uv-x86_64-unknown-linux-gnu/uv /usr/local/bin/uv \
+    && cp /tmp/uv-x86_64-unknown-linux-gnu/uvx /usr/local/bin/uvx \
+    && chmod +x /usr/local/bin/uv /usr/local/bin/uvx \
+    && rm -rf /tmp/uv-*
+
+# ── Whisper (speech-to-text, CPU-only) ────────────────────────
+RUN uv venv /opt/whisper-venv --python 3.11 \
+    && uv pip install --python /opt/whisper-venv/bin/python \
+        torch torchaudio --index-url https://download.pytorch.org/whl/cpu \
+    && uv pip install --python /opt/whisper-venv/bin/python openai-whisper \
+    && ln -sf /opt/whisper-venv/bin/whisper /usr/local/bin/whisper
+
+# ── nano-pdf ──────────────────────────────────────────────────
+RUN pip install --break-system-packages nano-pdf \
+    || uv pip install --system nano-pdf \
+    || echo "nano-pdf install failed, will retry at runtime"
+
+# ── OpenClaw Nerve (web cockpit UI on port 3080) ──────────────
+COPY --from=nerve-builder /build /opt/nerve
+RUN chown -R node:node /opt/nerve
+
+# ── Cleanup ───────────────────────────────────────────────────
+RUN rm -rf /tmp/* /root/.cache /root/go 2>/dev/null; true
+
+USER node

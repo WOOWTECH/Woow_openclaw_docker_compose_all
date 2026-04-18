@@ -685,10 +685,22 @@ spec:
               }
               SESSFIX
               ) &
+              # Nerve UI (port 3080) — start if installed
+              if [ -d /opt/nerve/server-dist ]; then
+                export PORT=3080 HOST=0.0.0.0
+                export GATEWAY_URL="ws://127.0.0.1:18789"
+                export GATEWAY_TOKEN="$OPENCLAW_GATEWAY_TOKEN"
+                export NERVE_PUBLIC_ORIGIN="${NERVE_PUBLIC_URL:-https://cindytech1-nerve.woowtech.io}"
+                export NERVE_AUTH=none NERVE_ALLOW_INSECURE=true
+                (cd /opt/nerve && node server-dist/index.js >> /tmp/nerve.log 2>&1) &
+                echo "[init] Nerve UI started on port 3080 (pid $!)"
+              fi
               exec "$OC_BIN" gateway --bind lan --port 18789 --auth token --token "$OPENCLAW_GATEWAY_TOKEN" --allow-unconfigured
           ports:
             - containerPort: 18789
               name: gateway-http
+            - containerPort: 3080
+              name: nerve
           env:
             # Force IPv4 for Node.js (K3s pods can't route IPv6, causes Telegram ETIMEDOUT)
             - name: NODE_OPTIONS
@@ -1040,3 +1052,37 @@ spec:
       port: 18789
       targetPort: gateway-http
   type: ClusterIP
+---
+# =============================================================
+# OpenClaw Nerve - Service (Nerve UI on port 3080)
+# =============================================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: nerve-svc
+  namespace: openclaw-tenant-1
+  labels:
+    app: openclaw-gateway
+    app.kubernetes.io/component: nerve-ui
+spec:
+  selector:
+    app: openclaw-gateway
+  ports:
+    - name: nerve-http
+      protocol: TCP
+      port: 3080
+      targetPort: 3080
+  type: ClusterIP
+---
+# =============================================================
+# OpenClaw Config - ConfigMap (Nerve public URL, etc.)
+# =============================================================
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: openclaw-config
+  namespace: openclaw-tenant-1
+  labels:
+    app.kubernetes.io/part-of: openclaw-paas
+data:
+  NERVE_PUBLIC_URL: "https://cindytech1-nerve.woowtech.io"

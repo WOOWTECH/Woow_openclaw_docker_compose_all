@@ -216,12 +216,16 @@ spec:
             - name: PAPERCLIP_DEPLOYMENT_MODE
               value: "authenticated"
             - name: PAPERCLIP_DEPLOYMENT_EXPOSURE
-              value: "private"
+              value: "public"
             - name: PAPERCLIP_PUBLIC_URL
               value: "https://cindytech1-paperclip.woowtech.io"
             - name: PAPERCLIP_MIGRATION_AUTO_APPLY
               value: "true"
             # Auth
+            - name: PAPERCLIP_AUTH_BASE_URL_MODE
+              value: "explicit"
+            - name: PAPERCLIP_AUTH_PUBLIC_BASE_URL
+              value: "https://cindytech1-paperclip.woowtech.io"
             - name: BETTER_AUTH_SECRET
               valueFrom:
                 secretKeyRef:

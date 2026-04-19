@@ -99,7 +99,7 @@ spec:
         - port: 5432
 ---
 # =============================================================
-# Paperclip — only cloudflared can access UI
+# Paperclip — allow cloudflared + internal namespace traffic
 # =============================================================
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -113,9 +113,15 @@ spec:
   policyTypes:
     - Ingress
   ingress:
+    # Cloudflare tunnel
     - from:
         - podSelector:
             matchLabels:
               app: cloudflared
+      ports:
+        - port: 3100
+    # Internal namespace traffic (gateway, other services)
+    - from:
+        - namespaceSelector: {}
       ports:
         - port: 3100

@@ -1,0 +1,47 @@
+/*
+ * Woow POS Portal Style
+ * Customizes POS and Kitchen Display card icons and descriptions
+ * to match the flat design style of other module cards
+ */
+
+/* ── Custom icon sizing (match other module card icons) ── */
+.wpu-custom-icon {
+    width: 80px !important;
+    height: 80px !important;
+    max-width: 80px !important;
+    max-height: 80px !important;
+    object-fit: contain !important;
+    border-radius: 8px;
+    padding: 4px;
+    transition: transform 0.2s ease;
+}
+
+.wpu-custom-icon:hover {
+    transform: scale(1.05);
+}
+
+/* ── POS card icon background ── */
+.wpu-card-pos .wpu-custom-icon,
+.wpu-icon-pos {
+    background-color: #F3E5F5;
+}
+
+/* ── Kitchen Display card icon background ── */
+.wpu-card-kitchen .wpu-custom-icon,
+.wpu-icon-kitchen {
+    background-color: #E0F7FA;
+}
+
+/* ── Card description text styling ── */
+.wpu-card-description {
+    color: #666 !important;
+    font-size: 0.85rem !important;
+    line-height: 1.4 !important;
+    margin-top: 2px !important;
+    letter-spacing: 0.02em;
+}
+
+/* ── Ensure customized cards have consistent spacing ── */
+.wpu-customized-card img {
+    flex-shrink: 0;
+}

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="none">
+  <!-- Kitchen Display / Monitor Icon — flat line-art style -->
+  <!-- Monitor frame -->
+  <rect x="8" y="12" width="64" height="42" rx="4" fill="#E0F2F1" stroke="#26A69A" stroke-width="2"/>
+  <!-- Screen inner -->
+  <rect x="13" y="17" width="54" height="32" rx="2" fill="#B2DFDB"/>
+  <!-- Order ticket 1 — completed (green check) -->
+  <rect x="17" y="21" width="22" height="11" rx="2" fill="white" stroke="#4DB6AC" stroke-width="1.2"/>
+  <line x1="20" y1="25" x2="30" y2="25" stroke="#26A69A" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="20" y1="28.5" x2="27" y2="28.5" stroke="#80CBC4" stroke-width="1" stroke-linecap="round"/>
+  <circle cx="36" cy="26" r="2.5" fill="#66BB6A"/>
+  <path d="M34.5 26 L35.5 27 L37.5 25" stroke="white" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+  <!-- Order ticket 2 — in progress (orange clock) -->
+  <rect x="43" y="21" width="20" height="11" rx="2" fill="white" stroke="#FFB74D" stroke-width="1.2"/>
+  <line x1="46" y1="25" x2="54" y2="25" stroke="#FB8C00" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="46" y1="28.5" x2="52" y2="28.5" stroke="#FFCC80" stroke-width="1" stroke-linecap="round"/>
+  <circle cx="60" cy="26" r="2.5" fill="#FFA726"/>
+  <!-- Order ticket 3 — waiting (light) -->
+  <rect x="17" y="35" width="22" height="11" rx="2" fill="#E0F2F1" stroke="#B2DFDB" stroke-width="1" stroke-dasharray="2 1.5"/>
+  <line x1="20" y1="39" x2="30" y2="39" stroke="#B2DFDB" stroke-width="1" stroke-linecap="round"/>
+  <line x1="20" y1="42.5" x2="26" y2="42.5" stroke="#E0F2F1" stroke-width="1" stroke-linecap="round"/>
+  <!-- Order ticket 4 — waiting -->
+  <rect x="43" y="35" width="20" height="11" rx="2" fill="#E0F2F1" stroke="#B2DFDB" stroke-width="1" stroke-dasharray="2 1.5"/>
+  <line x1="46" y1="39" x2="54" y2="39" stroke="#B2DFDB" stroke-width="1" stroke-linecap="round"/>
+  <!-- Monitor stand -->
+  <rect x="32" y="54" width="16" height="5" rx="1" fill="#80CBC4"/>
+  <rect x="26" y="59" width="28" height="4" rx="2" fill="#26A69A"/>
+  <!-- Notification bell -->
+  <circle cx="66" cy="14" r="7" fill="#FF7043" opacity="0.9"/>
+  <text x="66" y="17" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="white">3</text>
+</svg>

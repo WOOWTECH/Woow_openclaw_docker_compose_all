@@ -1,25 +1,30 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="none">
-  <!-- POS / Cash Register Icon — flat line-art style -->
-  <!-- Register body -->
-  <rect x="14" y="26" width="52" height="34" rx="4" fill="#EDE7F6" stroke="#7E57C2" stroke-width="2"/>
-  <!-- Screen -->
-  <rect x="20" y="31" width="28" height="13" rx="2" fill="#D1C4E9" stroke="#9575CD" stroke-width="1.2"/>
-  <!-- Dollar amount on screen -->
-  <line x1="24" y1="36" x2="38" y2="36" stroke="#7E57C2" stroke-width="1.5" stroke-linecap="round"/>
-  <line x1="24" y1="40" x2="32" y2="40" stroke="#9575CD" stroke-width="1.2" stroke-linecap="round"/>
-  <!-- Card reader slot -->
-  <rect x="52" y="33" width="8" height="10" rx="1.5" fill="#D1C4E9" stroke="#9575CD" stroke-width="1"/>
-  <line x1="54" y1="37" x2="58" y2="37" stroke="#B39DDB" stroke-width="0.8"/>
-  <line x1="54" y1="39" x2="58" y2="39" stroke="#B39DDB" stroke-width="0.8"/>
-  <!-- Button row -->
-  <rect x="20" y="48" width="7" height="5" rx="1.5" fill="#CE93D8"/>
-  <rect x="30" y="48" width="7" height="5" rx="1.5" fill="#CE93D8"/>
-  <rect x="40" y="48" width="7" height="5" rx="1.5" fill="#CE93D8"/>
-  <rect x="50" y="48" width="10" height="5" rx="1.5" fill="#7E57C2"/>
-  <!-- Receipt paper coming out top -->
-  <rect x="24" y="14" width="20" height="14" rx="2" fill="white" stroke="#7E57C2" stroke-width="1.5"/>
-  <line x1="28" y1="19" x2="40" y2="19" stroke="#D1C4E9" stroke-width="1.2" stroke-linecap="round"/>
-  <line x1="28" y1="23" x2="36" y2="23" stroke="#D1C4E9" stroke-width="1.2" stroke-linecap="round"/>
-  <!-- Receipt tear edge -->
-  <path d="M24 14 L26 12 L28 14 L30 12 L32 14 L34 12 L36 14 L38 12 L40 14 L42 12 L44 14" stroke="#7E57C2" stroke-width="1" fill="none"/>
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- POS Cash Register — Odoo portal icon style -->
+<!-- Register body -->
+<rect x="12" y="24" width="40" height="28" rx="3" fill="#C1DBF6"/>
+<rect x="12" y="24" width="40" height="28" rx="3" stroke="#374874" stroke-width="1" fill="none"/>
+<!-- Screen -->
+<rect x="17" y="28" width="22" height="11" rx="2" fill="white" stroke="#374874" stroke-width="0.8"/>
+<!-- Screen lines -->
+<line x1="20" y1="32" x2="32" y2="32" stroke="#C1DBF6" stroke-width="1.5" stroke-linecap="round"/>
+<line x1="20" y1="35.5" x2="28" y2="35.5" stroke="#C1DBF6" stroke-width="1.2" stroke-linecap="round"/>
+<!-- Card reader slot -->
+<rect x="42" y="30" width="6" height="8" rx="1.5" fill="white" stroke="#374874" stroke-width="0.8"/>
+<line x1="43.5" y1="33" x2="46.5" y2="33" stroke="#C1DBF6" stroke-width="0.6"/>
+<line x1="43.5" y1="35" x2="46.5" y2="35" stroke="#C1DBF6" stroke-width="0.6"/>
+<!-- Buttons -->
+<rect x="17" y="43" width="6" height="4" rx="1" fill="#FBDBD0"/>
+<rect x="25" y="43" width="6" height="4" rx="1" fill="#FBDBD0"/>
+<rect x="33" y="43" width="6" height="4" rx="1" fill="#FBDBD0"/>
+<rect x="41" y="43" width="7" height="4" rx="1" fill="#374874"/>
+<!-- Receipt paper -->
+<path d="M20 24 L20 10 C20 9 21 8 22 8 L42 8 C43 8 44 9 44 10 L44 24" fill="white" stroke="#374874" stroke-width="1"/>
+<!-- Receipt lines -->
+<line x1="24" y1="13" x2="40" y2="13" stroke="#FBDBD0" stroke-width="1.2" stroke-linecap="round"/>
+<line x1="24" y1="16.5" x2="36" y2="16.5" stroke="#FBDBD0" stroke-width="1" stroke-linecap="round"/>
+<line x1="24" y1="20" x2="38" y2="20" stroke="#C1DBF6" stroke-width="1" stroke-linecap="round"/>
+<!-- Receipt tear zigzag -->
+<path d="M20 8 L22 6 L24 8 L26 6 L28 8 L30 6 L32 8 L34 6 L36 8 L38 6 L40 8 L42 6 L44 8" stroke="#374874" stroke-width="0.8" fill="none"/>
+<!-- Shadow ellipse -->
+<ellipse cx="32" cy="56" rx="16" ry="3" fill="#C1DBF6" opacity="0.4"/>
 </svg>

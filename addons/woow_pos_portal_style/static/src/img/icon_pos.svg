@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="none">
+  <!-- POS / Cash Register Icon — flat line-art style -->
+  <!-- Register body -->
+  <rect x="14" y="26" width="52" height="34" rx="4" fill="#EDE7F6" stroke="#7E57C2" stroke-width="2"/>
+  <!-- Screen -->
+  <rect x="20" y="31" width="28" height="13" rx="2" fill="#D1C4E9" stroke="#9575CD" stroke-width="1.2"/>
+  <!-- Dollar amount on screen -->
+  <line x1="24" y1="36" x2="38" y2="36" stroke="#7E57C2" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="24" y1="40" x2="32" y2="40" stroke="#9575CD" stroke-width="1.2" stroke-linecap="round"/>
+  <!-- Card reader slot -->
+  <rect x="52" y="33" width="8" height="10" rx="1.5" fill="#D1C4E9" stroke="#9575CD" stroke-width="1"/>
+  <line x1="54" y1="37" x2="58" y2="37" stroke="#B39DDB" stroke-width="0.8"/>
+  <line x1="54" y1="39" x2="58" y2="39" stroke="#B39DDB" stroke-width="0.8"/>
+  <!-- Button row -->
+  <rect x="20" y="48" width="7" height="5" rx="1.5" fill="#CE93D8"/>
+  <rect x="30" y="48" width="7" height="5" rx="1.5" fill="#CE93D8"/>
+  <rect x="40" y="48" width="7" height="5" rx="1.5" fill="#CE93D8"/>
+  <rect x="50" y="48" width="10" height="5" rx="1.5" fill="#7E57C2"/>
+  <!-- Receipt paper coming out top -->
+  <rect x="24" y="14" width="20" height="14" rx="2" fill="white" stroke="#7E57C2" stroke-width="1.5"/>
+  <line x1="28" y1="19" x2="40" y2="19" stroke="#D1C4E9" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="28" y1="23" x2="36" y2="23" stroke="#D1C4E9" stroke-width="1.2" stroke-linecap="round"/>
+  <!-- Receipt tear edge -->
+  <path d="M24 14 L26 12 L28 14 L30 12 L32 14 L34 12 L36 14 L38 12 L40 14 L42 12 L44 14" stroke="#7E57C2" stroke-width="1" fill="none"/>
+</svg>

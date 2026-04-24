@@ -27,6 +27,7 @@ Thumbs.db
 /tmp/
 test-results/
 playwright-report/
+.playwright-cli/
 
 # Runtime data
 task_plan.md
@@ -48,3 +49,6 @@ build/
 # Secrets (never commit real values)
 **/secrets.yaml
 !k8s-manifests/02-secrets.yaml
+
+# Screenshots (temp)
+*.png

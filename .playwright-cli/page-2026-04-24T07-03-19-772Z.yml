@@ -1,0 +1,89 @@
+- generic [ref=e2]:
+  - link "跳至內容" [ref=e3] [cursor=pointer]:
+    - /url: "#wrap"
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - navigation "主頁" [ref=e6]:
+        - generic [ref=e7]:
+          - link "Logo of harumi" [ref=e8] [cursor=pointer]:
+            - /url: /
+            - img "Logo of harumi" [ref=e9]:
+              - img "harumi" [ref=e10]
+          - menu [ref=e11]:
+            - menuitem "首頁" [ref=e12] [cursor=pointer]
+            - menuitem "菜餚介紹" [ref=e13] [cursor=pointer]
+            - menuitem "預約訂位" [ref=e14] [cursor=pointer]
+            - menuitem "最新消息" [ref=e15] [cursor=pointer]
+            - menuitem "交通資訊" [ref=e16] [cursor=pointer]
+            - menuitem "聯絡我們" [ref=e17] [cursor=pointer]
+          - list [ref=e18]:
+            - listitem [ref=e19]:
+              - link "電子商務購物車" [ref=e20] [cursor=pointer]:
+                - /url: /shop/cart
+                - generic [ref=e22]: 
+            - listitem [ref=e23]:
+              - link "登入" [ref=e24] [cursor=pointer]:
+                - /url: /web/login
+      - text: 
+  - main [ref=e25]:
+    - form [ref=e27]:
+      - generic [ref=e28]:
+        - generic [ref=e29]: 電郵
+        - textbox "電郵" [ref=e30]: admin
+      - generic [ref=e31]:
+        - generic [ref=e32]:
+          - text: 密碼
+          - link "重設新密碼" [ref=e33] [cursor=pointer]:
+            - /url: /web/reset_password
+        - textbox "密碼 重設新密碼" [active] [ref=e34]:
+          - /placeholder: 密碼
+      - alert [ref=e35]: 登入名稱或密碼錯誤
+      - button "登入" [ref=e37] [cursor=pointer]
+      - paragraph [ref=e38]:
+        - link "還沒有帳戶？" [ref=e39] [cursor=pointer]:
+          - /url: /web/signup
+  - contentinfo [ref=e40]:
+    - generic [ref=e42]:
+      - generic [ref=e43]:
+        - generic [ref=e44]:
+          - heading "春美" [level=4] [ref=e45]
+          - paragraph [ref=e47]:
+            - text: In Grandma's Name We Cook
+            - text: 以外婆之名，我們料理。
+          - paragraph [ref=e48]: 木柵的深夜食堂，一個充滿故事與溫度的角落。
+        - generic [ref=e49]:
+          - heading "快速連結" [level=5] [ref=e50]
+          - list [ref=e52]:
+            - listitem [ref=e53]:
+              - link "關於我們" [ref=e54] [cursor=pointer]:
+                - /url: /about
+            - listitem [ref=e55]:
+              - link "菜單" [ref=e56] [cursor=pointer]:
+                - /url: /menu
+            - listitem [ref=e57]:
+              - link "預約訂位" [ref=e58] [cursor=pointer]:
+                - /url: /reservation
+            - listitem [ref=e59]:
+              - link "交通資訊" [ref=e60] [cursor=pointer]:
+                - /url: /access
+            - listitem [ref=e61]:
+              - link "最新消息" [ref=e62] [cursor=pointer]:
+                - /url: /news
+            - listitem [ref=e63]:
+              - link "聯絡我們" [ref=e64] [cursor=pointer]:
+                - /url: /contactus
+        - generic [ref=e65]:
+          - heading "聯絡資訊" [level=5] [ref=e66]
+          - paragraph [ref=e68]:
+            - text: 台北市文山區興隆路四段71號1樓
+            - text: （再興中學對面）
+            - text: 電話：0958-274-711
+            - text: 營業：週一至週六 17:00 — 22:00
+          - generic [ref=e69]:
+            - link "Facebook" [ref=e70] [cursor=pointer]:
+              - /url: https://www.facebook.com/profile.php?id=100063760842454
+            - link "Instagram" [ref=e71] [cursor=pointer]:
+              - /url: https://www.instagram.com/harumi4711/
+            - link "Podcast" [ref=e72] [cursor=pointer]:
+              - /url: https://open.spotify.com/show/6biwkNoWULPMdFrDdJfhWF
+      - paragraph [ref=e74]: © 2026 春美ハルミHarumi. All Rights Reserved.

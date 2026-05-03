@@ -331,7 +331,25 @@ fi
 echo ""
 
 # ─────────────────────────────────────────────────
-# Step 6: Wait for pods and verify
+# Step 6: Copy local addons (markstudio_website)
+# ─────────────────────────────────────────────────
+if [ -d "${SCRIPT_DIR}/markstudio_website" ]; then
+    info "Copying local addons to Odoo pod..."
+    ODOO_POD=$(kubectl get pod -n "${NAMESPACE}" -l app=odoo -o jsonpath='{.items[0].metadata.name}' 2>/dev/null)
+    if [ -n "${ODOO_POD}" ]; then
+        tar czf /tmp/markstudio_website.tar.gz -C "${SCRIPT_DIR}" markstudio_website/
+        kubectl cp /tmp/markstudio_website.tar.gz "${NAMESPACE}/${ODOO_POD}:/tmp/markstudio_website.tar.gz" -c odoo
+        kubectl exec -n "${NAMESPACE}" "${ODOO_POD}" -c odoo -- tar xzf /tmp/markstudio_website.tar.gz -C /mnt/extra-addons/
+        rm -f /tmp/markstudio_website.tar.gz
+        ok "Local addon 'markstudio_website' copied."
+    else
+        warn "No Odoo pod found — skipping local addon copy."
+    fi
+fi
+echo ""
+
+# ─────────────────────────────────────────────────
+# Step 7: Wait for pods and verify
 # ─────────────────────────────────────────────────
 info "Waiting for pods to be ready (up to 120s)..."
 kubectl wait --for=condition=Ready pod -l app=odoo-db -n "${NAMESPACE}" --timeout=120s 2>/dev/null || \

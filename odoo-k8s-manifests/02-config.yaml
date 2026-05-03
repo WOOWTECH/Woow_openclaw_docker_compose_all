@@ -30,7 +30,11 @@ data:
     server_wide_modules = base,web
 
     ; --- Workers ---
-    workers = 2
+    ; workers = 0: single-process mode (HTTP + WebSocket on 8069)
+    ; Required because Cloudflare Tunnel routes all traffic to 8069;
+    ; multi-worker mode needs /websocket → 8072 routing which CF tunnel
+    ; doesn't support with path-based rules on free plan.
+    workers = 0
     max_cron_threads = 1
 
     ; --- Limits ---

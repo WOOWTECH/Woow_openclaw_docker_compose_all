@@ -57,7 +57,20 @@ fi
 # Parse Cloudflare config (shared with OpenClaw)
 CF_API_TOKEN=$(python3 -c "import json; print(json.load(open('${CF_CONFIG}'))['CF_API_TOKEN'])")
 CF_ACCOUNT_ID=$(python3 -c "import json; print(json.load(open('${CF_CONFIG}'))['CF_ACCOUNT_ID'])")
-CF_TUNNEL_ID=$(python3 -c "import json; print(json.load(open('${CF_CONFIG}'))['CF_TUNNEL_ID'])")
+
+# Detect the actual tunnel ID from the running cloudflared's K8s secret
+# (cf-config.json may have a different tunnel than the one actually deployed)
+CF_TUNNEL_ID=$(kubectl get secret cf-secrets -n openclaw-tenant-1 \
+    -o jsonpath='{.data.CF_TUNNEL_TOKEN}' 2>/dev/null \
+    | base64 -d \
+    | python3 -c "import sys,json,base64; t=sys.stdin.read(); d=json.loads(base64.b64decode(t+'==')); print(d['t'])" 2>/dev/null)
+
+if [ -z "${CF_TUNNEL_ID}" ]; then
+    warn "Could not detect tunnel ID from K8s secret, falling back to cf-config.json"
+    CF_TUNNEL_ID=$(python3 -c "import json; print(json.load(open('${CF_CONFIG}'))['CF_TUNNEL_ID'])")
+fi
+
+info "Using Tunnel ID: ${CF_TUNNEL_ID}"
 
 ok "Prerequisites validated."
 echo ""

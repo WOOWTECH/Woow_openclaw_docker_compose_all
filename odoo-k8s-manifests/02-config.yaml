@@ -12,10 +12,9 @@ data:
   odoo.conf: |
     [options]
     ; --- Database ---
-    db_host = odoo-db-svc
-    db_port = 5432
-    db_user = odoo
-    db_password = False
+    ; db_host, db_port, db_user, db_password are set via env vars
+    ; (HOST, PORT, USER, PASSWORD) and injected by the Docker entrypoint.
+    ; Do NOT set them here — the entrypoint overrides env vars with conf values.
     db_name = markstudio
     db_maxconn = 64
 
@@ -42,7 +41,7 @@ data:
 
     ; --- Security ---
     list_db = False
-    admin_passwd = False
+    ; admin_passwd set via env var to avoid entrypoint override
 
     ; --- Logging ---
     log_level = info

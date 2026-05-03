@@ -1,0 +1,57 @@
+# =============================================================
+# NetworkPolicy — Restrict pod-to-pod communication
+# Zero-trust: only allow necessary traffic between components
+# =============================================================
+
+# Policy 1: Only Odoo can access its database
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: odoo-db-policy
+  namespace: markstudio-odoo
+spec:
+  podSelector:
+    matchLabels:
+      app: odoo-db
+  policyTypes:
+    - Ingress
+  ingress:
+    # Only the Odoo web pod can access PostgreSQL
+    - from:
+        - podSelector:
+            matchLabels:
+              app: odoo
+      ports:
+        - port: 5432
+---
+# Policy 2: Odoo web — allow from cloudflared (cross-namespace)
+# and from within the same namespace
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: odoo-web-policy
+  namespace: markstudio-odoo
+spec:
+  podSelector:
+    matchLabels:
+      app: odoo
+  policyTypes:
+    - Ingress
+  ingress:
+    # Allow from cloudflared in openclaw-tenant-1 namespace
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              app.kubernetes.io/part-of: openclaw-paas
+          podSelector:
+            matchLabels:
+              app: cloudflared
+      ports:
+        - port: 8069
+        - port: 8072
+    # Allow from within same namespace (init containers, health checks)
+    - from:
+        - podSelector: {}
+      ports:
+        - port: 8069
+        - port: 8072

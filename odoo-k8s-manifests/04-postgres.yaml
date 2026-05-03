@@ -1,0 +1,95 @@
+# =============================================================
+# Odoo PostgreSQL 16 — Deployment
+# =============================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: odoo-db
+  namespace: markstudio-odoo
+  labels:
+    app: odoo-db
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: markstudio-odoo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: odoo-db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: odoo-db
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16
+          securityContext:
+            allowPrivilegeEscalation: false
+          ports:
+            - containerPort: 5432
+              name: postgres
+          env:
+            - name: POSTGRES_DB
+              value: "markstudio"
+            - name: POSTGRES_USER
+              value: "odoo"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: odoo-secrets
+                  key: POSTGRES_PASSWORD
+            - name: PGDATA
+              value: "/var/lib/postgresql/data/pgdata"
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - odoo
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - odoo
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: odoo-db-pvc
+---
+# =============================================================
+# Odoo PostgreSQL — Service
+# =============================================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: odoo-db-svc
+  namespace: markstudio-odoo
+  labels:
+    app: odoo-db
+    app.kubernetes.io/part-of: markstudio-odoo
+spec:
+  selector:
+    app: odoo-db
+  ports:
+    - name: postgres
+      protocol: TCP
+      port: 5432
+      targetPort: postgres
+  type: ClusterIP

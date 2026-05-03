@@ -1,0 +1,58 @@
+# =============================================================
+# Odoo PostgreSQL — PersistentVolumeClaim (10Gi)
+# =============================================================
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: odoo-db-pvc
+  namespace: markstudio-odoo
+  labels:
+    app: odoo-db
+    app.kubernetes.io/part-of: markstudio-odoo
+spec:
+  storageClassName: local-path
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+# =============================================================
+# Odoo Filestore — PersistentVolumeClaim (5Gi)
+# Stores: attachments, session data, uploaded files
+# =============================================================
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: odoo-filestore-pvc
+  namespace: markstudio-odoo
+  labels:
+    app: odoo
+    app.kubernetes.io/part-of: markstudio-odoo
+spec:
+  storageClassName: local-path
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+# =============================================================
+# Odoo Custom Addons — PersistentVolumeClaim (2Gi)
+# Stores: GitHub-cloned WoowTech modules, persisted across restarts
+# =============================================================
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: odoo-addons-pvc
+  namespace: markstudio-odoo
+  labels:
+    app: odoo
+    app.kubernetes.io/part-of: markstudio-odoo
+spec:
+  storageClassName: local-path
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi

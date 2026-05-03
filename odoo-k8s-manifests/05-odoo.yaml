@@ -1,0 +1,181 @@
+# =============================================================
+# Odoo 18 — Main Deployment
+#
+# Init containers:
+#   1. clone-addons: Clones WoowTech custom modules from GitHub
+#   2. wait-for-db:  Waits for PostgreSQL to accept connections
+#
+# Volumes:
+#   - odoo-filestore-pvc → /var/lib/odoo (attachments, sessions)
+#   - odoo-addons-pvc    → /mnt/extra-addons (custom modules)
+#   - odoo-config CM     → /etc/odoo/odoo.conf
+# =============================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: odoo
+  namespace: markstudio-odoo
+  labels:
+    app: odoo
+    app.kubernetes.io/name: odoo
+    app.kubernetes.io/component: web
+    app.kubernetes.io/part-of: markstudio-odoo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: odoo
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: odoo
+        app.kubernetes.io/name: odoo
+    spec:
+      # ─────────────────────────────────────────────────
+      # Init Container 1: Clone / update custom addons
+      # ─────────────────────────────────────────────────
+      initContainers:
+        - name: clone-addons
+          image: alpine/git:latest
+          command:
+            - sh
+            - -c
+            - |
+              set -e
+              ADDONS_DIR="/mnt/extra-addons"
+
+              echo "[init] ========================================="
+              echo "[init] Odoo Custom Addons Init"
+              echo "[init] ========================================="
+
+              # Only clone if addons dir is empty (PVC persists across restarts)
+              if [ -d "$ADDONS_DIR/Odoo_reservation_module/.git" ]; then
+                echo "[init] Addons already present — pulling updates..."
+                cd "$ADDONS_DIR/Odoo_reservation_module" && git pull --ff-only 2>/dev/null || true
+                cd "$ADDONS_DIR/woow_odoo_livechat_line" && git pull --ff-only 2>/dev/null || true
+                cd "$ADDONS_DIR/Woow_odoo_n8n_livechat" && git pull --ff-only 2>/dev/null || true
+              else
+                echo "[init] First boot — cloning custom addons..."
+
+                echo "[1/3] Cloning Odoo_reservation_module..."
+                git clone --depth 1 \
+                  https://github.com/WOOWTECH/Odoo_reservation_module.git \
+                  "$ADDONS_DIR/Odoo_reservation_module"
+
+                echo "[2/3] Cloning woow_odoo_livechat_line..."
+                git clone --depth 1 \
+                  https://github.com/WOOWTECH/woow_odoo_livechat_line.git \
+                  "$ADDONS_DIR/woow_odoo_livechat_line"
+
+                echo "[3/3] Cloning Woow_odoo_n8n_livechat..."
+                git clone --depth 1 \
+                  https://github.com/WOOWTECH/Woow_odoo_n8n_livechat.git \
+                  "$ADDONS_DIR/Woow_odoo_n8n_livechat"
+
+                echo "[init] All addons cloned successfully."
+              fi
+
+              echo "[init] Addons directory contents:"
+              ls -la "$ADDONS_DIR/"
+          volumeMounts:
+            - name: addons
+              mountPath: /mnt/extra-addons
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+
+      # ─────────────────────────────────────────────────
+      # Init Container 2: Wait for PostgreSQL readiness
+      # ─────────────────────────────────────────────────
+        - name: wait-for-db
+          image: postgres:16
+          command:
+            - sh
+            - -c
+            - |
+              echo "[init] Waiting for PostgreSQL at odoo-db-svc:5432..."
+              until pg_isready -h odoo-db-svc -p 5432 -U odoo; do
+                echo "[init] DB not ready, retrying in 3s..."
+                sleep 3
+              done
+              echo "[init] PostgreSQL is ready!"
+          resources:
+            requests:
+              cpu: 50m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
+
+      # ─────────────────────────────────────────────────
+      # Main Container: Odoo 18
+      # ─────────────────────────────────────────────────
+      containers:
+        - name: odoo
+          image: odoo:18.0
+          securityContext:
+            allowPrivilegeEscalation: false
+          ports:
+            - containerPort: 8069
+              name: odoo-http
+            - containerPort: 8072
+              name: odoo-longpoll
+          env:
+            - name: HOST
+              value: "odoo-db-svc"
+            - name: PORT
+              value: "5432"
+            - name: USER
+              value: "odoo"
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: odoo-secrets
+                  key: POSTGRES_PASSWORD
+          volumeMounts:
+            - name: filestore
+              mountPath: /var/lib/odoo
+            - name: addons
+              mountPath: /mnt/extra-addons
+            - name: odoo-conf
+              mountPath: /etc/odoo/odoo.conf
+              subPath: odoo.conf
+              readOnly: true
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+            limits:
+              cpu: "2"
+              memory: 2Gi
+          readinessProbe:
+            httpGet:
+              path: /web/health
+              port: 8069
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 12
+          livenessProbe:
+            httpGet:
+              path: /web/health
+              port: 8069
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            failureThreshold: 5
+
+      volumes:
+        - name: filestore
+          persistentVolumeClaim:
+            claimName: odoo-filestore-pvc
+        - name: addons
+          persistentVolumeClaim:
+            claimName: odoo-addons-pvc
+        - name: odoo-conf
+          configMap:
+            name: odoo-config

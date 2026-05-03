@@ -1,0 +1,32 @@
+# =============================================================
+# Odoo 18 — Web Service (HTTP + Longpolling)
+#
+# Port 8069: Standard HTTP (Odoo web client, API)
+# Port 8072: Longpolling / WebSocket (gevent worker)
+#
+# Cloudflare Tunnel routes markstudio-odoo.woowtech.io → :8069
+# Odoo 18 with proxy_mode + workers > 0 handles /websocket
+# forwarding internally.
+# =============================================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: odoo-web-svc
+  namespace: markstudio-odoo
+  labels:
+    app: odoo
+    app.kubernetes.io/component: web
+    app.kubernetes.io/part-of: markstudio-odoo
+spec:
+  selector:
+    app: odoo
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8069
+      targetPort: odoo-http
+    - name: longpoll
+      protocol: TCP
+      port: 8072
+      targetPort: odoo-longpoll
+  type: ClusterIP

@@ -1,6 +1,427 @@
-/* Mark Studio Website — Custom Styles */
+/* ============================================================
+   Mark Studio Website — Complete Design System
+   Inspired by tw.doctorstretch.com aesthetic
+   ============================================================ */
 
-/* Social media icon badges */
+/* --- Google Fonts loaded via <link> in template, NOT @import --- */
+/* @import breaks Odoo's CSS concatenation pipeline */
+
+/* --- Design Tokens --- */
+:root {
+    --mk-dark: #1a1a1a;
+    --mk-black: #000000;
+    --mk-maroon: #5B1A1A;
+    --mk-maroon-deep: #3d1010;
+    --mk-gold: #C5962A;
+    --mk-teal: #5ECFCF;
+    --mk-white: #ffffff;
+    --mk-gray-light: #f5f5f5;
+    --mk-gray: #888888;
+    --mk-font-serif: 'EB Garamond', 'Georgia', serif;
+    --mk-font-sans: 'Noto Sans TC', 'Lato', sans-serif;
+}
+
+/* --- Homepage wrapper: remove default Odoo padding --- */
+.mk-homepage #wrap {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+.mk-homepage .o_footer,
+.mk-homepage #wrapwrap > header {
+    /* Let Odoo header/footer remain but style over them */
+}
+
+/* ============================================================
+   HERO SECTION
+   ============================================================ */
+.mk-hero {
+    position: relative;
+    height: 100vh;
+    min-height: 500px;
+    background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 50%, #111 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.mk-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 1;
+}
+
+.mk-hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.mk-hero-title {
+    font-family: var(--mk-font-serif);
+    font-size: clamp(48px, 10vw, 96px);
+    font-weight: 800;
+    color: var(--mk-white);
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    margin: 0;
+    line-height: 1.1;
+}
+
+.mk-hero-subtitle {
+    font-family: var(--mk-font-sans);
+    font-size: clamp(14px, 2vw, 20px);
+    color: #cccccc;
+    letter-spacing: 6px;
+    margin-top: 16px;
+    font-weight: 300;
+}
+
+.mk-hero-scroll {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    color: #666;
+    font-size: 14px;
+    animation: mk-bounce 2s infinite;
+}
+
+@keyframes mk-bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+}
+
+/* ============================================================
+   STATS SECTION (3 gold-bordered circles)
+   ============================================================ */
+.mk-stats {
+    position: relative;
+    background: linear-gradient(135deg, var(--mk-maroon), var(--mk-maroon-deep));
+    padding: 80px 0;
+    overflow: hidden;
+}
+
+.mk-stats-pattern {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(200, 50, 50, 0.15) 1px, transparent 1px);
+    background-size: 24px 24px;
+    pointer-events: none;
+}
+
+.mk-stat-circle {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 3px solid var(--mk-gold);
+    background: var(--mk-white);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    padding: 20px;
+    transition: transform 0.3s ease;
+}
+
+.mk-stat-circle:hover {
+    transform: scale(1.05);
+}
+
+.mk-stat-label {
+    font-family: var(--mk-font-sans);
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+}
+
+.mk-stat-number {
+    font-family: var(--mk-font-serif);
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--mk-gold);
+    line-height: 1;
+}
+
+.mk-stat-asterisk {
+    font-size: 24px;
+    vertical-align: super;
+}
+
+.mk-stat-unit {
+    font-family: var(--mk-font-sans);
+    font-size: 16px;
+    color: #333;
+}
+
+/* ============================================================
+   SERVICES SECTION (numbered 01/02/03)
+   ============================================================ */
+.mk-services {
+    position: relative;
+    background: linear-gradient(135deg, var(--mk-maroon), var(--mk-maroon-deep));
+    padding: 80px 0 60px;
+    overflow: hidden;
+}
+
+.mk-section-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.mk-section-title-serif {
+    font-family: var(--mk-font-serif);
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--mk-white);
+    margin-bottom: 12px;
+}
+
+.mk-gold-line {
+    width: 40px;
+    height: 3px;
+    background: var(--mk-gold);
+    margin: 0 auto;
+}
+
+.mk-service-item {
+    margin-bottom: 80px;
+}
+
+.mk-service-number {
+    font-family: var(--mk-font-serif);
+    font-size: 72px;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.15);
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+.mk-service-heading {
+    display: inline;
+}
+
+.mk-service-heading span {
+    background: var(--mk-black);
+    color: var(--mk-teal);
+    font-family: var(--mk-font-sans);
+    font-size: 20px;
+    font-weight: 700;
+    padding: 4px 12px;
+    line-height: 2;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+}
+
+.mk-service-desc {
+    font-family: var(--mk-font-sans);
+    font-size: 15px;
+    color: #ccc;
+    line-height: 1.8;
+    margin-top: 20px;
+}
+
+.mk-service-photo {
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 16px;
+}
+
+/* Photo placeholders */
+.mk-photo-placeholder {
+    background: #444;
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    gap: 12px;
+    border-radius: 4px;
+}
+
+.mk-photo-placeholder span {
+    font-size: 13px;
+}
+
+.mk-photo-placeholder-light {
+    background: #e0e0e0;
+    color: #999;
+    min-height: 200px;
+}
+
+/* ============================================================
+   EXPERIENCE SECTION (4-step flow)
+   ============================================================ */
+.mk-experience {
+    background: var(--mk-gray-light);
+    padding: 80px 0;
+}
+
+.mk-experience-title {
+    font-family: var(--mk-font-serif);
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 800;
+    color: var(--mk-dark);
+    text-align: center;
+    margin-bottom: 4px;
+}
+
+.mk-experience-subtitle {
+    font-family: var(--mk-font-sans);
+    font-size: 15px;
+    color: #666;
+    text-align: center;
+}
+
+.mk-step {
+    text-align: center;
+}
+
+.mk-step-number {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--mk-dark);
+    color: var(--mk-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mk-font-serif);
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 auto 12px;
+}
+
+.mk-step-title {
+    font-family: var(--mk-font-sans);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--mk-dark);
+    margin-bottom: 16px;
+}
+
+.mk-step-photo {
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+/* ============================================================
+   FAQ SECTION (accordion)
+   ============================================================ */
+.mk-faq {
+    background: var(--mk-gray-light);
+    padding: 80px 0;
+}
+
+.mk-faq-list {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.mk-faq-item {
+    margin-bottom: 2px;
+}
+
+.mk-faq-question {
+    background: var(--mk-dark);
+    color: var(--mk-white);
+    padding: 18px 24px;
+    font-family: var(--mk-font-sans);
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s ease;
+    border-radius: 2px;
+}
+
+.mk-faq-question::-webkit-details-marker {
+    display: none;
+}
+
+.mk-faq-question:hover {
+    background: #2a2a2a;
+}
+
+.mk-faq-arrow {
+    transition: transform 0.3s ease;
+    font-size: 12px;
+}
+
+details[open] .mk-faq-arrow {
+    transform: rotate(180deg);
+}
+
+.mk-faq-answer {
+    background: #2a2a2a;
+    color: #ccc;
+    padding: 20px 24px;
+    font-family: var(--mk-font-sans);
+    font-size: 14px;
+    line-height: 1.8;
+    border-radius: 0 0 2px 2px;
+}
+
+.mk-faq-answer p {
+    margin: 0;
+}
+
+/* ============================================================
+   CTA SECTION
+   ============================================================ */
+.mk-cta {
+    background: var(--mk-dark);
+    padding: 80px 0;
+}
+
+.mk-cta-title {
+    font-family: var(--mk-font-serif);
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--mk-white);
+    margin-bottom: 12px;
+}
+
+.mk-cta-subtitle {
+    font-family: var(--mk-font-sans);
+    font-size: 16px;
+    color: #999;
+    margin-bottom: 32px;
+}
+
+.mk-cta-button {
+    display: inline-block;
+    background: var(--mk-gold);
+    color: var(--mk-black);
+    font-family: var(--mk-font-sans);
+    font-size: 18px;
+    font-weight: 700;
+    padding: 16px 56px;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    letter-spacing: 2px;
+}
+
+.mk-cta-button:hover {
+    background: #d4a63a;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(197, 150, 42, 0.3);
+    color: var(--mk-black);
+    text-decoration: none;
+}
+
+/* ============================================================
+   NEWS PAGE — Social media icons (kept from previous version)
+   ============================================================ */
 .markstudio-social-icon {
     display: inline-flex;
     align-items: center;
@@ -23,7 +444,6 @@
     background-color: #FF0000;
 }
 
-/* Video card hover effect */
 .markstudio-video-card {
     transition: transform 0.2s ease;
 }
@@ -32,7 +452,40 @@
     transform: translateY(-4px);
 }
 
-/* Social placeholder cards */
 .markstudio-social-placeholder {
     min-height: 200px;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+    .mk-hero-title {
+        letter-spacing: 4px;
+    }
+
+    .mk-hero-subtitle {
+        letter-spacing: 3px;
+    }
+
+    .mk-stat-circle {
+        width: 160px;
+        height: 160px;
+    }
+
+    .mk-stat-number {
+        font-size: 36px;
+    }
+
+    .mk-service-number {
+        font-size: 48px;
+    }
+
+    .mk-service-heading span {
+        font-size: 16px;
+    }
+
+    .mk-service-photo .mk-photo-placeholder {
+        min-height: 200px;
+    }
 }

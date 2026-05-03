@@ -8,6 +8,7 @@
     'license': 'LGPL-3',
     'depends': ['website'],
     'data': [
+        'views/homepage_templates.xml',
         'views/news_templates.xml',
     ],
     'assets': {

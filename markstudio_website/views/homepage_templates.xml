@@ -1,282 +1,221 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- ============================================================ -->
-    <!-- Mark Studio Homepage — Dr.stretch-inspired design            -->
-    <!-- Sections: Hero → Stats → Services → Experience → FAQ → CTA  -->
-    <!-- ============================================================ -->
     <template id="homepage" name="馬克健身首頁">
         <t t-call="website.layout">
             <t t-set="pageName" t-value="'homepage'"/>
             <t t-set="head">
                 <link rel="preconnect" href="https://fonts.googleapis.com"/>
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
-                <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;700;800&amp;family=Noto+Sans+TC:wght@300;400;500;700;900&amp;family=Lato:wght@300;400;700;900&amp;display=swap" rel="stylesheet"/>
+                <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,700;0,800;1,400;1,700;1,800&amp;family=Noto+Sans+TC:wght@300;400;500;700;900&amp;family=Lato:wght@300;400;700;900&amp;family=Oswald:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
             </t>
 
-            <!-- ========== HERO SECTION ========== -->
+            <!-- ===== HERO ===== -->
             <section class="mk-hero">
-                <div class="mk-hero-overlay"/>
+                <div class="mk-hero-bg"/>
                 <div class="mk-hero-content">
-                    <h1 class="mk-hero-title">MARK STUDIO</h1>
-                    <p class="mk-hero-subtitle">專業按摩 · 伸展 · 放鬆</p>
-                </div>
-                <div class="mk-hero-scroll">
-                    <span>&#9660;</span>
+                    <h1 class="mk-hero-title">STRETCH YOUR BODY</h1>
                 </div>
             </section>
 
-            <!-- ========== STATS SECTION ========== -->
+            <!-- ===== STATS (3 circles) ===== -->
             <section class="mk-stats">
-                <div class="mk-stats-pattern"/>
+                <div class="mk-stats-dots"/>
+                <div class="mk-stats-circles">
+                    <div class="mk-stat-circle">
+                        <span class="mk-stat-desc">專業按摩師</span>
+                        <span class="mk-stat-num">10<sup>+</sup></span>
+                        <span class="mk-stat-unit">位</span>
+                    </div>
+                    <div class="mk-stat-circle">
+                        <span class="mk-stat-desc">為專業運動員</span>
+                        <span class="mk-stat-desc">提供伸展服務</span>
+                        <i class="fa fa-users mk-stat-icon"/>
+                    </div>
+                    <div class="mk-stat-circle">
+                        <span class="mk-stat-desc">到店消費者</span>
+                        <span class="mk-stat-desc">數量超過</span>
+                        <span class="mk-stat-num">5,000<sup>+</sup></span>
+                        <span class="mk-stat-unit">人</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== SERVICES (服務) ===== -->
+            <section class="mk-services">
+                <div class="mk-stats-dots"/>
                 <div class="container position-relative">
-                    <div class="row justify-content-center">
-                        <div class="col-md-4 col-sm-6 text-center mb-4">
-                            <div class="mk-stat-circle">
-                                <div class="mk-stat-label">專業按摩師</div>
-                                <div class="mk-stat-number">10<span class="mk-stat-asterisk">+</span></div>
-                                <div class="mk-stat-unit">位</div>
+                    <h2 class="mk-sec-title">服務</h2>
+                    <div class="mk-sec-line"/>
+
+                    <div class="mk-why-title">Why Mark Studio?</div>
+
+                    <!-- 01 -->
+                    <div class="mk-svc">
+                        <div class="mk-svc-left">
+                            <div class="mk-svc-num">01</div>
+                            <div class="mk-svc-heading">
+                                <span class="mk-svc-hl">運用獨創技術，</span><br/>
+                                <span class="mk-svc-hl">帶給您前所未有的感受</span>
+                            </div>
+                            <p class="mk-svc-text">
+                                馬克健身使用獨創的核心平衡伸展術，針對僵硬的深層肌群進行放鬆和伸展。
+                                致力於從根源上解決您的煩惱，減少復發頻率。
+                            </p>
+                        </div>
+                        <div class="mk-svc-right">
+                            <div class="mk-svc-img">
+                                <div class="mk-placeholder"><i class="fa fa-image"/>深層按摩服務照片</div>
                             </div>
                         </div>
-                        <div class="col-md-4 col-sm-6 text-center mb-4">
-                            <div class="mk-stat-circle">
-                                <div class="mk-stat-label">提供專業伸展</div>
-                                <div class="mk-stat-label">按摩服務</div>
-                                <div style="margin-top:8px;">
-                                    <i class="fa fa-users" style="font-size:32px; color:#C5962A;"/>
-                                </div>
+                    </div>
+
+                    <!-- 02 -->
+                    <div class="mk-svc">
+                        <div class="mk-svc-left">
+                            <div class="mk-svc-num">02</div>
+                            <div class="mk-svc-heading">
+                                <span class="mk-svc-hl">全身放鬆，享受伸展</span>
+                            </div>
+                            <p class="mk-svc-text">
+                                在進行伸展的過程中，您所需做的僅僅只是放鬆您的身心。
+                                而放鬆狀態下的肌肉更容易被伸展。
+                            </p>
+                        </div>
+                        <div class="mk-svc-right">
+                            <div class="mk-svc-img">
+                                <div class="mk-placeholder"><i class="fa fa-image"/>伸展服務照片</div>
                             </div>
                         </div>
-                        <div class="col-md-4 col-sm-6 text-center mb-4">
-                            <div class="mk-stat-circle">
-                                <div class="mk-stat-label">服務體驗超過</div>
-                                <div class="mk-stat-number">5,000<span class="mk-stat-asterisk">+</span></div>
-                                <div class="mk-stat-unit">人次</div>
+                    </div>
+
+                    <!-- 03 -->
+                    <div class="mk-svc">
+                        <div class="mk-svc-left">
+                            <div class="mk-svc-num">03</div>
+                            <div class="mk-svc-heading">
+                                <span class="mk-svc-hl">一對一專業伸展</span>
+                            </div>
+                            <p class="mk-svc-text">
+                                教練會依據顧客的不適症狀，對身體不同部位的柔軟性進行判斷，
+                                從而提供最適合您的伸展方案。教練也會根據顧客的身體情況提出相關建議，
+                                幫助您養成良好伸展習慣，為您身體的健康出謀劃策。
+                            </p>
+                        </div>
+                        <div class="mk-svc-right">
+                            <div class="mk-svc-img">
+                                <div class="mk-placeholder"><i class="fa fa-image"/>一對一伸展照片</div>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- ========== SERVICES SECTION (服務項目) ========== -->
-            <section class="mk-services" id="services">
-                <div class="mk-stats-pattern"/>
-                <div class="container position-relative">
-                    <div class="mk-section-header">
-                        <h2 class="mk-section-title-serif">服務項目</h2>
-                        <div class="mk-gold-line"/>
-                    </div>
-
-                    <!-- Service 01 -->
-                    <div class="mk-service-item">
-                        <div class="row align-items-start">
-                            <div class="col-lg-5">
-                                <div class="mk-service-number">01</div>
-                                <div class="mk-service-heading">
-                                    <span>深層按摩放鬆，</span><br/>
-                                    <span>帶給您前所未有的感受</span>
-                                </div>
-                                <p class="mk-service-desc">
-                                    馬克健身使用獨創的深層按摩技術，針對僵硬的深層肌群進行放鬆和伸展。
-                                    致力於從根源上解決您的煩惱，減少復發頻率。
-                                </p>
-                            </div>
-                            <div class="col-lg-7">
-                                <div class="mk-service-photo">
-                                    <div class="mk-photo-placeholder">
-                                        <i class="fa fa-image fa-3x"/>
-                                        <span>深層按摩服務照片</span>
-                                    </div>
-                                </div>
+            <!-- ===== TECHNIQUE (白底介紹區) ===== -->
+            <section class="mk-technique">
+                <div class="container">
+                    <h2 class="mk-big-serif">What is Core Balance Stretch?</h2>
+                    <h3 class="mk-technique-sub">效果可達深層肌群</h3>
+                    <p class="mk-technique-text">
+                        Core Balance Stretch（核心平衡伸展術）是一項由三個階段構成的獨創技術。通過安全的方式放鬆您的全身肌肉，
+                        並且有效深入地伸展身體深層的核心肌群。伸展關節周圍的深層肌群，可以幫助您從源頭上解決許多身體的煩惱，
+                        且 Core Balance Stretch（核心平衡伸展術）具有一定的運動效果。
+                    </p>
+                    <div class="row mt-5">
+                        <div class="col-md-6">
+                            <div class="mk-svc-img">
+                                <div class="mk-placeholder mk-placeholder-light"><i class="fa fa-image"/>按摩技術照片</div>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Service 02 -->
-                    <div class="mk-service-item">
-                        <div class="row align-items-start">
-                            <div class="col-lg-5">
-                                <div class="mk-service-number">02</div>
-                                <div class="mk-service-heading">
-                                    <span>全身放鬆，</span><br/>
-                                    <span>享受專業伸展體驗</span>
-                                </div>
-                                <p class="mk-service-desc">
-                                    在進行伸展的過程中，您所需做的僅僅只是放鬆您的身心。
-                                    而放鬆狀態下的肌肉更容易被伸展。
-                                </p>
-                            </div>
-                            <div class="col-lg-7">
-                                <div class="mk-service-photo">
-                                    <div class="mk-photo-placeholder">
-                                        <i class="fa fa-image fa-3x"/>
-                                        <span>專業伸展服務照片</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Service 03 -->
-                    <div class="mk-service-item">
-                        <div class="row align-items-start">
-                            <div class="col-lg-5">
-                                <div class="mk-service-number">03</div>
-                                <div class="mk-service-heading">
-                                    <span>一對一專業伸展</span>
-                                </div>
-                                <p class="mk-service-desc">
-                                    教練會依據顧客的不適症狀，對身體不同部位的柔軟性進行判斷，
-                                    從而提供最適合您的伸展方案。教練也會根據顧客的身體情況提出相關建議，
-                                    幫助您養成良好伸展習慣，為您身體的健康出謀劃策。
-                                </p>
-                            </div>
-                            <div class="col-lg-7">
-                                <div class="mk-service-photo">
-                                    <div class="mk-photo-placeholder">
-                                        <i class="fa fa-image fa-3x"/>
-                                        <span>一對一伸展服務照片</span>
-                                    </div>
-                                </div>
+                        <div class="col-md-6">
+                            <div class="mk-svc-img">
+                                <div class="mk-placeholder mk-placeholder-light"><i class="fa fa-image"/>肌肉結構示意圖</div>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- ========== EXPERIENCE SECTION (服務流程) ========== -->
+            <!-- ===== EXPERIENCE (4步驟) ===== -->
             <section class="mk-experience">
                 <div class="container">
-                    <h2 class="mk-experience-title">The Experience</h2>
-                    <p class="mk-experience-subtitle">每次服務流程</p>
-
-                    <div class="row mt-5">
-                        <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="mk-step">
-                                <div class="mk-step-number">01</div>
-                                <h4 class="mk-step-title">了解身體狀況</h4>
-                                <div class="mk-step-photo">
-                                    <div class="mk-photo-placeholder mk-photo-placeholder-light">
-                                        <i class="fa fa-clipboard fa-2x"/>
-                                    </div>
-                                </div>
+                    <h2 class="mk-big-serif">The Experience</h2>
+                    <p class="mk-exp-sub">每次伸展服務的時間計算以客人到伸展床為開始，以客人離開伸展床為結束。</p>
+                    <div class="mk-steps">
+                        <div class="mk-step">
+                            <div class="mk-step-num">01</div>
+                            <h4 class="mk-step-title">確認客人身體狀況</h4>
+                            <div class="mk-step-img">
+                                <div class="mk-placeholder mk-placeholder-light"><i class="fa fa-clipboard"/>問診照片</div>
                             </div>
                         </div>
-                        <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="mk-step">
-                                <div class="mk-step-number">02</div>
-                                <h4 class="mk-step-title">評估身體柔軟度</h4>
-                                <div class="mk-step-photo">
-                                    <div class="mk-photo-placeholder mk-photo-placeholder-light">
-                                        <i class="fa fa-heartbeat fa-2x"/>
-                                    </div>
-                                </div>
+                        <div class="mk-step">
+                            <div class="mk-step-num">02</div>
+                            <h4 class="mk-step-title">測量身體柔軟度</h4>
+                            <div class="mk-step-img">
+                                <div class="mk-placeholder mk-placeholder-light"><i class="fa fa-heartbeat"/>測量照片</div>
                             </div>
                         </div>
-                        <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="mk-step">
-                                <div class="mk-step-number">03</div>
-                                <h4 class="mk-step-title">按摩與伸展</h4>
-                                <div class="mk-step-photo">
-                                    <div class="mk-photo-placeholder mk-photo-placeholder-light">
-                                        <i class="fa fa-hand-paper-o fa-2x"/>
-                                    </div>
-                                </div>
+                        <div class="mk-step">
+                            <div class="mk-step-num">03</div>
+                            <h4 class="mk-step-title">伸展</h4>
+                            <div class="mk-step-img">
+                                <div class="mk-placeholder mk-placeholder-light"><i class="fa fa-hand-paper-o"/>伸展照片</div>
                             </div>
                         </div>
-                        <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="mk-step">
-                                <div class="mk-step-number">04</div>
-                                <h4 class="mk-step-title">提供專業建議</h4>
-                                <div class="mk-step-photo">
-                                    <div class="mk-photo-placeholder mk-photo-placeholder-light">
-                                        <i class="fa fa-comments fa-2x"/>
-                                    </div>
-                                </div>
+                        <div class="mk-step">
+                            <div class="mk-step-num">04</div>
+                            <h4 class="mk-step-title">提供專業建議</h4>
+                            <div class="mk-step-img">
+                                <div class="mk-placeholder mk-placeholder-light"><i class="fa fa-comments"/>建議照片</div>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- ========== FAQ SECTION (常見問題) ========== -->
+            <!-- ===== FAQ (常見問題) ===== -->
             <section class="mk-faq">
                 <div class="container">
-                    <div class="mk-section-header">
-                        <h2 class="mk-section-title-serif" style="color:#1a1a1a;">常見問題</h2>
-                        <div class="mk-gold-line"/>
-                    </div>
-
+                    <h2 class="mk-sec-title mk-sec-title-dark">常見問題</h2>
+                    <div class="mk-sec-line"/>
                     <div class="mk-faq-list">
-                        <details class="mk-faq-item">
-                            <summary class="mk-faq-question">
-                                <span>Q1: 需要事先預約嗎？</span>
-                                <i class="fa fa-chevron-down mk-faq-arrow"/>
-                            </summary>
-                            <div class="mk-faq-answer">
-                                <p>建議事先透過線上預約系統預約，以確保您到店時能立即享受服務。若無預約，需視當日現場狀況安排。</p>
-                            </div>
-                        </details>
-                        <details class="mk-faq-item">
-                            <summary class="mk-faq-question">
-                                <span>Q2: 按摩療程大約多久？</span>
-                                <i class="fa fa-chevron-down mk-faq-arrow"/>
-                            </summary>
-                            <div class="mk-faq-answer">
-                                <p>基本療程為 40 分鐘起，也提供 60 分鐘及 80 分鐘的加長療程，可依您的需求選擇。</p>
-                            </div>
-                        </details>
-                        <details class="mk-faq-item">
-                            <summary class="mk-faq-question">
-                                <span>Q3: 第一次來需要準備什麼？</span>
-                                <i class="fa fa-chevron-down mk-faq-arrow"/>
-                            </summary>
-                            <div class="mk-faq-answer">
-                                <p>您不需要準備任何東西。我們會提供舒適的服裝供您更換，請輕鬆前來即可。</p>
-                            </div>
-                        </details>
-                        <details class="mk-faq-item">
-                            <summary class="mk-faq-question">
-                                <span>Q4: 可以取消或更改預約嗎？</span>
-                                <i class="fa fa-chevron-down mk-faq-arrow"/>
-                            </summary>
-                            <div class="mk-faq-answer">
-                                <p>可以，請於預約時間前 24 小時透過系統取消或更改。未提前通知的缺席可能影響後續預約。</p>
-                            </div>
-                        </details>
-                        <details class="mk-faq-item">
-                            <summary class="mk-faq-question">
-                                <span>Q5: 按摩可以放鬆嗎？</span>
-                                <i class="fa fa-chevron-down mk-faq-arrow"/>
-                            </summary>
-                            <div class="mk-faq-answer">
-                                <p>當然可以！我們的專業按摩師會根據您的身體狀況調整力道，讓您在過程中完全放鬆。</p>
-                            </div>
-                        </details>
-                        <details class="mk-faq-item">
-                            <summary class="mk-faq-question">
-                                <span>Q6: 身體很僵硬也可以做伸展嗎？</span>
-                                <i class="fa fa-chevron-down mk-faq-arrow"/>
-                            </summary>
-                            <div class="mk-faq-answer">
-                                <p>身體僵硬的人更需要伸展！我們的教練會根據您的柔軟度來調整伸展強度，循序漸進地改善您的身體狀況。</p>
-                            </div>
-                        </details>
+                        <details class="mk-faq-item"><summary>Q1: 請問伸展課程會是怎麼進行的呢？<i class="fa fa-chevron-down"/></summary><div class="mk-faq-ans"><p>我們的教練會先了解您的身體狀況，接著進行柔軟度測量，然後根據您的需求進行一對一伸展，最後提供專業建議。</p></div></details>
+                        <details class="mk-faq-item"><summary>Q2: 我需要準備任何東西前往嗎？<i class="fa fa-chevron-down"/></summary><div class="mk-faq-ans"><p>您不需要準備任何東西，我們會提供舒適的服裝供您更換，請輕鬆前來即可。</p></div></details>
+                        <details class="mk-faq-item"><summary>Q3: 請問需要事先做預約嗎？<i class="fa fa-chevron-down"/></summary><div class="mk-faq-ans"><p>建議事先透過線上預約系統預約，以確保您到店時能立即享受服務。若無預約，需視當日現場狀況安排。</p></div></details>
+                        <details class="mk-faq-item"><summary>Q4: 我想取消或是變更預約。<i class="fa fa-chevron-down"/></summary><div class="mk-faq-ans"><p>可以，請於預約時間前 24 小時透過系統取消或更改。</p></div></details>
+                        <details class="mk-faq-item"><summary>Q5: 伸展可以放鬆嗎？<i class="fa fa-chevron-down"/></summary><div class="mk-faq-ans"><p>當然可以！我們的專業教練會根據您的身體狀況調整力道，讓您在過程中完全放鬆。</p></div></details>
+                        <details class="mk-faq-item"><summary>Q6: 我的身體很僵硬也可以做伸展嗎？<i class="fa fa-chevron-down"/></summary><div class="mk-faq-ans"><p>身體僵硬的人更需要伸展！我們的教練會根據您的柔軟度來調整伸展強度，循序漸進地改善您的身體狀況。</p></div></details>
                     </div>
                 </div>
             </section>
 
-            <!-- ========== CTA SECTION (立即預約) ========== -->
+            <!-- ===== CONTACT (聯繫我們) ===== -->
+            <section class="mk-contact">
+                <div class="container">
+                    <h2 class="mk-sec-title">聯繫我們</h2>
+                    <div class="mk-sec-line"/>
+                    <div class="mk-contact-body">
+                        <div class="mk-contact-item">
+                            <span class="mk-contact-label">緊急聯絡窗口</span>
+                            <a href="tel:+886-0900-000-000" class="mk-contact-link">0900-000-000</a>
+                        </div>
+                        <div class="mk-contact-item">
+                            <span class="mk-contact-label">來信按鈕</span>
+                            <a href="mailto:info@markstudio.com.tw" class="mk-contact-link">Email Us</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== BOTTOM CTA ===== -->
             <section class="mk-cta">
                 <div class="container text-center">
-                    <h2 class="mk-cta-title">準備好放鬆了嗎？</h2>
-                    <p class="mk-cta-subtitle">立即預約，體驗專業按摩與伸展服務</p>
-                    <a href="/appointment" class="mk-cta-button">立即預約</a>
+                    <a href="/appointment" class="mk-cta-btn">立即預約</a>
                 </div>
             </section>
 
         </t>
     </template>
-
 
 </odoo>

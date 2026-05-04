@@ -20,6 +20,10 @@
     --mk-oswald: 'Oswald', 'Helvetica', sans-serif;
 }
 
+/* Smooth scroll for anchor navigation */
+html { scroll-behavior: smooth; }
+section[id] { scroll-margin-top: 80px; }
+
 /* ============================================================
    HERO — full-viewport, big serif italic title bottom-left
    ============================================================ */
@@ -506,7 +510,111 @@
 }
 
 /* ============================================================
-   NEWS PAGE — social icons (kept)
+   BOOKING CTA — prominent full-width section
+   ============================================================ */
+.mk-booking-cta {
+    position: relative;
+    background: var(--mk-maroon-deep);
+    padding: 100px 0;
+    overflow: hidden;
+}
+
+.mk-booking-sub {
+    font-family: var(--mk-sans);
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.75);
+    margin-bottom: 40px;
+}
+
+.mk-cta-btn-lg {
+    font-size: 22px;
+    padding: 20px 80px;
+    letter-spacing: 4px;
+}
+
+/* ============================================================
+   NEWS / SOCIAL — dark bg, integrated social feeds
+   ============================================================ */
+.mk-news {
+    background: var(--mk-dark);
+    padding: 80px 0;
+}
+
+.mk-news-sub {
+    font-family: var(--mk-sans);
+    font-size: 16px;
+    color: #888;
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+.mk-social-block {
+    margin-bottom: 48px;
+    padding-bottom: 48px;
+    border-bottom: 1px solid #333;
+}
+
+.mk-social-block:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.mk-social-heading {
+    font-family: var(--mk-sans);
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--mk-white);
+}
+
+.mk-social-placeholder {
+    background: #2a2a2a;
+    border-radius: 12px;
+    border: 2px dashed #444;
+    min-height: 200px;
+    color: #888;
+}
+
+.mk-social-link {
+    display: inline-block;
+    color: var(--mk-gold);
+    font-family: var(--mk-sans);
+    font-size: 14px;
+    text-decoration: none;
+    border: 1px solid var(--mk-gold);
+    padding: 8px 20px;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.mk-social-link:hover {
+    background: var(--mk-gold);
+    color: var(--mk-black);
+    text-decoration: none;
+}
+
+/* ============================================================
+   NAVBAR — gold CTA button for last menu item (立即預約)
+   ============================================================ */
+#top_menu > li:last-child > a {
+    background: var(--mk-gold);
+    color: var(--mk-black) !important;
+    font-weight: 700;
+    padding: 8px 24px !important;
+    border-radius: 4px;
+    margin-left: 16px;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+}
+
+#top_menu > li:last-child > a:hover {
+    background: #d4a63a;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(197, 150, 42, 0.3);
+}
+
+/* ============================================================
+   Social icons
    ============================================================ */
 .markstudio-social-icon {
     display: inline-flex;

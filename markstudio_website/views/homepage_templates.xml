@@ -10,16 +10,16 @@
                 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,700;0,800;1,400;1,700;1,800&amp;family=Noto+Sans+TC:wght@300;400;500;700;900&amp;family=Lato:wght@300;400;700;900&amp;family=Oswald:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
             </t>
 
-            <!-- ===== HERO ===== -->
-            <section class="mk-hero">
+            <!-- ===== 1. HERO ===== -->
+            <section id="hero" class="mk-hero">
                 <div class="mk-hero-bg"/>
                 <div class="mk-hero-content">
                     <h1 class="mk-hero-title">STRETCH YOUR BODY</h1>
                 </div>
             </section>
 
-            <!-- ===== STATS (3 circles) ===== -->
-            <section class="mk-stats">
+            <!-- ===== 2. STATS ===== -->
+            <section id="stats" class="mk-stats">
                 <div class="mk-stats-dots"/>
                 <div class="mk-stats-circles">
                     <div class="mk-stat-circle">
@@ -41,16 +41,14 @@
                 </div>
             </section>
 
-            <!-- ===== SERVICES (服務) ===== -->
-            <section class="mk-services">
+            <!-- ===== 3. SERVICES (服務介紹) ===== -->
+            <section id="services" class="mk-services">
                 <div class="mk-stats-dots"/>
                 <div class="container position-relative">
                     <h2 class="mk-sec-title">服務</h2>
                     <div class="mk-sec-line"/>
-
                     <div class="mk-why-title">Why Mark Studio?</div>
 
-                    <!-- 01 -->
                     <div class="mk-svc">
                         <div class="mk-svc-left">
                             <div class="mk-svc-num">01</div>
@@ -58,86 +56,56 @@
                                 <span class="mk-svc-hl">運用獨創技術，</span><br/>
                                 <span class="mk-svc-hl">帶給您前所未有的感受</span>
                             </div>
-                            <p class="mk-svc-text">
-                                馬克健身使用獨創的核心平衡伸展術，針對僵硬的深層肌群進行放鬆和伸展。
-                                致力於從根源上解決您的煩惱，減少復發頻率。
-                            </p>
+                            <p class="mk-svc-text">馬克健身使用獨創的核心平衡伸展術，針對僵硬的深層肌群進行放鬆和伸展。致力於從根源上解決您的煩惱，減少復發頻率。</p>
                         </div>
                         <div class="mk-svc-right">
-                            <div class="mk-svc-img">
-                                <img src="/markstudio_website/static/src/img/svc-01-massage.jpg" alt="深層按摩服務" loading="lazy"/>
-                            </div>
+                            <div class="mk-svc-img"><img src="/markstudio_website/static/src/img/svc-01-massage.jpg" alt="深層按摩服務" loading="lazy"/></div>
                         </div>
                     </div>
 
-                    <!-- 02 -->
                     <div class="mk-svc">
                         <div class="mk-svc-left">
                             <div class="mk-svc-num">02</div>
-                            <div class="mk-svc-heading">
-                                <span class="mk-svc-hl">全身放鬆，享受伸展</span>
-                            </div>
-                            <p class="mk-svc-text">
-                                在進行伸展的過程中，您所需做的僅僅只是放鬆您的身心。
-                                而放鬆狀態下的肌肉更容易被伸展。
-                            </p>
+                            <div class="mk-svc-heading"><span class="mk-svc-hl">全身放鬆，享受伸展</span></div>
+                            <p class="mk-svc-text">在進行伸展的過程中，您所需做的僅僅只是放鬆您的身心。而放鬆狀態下的肌肉更容易被伸展。</p>
                         </div>
                         <div class="mk-svc-right">
-                            <div class="mk-svc-img">
-                                <img src="/markstudio_website/static/src/img/svc-02-stretch.jpg" alt="專業伸展服務" loading="lazy"/>
-                            </div>
+                            <div class="mk-svc-img"><img src="/markstudio_website/static/src/img/svc-02-stretch.jpg" alt="專業伸展服務" loading="lazy"/></div>
                         </div>
                     </div>
 
-                    <!-- 03 -->
                     <div class="mk-svc">
                         <div class="mk-svc-left">
                             <div class="mk-svc-num">03</div>
-                            <div class="mk-svc-heading">
-                                <span class="mk-svc-hl">一對一專業伸展</span>
-                            </div>
-                            <p class="mk-svc-text">
-                                教練會依據顧客的不適症狀，對身體不同部位的柔軟性進行判斷，
-                                從而提供最適合您的伸展方案。教練也會根據顧客的身體情況提出相關建議，
-                                幫助您養成良好伸展習慣，為您身體的健康出謀劃策。
-                            </p>
+                            <div class="mk-svc-heading"><span class="mk-svc-hl">一對一專業伸展</span></div>
+                            <p class="mk-svc-text">教練會依據顧客的不適症狀，對身體不同部位的柔軟性進行判斷，從而提供最適合您的伸展方案。教練也會根據顧客的身體情況提出相關建議，幫助您養成良好伸展習慣，為您身體的健康出謀劃策。</p>
                         </div>
                         <div class="mk-svc-right">
-                            <div class="mk-svc-img">
-                                <img src="/markstudio_website/static/src/img/svc-03-personal.jpg" alt="一對一專業伸展" loading="lazy"/>
-                            </div>
+                            <div class="mk-svc-img"><img src="/markstudio_website/static/src/img/svc-03-personal.jpg" alt="一對一專業伸展" loading="lazy"/></div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- ===== TECHNIQUE (白底介紹區) ===== -->
-            <section class="mk-technique">
+            <!-- ===== 4. TECHNIQUE ===== -->
+            <section id="technique" class="mk-technique">
                 <div class="container">
                     <h2 class="mk-big-serif">What is Core Balance Stretch?</h2>
                     <h3 class="mk-technique-sub">效果可達深層肌群</h3>
-                    <p class="mk-technique-text">
-                        Core Balance Stretch（核心平衡伸展術）是一項由三個階段構成的獨創技術。通過安全的方式放鬆您的全身肌肉，
-                        並且有效深入地伸展身體深層的核心肌群。伸展關節周圍的深層肌群，可以幫助您從源頭上解決許多身體的煩惱，
-                        且 Core Balance Stretch（核心平衡伸展術）具有一定的運動效果。
-                    </p>
+                    <p class="mk-technique-text">Core Balance Stretch（核心平衡伸展術）是一項由三個階段構成的獨創技術。通過安全的方式放鬆您的全身肌肉，並且有效深入地伸展身體深層的核心肌群。伸展關節周圍的深層肌群，可以幫助您從源頭上解決許多身體的煩惱，且 Core Balance Stretch（核心平衡伸展術）具有一定的運動效果。</p>
                     <div class="row mt-5">
                         <div class="col-md-6">
-                            <div class="mk-svc-img">
-                                <img src="/markstudio_website/static/src/img/tech-left.jpg" alt="按摩技術" loading="lazy"/>
-                            </div>
+                            <div class="mk-svc-img"><img src="/markstudio_website/static/src/img/tech-left.jpg" alt="按摩技術" loading="lazy"/></div>
                         </div>
                         <div class="col-md-6">
-                            <div class="mk-svc-img">
-                                <img src="/markstudio_website/static/src/img/tech-right.jpg" alt="核心肌群伸展" loading="lazy"/>
-                            </div>
+                            <div class="mk-svc-img"><img src="/markstudio_website/static/src/img/tech-right.jpg" alt="核心肌群伸展" loading="lazy"/></div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- ===== EXPERIENCE (4步驟) ===== -->
-            <section class="mk-experience">
+            <!-- ===== 5. EXPERIENCE ===== -->
+            <section id="experience" class="mk-experience">
                 <div class="container">
                     <h2 class="mk-big-serif">The Experience</h2>
                     <p class="mk-exp-sub">每次伸展服務的時間計算以客人到伸展床為開始，以客人離開伸展床為結束。</p>
@@ -145,37 +113,102 @@
                         <div class="mk-step">
                             <div class="mk-step-num">01</div>
                             <h4 class="mk-step-title">確認客人身體狀況</h4>
-                            <div class="mk-step-img">
-                                <img src="/markstudio_website/static/src/img/exp-01-consult.jpg" alt="確認身體狀況" loading="lazy"/>
-                            </div>
+                            <div class="mk-step-img"><img src="/markstudio_website/static/src/img/exp-01-consult.jpg" alt="確認身體狀況" loading="lazy"/></div>
                         </div>
                         <div class="mk-step">
                             <div class="mk-step-num">02</div>
                             <h4 class="mk-step-title">測量身體柔軟度</h4>
-                            <div class="mk-step-img">
-                                <img src="/markstudio_website/static/src/img/exp-02-measure.jpg" alt="測量身體柔軟度" loading="lazy"/>
-                            </div>
+                            <div class="mk-step-img"><img src="/markstudio_website/static/src/img/exp-02-measure.jpg" alt="測量身體柔軟度" loading="lazy"/></div>
                         </div>
                         <div class="mk-step">
                             <div class="mk-step-num">03</div>
                             <h4 class="mk-step-title">伸展</h4>
-                            <div class="mk-step-img">
-                                <img src="/markstudio_website/static/src/img/exp-03-stretch.jpg" alt="伸展" loading="lazy"/>
-                            </div>
+                            <div class="mk-step-img"><img src="/markstudio_website/static/src/img/exp-03-stretch.jpg" alt="伸展" loading="lazy"/></div>
                         </div>
                         <div class="mk-step">
                             <div class="mk-step-num">04</div>
                             <h4 class="mk-step-title">提供專業建議</h4>
-                            <div class="mk-step-img">
-                                <img src="/markstudio_website/static/src/img/exp-04-advice.jpg" alt="提供專業建議" loading="lazy"/>
-                            </div>
+                            <div class="mk-step-img"><img src="/markstudio_website/static/src/img/exp-04-advice.jpg" alt="提供專業建議" loading="lazy"/></div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- ===== FAQ (常見問題) ===== -->
-            <section class="mk-faq">
+            <!-- ===== 6. BOOKING CTA (預約) ===== -->
+            <section id="booking" class="mk-booking-cta">
+                <div class="mk-stats-dots"/>
+                <div class="container text-center position-relative">
+                    <h2 class="mk-big-serif" style="color: var(--mk-white);">Ready to Feel Better?</h2>
+                    <p class="mk-booking-sub">預約您的第一次伸展體驗，感受身體的改變</p>
+                    <a href="/appointment" class="mk-cta-btn mk-cta-btn-lg">立即預約</a>
+                </div>
+            </section>
+
+            <!-- ===== 7. NEWS / SOCIAL (最新消息) ===== -->
+            <section id="news" class="mk-news">
+                <div class="container">
+                    <h2 class="mk-sec-title">最新消息</h2>
+                    <div class="mk-sec-line"/>
+                    <p class="mk-news-sub">關注我們的社群媒體，掌握最新動態與優惠資訊</p>
+
+                    <div class="mk-social-block">
+                        <div class="d-flex align-items-center mb-4">
+                            <span class="markstudio-social-icon markstudio-ig me-3"><i class="fa fa-instagram fa-2x"/></span>
+                            <h3 class="mk-social-heading mb-0">Instagram</h3>
+                        </div>
+                        <div class="mk-social-placeholder text-center p-5">
+                            <i class="fa fa-instagram fa-4x mb-3" style="color: #E1306C;"/>
+                            <p class="mb-2">Instagram 動態將顯示於此</p>
+                            <a href="#" class="mk-social-link" target="_blank" rel="noopener noreferrer"><i class="fa fa-external-link me-1"/> 前往 Instagram</a>
+                        </div>
+                    </div>
+
+                    <div class="mk-social-block">
+                        <div class="d-flex align-items-center mb-4">
+                            <span class="markstudio-social-icon markstudio-fb me-3"><i class="fa fa-facebook fa-2x"/></span>
+                            <h3 class="mk-social-heading mb-0">Facebook</h3>
+                        </div>
+                        <div class="mk-social-placeholder text-center p-5">
+                            <i class="fa fa-facebook-square fa-4x mb-3" style="color: #1877F2;"/>
+                            <p class="mb-2">Facebook 粉絲專頁動態將顯示於此</p>
+                            <a href="#" class="mk-social-link" target="_blank" rel="noopener noreferrer"><i class="fa fa-external-link me-1"/> 前往 Facebook</a>
+                        </div>
+                    </div>
+
+                    <div class="mk-social-block">
+                        <div class="d-flex align-items-center mb-4">
+                            <span class="markstudio-social-icon markstudio-yt me-3"><i class="fa fa-youtube-play fa-2x"/></span>
+                            <h3 class="mk-social-heading mb-0">YouTube</h3>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="markstudio-video-card">
+                                    <div class="ratio ratio-16x9"><div class="mk-social-placeholder d-flex align-items-center justify-content-center"><i class="fa fa-youtube-play fa-3x" style="color: #FF0000;"/></div></div>
+                                    <p class="mt-2 small" style="color: #888;">影片標題 1</p>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="markstudio-video-card">
+                                    <div class="ratio ratio-16x9"><div class="mk-social-placeholder d-flex align-items-center justify-content-center"><i class="fa fa-youtube-play fa-3x" style="color: #FF0000;"/></div></div>
+                                    <p class="mt-2 small" style="color: #888;">影片標題 2</p>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="markstudio-video-card">
+                                    <div class="ratio ratio-16x9"><div class="mk-social-placeholder d-flex align-items-center justify-content-center"><i class="fa fa-youtube-play fa-3x" style="color: #FF0000;"/></div></div>
+                                    <p class="mt-2 small" style="color: #888;">影片標題 3</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <a href="#" class="mk-social-link" target="_blank" rel="noopener noreferrer"><i class="fa fa-youtube-play me-1"/> 前往 YouTube 頻道</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== 8. FAQ ===== -->
+            <section id="faq" class="mk-faq">
                 <div class="container">
                     <h2 class="mk-sec-title mk-sec-title-dark">常見問題</h2>
                     <div class="mk-sec-line"/>
@@ -190,8 +223,8 @@
                 </div>
             </section>
 
-            <!-- ===== CONTACT (聯繫我們) ===== -->
-            <section class="mk-contact">
+            <!-- ===== 9. CONTACT ===== -->
+            <section id="contact" class="mk-contact">
                 <div class="container">
                     <h2 class="mk-sec-title">聯繫我們</h2>
                     <div class="mk-sec-line"/>
@@ -205,13 +238,6 @@
                             <a href="mailto:info@markstudio.com.tw" class="mk-contact-link">Email Us</a>
                         </div>
                     </div>
-                </div>
-            </section>
-
-            <!-- ===== BOTTOM CTA ===== -->
-            <section class="mk-cta">
-                <div class="container text-center">
-                    <a href="/appointment" class="mk-cta-btn">立即預約</a>
                 </div>
             </section>
 

@@ -65,7 +65,7 @@
                         </div>
                         <div class="mk-svc-right">
                             <div class="mk-svc-img">
-                                <div class="mk-placeholder"><i class="fa fa-image"/>深層按摩服務照片</div>
+                                <img src="/markstudio_website/static/src/img/svc-01-massage.jpg" alt="深層按摩服務" loading="lazy"/>
                             </div>
                         </div>
                     </div>
@@ -84,7 +84,7 @@
                         </div>
                         <div class="mk-svc-right">
                             <div class="mk-svc-img">
-                                <div class="mk-placeholder"><i class="fa fa-image"/>伸展服務照片</div>
+                                <img src="/markstudio_website/static/src/img/svc-02-stretch.jpg" alt="專業伸展服務" loading="lazy"/>
                             </div>
                         </div>
                     </div>
@@ -104,7 +104,7 @@
                         </div>
                         <div class="mk-svc-right">
                             <div class="mk-svc-img">
-                                <div class="mk-placeholder"><i class="fa fa-image"/>一對一伸展照片</div>
+                                <img src="/markstudio_website/static/src/img/svc-03-personal.jpg" alt="一對一專業伸展" loading="lazy"/>
                             </div>
                         </div>
                     </div>
@@ -124,12 +124,12 @@
                     <div class="row mt-5">
                         <div class="col-md-6">
                             <div class="mk-svc-img">
-                                <div class="mk-placeholder mk-placeholder-light"><i class="fa fa-image"/>按摩技術照片</div>
+                                <img src="/markstudio_website/static/src/img/tech-left.jpg" alt="按摩技術" loading="lazy"/>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mk-svc-img">
-                                <div class="mk-placeholder mk-placeholder-light"><i class="fa fa-image"/>肌肉結構示意圖</div>
+                                <img src="/markstudio_website/static/src/img/tech-right.jpg" alt="核心肌群伸展" loading="lazy"/>
                             </div>
                         </div>
                     </div>
@@ -146,28 +146,28 @@
                             <div class="mk-step-num">01</div>
                             <h4 class="mk-step-title">確認客人身體狀況</h4>
                             <div class="mk-step-img">
-                                <div class="mk-placeholder mk-placeholder-light"><i class="fa fa-clipboard"/>問診照片</div>
+                                <img src="/markstudio_website/static/src/img/exp-01-consult.jpg" alt="確認身體狀況" loading="lazy"/>
                             </div>
                         </div>
                         <div class="mk-step">
                             <div class="mk-step-num">02</div>
                             <h4 class="mk-step-title">測量身體柔軟度</h4>
                             <div class="mk-step-img">
-                                <div class="mk-placeholder mk-placeholder-light"><i class="fa fa-heartbeat"/>測量照片</div>
+                                <img src="/markstudio_website/static/src/img/exp-02-measure.jpg" alt="測量身體柔軟度" loading="lazy"/>
                             </div>
                         </div>
                         <div class="mk-step">
                             <div class="mk-step-num">03</div>
                             <h4 class="mk-step-title">伸展</h4>
                             <div class="mk-step-img">
-                                <div class="mk-placeholder mk-placeholder-light"><i class="fa fa-hand-paper-o"/>伸展照片</div>
+                                <img src="/markstudio_website/static/src/img/exp-03-stretch.jpg" alt="伸展" loading="lazy"/>
                             </div>
                         </div>
                         <div class="mk-step">
                             <div class="mk-step-num">04</div>
                             <h4 class="mk-step-title">提供專業建議</h4>
                             <div class="mk-step-img">
-                                <div class="mk-placeholder mk-placeholder-light"><i class="fa fa-comments"/>建議照片</div>
+                                <img src="/markstudio_website/static/src/img/exp-04-advice.jpg" alt="提供專業建議" loading="lazy"/>
                             </div>
                         </div>
                     </div>

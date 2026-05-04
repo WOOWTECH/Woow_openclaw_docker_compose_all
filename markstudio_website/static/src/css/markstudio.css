@@ -35,8 +35,8 @@
 .mk-hero-bg {
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, #222 0%, #111 100%);
-    opacity: 0.9;
+    background: url('/markstudio_website/static/src/img/hero-bg.jpg') center center / cover no-repeat;
+    filter: brightness(0.6);
 }
 
 .mk-hero-content {
@@ -257,6 +257,25 @@
 .mk-placeholder-light {
     background: #ddd;
     color: #999;
+}
+
+/* Real images replacing placeholders */
+.mk-svc-img img,
+.mk-step-img img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+}
+
+.mk-svc-img img {
+    min-height: 320px;
+    max-height: 400px;
+}
+
+.mk-step-img img {
+    min-height: 200px;
+    max-height: 260px;
 }
 
 /* ============================================================

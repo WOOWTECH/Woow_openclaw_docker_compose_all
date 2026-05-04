@@ -10,7 +10,7 @@
     --mk-maroon: rgb(65, 14, 19);
     --mk-maroon-deep: rgb(45, 8, 12);
     --mk-gold: #C5962A;
-    --mk-teal: #5ECFCF;
+    --mk-teal: #D4A574;
     --mk-dark: #1a1a1a;
     --mk-black: #000;
     --mk-white: #fff;
@@ -248,6 +248,7 @@
     color: #666;
     font-size: 14px;
     font-family: var(--mk-sans);
+    border-radius: 12px;
 }
 
 .mk-placeholder i {
@@ -266,6 +267,7 @@
     height: auto;
     display: block;
     object-fit: cover;
+    border-radius: 12px;
 }
 
 .mk-svc-img img {

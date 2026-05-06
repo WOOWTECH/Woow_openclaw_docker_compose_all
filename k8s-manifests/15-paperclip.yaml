@@ -67,9 +67,9 @@ type: Opaque
 stringData:
   # REQUIRED: Random secret for BetterAuth session encryption
   # Generate: openssl rand -hex 32
-  BETTER_AUTH_SECRET: "d14fb0a99b83f896c1ba65e8025da27fe704290d013ea6996e202e83a237b315"
+  BETTER_AUTH_SECRET: "GENERATE_WITH_openssl_rand_hex_32"
   # Agent JWT secret (for agent runtime auth)
-  PAPERCLIP_AGENT_JWT_SECRET: "5abd10d88ed22d58c1d351d3280738c7c8d68fb35396e466f92716c7956a4766"
+  PAPERCLIP_AGENT_JWT_SECRET: "GENERATE_WITH_openssl_rand_hex_32"
   # PostgreSQL password
   PAPERCLIP_DB_PASSWORD: "REDACTED_DB_PASSWORD"
 ---

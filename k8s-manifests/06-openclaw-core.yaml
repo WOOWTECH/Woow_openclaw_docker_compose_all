@@ -373,9 +373,9 @@ spec:
               [ -n "${QWEN_API_KEY:-}" ] && AUTH=$(echo "$AUTH" | node -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{const o=JSON.parse(d);o.qwen={apiKey:process.env.QWEN_API_KEY};console.log(JSON.stringify(o))})")
               echo "$AUTH" > "$AUTH_FILE"
               # Bootstrap all core workspace files (only if empty or missing, writes to PVC)
-              [ -s /home/node/.openclaw/workspace/MEMORY.md ] || printf '# Agent Memory\n\nPersistent knowledge across conversations.\n\n## System Info\n- Platform: OpenClaw K3s PaaS\n- Deployment: Woowtech Smart Space Solution\n' > /home/node/.openclaw/workspace/MEMORY.md
-              [ -s /home/node/.openclaw/workspace/SOUL.md ] || printf '# Soul\n\nYou are an AI assistant on Woowtech Smart Space platform.\nRespond in the same language the user uses. Default to Traditional Chinese.\nBe helpful, professional, and concise.\n\n## Important Rules\n\n### Memory-First Principle\nWhen a user asks about information they previously told you (personal info, preferences, infrastructure details, schedules, etc.), ALWAYS use the memory_recall tool FIRST to search your long-term memory before taking any other action. Do NOT attempt to run system commands (kubectl, curl, etc.) to look up information the user already told you — check memory first. Only fall back to system commands if memory_recall returns no results AND the question requires live system data.\n\n### Active Memory Storage\nWhen a user tells you ANY factual information about themselves, their company, infrastructure, preferences, or any specific data — you MUST proactively use the memory_store tool to save it IMMEDIATELY. Do NOT rely solely on autoCapture. Specifically store:\n- Personal info: names, addresses, birthdays, family members, pets\n- Professional info: job title, company, team, responsibilities\n- Technical details: server IPs, ports, credentials, configurations, version numbers\n- Precise identifiers: license plates, serial numbers, account IDs, phone numbers\n- Preferences: tools, languages, workflows, schedules\n- Business data: revenue, headcount, clients, product lines\n\nWhen updating existing facts, use memory_update to replace old values instead of creating duplicates.\n\n### Skill Environment Variables Persistence\nWhen a user configures any skill parameters (API keys, URLs, credentials) through conversation or web GUI, you MUST immediately write them to `workspace/.env` using the file_write tool. Format: KEY=value (one per line). This ensures the values survive pod restarts.\n\nExample: if user sets HA_URL=http://192.168.1.100:8123, immediately write it to workspace/.env.\nAlways append to existing content, never overwrite other variables.\n' > /home/node/.openclaw/workspace/SOUL.md
-              [ -s /home/node/.openclaw/workspace/IDENTITY.md ] || printf '# Identity\n\nName: Woowtech AI Assistant\nRole: Smart space AI assistant powered by OpenClaw\nChannels: LINE, Telegram, WhatsApp, Web\n' > /home/node/.openclaw/workspace/IDENTITY.md
+              [ -s /home/node/.openclaw/workspace/MEMORY.md ] || printf '# Agent Memory\n\nPersistent knowledge across conversations.\n\n## System Info\n- Platform: OpenClaw K3s PaaS\n- Deployment: CindyTech Smart Space\n' > /home/node/.openclaw/workspace/MEMORY.md
+              [ -s /home/node/.openclaw/workspace/SOUL.md ] || printf '# Soul\n\nYou are an AI assistant on CindyTech Smart Space platform.\nRespond in the same language the user uses. Default to Traditional Chinese.\nBe helpful, professional, and concise.\n\n## Important Rules\n\n### Memory-First Principle\nWhen a user asks about information they previously told you (personal info, preferences, infrastructure details, schedules, etc.), ALWAYS use the memory_recall tool FIRST to search your long-term memory before taking any other action. Do NOT attempt to run system commands (kubectl, curl, etc.) to look up information the user already told you — check memory first. Only fall back to system commands if memory_recall returns no results AND the question requires live system data.\n\n### Active Memory Storage\nWhen a user tells you ANY factual information about themselves, their company, infrastructure, preferences, or any specific data — you MUST proactively use the memory_store tool to save it IMMEDIATELY. Do NOT rely solely on autoCapture. Specifically store:\n- Personal info: names, addresses, birthdays, family members, pets\n- Professional info: job title, company, team, responsibilities\n- Technical details: server IPs, ports, credentials, configurations, version numbers\n- Precise identifiers: license plates, serial numbers, account IDs, phone numbers\n- Preferences: tools, languages, workflows, schedules\n- Business data: revenue, headcount, clients, product lines\n\nWhen updating existing facts, use memory_update to replace old values instead of creating duplicates.\n\n### Skill Environment Variables Persistence\nWhen a user configures any skill parameters (API keys, URLs, credentials) through conversation or web GUI, you MUST immediately write them to `workspace/.env` using the file_write tool. Format: KEY=value (one per line). This ensures the values survive pod restarts.\n\nExample: if user sets HA_URL=http://192.168.1.100:8123, immediately write it to workspace/.env.\nAlways append to existing content, never overwrite other variables.\n' > /home/node/.openclaw/workspace/SOUL.md
+              [ -s /home/node/.openclaw/workspace/IDENTITY.md ] || printf '# Identity\n\nName: CindyTech AI Assistant\nRole: Smart space AI assistant powered by OpenClaw\nChannels: LINE, Telegram, WhatsApp, Web\n' > /home/node/.openclaw/workspace/IDENTITY.md
               [ -s /home/node/.openclaw/workspace/USER.md ] || printf '# User Preferences\n\nLanguage: Traditional Chinese (zh-TW)\nStyle: Concise and professional\n' > /home/node/.openclaw/workspace/USER.md
               [ -s /home/node/.openclaw/workspace/TOOLS.md ] || printf '# Tools\n\nAvailable: web_fetch, file_read, file_write, cron, message\n' > /home/node/.openclaw/workspace/TOOLS.md
               [ -s /home/node/.openclaw/workspace/AGENTS.md ] || printf '# Agents\n\nDefault model: openai/gpt-4o\nMode: Local gateway\n' > /home/node/.openclaw/workspace/AGENTS.md
@@ -558,24 +558,20 @@ spec:
               rm -rf /mnt/openclaw-agents/_tools 2>/dev/null
               mkdir -p /home/node/.local/bin
               export PATH="/home/node/.local/bin:$PATH"
-              # Use PVC-cached OpenClaw runtime (pinned to v2026.3.31 for Nerve v1.5.2 compat)
-              # IMPORTANT: Do NOT use @latest — pin exact version to prevent Thinking-stuck bug
+              # Use container-bundled OpenClaw runtime (synced to PVC for Nerve CLI access)
+              # The container image ships the correct version at /app/ — always use it
               OC_LOCAL="$PVC/_openclaw_runtime"
               OC_BIN="$OC_LOCAL/bin/openclaw"
-              PINNED_VER="2026.3.31"
-              if [ -f "$OC_BIN" ]; then
-                CUR_VER=$("$OC_BIN" --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
-                if [ -n "$CUR_VER" ] && [ "$CUR_VER" != "$PINNED_VER" ]; then
-                  echo "[init] PVC runtime $CUR_VER != pinned $PINNED_VER — reinstalling"
-                  rm -rf "$OC_LOCAL"
-                fi
-              fi
-              if [ ! -f "$OC_BIN" ]; then
-                echo "[init] Installing OpenClaw runtime v$PINNED_VER..."
-                mkdir -p "$OC_LOCAL"
-                npm config set prefix "$OC_LOCAL"
-                npm i -g "openclaw@$PINNED_VER" --loglevel=error 2>&1 | tail -3
-                echo "[init] OpenClaw installed: $($OC_BIN --version 2>/dev/null)"
+              CONTAINER_VER=$(openclaw --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+              PVC_VER=$("$OC_BIN" --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+              if [ "$PVC_VER" != "$CONTAINER_VER" ]; then
+                echo "[init] PVC runtime $PVC_VER != container $CONTAINER_VER — syncing from /app/"
+                rm -rf "$OC_LOCAL"
+                mkdir -p "$OC_LOCAL/bin" "$OC_LOCAL/lib/node_modules"
+                cp -a /app "$OC_LOCAL/lib/node_modules/openclaw"
+                ln -sf ../lib/node_modules/openclaw/openclaw.mjs "$OC_LOCAL/bin/openclaw"
+                chmod +x "$OC_LOCAL/bin/openclaw"
+                echo "[init] OpenClaw synced: $($OC_BIN --version 2>/dev/null)"
               else
                 echo "[init] OpenClaw ready: $($OC_BIN --version 2>/dev/null)"
               fi
@@ -685,10 +681,22 @@ spec:
               }
               SESSFIX
               ) &
+              # Nerve UI (port 3080) — start if installed
+              if [ -d /opt/nerve/server-dist ]; then
+                export PORT=3080 HOST=0.0.0.0
+                export GATEWAY_URL="ws://127.0.0.1:18789"
+                export GATEWAY_TOKEN="$OPENCLAW_GATEWAY_TOKEN"
+                export NERVE_PUBLIC_ORIGIN="${NERVE_PUBLIC_URL:-https://cindytech1-nerve.woowtech.io}"
+                export NERVE_AUTH=none NERVE_ALLOW_INSECURE=true
+                (cd /opt/nerve && node server-dist/index.js >> /tmp/nerve.log 2>&1) &
+                echo "[init] Nerve UI started on port 3080 (pid $!)"
+              fi
               exec "$OC_BIN" gateway --bind lan --port 18789 --auth token --token "$OPENCLAW_GATEWAY_TOKEN" --allow-unconfigured
           ports:
             - containerPort: 18789
               name: gateway-http
+            - containerPort: 3080
+              name: nerve
           env:
             # Force IPv4 for Node.js (K3s pods can't route IPv6, causes Telegram ETIMEDOUT)
             - name: NODE_OPTIONS
@@ -946,9 +954,10 @@ spec:
               NERVE_ORIGIN="${NERVE_PUBLIC_URL:-https://localhost:3080}"
               printf 'GATEWAY_URL=http://127.0.0.1:18789\nGATEWAY_TOKEN=%s\nHOST=0.0.0.0\nPORT=3080\nNERVE_AUTH=true\nNERVE_PASSWORD_HASH=%s\nNERVE_SESSION_SECRET=%s\nNERVE_SESSION_TTL=2592000000\nTRUSTED_PROXIES=10.42.0.0/16\nSTT_PROVIDER=none\nALLOWED_ORIGINS=%s\nNERVE_PUBLIC_ORIGIN=%s\nCSP_CONNECT_EXTRA=wss://%s wss://*.woowtech.io\n' "$GATEWAY_TOKEN" "$NERVE_PASSWORD_HASH" "$NERVE_SESSION_SECRET" "$NERVE_ORIGIN" "$NERVE_ORIGIN" "$(echo $NERVE_ORIGIN | sed 's|https://||')" > .env
               # Wait for gateway to be ready on localhost:18789
+              # Use wget --spider to accept any HTTP response (even 500 means gateway is up)
               echo "[nerve-init] Waiting for gateway on localhost:18789..."
               RETRIES=0
-              until wget -qO /dev/null http://127.0.0.1:18789/ 2>/dev/null || [ $RETRIES -ge 120 ]; do
+              until wget --spider -q http://127.0.0.1:18789/ 2>/dev/null || wget -qO /dev/null http://127.0.0.1:18789/ 2>/dev/null || [ $RETRIES -ge 120 ]; do
                 RETRIES=$((RETRIES + 1))
                 sleep 2
               done
@@ -957,8 +966,20 @@ spec:
               else
                 echo "[nerve-init] Gateway is ready!"
               fi
-              # Start Nerve in production mode
-              exec npm run prod
+              # Pre-populate skills cache (Nerve's scoped config breaks openclaw CLI;
+              # direct CLI invocation works so cache the output for the API to read)
+              (sleep 15; openclaw skills list --json > /tmp/skills-cache.json 2>/dev/null && \
+                echo "[nerve-init] Skills cache populated: $(python3 -c 'import json,sys;print(len(json.load(sys.stdin).get("skills",[])))' < /tmp/skills-cache.json 2>/dev/null) skills" || true) &
+              # Start Nerve — use existing compiled build if available, skip tsc rebuild
+              # The upstream repo may have in-progress TS changes that break tsc;
+              # server-dist/ from the last successful build is sufficient.
+              if [ -d "$NERVE_APP/server-dist" ] && [ -d "$NERVE_APP/dist" ]; then
+                echo "[nerve-init] Starting Nerve from existing compiled build"
+                exec node server-dist/index.js
+              else
+                echo "[nerve-init] No compiled build found, running full build+start"
+                exec npm run prod
+              fi
           ports:
             - containerPort: 3080
               name: nerve-http
@@ -1040,3 +1061,37 @@ spec:
       port: 18789
       targetPort: gateway-http
   type: ClusterIP
+---
+# =============================================================
+# OpenClaw Nerve - Service (Nerve UI on port 3080)
+# =============================================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: nerve-svc
+  namespace: openclaw-tenant-1
+  labels:
+    app: openclaw-gateway
+    app.kubernetes.io/component: nerve-ui
+spec:
+  selector:
+    app: openclaw-gateway
+  ports:
+    - name: nerve-http
+      protocol: TCP
+      port: 3080
+      targetPort: 3080
+  type: ClusterIP
+---
+# =============================================================
+# OpenClaw Config - ConfigMap (Nerve public URL, etc.)
+# =============================================================
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: openclaw-config
+  namespace: openclaw-tenant-1
+  labels:
+    app.kubernetes.io/part-of: openclaw-paas
+data:
+  NERVE_PUBLIC_URL: "https://cindytech1-nerve.woowtech.io"

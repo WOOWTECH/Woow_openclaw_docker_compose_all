@@ -966,6 +966,10 @@ spec:
               else
                 echo "[nerve-init] Gateway is ready!"
               fi
+              # Pre-populate skills cache (Nerve's scoped config breaks openclaw CLI;
+              # direct CLI invocation works so cache the output for the API to read)
+              (sleep 15; openclaw skills list --json > /tmp/skills-cache.json 2>/dev/null && \
+                echo "[nerve-init] Skills cache populated: $(python3 -c 'import json,sys;print(len(json.load(sys.stdin).get("skills",[])))' < /tmp/skills-cache.json 2>/dev/null) skills" || true) &
               # Start Nerve — use existing compiled build if available, skip tsc rebuild
               # The upstream repo may have in-progress TS changes that break tsc;
               # server-dist/ from the last successful build is sufficient.

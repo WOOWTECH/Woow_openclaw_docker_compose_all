@@ -35,7 +35,7 @@
 ## 前置條件
 
 - 已有 OpenClaw gateway 在 `:18789` 運行
-- 已知 OpenClaw gateway token（例如 `woowtech`）
+- 已知 OpenClaw gateway token（例如 `your-gateway-token`）
 - Podman 或 Docker Compose 已安裝
 
 ---
@@ -136,7 +136,7 @@ PAPERCLIP_PUBLIC_URL=http://localhost:3100
 
 # ── OpenClaw 連線資訊（給 Paperclip Agent 用）──
 OPENCLAW_GATEWAY_URL=ws://localhost:18789
-OPENCLAW_GATEWAY_TOKEN=woowtech
+OPENCLAW_GATEWAY_TOKEN=your-gateway-token
 ```
 
 生成 secrets：
@@ -270,7 +270,7 @@ function api(method, path, data) {
     adapterConfig: {
       url: 'ws://host.containers.internal:18789',  // Podman: 用這個存取 host
       // url: 'ws://openclaw-gateway:18789',         // 同 compose 網路: 用 service 名稱
-      headers: { 'x-openclaw-token': 'woowtech' },  // 你的 gateway token
+      headers: { 'x-openclaw-token': 'your-gateway-token' },  // 你的 gateway token
       sessionKeyStrategy: 'issue',
       waitTimeoutMs: 120000
     }

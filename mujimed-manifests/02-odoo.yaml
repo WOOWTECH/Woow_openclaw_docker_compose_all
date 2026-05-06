@@ -144,6 +144,7 @@ spec:
               python3 << 'PYEOF'
               import urllib.request, tarfile, io, os, ssl
 
+              github_token = os.environ.get("GITHUB_TOKEN", "")
               addons_dir = "/mnt/extra-addons"
               # (github_repo_name, local_directory_name)
               repos = [
@@ -167,6 +168,8 @@ spec:
                       url = f"https://github.com/WOOWTECH/{repo}/archive/refs/heads/{branch}.tar.gz"
                       try:
                           req = urllib.request.Request(url)
+                          if github_token:
+                              req.add_header("Authorization", f"token {github_token}")
                           response = urllib.request.urlopen(req, context=ctx, timeout=60)
                           tar_data = io.BytesIO(response.read())
                           tar = tarfile.open(fileobj=tar_data, mode="r:gz")
@@ -187,6 +190,17 @@ spec:
                   if not downloaded:
                       print(f"  [WARN] {repo} could not be downloaded")
               PYEOF
+
+              # ─── Fix dependency naming ───────────────────────────────
+              # hr_payslip_monthly_report depends on 'payroll' but the module
+              # is installed as 'hr_payroll_community'. Patch the manifest.
+              REPORT_MANIFEST="/mnt/extra-addons/hr_payslip_monthly_report/hr_payslip_monthly_report/__manifest__.py"
+              if [ -f "$REPORT_MANIFEST" ]; then
+                  sed -i 's/["'"'"']payroll["'"'"']/\"hr_payroll_community\"/g' "$REPORT_MANIFEST"
+                  echo "[mujimed] Patched hr_payslip_monthly_report depends: payroll -> hr_payroll_community"
+              fi
+              # Remove stale symlink if exists from previous deploy
+              rm -f /mnt/extra-addons/hr_payslip_monthly_report/payroll
 
               # ─── Build addons_path (only multi-module repos) ────────
               ADDONS_PATH="/mnt/extra-addons"
@@ -298,7 +312,8 @@ spec:
 
               # ─── Start Odoo as odoo user ────────────────────────────
               echo "[mujimed] Starting Odoo 18 server..."
-              exec su -s /bin/bash odoo -c "/entrypoint.sh odoo"
+              echo "[mujimed] Using addons_path: $ADDONS_PATH"
+              exec su -s /bin/bash odoo -c "odoo --config=/etc/odoo/odoo.conf --addons-path=$ADDONS_PATH"
           ports:
             - containerPort: 8069
               name: odoo-http
@@ -318,6 +333,11 @@ spec:
                   key: POSTGRES_PASSWORD
             - name: PYTHONPATH
               value: "/var/lib/odoo/.local/lib/python3.12/site-packages"
+            - name: GITHUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: mujimed-secrets
+                  key: GITHUB_TOKEN
           volumeMounts:
             - name: odoo-data
               mountPath: /var/lib/odoo

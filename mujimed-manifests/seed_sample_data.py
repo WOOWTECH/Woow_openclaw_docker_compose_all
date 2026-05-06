@@ -31,7 +31,7 @@ def connect(url=ODOO_URL, db=ODOO_DB, user=ADMIN_USER, password=ADMIN_PASS):
     if not uid:
         print("[ERROR] Authentication failed. Check credentials.")
         sys.exit(1)
-    models = xmlrpc.client.ServerProxy(f"{url}/xmlrpc/2/object")
+    models = xmlrpc.client.ServerProxy(f"{url}/xmlrpc/2/object", allow_none=True)
     print(f"[ok] Connected as uid={uid}")
     return uid, models, db, password
 
@@ -76,7 +76,7 @@ def seed_staff_user(models, db, uid, pw):
         staff_uid = create(models, db, uid, pw, 'res.users', {
             'name': '陳美玲',
             'login': 'staff',
-            'new_password': 'staff',
+            'password': 'staff',
             'lang': 'zh_TW',
             'tz': 'Asia/Taipei',
             'active': True,
@@ -85,7 +85,7 @@ def seed_staff_user(models, db, uid, pw):
         print(f"[ok] Created staff user (uid={staff_uid})")
 
     # Ensure password is set (also handles pre-existing users)
-    write(models, db, uid, pw, 'res.users', [staff_uid], {'new_password': 'staff'})
+    write(models, db, uid, pw, 'res.users', [staff_uid], {'password': 'staff'})
 
     # Get or create department
     dept_ids = search(models, db, uid, pw, 'hr.department', [('name', '=', '行政部')])
@@ -219,6 +219,7 @@ def seed_leaves(models, db, uid, pw, emp_id):
             'employee_id': emp_id,
             'holiday_status_id': annual_lt,
             'number_of_days': 14,
+            'date_from': '2026-01-01',
             'state': 'confirm',
         })
         # Approve the allocation
@@ -229,8 +230,8 @@ def seed_leaves(models, db, uid, pw, emp_id):
     leave1 = create(models, db, uid, pw, 'hr.leave', {
         'employee_id': emp_id,
         'holiday_status_id': annual_lt,
-        'date_from': '2026-04-14 01:00:00',  # 09:00 Taipei in UTC
-        'date_to': '2026-04-14 10:00:00',    # 18:00 Taipei in UTC
+        'request_date_from': '2026-04-14',
+        'request_date_to': '2026-04-14',
         'name': '個人事務',
     })
     models.execute_kw(db, uid, pw, 'hr.leave', 'action_validate', [[leave1]])
@@ -240,8 +241,8 @@ def seed_leaves(models, db, uid, pw, emp_id):
     leave2 = create(models, db, uid, pw, 'hr.leave', {
         'employee_id': emp_id,
         'holiday_status_id': sick_lt,
-        'date_from': '2026-04-22 01:00:00',
-        'date_to': '2026-04-22 10:00:00',
+        'request_date_from': '2026-04-22',
+        'request_date_to': '2026-04-22',
         'name': '身體不適',
     })
     models.execute_kw(db, uid, pw, 'hr.leave', 'action_validate', [[leave2]])
@@ -251,8 +252,8 @@ def seed_leaves(models, db, uid, pw, emp_id):
     create(models, db, uid, pw, 'hr.leave', {
         'employee_id': emp_id,
         'holiday_status_id': annual_lt,
-        'date_from': '2026-04-28 01:00:00',
-        'date_to': '2026-04-29 10:00:00',
+        'request_date_from': '2026-04-28',
+        'request_date_to': '2026-04-29',
         'name': '家庭旅遊',
     })
     print("[ok] Created leave 4/28-29 特休 (pending)")
@@ -294,8 +295,7 @@ def seed_expenses(models, db, uid, pw, emp_id):
         'name': '計程車費 — 客戶拜訪來回',
         'employee_id': emp_id,
         'product_id': transport_prod,
-        'unit_amount': 350.0,
-        'quantity': 1,
+        'total_amount_currency': 350.0,
         'date': '2026-04-10',
     })
     print("[ok] Created expense: 計程車費 (draft)")
@@ -305,8 +305,7 @@ def seed_expenses(models, db, uid, pw, emp_id):
         'name': '辦公文具 — A4紙張、資料夾',
         'employee_id': emp_id,
         'product_id': office_prod,
-        'unit_amount': 890.0,
-        'quantity': 1,
+        'total_amount_currency': 890.0,
         'date': '2026-04-15',
     })
     # Create expense sheet and submit
@@ -325,8 +324,7 @@ def seed_expenses(models, db, uid, pw, emp_id):
         'name': '員工聚餐攤提',
         'employee_id': emp_id,
         'product_id': meal_prod,
-        'unit_amount': 500.0,
-        'quantity': 1,
+        'total_amount_currency': 500.0,
         'date': '2026-04-18',
     })
     sheet3 = create(models, db, uid, pw, 'hr.expense.sheet', {
@@ -365,7 +363,7 @@ def seed_payslip(models, db, uid, pw, emp_id):
     cat_ded = get_or_create_category('扣款', 'DED')
     cat_net = get_or_create_category('淨額', 'NET')
 
-    # ─── Salary Structure Type ───
+    # ─── Salary Structure Type (for contract) ───
     struct_type_ids = search(models, db, uid, pw, 'hr.payroll.structure.type',
                             [('name', '=', '基本薪資類型')])
     if struct_type_ids:
@@ -383,13 +381,13 @@ def seed_payslip(models, db, uid, pw, emp_id):
     else:
         struct_id = create(models, db, uid, pw, 'hr.payroll.structure', {
             'name': '基本薪資結構',
-            'type_id': struct_type_id,
+            'code': 'BASIC_STRUCT',
         })
 
-    # ─── Salary Rules ───
+    # ─── Salary Rules (linked via structure.rule_ids many2many) ───
     def get_or_create_rule(name, code, category_id, sequence, amount_fix):
         ids = search(models, db, uid, pw, 'hr.salary.rule',
-                     [('code', '=', code), ('struct_id', '=', struct_id)])
+                     [('code', '=', code)])
         if ids:
             return ids[0]
         return create(models, db, uid, pw, 'hr.salary.rule', {
@@ -399,14 +397,18 @@ def seed_payslip(models, db, uid, pw, emp_id):
             'sequence': sequence,
             'amount_select': 'fix',
             'amount_fix': amount_fix,
-            'struct_id': struct_id,
         })
 
-    get_or_create_rule('底薪', 'BASIC_SALARY', cat_basic, 1, 32000)
-    get_or_create_rule('勞保自付', 'LABOR_INS', cat_ded, 10, -1042)
-    get_or_create_rule('健保自付', 'HEALTH_INS', cat_ded, 11, -372)
-    get_or_create_rule('勞退自提', 'PENSION', cat_ded, 12, 0)
-    get_or_create_rule('淨額', 'NET_SALARY', cat_net, 99, 30586)
+    rule_ids = []
+    rule_ids.append(get_or_create_rule('底薪', 'BASIC_SALARY', cat_basic, 1, 32000))
+    rule_ids.append(get_or_create_rule('勞保自付', 'LABOR_INS', cat_ded, 10, -1042))
+    rule_ids.append(get_or_create_rule('健保自付', 'HEALTH_INS', cat_ded, 11, -372))
+    rule_ids.append(get_or_create_rule('勞退自提', 'PENSION', cat_ded, 12, 0))
+    rule_ids.append(get_or_create_rule('淨額', 'NET_SALARY', cat_net, 99, 30586))
+
+    # Link rules to structure
+    write(models, db, uid, pw, 'hr.payroll.structure', [struct_id],
+          {'rule_ids': [(6, 0, rule_ids)]})
 
     # ─── Contract ───
     contract_ids = search(models, db, uid, pw, 'hr.contract', [
@@ -436,25 +438,38 @@ def seed_payslip(models, db, uid, pw, emp_id):
         'state': 'draft',
     })
 
-    # Compute payslip (generates lines from salary rules)
-    models.execute_kw(db, uid, pw, 'hr.payslip', 'compute_sheet', [[payslip_id]])
+    # Directly create payslip lines (fixed amounts, no compute needed)
+    lines = [
+        ('底薪', 'BASIC_SALARY', cat_basic, 1, 32000),
+        ('勞保自付', 'LABOR_INS', cat_ded, 10, -1042),
+        ('健保自付', 'HEALTH_INS', cat_ded, 11, -372),
+        ('勞退自提', 'PENSION', cat_ded, 12, 0),
+        ('淨額', 'NET_SALARY', cat_net, 99, 30586),
+    ]
+    for name, code, cat_id, seq, amount in lines:
+        # Find matching salary rule
+        rule_ids = search(models, db, uid, pw, 'hr.salary.rule', [('code', '=', code)])
+        rule_id = rule_ids[0] if rule_ids else False
+        create(models, db, uid, pw, 'hr.payslip.line', {
+            'slip_id': payslip_id,
+            'name': name,
+            'code': code,
+            'category_id': cat_id,
+            'sequence': seq,
+            'amount': amount,
+            'quantity': 1.0,
+            'salary_rule_id': rule_id,
+        })
 
-    # Add worked days entry if not auto-generated
-    wd_ids = search(models, db, uid, pw, 'hr.payslip.worked_days', [
-        ('payslip_id', '=', payslip_id),
-    ])
-    if not wd_ids:
-        # Get work entry type
-        wet_ids = search(models, db, uid, pw, 'hr.work.entry.type',
-                        [('code', '=', 'WORK100')])
-        wet_id = wet_ids[0] if wet_ids else False
-        if wet_id:
-            create(models, db, uid, pw, 'hr.payslip.worked_days', {
-                'payslip_id': payslip_id,
-                'work_entry_type_id': wet_id,
-                'number_of_days': 20,
-                'number_of_hours': 160,
-            })
+    # Add worked days entry
+    create(models, db, uid, pw, 'hr.payslip.worked_days', {
+        'payslip_id': payslip_id,
+        'name': '正常工作日',
+        'code': 'WORK100',
+        'number_of_days': 20,
+        'number_of_hours': 160,
+        'sequence': 1,
+    })
 
     # Confirm payslip (state -> done)
     models.execute_kw(db, uid, pw, 'hr.payslip', 'action_payslip_done', [[payslip_id]])

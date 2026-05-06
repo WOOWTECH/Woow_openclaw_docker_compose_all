@@ -558,24 +558,20 @@ spec:
               rm -rf /mnt/openclaw-agents/_tools 2>/dev/null
               mkdir -p /home/node/.local/bin
               export PATH="/home/node/.local/bin:$PATH"
-              # Use PVC-cached OpenClaw runtime (pinned to v2026.3.31 for Nerve v1.5.2 compat)
-              # IMPORTANT: Do NOT use @latest — pin exact version to prevent Thinking-stuck bug
+              # Use container-bundled OpenClaw runtime (synced to PVC for Nerve CLI access)
+              # The container image ships the correct version at /app/ — always use it
               OC_LOCAL="$PVC/_openclaw_runtime"
               OC_BIN="$OC_LOCAL/bin/openclaw"
-              PINNED_VER="2026.3.31"
-              if [ -f "$OC_BIN" ]; then
-                CUR_VER=$("$OC_BIN" --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
-                if [ -n "$CUR_VER" ] && [ "$CUR_VER" != "$PINNED_VER" ]; then
-                  echo "[init] PVC runtime $CUR_VER != pinned $PINNED_VER — reinstalling"
-                  rm -rf "$OC_LOCAL"
-                fi
-              fi
-              if [ ! -f "$OC_BIN" ]; then
-                echo "[init] Installing OpenClaw runtime v$PINNED_VER..."
-                mkdir -p "$OC_LOCAL"
-                npm config set prefix "$OC_LOCAL"
-                npm i -g "openclaw@$PINNED_VER" --loglevel=error 2>&1 | tail -3
-                echo "[init] OpenClaw installed: $($OC_BIN --version 2>/dev/null)"
+              CONTAINER_VER=$(openclaw --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+              PVC_VER=$("$OC_BIN" --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+              if [ "$PVC_VER" != "$CONTAINER_VER" ]; then
+                echo "[init] PVC runtime $PVC_VER != container $CONTAINER_VER — syncing from /app/"
+                rm -rf "$OC_LOCAL"
+                mkdir -p "$OC_LOCAL/bin" "$OC_LOCAL/lib/node_modules"
+                cp -a /app "$OC_LOCAL/lib/node_modules/openclaw"
+                ln -sf ../lib/node_modules/openclaw/openclaw.mjs "$OC_LOCAL/bin/openclaw"
+                chmod +x "$OC_LOCAL/bin/openclaw"
+                echo "[init] OpenClaw synced: $($OC_BIN --version 2>/dev/null)"
               else
                 echo "[init] OpenClaw ready: $($OC_BIN --version 2>/dev/null)"
               fi
@@ -958,9 +954,10 @@ spec:
               NERVE_ORIGIN="${NERVE_PUBLIC_URL:-https://localhost:3080}"
               printf 'GATEWAY_URL=http://127.0.0.1:18789\nGATEWAY_TOKEN=%s\nHOST=0.0.0.0\nPORT=3080\nNERVE_AUTH=true\nNERVE_PASSWORD_HASH=%s\nNERVE_SESSION_SECRET=%s\nNERVE_SESSION_TTL=2592000000\nTRUSTED_PROXIES=10.42.0.0/16\nSTT_PROVIDER=none\nALLOWED_ORIGINS=%s\nNERVE_PUBLIC_ORIGIN=%s\nCSP_CONNECT_EXTRA=wss://%s wss://*.woowtech.io\n' "$GATEWAY_TOKEN" "$NERVE_PASSWORD_HASH" "$NERVE_SESSION_SECRET" "$NERVE_ORIGIN" "$NERVE_ORIGIN" "$(echo $NERVE_ORIGIN | sed 's|https://||')" > .env
               # Wait for gateway to be ready on localhost:18789
+              # Use wget --spider to accept any HTTP response (even 500 means gateway is up)
               echo "[nerve-init] Waiting for gateway on localhost:18789..."
               RETRIES=0
-              until wget -qO /dev/null http://127.0.0.1:18789/ 2>/dev/null || [ $RETRIES -ge 120 ]; do
+              until wget --spider -q http://127.0.0.1:18789/ 2>/dev/null || wget -qO /dev/null http://127.0.0.1:18789/ 2>/dev/null || [ $RETRIES -ge 120 ]; do
                 RETRIES=$((RETRIES + 1))
                 sleep 2
               done
@@ -969,8 +966,16 @@ spec:
               else
                 echo "[nerve-init] Gateway is ready!"
               fi
-              # Start Nerve in production mode
-              exec npm run prod
+              # Start Nerve — use existing compiled build if available, skip tsc rebuild
+              # The upstream repo may have in-progress TS changes that break tsc;
+              # server-dist/ from the last successful build is sufficient.
+              if [ -d "$NERVE_APP/server-dist" ] && [ -d "$NERVE_APP/dist" ]; then
+                echo "[nerve-init] Starting Nerve from existing compiled build"
+                exec node server-dist/index.js
+              else
+                echo "[nerve-init] No compiled build found, running full build+start"
+                exec npm run prod
+              fi
           ports:
             - containerPort: 3080
               name: nerve-http

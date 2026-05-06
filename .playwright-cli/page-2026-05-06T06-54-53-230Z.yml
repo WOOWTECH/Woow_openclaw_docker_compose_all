@@ -1,0 +1,12 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - img [ref=e4]
+    - generic [ref=e8]: OpenClaw Console
+    - button "Dashboard" [ref=e9] [cursor=pointer]
+    - button "Setup" [ref=e10] [cursor=pointer]
+    - button "Web GUI" [ref=e11] [cursor=pointer]
+    - button "Terminal" [ref=e12] [cursor=pointer]
+    - button "☾" [ref=e13] [cursor=pointer]:
+      - generic [ref=e14]: ☾
+  - generic [ref=e19]: Detecting system state...
+  - generic [ref=e20]: Powered by Woowtech Smart Space Solution

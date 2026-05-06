@@ -148,6 +148,9 @@ spec:
               repos = [
                   "odoo_color_customizer",
                   "woow_odoo_livechat_line",
+                  "Odoo_reservation_module",
+                  "hr_payslip_monthly_report",
+                  "Woow_odoo_office_enhance",
               ]
 
               ctx = ssl.create_default_context()
@@ -212,11 +215,12 @@ spec:
                   # Standard Odoo 18 modules
                   MODULES="base,web,contacts,project,calendar,mail"
                   MODULES="$MODULES,account,sale_management,purchase"
-                  MODULES="$MODULES,stock"
+                  MODULES="$MODULES,stock,product,sale"
                   MODULES="$MODULES,website,website_sale"
                   MODULES="$MODULES,loyalty,website_sale_loyalty"
                   MODULES="$MODULES,website_blog"
-                  MODULES="$MODULES,hr,hr_attendance,hr_expense"
+                  MODULES="$MODULES,hr,hr_attendance,hr_expense,hr_contract,hr_holidays"
+                  MODULES="$MODULES,payment,portal,resource"
                   MODULES="$MODULES,im_livechat,website_livechat"
                   MODULES="$MODULES,l10n_tw"
 

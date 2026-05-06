@@ -76,12 +76,16 @@ def seed_staff_user(models, db, uid, pw):
         staff_uid = create(models, db, uid, pw, 'res.users', {
             'name': '陳美玲',
             'login': 'staff',
-            'password': 'staff',
+            'new_password': 'staff',
             'lang': 'zh_TW',
             'tz': 'Asia/Taipei',
+            'active': True,
             'groups_id': [(6, 0, portal_group)],
         })
         print(f"[ok] Created staff user (uid={staff_uid})")
+
+    # Ensure password is set (also handles pre-existing users)
+    write(models, db, uid, pw, 'res.users', [staff_uid], {'new_password': 'staff'})
 
     # Get or create department
     dept_ids = search(models, db, uid, pw, 'hr.department', [('name', '=', '行政部')])

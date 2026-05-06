@@ -145,20 +145,21 @@ spec:
               import urllib.request, tarfile, io, os, ssl
 
               addons_dir = "/mnt/extra-addons"
+              # (github_repo_name, local_directory_name)
               repos = [
-                  "odoo_color_customizer",
-                  "woow_odoo_livechat_line",
-                  "Odoo_reservation_module",
-                  "hr_payslip_monthly_report",
-                  "Woow_odoo_office_enhance",
+                  ("odoo_color_customizer", "odoo_color_customizer"),
+                  ("woow_odoo_livechat_line", "woow_odoo_livechat_line"),
+                  ("Odoo_reservation_module", "Odoo_reservation_module"),
+                  ("hr_payslip_monthly_report", "hr_payslip_monthly_report"),
+                  ("Woow_odoo_office_enhance", "woow_hr_portal"),
               ]
 
               ctx = ssl.create_default_context()
 
-              for repo in repos:
-                  dest = os.path.join(addons_dir, repo)
+              for repo, local_name in repos:
+                  dest = os.path.join(addons_dir, local_name)
                   if os.path.exists(dest) and os.listdir(dest):
-                      print(f"  [ok] {repo} already present")
+                      print(f"  [ok] {repo} -> {local_name} already present")
                       continue
 
                   downloaded = False
@@ -178,7 +179,7 @@ spec:
                                       tar.extract(member, dest, filter='data')
                                   else:
                                       tar.extract(member, dest)
-                          print(f"  [ok] {repo} downloaded (branch: {branch})")
+                          print(f"  [ok] {repo} -> {local_name} (branch: {branch})")
                           downloaded = True
                           break
                       except Exception:

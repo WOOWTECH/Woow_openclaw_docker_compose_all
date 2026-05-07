@@ -139,6 +139,9 @@ spec:
               echo "[mujimed] Odoo 18 - Mujimed SaaS Platform"
               echo "[mujimed] ==========================================="
 
+              # ─── Install Python dependencies ─────────────────────────
+              pip3 install --quiet --target="$DATA_DIR/.local/lib/python3.12/site-packages" pycryptodomex 2>/dev/null || true
+
               # ─── Download public WOOWTECH addons ────────────────────
               echo "[mujimed] Checking WOOWTECH custom addons..."
               python3 << 'PYEOF'
@@ -153,6 +156,8 @@ spec:
                   ("Odoo_reservation_module", "Odoo_reservation_module"),
                   ("hr_payslip_monthly_report", "hr_payslip_monthly_report"),
                   ("Woow_odoo_office_enhance", "woow_hr_portal"),
+                  ("Odoo_pos_self_checkout_enhance", "pos_self_order_enhancement"),
+                  ("ecpay_odoo18", "ecpay_odoo18"),
               ]
 
               ctx = ssl.create_default_context()
@@ -238,6 +243,7 @@ spec:
                   MODULES="$MODULES,loyalty,website_sale_loyalty"
                   MODULES="$MODULES,website_blog"
                   MODULES="$MODULES,hr,hr_attendance,hr_expense,hr_contract,hr_holidays"
+                  MODULES="$MODULES,point_of_sale,pos_self_order"
                   MODULES="$MODULES,payment,portal,resource"
                   MODULES="$MODULES,im_livechat,website_livechat"
                   MODULES="$MODULES,l10n_tw"

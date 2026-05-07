@@ -158,6 +158,7 @@ spec:
                   ("Woow_odoo_office_enhance", "woow_hr_portal"),
                   ("Odoo_pos_self_checkout_enhance", "pos_self_order_enhancement"),
                   ("ecpay_odoo18", "ecpay_odoo18"),
+                  ("Woow_odoo_portal_user_ui", "Woow_odoo_portal_user_ui"),
               ]
 
               ctx = ssl.create_default_context()

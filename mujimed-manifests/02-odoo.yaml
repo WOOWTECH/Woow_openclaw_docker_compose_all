@@ -194,10 +194,27 @@ spec:
               # ─── Fix dependency naming ───────────────────────────────
               # hr_payslip_monthly_report depends on 'payroll' but the module
               # is installed as 'hr_payroll_community'. Patch the manifest.
-              REPORT_MANIFEST="/mnt/extra-addons/hr_payslip_monthly_report/hr_payslip_monthly_report/__manifest__.py"
-              if [ -f "$REPORT_MANIFEST" ]; then
-                  sed -i 's/["'"'"']payroll["'"'"']/\"hr_payroll_community\"/g' "$REPORT_MANIFEST"
-                  echo "[mujimed] Patched hr_payslip_monthly_report depends: payroll -> hr_payroll_community"
+              REPORT_DIR="/mnt/extra-addons/hr_payslip_monthly_report/hr_payslip_monthly_report"
+              if [ -d "$REPORT_DIR" ]; then
+                  # Patch manifest dependency: "payroll" -> "hr_payroll_community"
+                  sed -i 's/["'"'"']payroll["'"'"']/\"hr_payroll_community\"/g' "$REPORT_DIR/__manifest__.py"
+                  # Patch XML ID refs in CSV and XML (payroll.xxx -> hr_payroll_community.xxx)
+                  # Use negative lookbehind: only replace payroll. NOT preceded by a dot
+                  find "$REPORT_DIR" \( -name "*.csv" -o -name "*.xml" \) -exec \
+                      sed -i \
+                          -e 's/ref="payroll\./ref="hr_payroll_community./g' \
+                          -e 's/parent="payroll\./parent="hr_payroll_community./g' \
+                          -e 's/groups="payroll\./groups="hr_payroll_community./g' \
+                          -e 's/,payroll\./,hr_payroll_community./g' \
+                      {} +
+                  # Patch group names and menu refs
+                  find "$REPORT_DIR" \( -name "*.csv" -o -name "*.xml" \) -exec \
+                      sed -i \
+                          -e 's/group_payroll_manager/group_hr_payroll_community_manager/g' \
+                          -e 's/group_payroll_user/group_hr_payroll_community_user/g' \
+                          -e 's/payroll_menu_root/menu_hr_payroll_community_root/g' \
+                      {} +
+                  echo "[mujimed] Patched hr_payslip_monthly_report: payroll -> hr_payroll_community"
               fi
               # Remove stale symlink if exists from previous deploy
               rm -f /mnt/extra-addons/hr_payslip_monthly_report/payroll

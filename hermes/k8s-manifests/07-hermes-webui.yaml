@@ -25,6 +25,16 @@ spec:
         app: hermes-webui
     spec:
       initContainers:
+        # 1) Copy hermes-agent source from agent image
+        - name: copy-agent-src
+          image: nousresearch/hermes-agent:latest
+          command: ['sh', '-c']
+          args:
+            - cp -a /opt/hermes/. /agent-src/ && chown -R 1000:1000 /agent-src
+          volumeMounts:
+            - name: agent-src
+              mountPath: /agent-src
+        # 2) Write .env and config.yaml into hermes-home
         - name: init-config
           image: busybox
           command: ['sh', '-c']
@@ -84,6 +94,8 @@ spec:
           volumeMounts:
             - name: hermes-home
               mountPath: /home/hermeswebui/.hermes
+            - name: agent-src
+              mountPath: /home/hermeswebui/.hermes/hermes-agent
           readinessProbe:
             tcpSocket:
               port: 8787
@@ -105,6 +117,8 @@ spec:
               memory: 2Gi
       volumes:
         - name: hermes-home
+          emptyDir: {}
+        - name: agent-src
           emptyDir: {}
 ---
 apiVersion: v1

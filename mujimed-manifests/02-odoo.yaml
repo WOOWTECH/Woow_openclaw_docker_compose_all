@@ -159,6 +159,7 @@ spec:
                   ("Odoo_pos_self_checkout_enhance", "pos_self_order_enhancement"),
                   ("ecpay_odoo18", "ecpay_odoo18"),
                   ("Woow_odoo_portal_user_ui", "Woow_odoo_portal_user_ui"),
+                  ("Woow_odoo_loyalty_card_enhance", "Woow_odoo_loyalty_card_enhance"),
               ]
 
               ctx = ssl.create_default_context()
@@ -241,10 +242,10 @@ spec:
                   MODULES="$MODULES,account,sale_management,purchase"
                   MODULES="$MODULES,stock,product,sale"
                   MODULES="$MODULES,website,website_sale"
-                  MODULES="$MODULES,loyalty,website_sale_loyalty"
+                  MODULES="$MODULES,loyalty,sale_loyalty,website_sale_loyalty,membership"
                   MODULES="$MODULES,website_blog"
                   MODULES="$MODULES,hr,hr_attendance,hr_expense,hr_contract,hr_holidays"
-                  MODULES="$MODULES,point_of_sale,pos_self_order"
+                  MODULES="$MODULES,point_of_sale,pos_self_order,pos_loyalty"
                   MODULES="$MODULES,payment,portal,resource"
                   MODULES="$MODULES,im_livechat,website_livechat"
                   MODULES="$MODULES,l10n_tw"

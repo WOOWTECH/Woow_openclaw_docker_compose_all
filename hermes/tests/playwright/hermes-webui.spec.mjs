@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 const BASE = process.env.HERMES_TEST_URL || 'http://localhost:18787';
-const PASSWORD = 'hermes2026';
+const PASSWORD = 'woowtech';
 
 test.describe('Hermes WebUI Enterprise E2E Tests', () => {
 

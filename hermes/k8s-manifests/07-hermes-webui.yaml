@@ -25,12 +25,14 @@ spec:
         app: hermes-webui
     spec:
       initContainers:
-        # 1) Copy hermes-agent source from agent image
-        - name: copy-agent-src
-          image: nousresearch/hermes-agent:latest
+        # 1) Clone hermes-agent source from GitHub (lightweight)
+        - name: clone-agent-src
+          image: alpine/git:latest
           command: ['sh', '-c']
           args:
-            - cp -a /opt/hermes/. /agent-src/ && chown -R 1000:1000 /agent-src
+            - |
+              git clone --depth 1 https://github.com/NousResearch/hermes-agent.git /agent-src
+              chown -R 1000:1000 /agent-src
           volumeMounts:
             - name: agent-src
               mountPath: /agent-src

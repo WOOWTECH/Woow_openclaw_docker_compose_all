@@ -203,7 +203,7 @@ if kubectl rollout status deployment/mujimed-odoo -n "$NAMESPACE" --timeout=900s
     echo "  Installed modules:"
     echo "    - Contacts, Project, Calendar, Discuss"
     echo "    - Accounting (Taiwan), Sales, Purchase"
-    echo "    - Inventory, Website, eCommerce"
+    echo "    - Inventory, Website"
     echo "    - Loyalty/eWallet, Membership, Blog"
     echo "    - HR, Attendance, Expense"
     echo "    - POS, POS Loyalty"

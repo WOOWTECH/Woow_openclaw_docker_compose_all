@@ -173,23 +173,47 @@ spec:
                   conn = psycopg2.connect(host="mujimed-db-svc", port=5432,
                       dbname="mujimed", user="mujimed", password="mujimed")
                   cur = conn.cursor()
-                  cur.execute("UPDATE res_currency SET active = true WHERE name = 'TWD'")
-                  cur.execute("SELECT id FROM res_country WHERE code = 'TW'")
-                  tw_id = cur.fetchone()
-                  tw_id = tw_id[0] if tw_id else None
-                  cur.execute("SELECT id FROM res_currency WHERE name = 'TWD'")
-                  twd_id = cur.fetchone()
-                  twd_id = twd_id[0] if twd_id else None
-                  if tw_id and twd_id:
-                      cur.execute("UPDATE res_company SET name='Mujimed', country_id=%s, currency_id=%s WHERE id=1", (tw_id, twd_id))
-                      cur.execute("UPDATE res_partner SET name='Mujimed', country_id=%s, lang='zh_TW', tz='Asia/Taipei' WHERE id=(SELECT partner_id FROM res_company WHERE id=1)", (tw_id,))
-                  cur.execute("UPDATE res_users SET lang='zh_TW', tz='Asia/Taipei' WHERE id=2")
-                  if tw_id:
-                      cur.execute("UPDATE res_partner SET lang='zh_TW', tz='Asia/Taipei', country_id=%s WHERE id IN (SELECT partner_id FROM res_users WHERE id=2)", (tw_id,))
+                  # Check which columns exist (base-only has fewer columns)
+                  cur.execute("SELECT column_name FROM information_schema.columns WHERE table_name='res_company'")
+                  company_cols = {r[0] for r in cur.fetchall()}
+                  cur.execute("SELECT column_name FROM information_schema.columns WHERE table_name='res_partner'")
+                  partner_cols = {r[0] for r in cur.fetchall()}
+                  # Update company name
+                  cur.execute("UPDATE res_company SET name='Mujimed' WHERE id=1")
+                  # Set currency/country only if columns exist
+                  if 'currency_id' in company_cols:
+                      cur.execute("UPDATE res_currency SET active = true WHERE name = 'TWD'")
+                      cur.execute("SELECT id FROM res_currency WHERE name = 'TWD'")
+                      twd_id = cur.fetchone()
+                      if twd_id:
+                          cur.execute("UPDATE res_company SET currency_id=%s WHERE id=1", (twd_id[0],))
+                  if 'country_id' in company_cols:
+                      cur.execute("SELECT id FROM res_country WHERE code = 'TW'")
+                      tw_id = cur.fetchone()
+                      if tw_id:
+                          cur.execute("UPDATE res_company SET country_id=%s WHERE id=1", (tw_id[0],))
+                  # Update admin user lang/tz (check columns exist first)
+                  cur.execute("SELECT column_name FROM information_schema.columns WHERE table_name='res_users'")
+                  user_cols = {r[0] for r in cur.fetchall()}
+                  user_updates = []
+                  if 'lang' in user_cols: user_updates.append("lang='zh_TW'")
+                  if 'tz' in user_cols: user_updates.append("tz='Asia/Taipei'")
+                  if user_updates:
+                      cur.execute(f"UPDATE res_users SET {','.join(user_updates)} WHERE id=2")
+                  # Update partner records
+                  partner_updates = ["name='Mujimed'"]
+                  if 'lang' in partner_cols: partner_updates.append("lang='zh_TW'")
+                  if 'tz' in partner_cols: partner_updates.append("tz='Asia/Taipei'")
+                  cur.execute(f"UPDATE res_partner SET {','.join(partner_updates)} WHERE id=(SELECT partner_id FROM res_company WHERE id=1)")
+                  if 'country_id' in partner_cols:
+                      cur.execute("SELECT id FROM res_country WHERE code = 'TW'")
+                      tw_id = cur.fetchone()
+                      if tw_id:
+                          cur.execute("UPDATE res_partner SET country_id=%s WHERE id IN (SELECT partner_id FROM res_users WHERE id=2)", (tw_id[0],))
                   cur.execute("INSERT INTO ir_config_parameter (key,value,create_uid,write_uid,create_date,write_date) VALUES ('web.default_timezone','Asia/Taipei',1,1,NOW(),NOW()) ON CONFLICT (key) DO UPDATE SET value='Asia/Taipei'")
                   conn.commit()
                   conn.close()
-                  print(f"[mujimed] Taiwan config: country={tw_id} currency={twd_id} lang=zh_TW tz=Asia/Taipei")
+                  print("[mujimed] Taiwan config: name=Mujimed lang=zh_TW tz=Asia/Taipei")
               except Exception as e:
                   print(f"[mujimed] Taiwan config error: {e}", file=sys.stderr)
               PYEOF2
@@ -438,6 +462,7 @@ data:
                 proxy_read_timeout 720s;
                 proxy_connect_timeout 720s;
                 proxy_send_timeout 720s;
+                proxy_cookie_flags ~ secure samesite=lax;
             }
         }
     }

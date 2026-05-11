@@ -9,8 +9,8 @@ metadata:
   labels:
     app.kubernetes.io/part-of: hermes
 data:
-  CF_ACCOUNT_ID: "PLACEHOLDER_ACCOUNT_ID"
-  CF_TUNNEL_ID: "PLACEHOLDER_TUNNEL_ID"
+  CF_ACCOUNT_ID: "9c27f623ee596e0b67be56263bcb1974"
+  CF_TUNNEL_ID: "b9be7e6e-3e90-4472-b3c9-91781b5b9140"
   DOMAIN: "hermes-woowtechmag.woowtech.io"
 ---
 apiVersion: v1
@@ -25,9 +25,9 @@ data:
   HERMES_DOMAIN: "hermes-woowtechmag.woowtech.io"
   HERMES_BASE_URL: "https://hermes-woowtechmag.woowtech.io"
   # WebUI
-  HERMES_WEBUI_PORT: "3000"
+  HERMES_WEBUI_PORT: "8787"
   # Agent
-  HERMES_AGENT_PORT: "8080"
+  HERMES_AGENT_PORT: "8642"
   # Database
   POSTGRES_HOST: "hermes-postgresql-svc"
   POSTGRES_PORT: "5432"

@@ -1,5 +1,9 @@
 # =============================================================
 # Hermes Agent - Main AI Assistant Service
+# Image: nousresearch/hermes-agent:latest (Docker Hub)
+# Port:  8642 (gateway), 9119 (dashboard)
+# Command: gateway run (headless server mode)
+# Data dir: /opt/data
 # =============================================================
 apiVersion: apps/v1
 kind: Deployment
@@ -13,10 +17,7 @@ metadata:
 spec:
   replicas: 1
   strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
+    type: Recreate
   selector:
     matchLabels:
       app: hermes-agent
@@ -27,98 +28,67 @@ spec:
     spec:
       containers:
         - name: hermes-agent
-          image: ghcr.io/nesquena/hermes-agent:latest
+          image: nousresearch/hermes-agent:latest
           imagePullPolicy: Always
+          args:
+            - gateway
+            - run
           ports:
-            - containerPort: 8080
-              name: http
+            - containerPort: 8642
+              name: gateway
+            - containerPort: 9119
+              name: dashboard
           env:
-            # Database
-            - name: DATABASE_URL
-              value: "postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@$(POSTGRES_HOST):$(POSTGRES_PORT)/$(POSTGRES_DB)"
-            - name: POSTGRES_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: hermes-config
-                  key: POSTGRES_HOST
-            - name: POSTGRES_PORT
-              valueFrom:
-                configMapKeyRef:
-                  name: hermes-config
-                  key: POSTGRES_PORT
-            - name: POSTGRES_DB
-              valueFrom:
-                configMapKeyRef:
-                  name: hermes-config
-                  key: POSTGRES_DB
-            - name: POSTGRES_USER
-              valueFrom:
-                configMapKeyRef:
-                  name: hermes-config
-                  key: POSTGRES_USER
-            - name: POSTGRES_PASSWORD
+            # Enable dashboard
+            - name: HERMES_DASHBOARD
+              value: "1"
+            # API server for OpenAI-compatible endpoint
+            - name: API_SERVER_ENABLED
+              value: "true"
+            - name: API_SERVER_HOST
+              value: "0.0.0.0"
+            - name: API_SERVER_KEY
               valueFrom:
                 secretKeyRef:
                   name: hermes-secrets
-                  key: POSTGRES_PASSWORD
-            # Redis
-            - name: REDIS_URL
-              value: "redis://hermes-redis-svc:6379/0"
-            - name: REDIS_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: hermes-config
-                  key: REDIS_HOST
-            - name: REDIS_PORT
-              valueFrom:
-                configMapKeyRef:
-                  name: hermes-config
-                  key: REDIS_PORT
+                  key: API_SERVER_KEY
+            - name: API_SERVER_CORS_ORIGINS
+              value: "*"
+            # Allow all users (no allowlist filtering)
+            - name: GATEWAY_ALLOW_ALL_USERS
+              value: "true"
             # LLM
             - name: MINIMAX_API_KEY
               valueFrom:
                 secretKeyRef:
                   name: hermes-secrets
                   key: MINIMAX_API_KEY
-            # App
-            - name: HERMES_BASE_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: hermes-config
-                  key: HERMES_BASE_URL
-            - name: WANTED_UID
-              valueFrom:
-                configMapKeyRef:
-                  name: hermes-config
-                  key: WANTED_UID
           volumeMounts:
-            - name: agent-data
-              mountPath: /app/data
+            - name: hermes-data
+              mountPath: /opt/data
           readinessProbe:
-            httpGet:
-              path: /health
-              port: 8080
-            initialDelaySeconds: 15
+            tcpSocket:
+              port: 8642
+            initialDelaySeconds: 20
             periodSeconds: 10
-            failureThreshold: 5
+            failureThreshold: 10
           livenessProbe:
-            httpGet:
-              path: /health
-              port: 8080
-            initialDelaySeconds: 30
+            tcpSocket:
+              port: 8642
+            initialDelaySeconds: 60
             periodSeconds: 30
-            failureThreshold: 3
+            failureThreshold: 5
           resources:
             requests:
               cpu: 200m
-              memory: 256Mi
+              memory: 512Mi
             limits:
-              cpu: 1000m
-              memory: 1Gi
+              cpu: 2000m
+              memory: 4Gi
       volumes:
-        - name: agent-data
+        - name: hermes-data
           persistentVolumeClaim:
-            claimName: hermes-agent-pvc
+            claimName: hermes-home-pvc
 ---
 apiVersion: v1
 kind: Service
@@ -133,7 +103,11 @@ spec:
     app: hermes-agent
   ports:
     - protocol: TCP
-      port: 8080
-      targetPort: 8080
-      name: http
+      port: 8642
+      targetPort: 8642
+      name: gateway
+    - protocol: TCP
+      port: 9119
+      targetPort: 9119
+      name: dashboard
   type: ClusterIP

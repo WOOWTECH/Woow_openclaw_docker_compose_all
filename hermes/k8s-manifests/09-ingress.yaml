@@ -1,6 +1,6 @@
 # =============================================================
 # Hermes - Ingress (for internal cluster routing)
-# External access is via Cloudflare Tunnel → hermes-webui-svc:3000
+# External access is via Cloudflare Tunnel → hermes-webui-svc:8787
 #
 # This Ingress is optional — useful if you also want
 # direct cluster-level routing via ingress-nginx or Traefik.
@@ -29,11 +29,11 @@ spec:
               service:
                 name: hermes-webui-svc
                 port:
-                  number: 3000
+                  number: 8787
           - path: /api
             pathType: Prefix
             backend:
               service:
                 name: hermes-agent-svc
                 port:
-                  number: 8080
+                  number: 8642

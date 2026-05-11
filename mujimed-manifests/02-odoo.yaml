@@ -139,8 +139,11 @@ spec:
               echo "[mujimed] Odoo 18 - Mujimed SaaS Platform"
               echo "[mujimed] ==========================================="
 
-              # ─── First boot: initialize database ────────────────────
-              ADDONS_PATH="/mnt/extra-addons,/usr/lib/python3/dist-packages/odoo/addons"
+              # ─── Build addons_path ───────────────────────────────────
+              ADDONS_PATH="/usr/lib/python3/dist-packages/odoo/addons"
+              if ls /mnt/extra-addons/*/__manifest__.py >/dev/null 2>&1; then
+                  ADDONS_PATH="/mnt/extra-addons,$ADDONS_PATH"
+              fi
 
               if [ ! -f "$MARKER" ]; then
                   echo "[mujimed] ============================================"

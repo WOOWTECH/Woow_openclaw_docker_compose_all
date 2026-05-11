@@ -43,7 +43,7 @@ spec:
           args:
             - |
               printf 'MINIMAX_API_KEY=%s\n' "$MINIMAX_API_KEY" > /data/.env
-              printf 'model:\n  default: "minimax/MiniMax-M1"\n  provider: "minimax"\n' > /data/config.yaml
+              printf 'model:\n  default: "minimax/MiniMax-M2.7"\n  provider: "minimax"\n' > /data/config.yaml
               chown -R 1000:1000 /data
           env:
             - name: MINIMAX_API_KEY

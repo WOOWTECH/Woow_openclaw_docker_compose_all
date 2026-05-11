@@ -139,136 +139,18 @@ spec:
               echo "[mujimed] Odoo 18 - Mujimed SaaS Platform"
               echo "[mujimed] ==========================================="
 
-              # ─── Install Python dependencies ─────────────────────────
-              pip3 install --quiet --target="$DATA_DIR/.local/lib/python3.12/site-packages" pycryptodomex 2>/dev/null || true
-
-              # ─── Download public WOOWTECH addons ────────────────────
-              echo "[mujimed] Checking WOOWTECH custom addons..."
-              python3 << 'PYEOF'
-              import urllib.request, tarfile, io, os, ssl
-
-              github_token = os.environ.get("GITHUB_TOKEN", "")
-              addons_dir = "/mnt/extra-addons"
-              # (github_repo_name, local_directory_name)
-              repos = [
-                  ("odoo_color_customizer", "odoo_color_customizer"),
-                  ("woow_odoo_livechat_line", "woow_odoo_livechat_line"),
-                  ("Odoo_reservation_module", "Odoo_reservation_module"),
-                  ("hr_payslip_monthly_report", "hr_payslip_monthly_report"),
-                  ("Woow_odoo_office_enhance", "woow_hr_portal"),
-                  ("Odoo_pos_self_checkout_enhance", "pos_self_order_enhancement"),
-                  ("ecpay_odoo18", "ecpay_odoo18"),
-                  ("Woow_odoo_portal_user_ui", "Woow_odoo_portal_user_ui"),
-                  ("Woow_odoo_loyalty_card_enhance", "Woow_odoo_loyalty_card_enhance"),
-              ]
-
-              ctx = ssl.create_default_context()
-
-              for repo, local_name in repos:
-                  dest = os.path.join(addons_dir, local_name)
-                  if os.path.exists(dest) and os.listdir(dest):
-                      print(f"  [ok] {repo} -> {local_name} already present")
-                      continue
-
-                  downloaded = False
-                  for branch in ["18.0", "main", "master", "17.0", "16.0"]:
-                      url = f"https://github.com/WOOWTECH/{repo}/archive/refs/heads/{branch}.tar.gz"
-                      try:
-                          req = urllib.request.Request(url)
-                          if github_token:
-                              req.add_header("Authorization", f"token {github_token}")
-                          response = urllib.request.urlopen(req, context=ctx, timeout=60)
-                          tar_data = io.BytesIO(response.read())
-                          tar = tarfile.open(fileobj=tar_data, mode="r:gz")
-                          os.makedirs(dest, exist_ok=True)
-                          for member in tar.getmembers():
-                              parts = member.name.split("/", 1)
-                              if len(parts) > 1 and parts[1]:
-                                  member.name = parts[1]
-                                  if hasattr(tarfile, 'data_filter'):
-                                      tar.extract(member, dest, filter='data')
-                                  else:
-                                      tar.extract(member, dest)
-                          print(f"  [ok] {repo} -> {local_name} (branch: {branch})")
-                          downloaded = True
-                          break
-                      except Exception:
-                          continue
-                  if not downloaded:
-                      print(f"  [WARN] {repo} could not be downloaded")
-              PYEOF
-
-              # ─── Fix dependency naming ───────────────────────────────
-              # woow_hr_portal references old payroll module names. Patch all.
-              PORTAL_DIR="/mnt/extra-addons/woow_hr_portal"
-              if [ -d "$PORTAL_DIR" ]; then
-                  # Patch manifest dependency
-                  sed -i "s/'hr_payslip_monthly_report'/'woow_hr_payroll'/g" "$PORTAL_DIR/__manifest__.py"
-                  sed -i 's/"hr_payslip_monthly_report"/"woow_hr_payroll"/g' "$PORTAL_DIR/__manifest__.py"
-                  # Patch all hr_payroll_community refs -> woow_hr_payroll
-                  find "$PORTAL_DIR" \( -name "*.csv" -o -name "*.xml" -o -name "*.py" \) \
-                      ! -name "*.pyc" -exec \
-                      sed -i 's/hr_payroll_community\./woow_hr_payroll./g' {} +
-                  echo "[mujimed] Patched woow_hr_portal: hr_payslip_monthly_report/hr_payroll_community -> woow_hr_payroll"
-              fi
-
-              # ─── Build addons_path (only multi-module repos) ────────
-              ADDONS_PATH="/mnt/extra-addons"
-              for dir in /mnt/extra-addons/*/; do
-                  [ ! -d "$dir" ] && continue
-                  # Skip if this IS a module (has __manifest__.py at root)
-                  # because /mnt/extra-addons already covers it
-                  [ -f "${dir}__manifest__.py" ] && continue
-                  # Only add if it contains sub-modules
-                  for subdir in "$dir"*/; do
-                      if [ -f "${subdir}__manifest__.py" ]; then
-                          ADDONS_PATH="$ADDONS_PATH,${dir%/}"
-                          break
-                      fi
-                  done
-              done
-              ADDONS_PATH="$ADDONS_PATH,/usr/lib/python3/dist-packages/odoo/addons"
-              echo "[mujimed] addons_path: $ADDONS_PATH"
-
               # ─── First boot: initialize database ────────────────────
+              ADDONS_PATH="/mnt/extra-addons,/usr/lib/python3/dist-packages/odoo/addons"
+
               if [ ! -f "$MARKER" ]; then
                   echo "[mujimed] ============================================"
                   echo "[mujimed] FIRST BOOT - Initializing database..."
-                  echo "[mujimed] This will take 5-10 minutes."
                   echo "[mujimed] ============================================"
 
-                  # Standard Odoo 18 modules
-                  MODULES="base,web,contacts,project,calendar,mail"
-                  MODULES="$MODULES,account,sale_management,purchase"
-                  MODULES="$MODULES,stock,product,sale"
-                  MODULES="$MODULES,website"
-                  MODULES="$MODULES,loyalty,sale_loyalty,membership"
-                  MODULES="$MODULES,website_blog"
-                  MODULES="$MODULES,hr,hr_attendance,hr_expense,hr_contract,hr_holidays"
-                  MODULES="$MODULES,point_of_sale,pos_self_order,pos_loyalty"
-                  MODULES="$MODULES,payment,portal,resource"
-                  MODULES="$MODULES,im_livechat,website_livechat"
-                  MODULES="$MODULES,l10n_tw"
-
-                  # Discover available custom modules
-                  for dir in /mnt/extra-addons/*/; do
-                      if [ -f "${dir}__manifest__.py" ]; then
-                          modname=$(basename "$dir")
-                          MODULES="$MODULES,$modname"
-                          echo "  [addon] $modname"
-                      fi
-                      for subdir in "$dir"*/; do
-                          if [ -f "${subdir}__manifest__.py" ]; then
-                              modname=$(basename "$subdir")
-                              MODULES="$MODULES,$modname"
-                              echo "  [addon] $modname (sub)"
-                          fi
-                      done
-                  done
+                  MODULES="base,web"
 
                   echo "[mujimed] Installing: $MODULES"
 
-                  # Run as odoo user
                   if su -s /bin/bash odoo -c "odoo \
                       --addons-path=$ADDONS_PATH \
                       --data-dir=/var/lib/odoo \
@@ -323,7 +205,6 @@ spec:
 
               # ─── Start Odoo as odoo user ────────────────────────────
               echo "[mujimed] Starting Odoo 18 server..."
-              echo "[mujimed] Using addons_path: $ADDONS_PATH"
               exec su -s /bin/bash odoo -c "odoo --config=/etc/odoo/odoo.conf --addons-path=$ADDONS_PATH"
           ports:
             - containerPort: 8069
@@ -344,11 +225,6 @@ spec:
                   key: POSTGRES_PASSWORD
             - name: PYTHONPATH
               value: "/var/lib/odoo/.local/lib/python3.12/site-packages"
-            - name: GITHUB_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: mujimed-secrets
-                  key: GITHUB_TOKEN
           volumeMounts:
             - name: odoo-data
               mountPath: /var/lib/odoo

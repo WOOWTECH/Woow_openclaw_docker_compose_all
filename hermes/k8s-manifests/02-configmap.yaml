@@ -1,0 +1,40 @@
+# =============================================================
+# Hermes - ConfigMaps (non-secret configuration)
+# =============================================================
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cf-config
+  namespace: hermes
+  labels:
+    app.kubernetes.io/part-of: hermes
+data:
+  CF_ACCOUNT_ID: "PLACEHOLDER_ACCOUNT_ID"
+  CF_TUNNEL_ID: "PLACEHOLDER_TUNNEL_ID"
+  DOMAIN: "hermes-woowtechmag.woowtech.io"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hermes-config
+  namespace: hermes
+  labels:
+    app.kubernetes.io/part-of: hermes
+data:
+  # Domain
+  HERMES_DOMAIN: "hermes-woowtechmag.woowtech.io"
+  HERMES_BASE_URL: "https://hermes-woowtechmag.woowtech.io"
+  # WebUI
+  HERMES_WEBUI_PORT: "3000"
+  # Agent
+  HERMES_AGENT_PORT: "8080"
+  # Database
+  POSTGRES_HOST: "hermes-postgresql-svc"
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: "hermes"
+  POSTGRES_USER: "hermes"
+  # Redis
+  REDIS_HOST: "hermes-redis-svc"
+  REDIS_PORT: "6379"
+  # User
+  WANTED_UID: "1000"

@@ -1,0 +1,54 @@
+# =============================================================
+# Hermes - PersistentVolumeClaims
+# =============================================================
+
+# --- PostgreSQL Data (10Gi) ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: hermes-postgresql-pvc
+  namespace: hermes
+  labels:
+    app: hermes-postgresql
+    app.kubernetes.io/part-of: hermes
+spec:
+  storageClassName: local-path
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+# --- Redis Data (5Gi) ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: hermes-redis-pvc
+  namespace: hermes
+  labels:
+    app: hermes-redis
+    app.kubernetes.io/part-of: hermes
+spec:
+  storageClassName: local-path
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+# --- Hermes Agent Data (5Gi) ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: hermes-agent-pvc
+  namespace: hermes
+  labels:
+    app: hermes-agent
+    app.kubernetes.io/part-of: hermes
+spec:
+  storageClassName: local-path
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi

@@ -1,0 +1,139 @@
+# =============================================================
+# Hermes Agent - Main AI Assistant Service
+# =============================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hermes-agent
+  namespace: hermes
+  labels:
+    app: hermes-agent
+    app.kubernetes.io/component: agent
+    app.kubernetes.io/part-of: hermes
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: hermes-agent
+  template:
+    metadata:
+      labels:
+        app: hermes-agent
+    spec:
+      containers:
+        - name: hermes-agent
+          image: ghcr.io/nesquena/hermes-agent:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              name: http
+          env:
+            # Database
+            - name: DATABASE_URL
+              value: "postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@$(POSTGRES_HOST):$(POSTGRES_PORT)/$(POSTGRES_DB)"
+            - name: POSTGRES_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: hermes-config
+                  key: POSTGRES_HOST
+            - name: POSTGRES_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: hermes-config
+                  key: POSTGRES_PORT
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: hermes-config
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: hermes-config
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: hermes-secrets
+                  key: POSTGRES_PASSWORD
+            # Redis
+            - name: REDIS_URL
+              value: "redis://hermes-redis-svc:6379/0"
+            - name: REDIS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: hermes-config
+                  key: REDIS_HOST
+            - name: REDIS_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: hermes-config
+                  key: REDIS_PORT
+            # LLM
+            - name: MINIMAX_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: hermes-secrets
+                  key: MINIMAX_API_KEY
+            # App
+            - name: HERMES_BASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: hermes-config
+                  key: HERMES_BASE_URL
+            - name: WANTED_UID
+              valueFrom:
+                configMapKeyRef:
+                  name: hermes-config
+                  key: WANTED_UID
+          volumeMounts:
+            - name: agent-data
+              mountPath: /app/data
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            failureThreshold: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 200m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+      volumes:
+        - name: agent-data
+          persistentVolumeClaim:
+            claimName: hermes-agent-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hermes-agent-svc
+  namespace: hermes
+  labels:
+    app: hermes-agent
+    app.kubernetes.io/part-of: hermes
+spec:
+  selector:
+    app: hermes-agent
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      name: http
+  type: ClusterIP

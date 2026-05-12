@@ -43,3 +43,14 @@
         history.pushState(null, null, hash);
     }, true);
 })();
+
+/** Mark Studio — Appointment page class injection
+ *  Adds .mk-appointment-page to body on /appointment/* URLs
+ *  so Retrodandy CSS overrides can target the page.
+ */
+(function () {
+    var path = window.location.pathname.replace(/^\/en/, '');
+    if (path.indexOf('/appointment') === 0) {
+        document.body.classList.add('mk-appointment-page');
+    }
+})();

@@ -6,7 +6,7 @@
     'summary': '馬克健身按摩預約平台 — 單頁式前台',
     'author': 'WoowTech',
     'license': 'LGPL-3',
-    'depends': ['website', 'website_appointment'],
+    'depends': ['website'],
     'data': [
         'views/homepage_templates.xml',
         'views/news_templates.xml',

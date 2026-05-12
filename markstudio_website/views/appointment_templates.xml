@@ -1,22 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Override appointment type info page to match Retrodandy design -->
-    <template id="appointment_info_override"
-              inherit_id="appointment.appointment_info"
-              name="Mark Studio Appointment Info Override">
-        <xpath expr="//div[hasclass('o_appointment')]" position="before">
-            <link rel="preconnect" href="https://fonts.googleapis.com"/>
-            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
-            <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&amp;family=Noto+Sans+TC:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
-        </xpath>
-    </template>
-
-    <!-- Override appointment calendar/slots page -->
-    <template id="appointment_select_override"
-              inherit_id="appointment.appointment_select"
-              name="Mark Studio Appointment Select Override">
-        <xpath expr="//div[hasclass('o_appointment')]" position="before">
+    <!-- Inject Google Fonts globally so appointment pages get them too -->
+    <template id="markstudio_google_fonts"
+              inherit_id="website.layout"
+              name="Mark Studio Google Fonts">
+        <xpath expr="//head" position="inside">
             <link rel="preconnect" href="https://fonts.googleapis.com"/>
             <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
             <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&amp;family=Noto+Sans+TC:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>

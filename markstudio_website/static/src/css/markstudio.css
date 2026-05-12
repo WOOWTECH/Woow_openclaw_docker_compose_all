@@ -683,23 +683,35 @@ section[id] { scroll-margin-top: 80px; }
 
 /* ============================================================
    APPOINTMENT PAGE — Retrodandy override
+   Body class .mk-appointment-page injected via JS on /appointment/* URLs
    ============================================================ */
 
 /* Full-page dark background */
-.o_appointment #wrap {
+.mk-appointment-page #wrap {
     background: var(--mk-black);
     min-height: 100vh;
+    padding-bottom: 80px;
 }
 
-/* Hide default breadcrumb */
-.o_appointment .breadcrumb {
+/* Page heading — "Book an Appointment" / "Select Date & Time" */
+.mk-appointment-page #wrap h1,
+.mk-appointment-page #wrap h2.mb-4 {
+    font-family: var(--mk-serif);
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 700;
+    color: var(--mk-white);
+    text-align: center;
+}
+
+/* Breadcrumb */
+.mk-appointment-page .breadcrumb {
     background: none;
-    padding: 40px 0 0;
+    padding: 0 0 8px;
     margin-bottom: 0;
 }
 
-.o_appointment .breadcrumb-item,
-.o_appointment .breadcrumb-item a {
+.mk-appointment-page .breadcrumb-item,
+.mk-appointment-page .breadcrumb-item a {
     font-family: var(--mk-sans);
     font-size: 13px;
     color: rgba(255,255,255,0.4);
@@ -708,21 +720,20 @@ section[id] { scroll-margin-top: 80px; }
     text-transform: uppercase;
 }
 
-.o_appointment .breadcrumb-item a:hover {
+.mk-appointment-page .breadcrumb-item a:hover {
     color: var(--mk-white);
 }
 
-.o_appointment .breadcrumb-item.active {
+.mk-appointment-page .breadcrumb-item.active {
     color: rgba(255,255,255,0.6);
 }
 
-.o_appointment .breadcrumb-item + .breadcrumb-item::before {
+.mk-appointment-page .breadcrumb-item + .breadcrumb-item::before {
     color: rgba(255,255,255,0.3);
 }
 
-/* Main card redesign */
-.o_appointment .card,
-.o_appointment .o_appointment_card {
+/* Card — transparent dark with thin border */
+.mk-appointment-page .card {
     background: transparent;
     border: 1px solid rgba(255,255,255,0.3);
     border-radius: 0;
@@ -730,47 +741,68 @@ section[id] { scroll-margin-top: 80px; }
     max-width: 800px;
     margin: 40px auto;
     transition: border-color 0.3s;
+    box-shadow: none !important;
 }
 
-.o_appointment .card:hover,
-.o_appointment .o_appointment_card:hover {
+.mk-appointment-page .card:hover {
     border-color: var(--mk-white);
 }
 
-.o_appointment .card-body {
+.mk-appointment-page .card-body {
     padding: 40px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
 }
 
-/* Appointment title */
-.o_appointment .card h1,
-.o_appointment .card h2,
-.o_appointment .card h3,
-.o_appointment .card .card-title,
-.o_appointment h1[t-field],
-.o_appointment .o_appointment_card h1 {
+.mk-appointment-page .card-footer {
+    background: transparent;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    padding: 24px 40px;
+}
+
+/* Card image top — appointment list page */
+.mk-appointment-page .card-img-top {
+    background: var(--mk-dark) !important;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.mk-appointment-page .card-img-top i {
+    color: rgba(255,255,255,0.3) !important;
+}
+
+/* Card title */
+.mk-appointment-page .card h1,
+.mk-appointment-page .card h2,
+.mk-appointment-page .card h3,
+.mk-appointment-page .card h5,
+.mk-appointment-page .card .card-title {
     font-family: var(--mk-serif);
-    font-size: 28px;
+    font-size: 24px;
     font-weight: 700;
     color: var(--mk-white);
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     line-height: 1.3;
 }
 
-/* All text white */
-.o_appointment .card p,
-.o_appointment .card span,
-.o_appointment .card label,
-.o_appointment .card div {
+/* All text inside cards — white */
+.mk-appointment-page .card p,
+.mk-appointment-page .card span,
+.mk-appointment-page .card label,
+.mk-appointment-page .card div,
+.mk-appointment-page .card small {
     color: rgba(255,255,255,0.7);
     font-family: var(--mk-sans);
 }
 
+.mk-appointment-page .card .card-text {
+    font-size: 14px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.8;
+}
+
 /* Duration badge */
-.o_appointment .badge,
-.o_appointment .card .badge {
+.mk-appointment-page .badge {
     background: transparent !important;
     border: 1px solid rgba(255,255,255,0.3);
     border-radius: 0;
@@ -779,20 +811,17 @@ section[id] { scroll-margin-top: 80px; }
     font-weight: 400;
     color: rgba(255,255,255,0.6);
     padding: 6px 16px;
-    margin-bottom: 24px;
 }
 
-.o_appointment .badge i {
+.mk-appointment-page .badge i {
     margin-right: 6px;
     color: rgba(255,255,255,0.5);
 }
 
 /* CTA button — replaces purple btn-primary */
-.o_appointment .btn-primary,
-.o_appointment .btn-appointment,
-.o_appointment a.btn-primary,
-.o_appointment a.btn-lg,
-.o_appointment .card .btn {
+.mk-appointment-page .btn-primary,
+.mk-appointment-page a.btn-primary,
+.mk-appointment-page .card .btn {
     display: inline-block;
     background: transparent !important;
     color: var(--mk-white) !important;
@@ -806,45 +835,20 @@ section[id] { scroll-margin-top: 80px; }
     letter-spacing: 2px;
     text-transform: uppercase;
     transition: all 0.3s;
-    margin-top: 16px;
 }
 
-.o_appointment .btn-primary:hover,
-.o_appointment .btn-appointment:hover,
-.o_appointment a.btn-primary:hover,
-.o_appointment a.btn-lg:hover,
-.o_appointment .card .btn:hover {
+.mk-appointment-page .btn-primary:hover,
+.mk-appointment-page a.btn-primary:hover,
+.mk-appointment-page .card .btn:hover {
     background: var(--mk-white) !important;
     color: var(--mk-black) !important;
     text-decoration: none;
 }
 
-/* Section heading above card */
-.o_appointment .container > h1,
-.o_appointment .container > h2 {
-    font-family: var(--mk-serif);
-    font-size: clamp(32px, 5vw, 56px);
-    font-weight: 700;
-    color: var(--mk-white);
-    text-align: center;
-    margin-top: 60px;
-    margin-bottom: 16px;
-}
-
-/* Description text */
-.o_appointment .card-text,
-.o_appointment .o_appointment_card p {
-    font-family: var(--mk-sans);
-    font-size: 14px;
-    color: rgba(255,255,255,0.6);
-    line-height: 1.8;
-    margin-bottom: 24px;
-}
-
-/* Calendar/date selection page overrides */
-.o_appointment select,
-.o_appointment .form-select,
-.o_appointment .form-control {
+/* Calendar/date selection page */
+.mk-appointment-page select,
+.mk-appointment-page .form-select,
+.mk-appointment-page .form-control {
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.2);
     border-radius: 0;
@@ -854,43 +858,44 @@ section[id] { scroll-margin-top: 80px; }
     padding: 10px 16px;
 }
 
-.o_appointment select:focus,
-.o_appointment .form-select:focus,
-.o_appointment .form-control:focus {
+.mk-appointment-page select:focus,
+.mk-appointment-page .form-select:focus,
+.mk-appointment-page .form-control:focus {
     border-color: rgba(255,255,255,0.5);
     box-shadow: none;
     background: rgba(255,255,255,0.08);
     color: var(--mk-white);
 }
 
-/* Calendar slots */
-.o_appointment .o_appointment_select_slots .card {
-    background: transparent;
-    border: 1px solid rgba(255,255,255,0.2);
+/* Schedule page — calendar card full width */
+.mk-appointment-page #appointment-reservation .card,
+.mk-appointment-page #available-slots .card {
     max-width: none;
 }
 
-.o_appointment .o_appointment_select_slots h2,
-.o_appointment .o_appointment_select_slots h3 {
-    font-size: 20px;
+/* Schedule page heading */
+.mk-appointment-page h5 {
+    font-family: var(--mk-sans);
+    font-size: 16px;
+    color: var(--mk-white);
 }
 
-/* Calendar day headers */
-.o_appointment table th {
+.mk-appointment-page .text-muted {
+    color: rgba(255,255,255,0.4) !important;
+}
+
+/* Loading spinner */
+.mk-appointment-page .fa-spinner {
+    color: rgba(255,255,255,0.5);
+}
+
+.mk-appointment-page #appointment-reservation p {
     color: rgba(255,255,255,0.5);
     font-family: var(--mk-sans);
-    font-size: 13px;
-    border-color: rgba(255,255,255,0.1);
 }
 
-.o_appointment table td {
-    color: rgba(255,255,255,0.7);
-    border-color: rgba(255,255,255,0.1);
-}
-
-/* Available time slots */
-.o_appointment .btn-outline-primary,
-.o_appointment .o_slot_button {
+/* Available time slot buttons */
+.mk-appointment-page .btn-outline-primary {
     background: transparent !important;
     color: var(--mk-white) !important;
     border: 1px solid rgba(255,255,255,0.3) !important;
@@ -901,24 +906,22 @@ section[id] { scroll-margin-top: 80px; }
     transition: all 0.3s;
 }
 
-.o_appointment .btn-outline-primary:hover,
-.o_appointment .o_slot_button:hover {
+.mk-appointment-page .btn-outline-primary:hover {
     background: var(--mk-white) !important;
     color: var(--mk-black) !important;
     border-color: var(--mk-white) !important;
 }
 
-.o_appointment .btn-outline-primary.active,
-.o_appointment .o_slot_button.active {
+.mk-appointment-page .btn-outline-primary.active {
     background: var(--mk-white) !important;
     color: var(--mk-black) !important;
 }
 
-/* Form inputs on appointment form */
-.o_appointment input[type="text"],
-.o_appointment input[type="email"],
-.o_appointment input[type="tel"],
-.o_appointment textarea {
+/* Form inputs */
+.mk-appointment-page input[type="text"],
+.mk-appointment-page input[type="email"],
+.mk-appointment-page input[type="tel"],
+.mk-appointment-page textarea {
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.2);
     border-radius: 0;
@@ -927,12 +930,12 @@ section[id] { scroll-margin-top: 80px; }
     padding: 10px 16px;
 }
 
-.o_appointment input::placeholder,
-.o_appointment textarea::placeholder {
+.mk-appointment-page input::placeholder,
+.mk-appointment-page textarea::placeholder {
     color: rgba(255,255,255,0.3);
 }
 
-.o_appointment label {
+.mk-appointment-page label {
     font-family: var(--mk-sans);
     font-size: 13px;
     color: rgba(255,255,255,0.5);
@@ -942,25 +945,19 @@ section[id] { scroll-margin-top: 80px; }
 }
 
 /* Links */
-.o_appointment a:not(.btn) {
+.mk-appointment-page a:not(.btn):not(.breadcrumb-item):not(.navbar-brand):not(.nav-link):not(.dropdown-item) {
     color: rgba(255,255,255,0.6);
     transition: color 0.3s;
 }
 
-.o_appointment a:not(.btn):hover {
+.mk-appointment-page a:not(.btn):not(.breadcrumb-item):not(.navbar-brand):not(.nav-link):not(.dropdown-item):hover {
     color: var(--mk-white);
 }
 
-/* Remove any default shadows */
-.o_appointment .card,
-.o_appointment .shadow,
-.o_appointment .shadow-sm {
+/* Remove default shadows */
+.mk-appointment-page .shadow,
+.mk-appointment-page .shadow-sm {
     box-shadow: none !important;
-}
-
-/* Footer gap — ensure dark bg extends */
-.o_appointment #wrap {
-    padding-bottom: 80px;
 }
 
 /* ============================================================

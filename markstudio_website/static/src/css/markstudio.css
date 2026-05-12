@@ -682,6 +682,288 @@ section[id] { scroll-margin-top: 80px; }
 }
 
 /* ============================================================
+   APPOINTMENT PAGE — Retrodandy override
+   ============================================================ */
+
+/* Full-page dark background */
+.o_appointment #wrap {
+    background: var(--mk-black);
+    min-height: 100vh;
+}
+
+/* Hide default breadcrumb */
+.o_appointment .breadcrumb {
+    background: none;
+    padding: 40px 0 0;
+    margin-bottom: 0;
+}
+
+.o_appointment .breadcrumb-item,
+.o_appointment .breadcrumb-item a {
+    font-family: var(--mk-sans);
+    font-size: 13px;
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.o_appointment .breadcrumb-item a:hover {
+    color: var(--mk-white);
+}
+
+.o_appointment .breadcrumb-item.active {
+    color: rgba(255,255,255,0.6);
+}
+
+.o_appointment .breadcrumb-item + .breadcrumb-item::before {
+    color: rgba(255,255,255,0.3);
+}
+
+/* Main card redesign */
+.o_appointment .card,
+.o_appointment .o_appointment_card {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 0;
+    overflow: hidden;
+    max-width: 800px;
+    margin: 40px auto;
+    transition: border-color 0.3s;
+}
+
+.o_appointment .card:hover,
+.o_appointment .o_appointment_card:hover {
+    border-color: var(--mk-white);
+}
+
+.o_appointment .card-body {
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* Appointment title */
+.o_appointment .card h1,
+.o_appointment .card h2,
+.o_appointment .card h3,
+.o_appointment .card .card-title,
+.o_appointment h1[t-field],
+.o_appointment .o_appointment_card h1 {
+    font-family: var(--mk-serif);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--mk-white);
+    margin-bottom: 16px;
+    line-height: 1.3;
+}
+
+/* All text white */
+.o_appointment .card p,
+.o_appointment .card span,
+.o_appointment .card label,
+.o_appointment .card div {
+    color: rgba(255,255,255,0.7);
+    font-family: var(--mk-sans);
+}
+
+/* Duration badge */
+.o_appointment .badge,
+.o_appointment .card .badge {
+    background: transparent !important;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 0;
+    font-family: var(--mk-sans);
+    font-size: 13px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.6);
+    padding: 6px 16px;
+    margin-bottom: 24px;
+}
+
+.o_appointment .badge i {
+    margin-right: 6px;
+    color: rgba(255,255,255,0.5);
+}
+
+/* CTA button — replaces purple btn-primary */
+.o_appointment .btn-primary,
+.o_appointment .btn-appointment,
+.o_appointment a.btn-primary,
+.o_appointment a.btn-lg,
+.o_appointment .card .btn {
+    display: inline-block;
+    background: transparent !important;
+    color: var(--mk-white) !important;
+    font-family: var(--mk-sans);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 14px 48px;
+    border: 2px solid var(--mk-white) !important;
+    border-radius: 0 !important;
+    text-decoration: none;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.3s;
+    margin-top: 16px;
+}
+
+.o_appointment .btn-primary:hover,
+.o_appointment .btn-appointment:hover,
+.o_appointment a.btn-primary:hover,
+.o_appointment a.btn-lg:hover,
+.o_appointment .card .btn:hover {
+    background: var(--mk-white) !important;
+    color: var(--mk-black) !important;
+    text-decoration: none;
+}
+
+/* Section heading above card */
+.o_appointment .container > h1,
+.o_appointment .container > h2 {
+    font-family: var(--mk-serif);
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: 700;
+    color: var(--mk-white);
+    text-align: center;
+    margin-top: 60px;
+    margin-bottom: 16px;
+}
+
+/* Description text */
+.o_appointment .card-text,
+.o_appointment .o_appointment_card p {
+    font-family: var(--mk-sans);
+    font-size: 14px;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.8;
+    margin-bottom: 24px;
+}
+
+/* Calendar/date selection page overrides */
+.o_appointment select,
+.o_appointment .form-select,
+.o_appointment .form-control {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 0;
+    color: var(--mk-white);
+    font-family: var(--mk-sans);
+    font-size: 14px;
+    padding: 10px 16px;
+}
+
+.o_appointment select:focus,
+.o_appointment .form-select:focus,
+.o_appointment .form-control:focus {
+    border-color: rgba(255,255,255,0.5);
+    box-shadow: none;
+    background: rgba(255,255,255,0.08);
+    color: var(--mk-white);
+}
+
+/* Calendar slots */
+.o_appointment .o_appointment_select_slots .card {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    max-width: none;
+}
+
+.o_appointment .o_appointment_select_slots h2,
+.o_appointment .o_appointment_select_slots h3 {
+    font-size: 20px;
+}
+
+/* Calendar day headers */
+.o_appointment table th {
+    color: rgba(255,255,255,0.5);
+    font-family: var(--mk-sans);
+    font-size: 13px;
+    border-color: rgba(255,255,255,0.1);
+}
+
+.o_appointment table td {
+    color: rgba(255,255,255,0.7);
+    border-color: rgba(255,255,255,0.1);
+}
+
+/* Available time slots */
+.o_appointment .btn-outline-primary,
+.o_appointment .o_slot_button {
+    background: transparent !important;
+    color: var(--mk-white) !important;
+    border: 1px solid rgba(255,255,255,0.3) !important;
+    border-radius: 0 !important;
+    font-family: var(--mk-sans);
+    font-size: 13px;
+    padding: 8px 20px;
+    transition: all 0.3s;
+}
+
+.o_appointment .btn-outline-primary:hover,
+.o_appointment .o_slot_button:hover {
+    background: var(--mk-white) !important;
+    color: var(--mk-black) !important;
+    border-color: var(--mk-white) !important;
+}
+
+.o_appointment .btn-outline-primary.active,
+.o_appointment .o_slot_button.active {
+    background: var(--mk-white) !important;
+    color: var(--mk-black) !important;
+}
+
+/* Form inputs on appointment form */
+.o_appointment input[type="text"],
+.o_appointment input[type="email"],
+.o_appointment input[type="tel"],
+.o_appointment textarea {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 0;
+    color: var(--mk-white);
+    font-family: var(--mk-sans);
+    padding: 10px 16px;
+}
+
+.o_appointment input::placeholder,
+.o_appointment textarea::placeholder {
+    color: rgba(255,255,255,0.3);
+}
+
+.o_appointment label {
+    font-family: var(--mk-sans);
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+}
+
+/* Links */
+.o_appointment a:not(.btn) {
+    color: rgba(255,255,255,0.6);
+    transition: color 0.3s;
+}
+
+.o_appointment a:not(.btn):hover {
+    color: var(--mk-white);
+}
+
+/* Remove any default shadows */
+.o_appointment .card,
+.o_appointment .shadow,
+.o_appointment .shadow-sm {
+    box-shadow: none !important;
+}
+
+/* Footer gap — ensure dark bg extends */
+.o_appointment #wrap {
+    padding-bottom: 80px;
+}
+
+/* ============================================================
    RESPONSIVE
    ============================================================ */
 @media (max-width: 991px) {

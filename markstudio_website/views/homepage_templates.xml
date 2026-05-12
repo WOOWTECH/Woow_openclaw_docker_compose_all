@@ -7,20 +7,20 @@
             <t t-set="head">
                 <link rel="preconnect" href="https://fonts.googleapis.com"/>
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
-                <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,700;0,800;1,400;1,700;1,800&amp;family=Noto+Sans+TC:wght@300;400;500;700;900&amp;family=Lato:wght@300;400;700;900&amp;family=Oswald:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+                <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&amp;family=Noto+Sans+TC:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
             </t>
 
             <!-- ===== 1. HERO ===== -->
             <section id="hero" class="mk-hero">
                 <div class="mk-hero-bg"/>
                 <div class="mk-hero-content">
-                    <h1 class="mk-hero-title">STRETCH YOUR BODY</h1>
+                    <h1 class="mk-hero-title">MARK STUDIO</h1>
+                    <p class="mk-hero-subtitle">專業按摩 · 伸展 · 放鬆</p>
                 </div>
             </section>
 
             <!-- ===== 2. STATS ===== -->
             <section id="stats" class="mk-stats">
-                <div class="mk-stats-dots"/>
                 <div class="mk-stats-circles">
                     <div class="mk-stat-circle">
                         <span class="mk-stat-desc">專業按摩師</span>
@@ -43,7 +43,6 @@
 
             <!-- ===== 3. SERVICES (服務介紹) ===== -->
             <section id="services" class="mk-services">
-                <div class="mk-stats-dots"/>
                 <div class="container position-relative">
                     <h2 class="mk-sec-title">服務</h2>
                     <div class="mk-sec-line"/>
@@ -136,7 +135,6 @@
 
             <!-- ===== 6. BOOKING CTA (預約) ===== -->
             <section id="booking" class="mk-booking-cta">
-                <div class="mk-stats-dots"/>
                 <div class="container position-relative">
                     <h2 class="mk-big-serif" style="color: var(--mk-white);">Ready to Feel Better?</h2>
                     <p class="mk-booking-sub text-center">預約您的第一次伸展體驗，感受身體的改變</p>

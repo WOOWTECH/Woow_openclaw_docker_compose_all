@@ -765,11 +765,26 @@ section[id] { scroll-margin-top: 80px; }
 /* Card image top — appointment list page */
 .mk-appointment-page .card-img-top {
     background: var(--mk-dark) !important;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid rgba(255,255,255,0.15);
 }
 
 .mk-appointment-page .card-img-top i {
-    color: rgba(255,255,255,0.3) !important;
+    color: rgba(255,255,255,0.5) !important;
+}
+
+/* Card header — form page */
+.mk-appointment-page .card-header {
+    background: transparent !important;
+    border-bottom: 1px solid rgba(255,255,255,0.15) !important;
+    padding: 24px 40px;
+}
+
+.mk-appointment-page .card-header h4,
+.mk-appointment-page .card-header .mb-0 {
+    font-family: var(--mk-serif) !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    color: var(--mk-white) !important;
 }
 
 /* Card title */
@@ -805,18 +820,18 @@ section[id] { scroll-margin-top: 80px; }
 /* Duration badge */
 .mk-appointment-page .badge {
     background: transparent !important;
-    border: 1px solid rgba(255,255,255,0.3);
-    border-radius: 0;
+    border: 1px solid rgba(255,255,255,0.5) !important;
+    border-radius: 0 !important;
     font-family: var(--mk-sans);
     font-size: 13px;
     font-weight: 400;
-    color: rgba(255,255,255,0.6);
+    color: rgba(255,255,255,0.8) !important;
     padding: 6px 16px;
 }
 
 .mk-appointment-page .badge i {
     margin-right: 6px;
-    color: rgba(255,255,255,0.5);
+    color: rgba(255,255,255,0.7) !important;
 }
 
 /* CTA button — replaces purple btn-primary */
@@ -846,14 +861,14 @@ section[id] { scroll-margin-top: 80px; }
     text-decoration: none;
 }
 
-/* Calendar/date selection page */
+/* Calendar/date selection page & form controls */
 .mk-appointment-page select,
 .mk-appointment-page .form-select,
 .mk-appointment-page .form-control {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 0;
-    color: var(--mk-white);
+    background: rgba(255,255,255,0.05) !important;
+    border: 1px solid rgba(255,255,255,0.3) !important;
+    border-radius: 0 !important;
+    color: var(--mk-white) !important;
     font-family: var(--mk-sans);
     font-size: 14px;
     padding: 10px 16px;
@@ -862,16 +877,64 @@ section[id] { scroll-margin-top: 80px; }
 .mk-appointment-page select:focus,
 .mk-appointment-page .form-select:focus,
 .mk-appointment-page .form-control:focus {
-    border-color: rgba(255,255,255,0.5);
-    box-shadow: none;
-    background: rgba(255,255,255,0.08);
-    color: var(--mk-white);
+    border-color: rgba(255,255,255,0.6) !important;
+    box-shadow: none !important;
+    background: rgba(255,255,255,0.08) !important;
+    color: var(--mk-white) !important;
 }
 
 /* Schedule page — calendar card full width */
 .mk-appointment-page #appointment-reservation .card,
 .mk-appointment-page #available-slots .card {
     max-width: none;
+}
+
+/* Calendar date buttons */
+.mk-appointment-page [role="application"] button {
+    background: transparent !important;
+    color: rgba(255,255,255,0.8) !important;
+    border: 1px solid rgba(255,255,255,0.25) !important;
+    border-radius: 0 !important;
+    font-family: var(--mk-sans);
+    transition: all 0.2s;
+}
+
+/* Unavailable dates */
+.mk-appointment-page [role="application"] button[aria-label*="unavailable"] {
+    color: rgba(255,255,255,0.25) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+}
+
+/* Selected date — high contrast (class .selected from JS calendar) */
+.mk-appointment-page [role="application"] button[aria-label*="selected"],
+.mk-appointment-page .reservation-day.selected,
+.mk-appointment-page button.selected {
+    background: var(--mk-white) !important;
+    color: var(--mk-black) !important;
+    border-color: var(--mk-white) !important;
+    font-weight: 700;
+}
+
+/* Available date hover */
+.mk-appointment-page [role="application"] button:not([aria-label*="unavailable"]):hover {
+    background: rgba(255,255,255,0.15) !important;
+    border-color: rgba(255,255,255,0.5) !important;
+}
+
+/* Calendar month navigation */
+.mk-appointment-page [role="application"] h5 {
+    color: var(--mk-white) !important;
+    font-family: var(--mk-serif) !important;
+    font-size: 20px !important;
+}
+
+/* Calendar day-of-week headers */
+.mk-appointment-page [role="application"] strong {
+    color: rgba(255,255,255,0.5) !important;
+    font-family: var(--mk-sans);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 /* Schedule page heading */
@@ -895,18 +958,24 @@ section[id] { scroll-margin-top: 80px; }
     font-family: var(--mk-sans);
 }
 
-/* Available time slot buttons */
+/* Available time slot buttons — override blue to monochrome */
+.mk-appointment-page #slots-container a,
+.mk-appointment-page #available-slots a,
 .mk-appointment-page .btn-outline-primary {
     background: transparent !important;
     color: var(--mk-white) !important;
-    border: 1px solid rgba(255,255,255,0.3) !important;
+    border: 1px solid rgba(255,255,255,0.4) !important;
     border-radius: 0 !important;
     font-family: var(--mk-sans);
-    font-size: 13px;
-    padding: 8px 20px;
+    font-size: 14px;
+    padding: 12px 20px;
     transition: all 0.3s;
+    box-shadow: none !important;
+    text-decoration: none;
 }
 
+.mk-appointment-page #slots-container a:hover,
+.mk-appointment-page #available-slots a:hover,
 .mk-appointment-page .btn-outline-primary:hover {
     background: var(--mk-white) !important;
     color: var(--mk-black) !important;
@@ -918,31 +987,74 @@ section[id] { scroll-margin-top: 80px; }
     color: var(--mk-black) !important;
 }
 
+/* Time slot sub-text ("1 available") */
+.mk-appointment-page #slots-container a div,
+.mk-appointment-page #slots-container a span {
+    color: rgba(255,255,255,0.5) !important;
+    font-size: 12px;
+}
+
+.mk-appointment-page #slots-container a:hover div,
+.mk-appointment-page #slots-container a:hover span {
+    color: rgba(0,0,0,0.5) !important;
+}
+
+/* Alert info box — form page summary (override cyan bg) */
+.mk-appointment-page .alert-info {
+    background: rgba(255,255,255,0.05) !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+    border-radius: 0 !important;
+    color: rgba(255,255,255,0.8) !important;
+}
+
+.mk-appointment-page .alert-info strong {
+    color: var(--mk-white) !important;
+}
+
+.mk-appointment-page .alert-info small,
+.mk-appointment-page .alert-info .text-muted {
+    color: rgba(255,255,255,0.5) !important;
+}
+
+.mk-appointment-page .alert-info i {
+    color: rgba(255,255,255,0.6) !important;
+}
+
 /* Form inputs */
 .mk-appointment-page input[type="text"],
 .mk-appointment-page input[type="email"],
 .mk-appointment-page input[type="tel"],
-.mk-appointment-page textarea {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 0;
-    color: var(--mk-white);
+.mk-appointment-page input[type="number"],
+.mk-appointment-page textarea,
+.mk-appointment-page .card .form-control,
+.mk-appointment-page .card-body input {
+    background: rgba(255,255,255,0.05) !important;
+    border: 1px solid rgba(255,255,255,0.3) !important;
+    border-radius: 0 !important;
+    color: var(--mk-white) !important;
     font-family: var(--mk-sans);
     padding: 10px 16px;
 }
 
 .mk-appointment-page input::placeholder,
 .mk-appointment-page textarea::placeholder {
-    color: rgba(255,255,255,0.3);
+    color: rgba(255,255,255,0.3) !important;
 }
 
-.mk-appointment-page label {
+.mk-appointment-page label,
+.mk-appointment-page .form-label {
     font-family: var(--mk-sans);
     font-size: 13px;
-    color: rgba(255,255,255,0.5);
+    color: rgba(255,255,255,0.6) !important;
     text-transform: uppercase;
     letter-spacing: 1px;
     margin-bottom: 6px;
+}
+
+/* Privacy policy text */
+.mk-appointment-page p.text-muted,
+.mk-appointment-page .text-center.text-muted {
+    color: rgba(255,255,255,0.5) !important;
 }
 
 /* Links */

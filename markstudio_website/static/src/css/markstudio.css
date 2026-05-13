@@ -745,9 +745,9 @@ header#top .navbar .dropdown-toggle {
     color: var(--mk-white) !important;
 }
 
-/* Mobile hamburger — visible white icon */
+/* Mobile hamburger — bright white icon */
 header#top .navbar-toggler {
-    border: 1px solid rgba(255,255,255,0.5) !important;
+    border: 1px solid var(--mk-white) !important;
     padding: 6px 10px !important;
     opacity: 1 !important;
 }
@@ -765,8 +765,9 @@ header#top .o_header_mobile .offcanvas {
     background: var(--mk-black) !important;
 }
 
-header#top .offcanvas .nav-link,
-header#top .offcanvas a {
+/* Sidebar nav links (exclude .btn-close) */
+header#top .offcanvas .nav-link:not(.btn-close),
+header#top .offcanvas a:not(.btn-close) {
     color: var(--mk-white) !important;
     background: none !important;
     border: none !important;
@@ -778,17 +779,47 @@ header#top .offcanvas a {
     padding: 12px 20px !important;
 }
 
-header#top .offcanvas .nav-link:hover,
-header#top .offcanvas a:hover {
+header#top .offcanvas .nav-link:not(.btn-close):hover,
+header#top .offcanvas a:not(.btn-close):hover {
     color: rgba(255,255,255,0.6) !important;
 }
 
+/* Sidebar close button (X) — bright white, fully opaque */
 header#top .offcanvas .btn-close {
     filter: invert(1) !important;
+    opacity: 1 !important;
+    padding: 16px !important;
+    margin: 8px !important;
+}
+
+header#top .offcanvas .btn-close:hover {
+    opacity: 0.7 !important;
 }
 
 header#top .offcanvas-header {
     border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Language selector dropdown — white text */
+header#top .js_language_selector .dropdown-menu {
+    background: var(--mk-dark) !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+    border-radius: 0 !important;
+}
+
+header#top .js_language_selector .dropdown-item {
+    color: var(--mk-white) !important;
+}
+
+header#top .js_language_selector .dropdown-item:hover {
+    background: rgba(255,255,255,0.1) !important;
+}
+
+/* Search button — visible */
+header#top .oe_search_button {
+    color: var(--mk-white) !important;
+    background: transparent !important;
+    border-color: rgba(255,255,255,0.3) !important;
 }
 
 /* ============================================================

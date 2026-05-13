@@ -745,19 +745,50 @@ header#top .navbar .dropdown-toggle {
     color: var(--mk-white) !important;
 }
 
-/* Mobile hamburger — white */
+/* Mobile hamburger — visible white icon */
 header#top .navbar-toggler {
-    border-color: rgba(255,255,255,0.3) !important;
+    border: 1px solid rgba(255,255,255,0.5) !important;
+    padding: 6px 10px !important;
+    opacity: 1 !important;
 }
 
-header#top .navbar-toggler .navbar-toggler-icon {
-    filter: invert(1);
+header#top .navbar-toggler .navbar-toggler-icon,
+header#top .navbar-toggler .oi {
+    filter: invert(1) brightness(2) !important;
+    color: var(--mk-white) !important;
 }
 
-/* Mobile menu — black background */
+/* Mobile offcanvas/sidebar — black bg, white links */
 header#top .offcanvas,
-header#top .navbar-collapse {
+header#top .navbar-collapse,
+header#top .o_header_mobile .offcanvas {
     background: var(--mk-black) !important;
+}
+
+header#top .offcanvas .nav-link,
+header#top .offcanvas a {
+    color: var(--mk-white) !important;
+    background: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    font-family: var(--mk-sans) !important;
+    font-size: 14px !important;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 12px 20px !important;
+}
+
+header#top .offcanvas .nav-link:hover,
+header#top .offcanvas a:hover {
+    color: rgba(255,255,255,0.6) !important;
+}
+
+header#top .offcanvas .btn-close {
+    filter: invert(1) !important;
+}
+
+header#top .offcanvas-header {
+    border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
 /* ============================================================
@@ -1314,9 +1345,25 @@ footer#bottom .s_social_media i:hover {
     color: var(--mk-black) !important;
 }
 
-/* Footer logo — grayscale */
+/* Footer logo — match header logo size */
+footer#bottom .o_footer_logo {
+    max-width: 120px !important;
+    display: block !important;
+    margin: 0 auto !important;
+}
+
 footer#bottom .o_footer_logo img {
     filter: brightness(10);
+    max-width: 120px !important;
+    width: 120px !important;
+    height: auto !important;
+}
+
+/* Constrain footer logo parent column on all screens */
+footer#bottom [class*="offset-lg-5"] {
+    max-width: 140px !important;
+    margin: 0 auto !important;
+    float: none !important;
 }
 
 /* Powered by Odoo — subtle */

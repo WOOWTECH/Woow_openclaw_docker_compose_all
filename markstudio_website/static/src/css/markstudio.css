@@ -698,6 +698,23 @@ section[id] { scroll-margin-top: 80px; }
     background: var(--mk-black);
     min-height: 100vh;
     padding-bottom: 80px;
+    position: relative;
+}
+
+/* Semi-transparent background image for schedule & form pages */
+.mk-appointment-page #wrap::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background: url('/markstudio_website/static/src/img/svc-02-stretch.jpg?v=3') center center / cover no-repeat;
+    filter: grayscale(1) brightness(0.15);
+    pointer-events: none;
+}
+
+.mk-appointment-page #wrap > * {
+    position: relative;
+    z-index: 1;
 }
 
 /* Page heading — "Book an Appointment" / "Select Date & Time" */
@@ -769,14 +786,16 @@ section[id] { scroll-margin-top: 80px; }
     padding: 24px 40px;
 }
 
-/* Card image top — appointment list page */
+/* Card image top — appointment list page: replace icon with massage photo */
 .mk-appointment-page .card-img-top {
-    background: var(--mk-dark) !important;
+    background: url('/markstudio_website/static/src/img/svc-01-massage.jpg?v=3') center center / cover no-repeat !important;
     border-bottom: 1px solid rgba(255,255,255,0.15);
+    height: 200px !important;
+    filter: grayscale(1) brightness(0.7);
 }
 
 .mk-appointment-page .card-img-top i {
-    color: rgba(255,255,255,0.5) !important;
+    display: none !important;
 }
 
 /* Card header — form page */

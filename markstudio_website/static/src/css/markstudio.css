@@ -38,7 +38,7 @@ section[id] { scroll-margin-top: 80px; }
     position: absolute;
     inset: 0;
     background: url('/markstudio_website/static/src/img/hero-bg.jpg') center center / cover no-repeat;
-    filter: brightness(0.6);
+    filter: grayscale(1) brightness(0.5);
 }
 
 .mk-hero-content {
@@ -249,6 +249,13 @@ section[id] { scroll-margin-top: 80px; }
 .mk-step-img img {
     min-height: 200px;
     max-height: 260px;
+}
+
+/* Retrodandy grayscale — all content images */
+.mk-svc-img img,
+.mk-step-img img,
+.mk-booking-card-img img {
+    filter: grayscale(1) brightness(0.85);
 }
 
 /* Placeholders — square corners */

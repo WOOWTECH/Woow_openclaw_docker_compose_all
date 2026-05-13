@@ -4,6 +4,7 @@
    ============================================================ */
 
 /* --- Do NOT use @import — breaks Odoo CSS pipeline --- */
+/* v4: Retrodandy navbar redesign */
 
 /* --- Tokens --- */
 :root {
@@ -670,22 +671,88 @@ section[id] { scroll-margin-top: 80px; }
 .markstudio-video-card:hover { opacity: 0.85; }
 
 /* ============================================================
-   NAVBAR — CTA button (gold, square corners)
+   NAVBAR — Retrodandy style (black bg, white text, minimal)
    ============================================================ */
+
+/* Black background, no shadow */
+header#top .navbar {
+    background: var(--mk-black) !important;
+    box-shadow: none !important;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Nav links — white, uppercase, clean */
+#top_menu .nav-link {
+    color: var(--mk-white) !important;
+    font-family: var(--mk-sans);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    background: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 8px 16px !important;
+    transition: color 0.3s;
+}
+
+#top_menu .nav-link:hover {
+    color: rgba(255,255,255,0.6) !important;
+}
+
+#top_menu .nav-link.active {
+    color: var(--mk-white) !important;
+}
+
+/* CTA button — white outlined, square corners */
 #top_menu > li:last-child > a {
-    background: var(--mk-gold);
-    color: var(--mk-black) !important;
-    font-weight: 700;
+    background: transparent !important;
+    color: var(--mk-white) !important;
+    font-weight: 500;
+    font-size: 13px;
     padding: 8px 24px !important;
-    border-radius: 0;
+    border: 1px solid var(--mk-white) !important;
+    border-radius: 0 !important;
     margin-left: 16px;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
     transition: all 0.3s;
 }
 
 #top_menu > li:last-child > a:hover {
-    background: #d4a63a;
-    transform: translateY(-1px);
+    background: var(--mk-white) !important;
+    color: var(--mk-black) !important;
+}
+
+/* Logo — ensure visible on black */
+header#top .navbar-brand img {
+    filter: brightness(10);
+}
+
+/* Search, language, sign-in — white icons */
+header#top .navbar .oi,
+header#top .navbar .fa,
+header#top .navbar .btn {
+    color: var(--mk-white) !important;
+}
+
+header#top .navbar .dropdown-toggle {
+    color: var(--mk-white) !important;
+}
+
+/* Mobile hamburger — white */
+header#top .navbar-toggler {
+    border-color: rgba(255,255,255,0.3) !important;
+}
+
+header#top .navbar-toggler .navbar-toggler-icon {
+    filter: invert(1);
+}
+
+/* Mobile menu — black background */
+header#top .offcanvas,
+header#top .navbar-collapse {
+    background: var(--mk-black) !important;
 }
 
 /* ============================================================

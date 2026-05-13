@@ -745,16 +745,21 @@ header#top .navbar .dropdown-toggle {
     color: var(--mk-white) !important;
 }
 
-/* Mobile hamburger — bright white icon */
-header#top .navbar-toggler {
+/* Mobile hamburger — bright white icon
+   Odoo uses .nav-link.btn (not .navbar-toggler) for the toggle button */
+header#top .navbar-toggler,
+header#top button[aria-label="Toggle navigation"] {
     border: 1px solid var(--mk-white) !important;
     padding: 6px 10px !important;
     opacity: 1 !important;
 }
 
-header#top .navbar-toggler .navbar-toggler-icon,
-header#top .navbar-toggler .oi {
+header#top .navbar-toggler-icon {
     filter: invert(1) brightness(2) !important;
+}
+
+header#top .navbar-toggler .oi,
+header#top button[aria-label="Toggle navigation"] .oi {
     color: var(--mk-white) !important;
 }
 

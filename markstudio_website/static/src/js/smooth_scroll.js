@@ -54,3 +54,52 @@
         document.body.classList.add('mk-appointment-page');
     }
 })();
+
+/** Mark Studio — Enhance appointment detail card
+ *  Restructures /appointment/N page to match homepage booking card layout.
+ */
+(function () {
+    var path = window.location.pathname.replace(/^\/en/, '');
+    // Only on /appointment/N (not /appointment, /appointment/N/schedule, /appointment/N/book)
+    if (!/^\/appointment\/\d+$/.test(path)) return;
+
+    function enhance() {
+        var card = document.querySelector('.card.shadow');
+        if (!card) return;
+        var body = card.querySelector('.card-body');
+        if (!body) return;
+
+        // Add mk-appt-detail class for CSS targeting
+        card.classList.add('mk-appt-detail');
+
+        // Create image div
+        var imgDiv = document.createElement('div');
+        imgDiv.className = 'mk-appt-detail-img';
+        card.insertBefore(imgDiv, body);
+
+        // Replace badge text and add meta info
+        var badgeContainer = body.querySelector('.mb-3');
+        if (badgeContainer) {
+            badgeContainer.innerHTML =
+                '<span class="mk-appt-meta"><i class="fa fa-clock-o"></i> 60 分鐘</span>' +
+                '<span class="mk-appt-meta"><i class="fa fa-user"></i> 馬克</span>' +
+                '<span class="mk-appt-meta"><i class="fa fa-tag"></i> 免費體驗</span>';
+            badgeContainer.className = 'mk-appt-meta-row';
+        }
+
+        // Add description before button
+        var btn = body.querySelector('.btn');
+        if (btn) {
+            var desc = document.createElement('p');
+            desc.className = 'mk-appt-desc';
+            desc.textContent = '由專業教練馬克提供一對一按摩伸展服務，針對您的身體狀況量身打造最適合的療程。';
+            btn.parentNode.insertBefore(desc, btn);
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', enhance);
+    } else {
+        enhance();
+    }
+})();

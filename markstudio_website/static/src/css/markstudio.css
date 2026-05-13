@@ -813,7 +813,7 @@ section[id] { scroll-margin-top: 80px; }
 
 .mk-appointment-page .card .card-text {
     font-size: 14px;
-    color: rgba(255,255,255,0.5);
+    color: rgba(255,255,255,0.6) !important;
     line-height: 1.8;
 }
 
@@ -883,32 +883,64 @@ section[id] { scroll-margin-top: 80px; }
     color: var(--mk-white) !important;
 }
 
-/* Schedule page — calendar card full width */
+/* Schedule page — calendar card: borderless, full width */
 .mk-appointment-page #appointment-reservation .card,
 .mk-appointment-page #available-slots .card {
     max-width: none;
+    overflow: visible !important;
+    border: none !important;
 }
 
-/* Calendar date buttons */
-.mk-appointment-page [role="application"] button {
+.mk-appointment-page #appointment-reservation .card-body {
+    padding: 16px 0 !important;
+}
+
+.mk-appointment-page .reservation-header {
+    padding: 0 4px;
+}
+
+/* Tighter column padding for calendar grid */
+.mk-appointment-page .reservation-grid .col {
+    padding: 1px !important;
+}
+
+
+/* Calendar grid fix — use CSS grid for perfect 7-column alignment */
+.mk-appointment-page .reservation-grid .row {
+    display: grid !important;
+    grid-template-columns: repeat(7, 1fr) !important;
+    gap: 2px !important;
+}
+
+.mk-appointment-page .reservation-grid .col {
+    max-width: none !important;
+    min-width: 0 !important;
+    width: auto !important;
+}
+
+/* Calendar date cells — target div.reservation-day (not <button>) */
+.mk-appointment-page .reservation-day {
     background: transparent !important;
     color: rgba(255,255,255,0.8) !important;
     border: 1px solid rgba(255,255,255,0.25) !important;
     border-radius: 0 !important;
     font-family: var(--mk-sans);
+    font-size: 13px;
+    text-align: center;
+    padding: 6px 2px !important;
     transition: all 0.2s;
+    cursor: pointer;
 }
 
-/* Unavailable dates */
-.mk-appointment-page [role="application"] button[aria-label*="unavailable"] {
+/* Unavailable dates — dimmed */
+.mk-appointment-page .reservation-day.disabled {
     color: rgba(255,255,255,0.25) !important;
     border-color: rgba(255,255,255,0.1) !important;
+    cursor: default;
 }
 
-/* Selected date — high contrast (class .selected from JS calendar) */
-.mk-appointment-page [role="application"] button[aria-label*="selected"],
-.mk-appointment-page .reservation-day.selected,
-.mk-appointment-page button.selected {
+/* Selected date — white on black, high contrast */
+.mk-appointment-page .reservation-day.selected {
     background: var(--mk-white) !important;
     color: var(--mk-black) !important;
     border-color: var(--mk-white) !important;
@@ -916,12 +948,18 @@ section[id] { scroll-margin-top: 80px; }
 }
 
 /* Available date hover */
-.mk-appointment-page [role="application"] button:not([aria-label*="unavailable"]):hover {
+.mk-appointment-page .reservation-day:not(.disabled):hover {
     background: rgba(255,255,255,0.15) !important;
     border-color: rgba(255,255,255,0.5) !important;
 }
 
-/* Calendar month navigation */
+/* Calendar navigation buttons */
+.mk-appointment-page .reservation-header .btn {
+    padding: 8px 24px;
+}
+
+/* Calendar month title */
+.mk-appointment-page .reservation-header h5,
 .mk-appointment-page [role="application"] h5 {
     color: var(--mk-white) !important;
     font-family: var(--mk-serif) !important;
@@ -929,7 +967,7 @@ section[id] { scroll-margin-top: 80px; }
 }
 
 /* Calendar day-of-week headers */
-.mk-appointment-page [role="application"] strong {
+.mk-appointment-page .reservation-grid strong {
     color: rgba(255,255,255,0.5) !important;
     font-family: var(--mk-sans);
     font-size: 12px;
@@ -999,25 +1037,34 @@ section[id] { scroll-margin-top: 80px; }
     color: rgba(0,0,0,0.5) !important;
 }
 
-/* Alert info box — form page summary (override cyan bg) */
-.mk-appointment-page .alert-info {
-    background: rgba(255,255,255,0.05) !important;
-    border: 1px solid rgba(255,255,255,0.2) !important;
+/* Alert info box — form page summary (override cyan/green bg) */
+.mk-appointment-page .alert,
+.mk-appointment-page .alert-info,
+.mk-appointment-page .card .alert-info,
+.mk-appointment-page .card-body .alert-info {
+    background: rgba(255,255,255,0.08) !important;
+    border: 1px solid rgba(255,255,255,0.25) !important;
+    border-left: 3px solid rgba(255,255,255,0.5) !important;
     border-radius: 0 !important;
-    color: rgba(255,255,255,0.8) !important;
-}
-
-.mk-appointment-page .alert-info strong {
     color: var(--mk-white) !important;
 }
 
+.mk-appointment-page .alert strong,
+.mk-appointment-page .alert-info strong {
+    color: var(--mk-white) !important;
+    font-family: var(--mk-serif);
+}
+
+.mk-appointment-page .alert small,
 .mk-appointment-page .alert-info small,
+.mk-appointment-page .alert .text-muted,
 .mk-appointment-page .alert-info .text-muted {
     color: rgba(255,255,255,0.5) !important;
 }
 
+.mk-appointment-page .alert i,
 .mk-appointment-page .alert-info i {
-    color: rgba(255,255,255,0.6) !important;
+    color: rgba(255,255,255,0.7) !important;
 }
 
 /* Form inputs */

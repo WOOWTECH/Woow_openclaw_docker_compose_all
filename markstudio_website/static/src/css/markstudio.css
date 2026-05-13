@@ -1272,6 +1272,67 @@ header#top .navbar-collapse {
 }
 
 /* ============================================================
+   ODOO FOOTER — Retrodandy override
+   ============================================================ */
+
+/* Footer background — pure black */
+footer#bottom,
+footer#bottom .o_footer,
+footer#bottom section {
+    background: var(--mk-black) !important;
+}
+
+/* Footer text — white, sans-serif */
+footer#bottom p,
+footer#bottom li,
+footer#bottom span,
+footer#bottom a {
+    font-family: var(--mk-sans) !important;
+    color: rgba(255,255,255,0.6) !important;
+    font-size: 13px;
+}
+
+footer#bottom a:hover {
+    color: var(--mk-white) !important;
+}
+
+/* Social media icons — monochrome, square */
+footer#bottom .s_social_media i {
+    background: transparent !important;
+    border: 1px solid rgba(255,255,255,0.3) !important;
+    border-radius: 0 !important;
+    color: var(--mk-white) !important;
+    box-shadow: none !important;
+    width: 36px;
+    height: 36px;
+    line-height: 36px;
+    font-size: 14px;
+}
+
+footer#bottom .s_social_media i:hover {
+    background: var(--mk-white) !important;
+    color: var(--mk-black) !important;
+}
+
+/* Footer logo — grayscale */
+footer#bottom .o_footer_logo img {
+    filter: brightness(10);
+}
+
+/* Powered by Odoo — subtle */
+footer#bottom .o_footer_copyright {
+    background: var(--mk-black) !important;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+footer#bottom .o_footer_copyright,
+footer#bottom .o_footer_copyright a,
+footer#bottom .o_footer_copyright span {
+    color: rgba(255,255,255,0.3) !important;
+    font-size: 12px;
+}
+
+/* ============================================================
    RESPONSIVE
    ============================================================ */
 @media (max-width: 991px) {

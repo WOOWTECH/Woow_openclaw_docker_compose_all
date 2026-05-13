@@ -58,7 +58,7 @@
                             <p class="mk-svc-text">馬克健身使用獨創的核心平衡伸展術，針對僵硬的深層肌群進行放鬆和伸展。致力於從根源上解決您的煩惱，減少復發頻率。</p>
                         </div>
                         <div class="mk-svc-right">
-                            <div class="mk-svc-img"><img src="/markstudio_website/static/src/img/svc-01-massage.jpg" alt="深層按摩服務" loading="lazy"/></div>
+                            <div class="mk-svc-img"><img src="/markstudio_website/static/src/img/svc-01-massage.jpg?v=2" alt="深層按摩服務" loading="lazy"/></div>
                         </div>
                     </div>
 
@@ -69,7 +69,7 @@
                             <p class="mk-svc-text">在進行伸展的過程中，您所需做的僅僅只是放鬆您的身心。而放鬆狀態下的肌肉更容易被伸展。</p>
                         </div>
                         <div class="mk-svc-right">
-                            <div class="mk-svc-img"><img src="/markstudio_website/static/src/img/svc-02-stretch.jpg" alt="專業伸展服務" loading="lazy"/></div>
+                            <div class="mk-svc-img"><img src="/markstudio_website/static/src/img/svc-02-stretch.jpg?v=2" alt="專業伸展服務" loading="lazy"/></div>
                         </div>
                     </div>
 
@@ -80,7 +80,7 @@
                             <p class="mk-svc-text">教練會依據顧客的不適症狀，對身體不同部位的柔軟性進行判斷，從而提供最適合您的伸展方案。教練也會根據顧客的身體情況提出相關建議，幫助您養成良好伸展習慣，為您身體的健康出謀劃策。</p>
                         </div>
                         <div class="mk-svc-right">
-                            <div class="mk-svc-img"><img src="/markstudio_website/static/src/img/svc-03-personal.jpg" alt="一對一專業伸展" loading="lazy"/></div>
+                            <div class="mk-svc-img"><img src="/markstudio_website/static/src/img/svc-03-personal.jpg?v=2" alt="一對一專業伸展" loading="lazy"/></div>
                         </div>
                     </div>
                 </div>
@@ -94,10 +94,10 @@
                     <p class="mk-technique-text">Core Balance Stretch（核心平衡伸展術）是一項由三個階段構成的獨創技術。通過安全的方式放鬆您的全身肌肉，並且有效深入地伸展身體深層的核心肌群。伸展關節周圍的深層肌群，可以幫助您從源頭上解決許多身體的煩惱，且 Core Balance Stretch（核心平衡伸展術）具有一定的運動效果。</p>
                     <div class="row mt-5">
                         <div class="col-md-6">
-                            <div class="mk-svc-img"><img src="/markstudio_website/static/src/img/tech-left.jpg" alt="按摩技術" loading="lazy"/></div>
+                            <div class="mk-svc-img"><img src="/markstudio_website/static/src/img/tech-left.jpg?v=2" alt="按摩技術" loading="lazy"/></div>
                         </div>
                         <div class="col-md-6">
-                            <div class="mk-svc-img"><img src="/markstudio_website/static/src/img/tech-right.jpg" alt="核心肌群伸展" loading="lazy"/></div>
+                            <div class="mk-svc-img"><img src="/markstudio_website/static/src/img/tech-right.jpg?v=2" alt="核心肌群伸展" loading="lazy"/></div>
                         </div>
                     </div>
                 </div>
@@ -112,22 +112,22 @@
                         <div class="mk-step">
                             <div class="mk-step-num">01</div>
                             <h4 class="mk-step-title">確認客人身體狀況</h4>
-                            <div class="mk-step-img"><img src="/markstudio_website/static/src/img/exp-01-consult.jpg" alt="確認身體狀況" loading="lazy"/></div>
+                            <div class="mk-step-img"><img src="/markstudio_website/static/src/img/exp-01-consult.jpg?v=2" alt="確認身體狀況" loading="lazy"/></div>
                         </div>
                         <div class="mk-step">
                             <div class="mk-step-num">02</div>
                             <h4 class="mk-step-title">測量身體柔軟度</h4>
-                            <div class="mk-step-img"><img src="/markstudio_website/static/src/img/exp-02-measure.jpg" alt="測量身體柔軟度" loading="lazy"/></div>
+                            <div class="mk-step-img"><img src="/markstudio_website/static/src/img/exp-02-measure.jpg?v=2" alt="測量身體柔軟度" loading="lazy"/></div>
                         </div>
                         <div class="mk-step">
                             <div class="mk-step-num">03</div>
                             <h4 class="mk-step-title">伸展</h4>
-                            <div class="mk-step-img"><img src="/markstudio_website/static/src/img/exp-03-stretch.jpg" alt="伸展" loading="lazy"/></div>
+                            <div class="mk-step-img"><img src="/markstudio_website/static/src/img/exp-03-stretch.jpg?v=2" alt="伸展" loading="lazy"/></div>
                         </div>
                         <div class="mk-step">
                             <div class="mk-step-num">04</div>
                             <h4 class="mk-step-title">提供專業建議</h4>
-                            <div class="mk-step-img"><img src="/markstudio_website/static/src/img/exp-04-advice.jpg" alt="提供專業建議" loading="lazy"/></div>
+                            <div class="mk-step-img"><img src="/markstudio_website/static/src/img/exp-04-advice.jpg?v=2" alt="提供專業建議" loading="lazy"/></div>
                         </div>
                     </div>
                 </div>
@@ -142,7 +142,7 @@
                     <!-- Appointment Card -->
                     <div class="mk-booking-card">
                         <div class="mk-booking-card-img">
-                            <img src="/markstudio_website/static/src/img/svc-01-massage.jpg" alt="專業按摩伸展"/>
+                            <img src="/markstudio_website/static/src/img/svc-01-massage.jpg?v=2" alt="專業按摩伸展"/>
                         </div>
                         <div class="mk-booking-card-body">
                             <h3 class="mk-booking-card-title">專業按摩伸展</h3>

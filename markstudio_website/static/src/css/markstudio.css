@@ -37,7 +37,7 @@ section[id] { scroll-margin-top: 80px; }
 .mk-hero-bg {
     position: absolute;
     inset: 0;
-    background: url('/markstudio_website/static/src/img/hero-bg.jpg') center center / cover no-repeat;
+    background: url('/markstudio_website/static/src/img/hero-bg.jpg?v=2') center center / cover no-repeat;
     filter: grayscale(1) brightness(0.5);
 }
 

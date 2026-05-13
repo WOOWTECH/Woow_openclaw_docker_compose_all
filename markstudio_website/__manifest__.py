@@ -13,6 +13,9 @@
         'views/appointment_templates.xml',
     ],
     'assets': {
+        'web.assets_frontend_minimal': [
+            'markstudio_website/static/src/js/appointment_detect.js',
+        ],
         'web.assets_frontend': [
             'markstudio_website/static/src/css/markstudio.css',
             'markstudio_website/static/src/js/smooth_scroll.js',

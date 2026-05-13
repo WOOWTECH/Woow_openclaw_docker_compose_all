@@ -674,6 +674,11 @@ section[id] { scroll-margin-top: 80px; }
    NAVBAR — Retrodandy style (black bg, white text, minimal)
    ============================================================ */
 
+/* Header wrapper — remove top gap */
+header#top {
+    background: var(--mk-black) !important;
+}
+
 /* Black background, no shadow */
 header#top .navbar {
     background: var(--mk-black) !important;

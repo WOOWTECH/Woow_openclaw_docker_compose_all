@@ -8,7 +8,7 @@
 #   docker build -t hermes-agent-custom:latest \
 #     -f Dockerfile.hermes-agent .
 # =============================================================
-FROM nousresearch/hermes-agent:latest
+FROM docker.io/nousresearch/hermes-agent:latest
 
 USER root
 

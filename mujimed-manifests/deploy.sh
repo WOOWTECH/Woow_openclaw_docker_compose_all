@@ -19,6 +19,8 @@ set -euo pipefail
 
 CF_API_TOKEN="REDACTED_CF_API_TOKEN"
 DOMAIN="mujimed-odoo.woowtech.io"
+DOMAIN_B2B="b2bmujimed-odoo.woowtech.io"
+DOMAIN_B2C="b2cmujimed-odoo.woowtech.io"
 TUNNEL_NAME="mujimed-odoo"
 NAMESPACE="mujimed-odoo"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -94,8 +96,9 @@ if [ -z "$CF_TUNNEL_TOKEN" ] || [ "$CF_TUNNEL_TOKEN" = "null" ]; then
 fi
 echo "  Tunnel token retrieved"
 
-# Configure tunnel ingress rules
-echo "  Configuring tunnel ingress -> http://mujimed-odoo-svc:8069"
+# Configure tunnel ingress rules (backend + B2B + B2C)
+ODOO_SVC="http://mujimed-odoo-svc.${NAMESPACE}.svc.cluster.local:8069"
+echo "  Configuring tunnel ingress for 3 domains -> $ODOO_SVC"
 INGRESS_RESULT=$(curl -sf -X PUT \
     "https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT_ID/cfd_tunnel/$TUNNEL_ID/configurations" \
     -H "Authorization: Bearer $CF_API_TOKEN" \
@@ -105,11 +108,18 @@ INGRESS_RESULT=$(curl -sf -X PUT \
             \"ingress\": [
                 {
                     \"hostname\": \"$DOMAIN\",
-                    \"service\": \"http://mujimed-odoo-svc.${NAMESPACE}.svc.cluster.local:8069\",
-                    \"originRequest\": {
-                        \"httpHostHeader\": \"$DOMAIN\",
-                        \"noTLSVerify\": true
-                    }
+                    \"service\": \"$ODOO_SVC\",
+                    \"originRequest\": {\"noTLSVerify\": true}
+                },
+                {
+                    \"hostname\": \"$DOMAIN_B2B\",
+                    \"service\": \"$ODOO_SVC\",
+                    \"originRequest\": {\"noTLSVerify\": true}
+                },
+                {
+                    \"hostname\": \"$DOMAIN_B2C\",
+                    \"service\": \"$ODOO_SVC\",
+                    \"originRequest\": {\"noTLSVerify\": true}
                 },
                 {
                     \"service\": \"http_status:404\"
@@ -117,33 +127,36 @@ INGRESS_RESULT=$(curl -sf -X PUT \
             ]
         }
     }")
-echo "  Ingress rules configured"
+echo "  Ingress rules configured (3 domains)"
 
-# Create/update DNS CNAME record
-echo "  Setting up DNS: $DOMAIN -> $TUNNEL_ID.cfargotunnel.com"
-EXISTING_DNS=$(curl -sf -X GET \
-    "https://api.cloudflare.com/client/v4/zones/$CF_ZONE_ID/dns_records?name=$DOMAIN&type=CNAME" \
-    -H "Authorization: Bearer $CF_API_TOKEN" \
-    -H "Content-Type: application/json")
-DNS_RECORD_ID=$(echo "$EXISTING_DNS" | jq -r '.result[0].id // empty')
-
-DNS_DATA="{\"type\":\"CNAME\",\"name\":\"$DOMAIN\",\"content\":\"$TUNNEL_ID.cfargotunnel.com\",\"proxied\":true}"
-
-if [ -z "$DNS_RECORD_ID" ]; then
-    curl -sf -X POST \
-        "https://api.cloudflare.com/client/v4/zones/$CF_ZONE_ID/dns_records" \
+# Create/update DNS CNAME records for all domains
+CF_TUNNEL_CNAME="$TUNNEL_ID.cfargotunnel.com"
+for dns_domain in "$DOMAIN" "$DOMAIN_B2B" "$DOMAIN_B2C"; do
+    echo "  Setting up DNS: $dns_domain -> $CF_TUNNEL_CNAME"
+    EXISTING_DNS=$(curl -sf -X GET \
+        "https://api.cloudflare.com/client/v4/zones/$CF_ZONE_ID/dns_records?name=$dns_domain&type=CNAME" \
         -H "Authorization: Bearer $CF_API_TOKEN" \
-        -H "Content-Type: application/json" \
-        --data "$DNS_DATA" >/dev/null
-    echo "  DNS CNAME record created"
-else
-    curl -sf -X PUT \
-        "https://api.cloudflare.com/client/v4/zones/$CF_ZONE_ID/dns_records/$DNS_RECORD_ID" \
-        -H "Authorization: Bearer $CF_API_TOKEN" \
-        -H "Content-Type: application/json" \
-        --data "$DNS_DATA" >/dev/null
-    echo "  DNS CNAME record updated"
-fi
+        -H "Content-Type: application/json")
+    DNS_RECORD_ID=$(echo "$EXISTING_DNS" | jq -r '.result[0].id // empty')
+
+    DNS_DATA="{\"type\":\"CNAME\",\"name\":\"$dns_domain\",\"content\":\"$CF_TUNNEL_CNAME\",\"proxied\":true}"
+
+    if [ -z "$DNS_RECORD_ID" ]; then
+        curl -sf -X POST \
+            "https://api.cloudflare.com/client/v4/zones/$CF_ZONE_ID/dns_records" \
+            -H "Authorization: Bearer $CF_API_TOKEN" \
+            -H "Content-Type: application/json" \
+            --data "$DNS_DATA" >/dev/null
+        echo "    CNAME created"
+    else
+        curl -sf -X PUT \
+            "https://api.cloudflare.com/client/v4/zones/$CF_ZONE_ID/dns_records/$DNS_RECORD_ID" \
+            -H "Authorization: Bearer $CF_API_TOKEN" \
+            -H "Content-Type: application/json" \
+            --data "$DNS_DATA" >/dev/null
+        echo "    CNAME updated"
+    fi
+done
 
 echo "  [OK] Cloudflare Tunnel setup complete"
 echo ""
@@ -194,20 +207,17 @@ if kubectl rollout status deployment/mujimed-odoo -n "$NAMESPACE" --timeout=900s
     echo " Deployment Complete!"
     echo "==========================================="
     echo ""
-    echo "  URL:        https://$DOMAIN"
+    echo "  Backend:    https://$DOMAIN"
+    echo "  B2B Site:   https://$DOMAIN_B2B"
+    echo "  B2C Site:   https://$DOMAIN_B2C"
     echo "  Admin:      admin / admin"
     echo "  Database:   mujimed"
-    echo "  DB User:    mujimed"
-    echo "  DB Pass:    mujimed"
     echo ""
-    echo "  Installed modules:"
-    echo "    - Standard: calendar, resource, website, portal, payment"
-    echo "    - Standard: product, mail, sale, stock, membership"
-    echo "    - Standard: loyalty, sale_loyalty, pos_loyalty"
-    echo "    - WOOWTECH: Reservation Module (reservation_module)"
-    echo "    - WOOWTECH: Loyalty Consign (woow_loyalty_consign)"
-    echo "    - WOOWTECH: Member Center (woow_member_center)"
-    echo "    - WOOWTECH: Portal User UI (woow_portal_ui)"
+    echo "  Websites:"
+    echo "    - B2B (企業端): $DOMAIN_B2B"
+    echo "      woow_portal_ui, website_sale"
+    echo "    - B2C (消費者端): $DOMAIN_B2C"
+    echo "      reservation_module, woow_loyalty_consign, woow_member_center"
     echo ""
     echo "  Taiwan config:"
     echo "    - Language:  Traditional Chinese (zh_TW)"

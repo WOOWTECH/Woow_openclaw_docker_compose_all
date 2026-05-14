@@ -24,6 +24,7 @@ spec:
       labels:
         app: hermes-webui
     spec:
+      serviceAccountName: hermes-agent-sa
       initContainers:
         # 1) Clone hermes-agent source from GitHub (lightweight)
         - name: clone-agent-src
@@ -36,7 +37,7 @@ spec:
           volumeMounts:
             - name: agent-src
               mountPath: /agent-src
-        # 2) Write .env and config.yaml into hermes-home
+        # 2) Write .env, config.yaml, and .profile into hermes-home
         - name: init-config
           image: busybox
           command: ['sh', '-c']
@@ -44,6 +45,9 @@ spec:
             - |
               printf 'MINIMAX_API_KEY=%s\n' "$MINIMAX_API_KEY" > /data/.env
               printf 'model:\n  default: "minimax/MiniMax-M2.7"\n  provider: "minimax"\n' > /data/config.yaml
+              mkdir -p /data/home
+              printf 'export PATH="/opt/tools:/opt/google-cloud-sdk/bin:${PATH}"\n' > /data/home/.profile
+              cp /data/home/.profile /data/home/.bashrc
               chown -R 1000:1000 /data
           env:
             - name: MINIMAX_API_KEY
@@ -54,6 +58,26 @@ spec:
           volumeMounts:
             - name: hermes-home
               mountPath: /data
+        # 3) Download static binary tools into /opt/tools volume
+        - name: install-tools
+          image: docker.io/library/alpine:latest
+          command: ['sh', '-c']
+          args:
+            - |
+              apk add --no-cache curl tar
+              mkdir -p /opt/tools
+              KUBECTL_V=v1.34.3
+              curl -fsSL "https://dl.k8s.io/release/${KUBECTL_V}/bin/linux/amd64/kubectl" -o /opt/tools/kubectl
+              curl -fsSL "https://github.com/mikefarah/yq/releases/download/v4.44.6/yq_linux_amd64" -o /opt/tools/yq
+              curl -fsSL "https://get.helm.sh/helm-v3.17.3-linux-amd64.tar.gz" | tar xz -C /tmp && cp /tmp/linux-amd64/helm /opt/tools/
+              curl -fsSL "https://github.com/argoproj/argo-cd/releases/download/v2.14.12/argocd-linux-amd64" -o /opt/tools/argocd
+              curl -fsSL "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64" -o /opt/tools/cloudflared
+              curl -fsSL "https://github.com/cli/cli/releases/download/v2.73.0/gh_2.73.0_linux_amd64.tar.gz" | tar xz -C /tmp && cp /tmp/gh_2.73.0_linux_amd64/bin/gh /opt/tools/
+              chmod +x /opt/tools/*
+              echo "Static binaries: $(ls /opt/tools | wc -l)"
+          volumeMounts:
+            - name: tools
+              mountPath: /opt/tools
       containers:
         - name: hermes-webui
           image: ghcr.io/nesquena/hermes-webui:latest
@@ -70,6 +94,8 @@ spec:
               value: "/home/hermeswebui/.hermes/webui"
             - name: HERMES_HOME
               value: "/home/hermeswebui/.hermes"
+            - name: PATH
+              value: "/opt/tools:/home/hermeswebui/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
             - name: WANTED_UID
               valueFrom:
                 configMapKeyRef:
@@ -92,12 +118,29 @@ spec:
             # Security
             - name: HERMES_WEBUI_PASSWORD
               value: "woowtech"
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - sh
+                  - -c
+                  - |
+                    (
+                      apt-get update -qq && \
+                      apt-get install -y -qq --no-install-recommends \
+                        jq fd-find rsync postgresql-client redis-tools \
+                        dnsutils iputils-ping nmap netcat-openbsd traceroute \
+                        lynx imagemagick pandoc git-lfs mosh httpie && \
+                      ln -sf /usr/bin/fdfind /usr/local/bin/fd
+                    ) > /tmp/tools-install.log 2>&1 &
           tty: true
           volumeMounts:
             - name: hermes-home
               mountPath: /home/hermeswebui/.hermes
             - name: agent-src
               mountPath: /home/hermeswebui/.hermes/hermes-agent
+            - name: tools
+              mountPath: /opt/tools
           readinessProbe:
             tcpSocket:
               port: 8787
@@ -121,6 +164,8 @@ spec:
         - name: hermes-home
           emptyDir: {}
         - name: agent-src
+          emptyDir: {}
+        - name: tools
           emptyDir: {}
 ---
 apiVersion: v1

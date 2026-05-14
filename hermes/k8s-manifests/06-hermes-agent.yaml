@@ -75,7 +75,10 @@ spec:
                       apt-get install -y -qq chromium --no-install-recommends && \
                       npm install -g @playwright/cli@latest && \
                       npx playwright install chrome && \
-                      ln -sf /opt/data/.agent-browser /root/.agent-browser
+                      ln -sf /opt/data/.agent-browser /root/.agent-browser && \
+                      mkdir -p /home/hermes/.cache /home/hermes/.local/share && \
+                      chown -R hermes:hermes /home/hermes/.cache /home/hermes/.local && \
+                      ln -sf /usr/local/bin/playwright-cli /opt/data/.local/bin/playwright-cli
                     ) > /tmp/browser-install.log 2>&1 &
           volumeMounts:
             - name: hermes-data

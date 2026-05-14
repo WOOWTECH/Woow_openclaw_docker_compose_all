@@ -320,28 +320,29 @@ spec:
                       dbname="mujimed", user="mujimed", password="mujimed")
                   cur = conn.cursor()
 
-                  # Get company_id
-                  company_id = 1
-
                   # Website 1 (default): B2C consumer site
                   cur.execute("UPDATE website SET name='Mujimed B2C', domain='b2cmujimed-odoo.woowtech.io' WHERE id=1")
 
-                  # Website 2: B2B enterprise site
+                  # Get defaults from existing website for NOT NULL fields
+                  cur.execute("SELECT user_id, default_lang_id FROM website WHERE id=1")
+                  row = cur.fetchone()
+                  user_id, lang_id = row[0], row[1]
+
+                  # Website 2: B2B enterprise site (copy NOT NULL defaults from website 1)
                   cur.execute("SELECT id FROM website WHERE name='Mujimed B2B'")
                   if not cur.fetchone():
                       cur.execute("""
-                          INSERT INTO website (name, domain, company_id, default_lang_id, create_uid, write_uid, create_date, write_date)
-                          SELECT 'Mujimed B2B', 'b2bmujimed-odoo.woowtech.io', %s, id, 1, 1, NOW(), NOW()
-                          FROM res_lang WHERE code = 'zh_TW'
-                      """, (company_id,))
-                      # If zh_TW not found, fallback to en_US
-                      if cur.rowcount == 0:
-                          cur.execute("""
-                              INSERT INTO website (name, domain, company_id, default_lang_id, create_uid, write_uid, create_date, write_date)
-                              SELECT 'Mujimed B2B', 'b2bmujimed-odoo.woowtech.io', %s, id, 1, 1, NOW(), NOW()
-                              FROM res_lang WHERE code = 'en_US'
-                          """, (company_id,))
-                      print("[mujimed] Created B2B website (id=2)")
+                          INSERT INTO website (name, domain, company_id, default_lang_id, user_id,
+                              show_line_subtotals_tax_selection, shop_default_sort,
+                              product_page_image_layout, product_page_image_width,
+                              product_page_image_spacing, ecommerce_access,
+                              create_uid, write_uid, create_date, write_date)
+                          VALUES ('Mujimed B2B', 'b2bmujimed-odoo.woowtech.io', 1, %s, %s,
+                              'tax_excluded', 'website_sequence asc',
+                              'carousel', '50_pc', 'small', 'everyone',
+                              1, 1, NOW(), NOW())
+                      """, (lang_id, user_id))
+                      print("[mujimed] Created B2B website")
                   else:
                       print("[mujimed] B2B website already exists")
 

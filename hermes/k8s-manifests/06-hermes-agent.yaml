@@ -1,9 +1,10 @@
 # =============================================================
-# Hermes Agent - Main AI Assistant Service
-# Image: nousresearch/hermes-agent:latest (Docker Hub)
+# Hermes Agent - Main AI Assistant Service (Custom Image)
+# Image: localhost/hermes-agent-custom:latest
 # Port:  8642 (gateway), 9119 (dashboard)
 # Command: gateway run (headless server mode)
 # Data dir: /opt/data
+# Includes: 26+ CLI tools baked into image (no postStart needed)
 # =============================================================
 apiVersion: apps/v1
 kind: Deployment
@@ -26,10 +27,11 @@ spec:
       labels:
         app: hermes-agent
     spec:
+      serviceAccountName: hermes-agent-sa
       containers:
         - name: hermes-agent
-          image: nousresearch/hermes-agent:latest
-          imagePullPolicy: Always
+          image: localhost/hermes-agent-custom:latest
+          imagePullPolicy: Never
           args:
             - gateway
             - run
@@ -63,45 +65,29 @@ spec:
                 secretKeyRef:
                   name: hermes-secrets
                   key: MINIMAX_API_KEY
-          lifecycle:
-            postStart:
-              exec:
-                command:
-                  - sh
-                  - -c
-                  - |
-                    (
-                      apt-get update -qq && \
-                      apt-get install -y -qq chromium --no-install-recommends && \
-                      npm install -g @playwright/cli@latest && \
-                      npx playwright install chrome && \
-                      ln -sf /opt/data/.agent-browser /root/.agent-browser && \
-                      mkdir -p /home/hermes/.cache /home/hermes/.local/share && \
-                      chown -R hermes:hermes /home/hermes/.cache /home/hermes/.local && \
-                      ln -sf /usr/local/bin/playwright-cli /opt/data/.local/bin/playwright-cli
-                    ) > /tmp/browser-install.log 2>&1 &
+          # NOTE: postStart hook REMOVED — all tools baked into custom image
           volumeMounts:
             - name: hermes-data
               mountPath: /opt/data
           readinessProbe:
             tcpSocket:
               port: 8642
-            initialDelaySeconds: 20
+            initialDelaySeconds: 10
             periodSeconds: 10
-            failureThreshold: 10
+            failureThreshold: 6
           livenessProbe:
             tcpSocket:
               port: 8642
-            initialDelaySeconds: 60
+            initialDelaySeconds: 30
             periodSeconds: 30
             failureThreshold: 5
           resources:
             requests:
               cpu: 200m
-              memory: 512Mi
+              memory: 1Gi
             limits:
               cpu: 2000m
-              memory: 4Gi
+              memory: 6Gi
       volumes:
         - name: hermes-data
           persistentVolumeClaim:

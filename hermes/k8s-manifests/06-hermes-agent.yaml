@@ -30,7 +30,7 @@ spec:
       serviceAccountName: hermes-agent-sa
       containers:
         - name: hermes-agent
-          image: localhost/hermes-agent-custom:latest
+          image: 10.43.80.213:5000/hermes-agent-custom:latest
           imagePullPolicy: Never
           args:
             - gateway
@@ -59,6 +59,9 @@ spec:
             # Allow all users (no allowlist filtering)
             - name: GATEWAY_ALLOW_ALL_USERS
               value: "true"
+            # Ensure all CLI tools are in PATH for terminal tool
+            - name: PATH
+              value: "/opt/data/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/google-cloud-sdk/bin"
             # LLM
             - name: MINIMAX_API_KEY
               valueFrom:

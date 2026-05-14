@@ -63,6 +63,13 @@ spec:
                 secretKeyRef:
                   name: hermes-secrets
                   key: MINIMAX_API_KEY
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - sh
+                  - -c
+                  - "apt-get update -qq && apt-get install -y -qq chromium --no-install-recommends > /tmp/chromium-install.log 2>&1 &"
           volumeMounts:
             - name: hermes-data
               mountPath: /opt/data

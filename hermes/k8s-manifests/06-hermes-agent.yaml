@@ -69,7 +69,14 @@ spec:
                 command:
                   - sh
                   - -c
-                  - "apt-get update -qq && apt-get install -y -qq chromium --no-install-recommends > /tmp/chromium-install.log 2>&1 &"
+                  - |
+                    (
+                      apt-get update -qq && \
+                      apt-get install -y -qq chromium --no-install-recommends && \
+                      npm install -g @playwright/cli@latest && \
+                      npx playwright install chrome && \
+                      ln -sf /opt/data/.agent-browser /root/.agent-browser
+                    ) > /tmp/browser-install.log 2>&1 &
           volumeMounts:
             - name: hermes-data
               mountPath: /opt/data

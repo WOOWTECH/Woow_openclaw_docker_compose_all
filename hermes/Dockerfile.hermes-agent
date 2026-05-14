@@ -1,0 +1,142 @@
+# =============================================================
+# Hermes Agent Custom Image
+# Base: nousresearch/hermes-agent:latest (Debian 13 trixie)
+# Adds: 26 CLI tools across 4 waves
+# User: hermes (UID 10000)
+#
+# Build:
+#   docker build -t hermes-agent-custom:latest \
+#     -f Dockerfile.hermes-agent .
+# =============================================================
+FROM nousresearch/hermes-agent:latest
+
+USER root
+
+# ── Layer 1: Core apt packages ─────────────────────────────────
+# Wave 1: jq, fd-find, rsync, httpie deps
+# Wave 2: redis-tools
+# Wave 4: lynx, network diag, chromium deps
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        # Wave 1 — core productivity
+        jq \
+        fd-find \
+        rsync \
+        mosh \
+        git-lfs \
+        # Wave 2 — business
+        redis-tools \
+        # Wave 3 — content
+        imagemagick \
+        # Wave 4 — exploration & network
+        lynx \
+        dnsutils \
+        iputils-ping \
+        nmap \
+        netcat-openbsd \
+        traceroute \
+        # System deps for gcloud/gh
+        apt-transport-https \
+        gnupg \
+        ca-certificates \
+        python3-pip \
+        # Locale support
+        locales \
+    && ln -sf /usr/bin/fdfind /usr/local/bin/fd \
+    && sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen \
+    && sed -i '/zh_TW.UTF-8/s/^# //g' /etc/locale.gen \
+    && locale-gen \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 TZ=Asia/Taipei
+
+# ── Layer 2: Binary downloads ──────────────────────────────────
+# kubectl, yq, helm, argocd, cloudflared, gh, uv
+ARG KUBECTL_VERSION=v1.34.3
+ARG YQ_VERSION=v4.44.6
+ARG HELM_VERSION=v3.17.3
+ARG ARGOCD_VERSION=v2.14.12
+ARG GH_VERSION=2.73.0
+
+# kubectl (match K3s v1.34.3)
+RUN curl -fsSL "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl" \
+        -o /usr/local/bin/kubectl \
+    && chmod +x /usr/local/bin/kubectl
+
+# yq (mikefarah)
+RUN curl -fsSL "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64" \
+        -o /usr/local/bin/yq \
+    && chmod +x /usr/local/bin/yq
+
+# helm
+RUN curl -fsSL "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz" \
+        | tar xz -C /tmp \
+    && cp /tmp/linux-amd64/helm /usr/local/bin/helm \
+    && rm -rf /tmp/linux-amd64
+
+# argocd CLI
+RUN curl -fsSL "https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_VERSION}/argocd-linux-amd64" \
+        -o /usr/local/bin/argocd \
+    && chmod +x /usr/local/bin/argocd
+
+# cloudflared
+RUN curl -fsSL "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64" \
+        -o /usr/local/bin/cloudflared \
+    && chmod +x /usr/local/bin/cloudflared
+
+# GitHub CLI
+RUN curl -fsSL "https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_${GH_VERSION}_linux_amd64.tar.gz" \
+        | tar xz -C /tmp \
+    && cp /tmp/gh_${GH_VERSION}_linux_amd64/bin/gh /usr/local/bin/gh \
+    && rm -rf /tmp/gh_*
+
+# ── Layer 3: Apt repos (PostgreSQL 17, gcloud SDK) ─────────────
+
+# PostgreSQL 17 client
+RUN curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc \
+        | gpg --dearmor -o /usr/share/keyrings/pgdg.gpg \
+    && echo "deb [signed-by=/usr/share/keyrings/pgdg.gpg] http://apt.postgresql.org/pub/repos/apt bookworm-pgdg main" \
+        > /etc/apt/sources.list.d/pgdg.list \
+    && apt-get update && apt-get install -y --no-install-recommends postgresql-client-17 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Google Cloud SDK (standalone tarball — avoids trixie apt issues)
+RUN curl -fsSL https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-linux-x86_64.tar.gz \
+        | tar xz -C /opt \
+    && /opt/google-cloud-sdk/install.sh --quiet --usage-reporting false --path-update false \
+    && ln -sf /opt/google-cloud-sdk/bin/gcloud /usr/local/bin/gcloud \
+    && ln -sf /opt/google-cloud-sdk/bin/gsutil /usr/local/bin/gsutil \
+    && ln -sf /opt/google-cloud-sdk/bin/bq /usr/local/bin/bq
+
+# ── Layer 4: Content generation tools ──────────────────────────
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        pandoc \
+        texlive-xetex \
+        texlive-fonts-recommended \
+        fonts-noto-cjk \
+        fonts-noto-color-emoji \
+    && rm -rf /var/lib/apt/lists/*
+
+# ── Layer 5: Python & Node tools ───────────────────────────────
+
+# httpie + yt-dlp
+RUN pip install --break-system-packages --no-cache-dir httpie yt-dlp
+
+# Playwright CLI + Chrome (baked in, no more postStart hook)
+RUN npm install -g @playwright/cli@latest \
+    && npx playwright install chrome 2>/dev/null || true
+
+# ── Layer 6: Cleanup & permissions ─────────────────────────────
+
+RUN rm -rf /tmp/* /root/.cache /var/lib/apt/lists/* 2>/dev/null; \
+    mkdir -p /home/hermes/.cache /home/hermes/.local/share \
+             /home/hermes/.ssh /home/hermes/.config \
+    && chown -R hermes:hermes /home/hermes
+
+# ── Git config for Hermes bot identity ─────────────────────────
+RUN git config --system user.name "Hermes Bot" \
+    && git config --system user.email "hermes@woowtech.io" \
+    && git config --system init.defaultBranch main
+
+# Restore non-root user
+USER hermes

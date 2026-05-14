@@ -139,18 +139,108 @@ spec:
               echo "[mujimed] Odoo 18 - Mujimed SaaS Platform"
               echo "[mujimed] ==========================================="
 
+              # ─── Download WOOWTECH addons from GitHub ───────────────
+              echo "[mujimed] Checking WOOWTECH custom addons..."
+              python3 << 'PYEOF'
+              import urllib.request, tarfile, io, os, ssl
+
+              github_token = os.environ.get("GITHUB_TOKEN", "")
+              addons_dir = "/mnt/extra-addons"
+              # (github_repo_name, local_directory_name)
+              repos = [
+                  ("Odoo_reservation_module", "Odoo_reservation_module"),
+                  ("Woow_odoo_loyalty_card_enhance", "Woow_odoo_loyalty_card_enhance"),
+                  ("Woow_odoo_portal_user_ui", "Woow_odoo_portal_user_ui"),
+              ]
+
+              ctx = ssl.create_default_context()
+
+              for repo, local_name in repos:
+                  dest = os.path.join(addons_dir, local_name)
+                  if os.path.exists(dest) and os.listdir(dest):
+                      print(f"  [ok] {repo} -> {local_name} already present")
+                      continue
+
+                  downloaded = False
+                  for branch in ["18.0", "main", "master"]:
+                      url = f"https://github.com/WOOWTECH/{repo}/archive/refs/heads/{branch}.tar.gz"
+                      try:
+                          req = urllib.request.Request(url)
+                          if github_token:
+                              req.add_header("Authorization", f"token {github_token}")
+                          response = urllib.request.urlopen(req, context=ctx, timeout=60)
+                          tar_data = io.BytesIO(response.read())
+                          tar = tarfile.open(fileobj=tar_data, mode="r:gz")
+                          os.makedirs(dest, exist_ok=True)
+                          for member in tar.getmembers():
+                              parts = member.name.split("/", 1)
+                              if len(parts) > 1 and parts[1]:
+                                  member.name = parts[1]
+                                  if hasattr(tarfile, 'data_filter'):
+                                      tar.extract(member, dest, filter='data')
+                                  else:
+                                      tar.extract(member, dest)
+                          print(f"  [ok] {repo} -> {local_name} (branch: {branch})")
+                          downloaded = True
+                          break
+                      except Exception:
+                          continue
+                  if not downloaded:
+                      print(f"  [WARN] {repo} could not be downloaded")
+              PYEOF
+
               # ─── Build addons_path ───────────────────────────────────
               ADDONS_PATH="/usr/lib/python3/dist-packages/odoo/addons"
-              if ls /mnt/extra-addons/*/__manifest__.py >/dev/null 2>&1; then
+              HAS_ROOT_MODULES=false
+              for dir in /mnt/extra-addons/*/; do
+                  [ ! -d "$dir" ] && continue
+                  if [ -f "${dir}__manifest__.py" ]; then
+                      # Single-module at root level of extra-addons
+                      HAS_ROOT_MODULES=true
+                  else
+                      # Multi-module repo: add repo dir to addons_path
+                      for subdir in "$dir"*/; do
+                          if [ -f "${subdir}__manifest__.py" ]; then
+                              ADDONS_PATH="${dir%/},$ADDONS_PATH"
+                              break
+                          fi
+                      done
+                  fi
+              done
+              # Only include /mnt/extra-addons if it has direct module subdirs
+              if [ "$HAS_ROOT_MODULES" = true ]; then
                   ADDONS_PATH="/mnt/extra-addons,$ADDONS_PATH"
               fi
+              echo "[mujimed] addons_path: $ADDONS_PATH"
 
+              # ─── First boot: initialize database ────────────────────
               if [ ! -f "$MARKER" ]; then
                   echo "[mujimed] ============================================"
                   echo "[mujimed] FIRST BOOT - Initializing database..."
+                  echo "[mujimed] This will take 5-10 minutes."
                   echo "[mujimed] ============================================"
 
-                  MODULES="base,web"
+                  # Standard Odoo 18 modules (dependencies for custom addons)
+                  MODULES="base,web,calendar,resource,mail"
+                  MODULES="$MODULES,website,portal,payment,product,sale"
+                  MODULES="$MODULES,stock,membership"
+                  MODULES="$MODULES,loyalty,sale_loyalty,pos_loyalty"
+
+                  # Discover available custom modules
+                  for dir in /mnt/extra-addons/*/; do
+                      if [ -f "${dir}__manifest__.py" ]; then
+                          modname=$(basename "$dir")
+                          MODULES="$MODULES,$modname"
+                          echo "  [addon] $modname"
+                      fi
+                      for subdir in "$dir"*/; do
+                          if [ -f "${subdir}__manifest__.py" ]; then
+                              modname=$(basename "$subdir")
+                              MODULES="$MODULES,$modname"
+                              echo "  [addon] $modname (sub)"
+                          fi
+                      done
+                  done
 
                   echo "[mujimed] Installing: $MODULES"
 
@@ -232,6 +322,7 @@ spec:
 
               # ─── Start Odoo as odoo user ────────────────────────────
               echo "[mujimed] Starting Odoo 18 server..."
+              echo "[mujimed] Using addons_path: $ADDONS_PATH"
               exec su -s /bin/bash odoo -c "odoo --config=/etc/odoo/odoo.conf --addons-path=$ADDONS_PATH"
           ports:
             - containerPort: 8069
@@ -252,6 +343,12 @@ spec:
                   key: POSTGRES_PASSWORD
             - name: PYTHONPATH
               value: "/var/lib/odoo/.local/lib/python3.12/site-packages"
+            - name: GITHUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: mujimed-secrets
+                  key: GITHUB_TOKEN
+                  optional: true
           volumeMounts:
             - name: odoo-data
               mountPath: /var/lib/odoo

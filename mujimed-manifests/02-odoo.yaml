@@ -321,7 +321,7 @@ spec:
                   cur = conn.cursor()
 
                   # Website 1 (default): B2C consumer site
-                  cur.execute("UPDATE website SET name='Mujimed B2C', domain='b2cmujimed-odoo.woowtech.io' WHERE id=1")
+                  cur.execute("UPDATE website SET name='Mujimed B2C', domain='https://b2cmujimed-odoo.woowtech.io' WHERE id=1")
 
                   # Get defaults from existing website for NOT NULL fields
                   cur.execute("SELECT user_id, default_lang_id FROM website WHERE id=1")
@@ -337,7 +337,7 @@ spec:
                               product_page_image_layout, product_page_image_width,
                               product_page_image_spacing, ecommerce_access,
                               create_uid, write_uid, create_date, write_date)
-                          VALUES ('Mujimed B2B', 'b2bmujimed-odoo.woowtech.io', 1, %s, %s,
+                          VALUES ('Mujimed B2B', 'https://b2bmujimed-odoo.woowtech.io', 1, %s, %s,
                               'tax_excluded', 'website_sequence asc',
                               'carousel', '50_pc', 'small', 'everyone',
                               1, 1, NOW(), NOW())

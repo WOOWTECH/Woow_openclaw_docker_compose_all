@@ -1,6 +1,6 @@
 # =============================================================
 # Hermes - Cloudflare Tunnel (cloudflared)
-# Provides external access via https://hermes-woowtechmag.woowtech.io
+# Provides external access via https://hermes-woowtechjac.woowtech.io
 # =============================================================
 apiVersion: apps/v1
 kind: Deployment

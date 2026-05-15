@@ -7,7 +7,7 @@
 | Project | Hermes Smart Home Assistant |
 | Platform | K3s cluster (2 master + 7 worker) |
 | Namespace | `hermes` |
-| Domain | https://hermes-woowtechmag.woowtech.io |
+| Domain | https://hermes-woowtechjac.woowtech.io |
 | Author | Enterprise QA |
 | Date | 2026-05-11 |
 | Test Framework | Bash + Playwright |

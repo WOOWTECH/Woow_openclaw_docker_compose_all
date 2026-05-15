@@ -11,7 +11,7 @@ metadata:
 data:
   CF_ACCOUNT_ID: "9c27f623ee596e0b67be56263bcb1974"
   CF_TUNNEL_ID: "b9be7e6e-3e90-4472-b3c9-91781b5b9140"
-  DOMAIN: "hermes-woowtechmag.woowtech.io"
+  DOMAIN: "hermes-woowtechjac.woowtech.io"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -22,8 +22,8 @@ metadata:
     app.kubernetes.io/part-of: hermes
 data:
   # Domain
-  HERMES_DOMAIN: "hermes-woowtechmag.woowtech.io"
-  HERMES_BASE_URL: "https://hermes-woowtechmag.woowtech.io"
+  HERMES_DOMAIN: "hermes-woowtechjac.woowtech.io"
+  HERMES_BASE_URL: "https://hermes-woowtechjac.woowtech.io"
   # WebUI
   HERMES_WEBUI_PORT: "8787"
   # Agent

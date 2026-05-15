@@ -13,7 +13,7 @@ import requests
 
 CF_API_TOKEN = os.environ.get("CF_API_TOKEN", "")
 TUNNEL_NAME = os.environ.get("TUNNEL_NAME", "hermes")
-DOMAIN = os.environ.get("HERMES_DOMAIN", "hermes-woowtechmag.woowtech.io")
+DOMAIN = os.environ.get("HERMES_DOMAIN", "hermes-woowtechjac.woowtech.io")
 BASE_URL = "https://api.cloudflare.com/client/v4"
 
 HEADERS = {

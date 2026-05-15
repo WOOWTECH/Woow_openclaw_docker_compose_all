@@ -98,7 +98,7 @@
 
 ### External Access
 - Cloudflare Tunnel: 3 connections across khh01 + tpe01
-- DNS CNAME: hermes-woowtechmag.woowtech.io → tunnel UUID
+- DNS CNAME: hermes-woowtechjac.woowtech.io → tunnel UUID
 - External URL: HTTP 302 (redirect to login)
 - Ingress routing: `/` → WebUI:8787, `/api` → Agent:8642
 

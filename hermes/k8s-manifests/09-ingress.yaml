@@ -20,7 +20,7 @@ metadata:
     kubernetes.io/ingress.class: traefik
 spec:
   rules:
-    - host: hermes-woowtechmag.woowtech.io
+    - host: hermes-woowtechjac.woowtech.io
       http:
         paths:
           - path: /

@@ -151,6 +151,7 @@ spec:
                   ("Odoo_reservation_module", "Odoo_reservation_module"),
                   ("Woow_odoo_loyalty_card_enhance", "Woow_odoo_loyalty_card_enhance"),
                   ("Woow_odoo_portal_user_ui", "Woow_odoo_portal_user_ui"),
+                  ("Woow_odoo_website_auth", "Woow_odoo_website_auth"),
               ]
 
               ctx = ssl.create_default_context()

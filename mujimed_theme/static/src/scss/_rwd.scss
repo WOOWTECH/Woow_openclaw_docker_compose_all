@@ -89,6 +89,69 @@
         -webkit-overflow-scrolling: touch;
     }
 
+    // Appointment time slots — 2-column grid on mobile
+    .o_appointment_select_slots,
+    .o_appointment_slots {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+
+        .o_slot_button,
+        .o_appointment_slot,
+        .btn-outline-primary {
+            width: 100%;
+            padding: 12px 8px;
+            font-size: 13px;
+            text-align: center;
+        }
+    }
+
+    // Calendar date cells smaller
+    .o_appointment_calendar td a,
+    .o_appointment_calendar td button,
+    .o_appointment_calendar td .o_day {
+        width: 36px;
+        height: 36px;
+        font-size: 13px;
+    }
+
+    // Cart: stack product info and quantity
+    .oe_cart {
+        .td-product_name,
+        .td-qty,
+        .td-price {
+            display: block;
+            width: 100%;
+        }
+
+        .css_quantity {
+            margin: 8px 0;
+        }
+
+        #cart_total, .o_cart_summary {
+            padding: 20px;
+        }
+    }
+
+    // Portal greeting — smaller
+    .o_portal_my_home {
+        .o_portal_my_details_card,
+        .o_portal_my_home_greeting {
+            padding: 16px;
+
+            h3 { font-size: 20px; }
+        }
+    }
+
+    // Category tabs — horizontal scroll
+    .o_wsale_categories .nav,
+    .o_shop_category_nav .nav {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 8px;
+    }
+
     // Login card
     .muji-login-card,
     .oe_login_form .card,

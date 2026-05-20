@@ -23,35 +23,51 @@ $o-theme-font-configs: (
     ),
 );
 
-// ─── Website Palette ────────────────────────────────────────
-$o-website-values-palettes: (
-    (
-        // Muji Med warm palette
-        'color-palettes-name': 'mujimed-warm',
+// ─── Direct Color Overrides ─────────────────────────────────
+// Use $o-user-website-values — this is the same map the Theme Customizer
+// writes to, and it's always merged LAST, overriding everything else.
+// This bypasses the palette selection mechanism entirely.
+$o-user-website-values: map-merge($o-user-website-values, (
+    // Fonts
+    'font':           'Plus Jakarta Sans',
+    'headings-font':  'Noto Serif TC',
 
-        // Fonts
-        'font':           'Plus Jakarta Sans',
-        'headings-font':  'Noto Serif TC',
+    // Header
+    'header-font-size': (13 / 16) * 1rem,
 
-        // Header
-        'header-font-size': (13 / 16) * 1rem,
-        'header-template': 'default',
+    // Buttons
+    'btn-border-radius': 999px,
+    'btn-padding-y': .875rem,
+    'btn-padding-x': 1.75rem,
 
-        // Buttons
-        'btn-border-radius': 999px,
-        'btn-padding-y': .875rem,
-        'btn-padding-x': 1.75rem,
+    // Palette colors
+    'o-color-1': #C29080,   // clay - primary / CTA
+    'o-color-2': #7B543E,   // mocha - secondary / brand
+    'o-color-3': #A9B5A0,   // sage - success / accent
+    'o-color-4': #D8B26A,   // sun - info / highlight
+    'o-color-5': #FBF6EE,   // cream - background
 
-        // Base colors (Odoo palette slots)
-        'o-color-1': #C29080,   // clay - primary / CTA
-        'o-color-2': #7B543E,   // mocha - secondary / brand
-        'o-color-3': #A9B5A0,   // sage - success / accent
-        'o-color-4': #D8B26A,   // sun - info / highlight
-        'o-color-5': #FBF6EE,   // cream - background
+    // Color combination 1 (main content)
+    'o-cc1-bg': 'o-color-5',
+    'o-cc1-text': #2A1F18,       // ink
+    'o-cc1-headings': #3D2B22,   // espresso
+    'o-cc1-btn-primary': 'o-color-1',
+    'o-cc1-btn-primary-border': 'o-color-1',
+    'o-cc1-link': 'o-color-1',
 
-        // Text
-        'o-cc1-headings': #3D2B22,  // espresso
-        'o-cc1-text':     #2A1F18,  // ink
-        'o-cc1-btn-primary': #C29080,
-    ),
-);
+    // Color combination 2 (alternate sections)
+    'o-cc2-bg': 'o-color-2',
+    'o-cc2-text': #FBF6EE,
+    'o-cc2-headings': #FBF6EE,
+    'o-cc2-btn-primary': 'o-color-1',
+
+    // Color combination 3
+    'o-cc3-bg': #F4ECDE,   // cream-2
+    'o-cc3-text': #2A1F18,
+    'o-cc3-headings': #3D2B22,
+
+    // Color combination 5 (often used for backgrounds)
+    'o-cc5-bg': 'o-color-5',
+    'o-cc5-text': #2A1F18,
+    'o-cc5-headings': #3D2B22,
+));

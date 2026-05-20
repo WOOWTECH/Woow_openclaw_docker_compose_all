@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Hide header on homepage per design spec.
+         The homepage uses website.homepage which calls website.layout.
+         We set no_header=True on the homepage template. -->
+    <template id="muji_homepage_no_header" inherit_id="website.homepage"
+              name="Mujimed: Hide Header on Homepage">
+        <xpath expr="//div[@id='wrap']" position="before">
+            <t t-set="no_header" t-value="True"/>
+        </xpath>
+    </template>
+
+</odoo>

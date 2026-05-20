@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Login page styling handled purely via SCSS (_login.scss).
-         Odoo's web.login_layout already sets no_header=True and no_footer=True.
-         No XML template override needed. -->
+
+    <!-- Hide header on login/signup/reset_password pages.
+         website.login_layout wraps web.login_layout with website.layout,
+         which shows the full header. We re-set no_header=True. -->
+    <template id="muji_login_no_header" inherit_id="website.login_layout"
+              name="Mujimed: Hide Header on Auth Pages">
+        <xpath expr="//t[@t-call='website.layout']" position="before">
+            <t t-set="no_header" t-value="True"/>
+        </xpath>
+    </template>
+
 </odoo>

@@ -1,0 +1,117 @@
+// ============================================================
+// MUJI MED · Header Override
+// 88px desktop / 60px mobile, Cormorant logo, 13px nav
+// ============================================================
+
+// Override Odoo default header
+header#top {
+    height: 88px !important;
+    min-height: 88px !important;
+    background: $muji-cream !important;
+    border-bottom: 1px solid $muji-line !important;
+
+    // Remove Odoo default shadow
+    box-shadow: none !important;
+
+    // Navbar container
+    .navbar {
+        height: 88px;
+        padding: 0 64px;
+        background: transparent !important;
+    }
+
+    // Logo area
+    .navbar-brand {
+        font-family: $muji-ff-display;
+        font-style: italic;
+        font-size: 28px;
+        color: $muji-mocha !important;
+        letter-spacing: -.01em;
+        padding: 0;
+
+        // Sub-text (木盈醫美)
+        .muji-brand-sub {
+            font-family: $muji-ff-serif;
+            font-style: normal;
+            font-size: 14px;
+            letter-spacing: .34em;
+            color: $muji-espresso;
+            margin-left: 10px;
+        }
+    }
+
+    // Nav links
+    .nav-item .nav-link,
+    #top_menu > .nav-item > a {
+        font-family: $muji-ff-sans !important;
+        font-size: 13px !important;
+        letter-spacing: .18em !important;
+        color: $muji-espresso !important;
+        padding: 6px 0 !important;
+        margin: 0 18px;
+        position: relative;
+        font-weight: 400;
+
+        &:hover,
+        &.active {
+            color: $muji-espresso !important;
+            &::after {
+                content: "";
+                position: absolute;
+                bottom: -2px;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background: $muji-clay;
+            }
+        }
+    }
+
+    // CTA button in header
+    .muji-header-cta {
+        @extend .muji-btn;
+        @extend .muji-btn--clay;
+        padding: 10px 18px;
+        font-size: 11px;
+    }
+
+    // Icon buttons (search, cart, user)
+    .o_wsale_my_cart,
+    .o_searchbar_form,
+    .dropdown-toggle.o_no_autohash {
+        color: $muji-espresso !important;
+    }
+
+    // Cart badge
+    .my_cart_quantity {
+        background: $muji-clay !important;
+        color: #fff !important;
+        font-size: 9px;
+        min-width: 14px;
+        height: 14px;
+        line-height: 14px;
+        border-radius: $muji-r-pill;
+    }
+}
+
+// ─── Mobile Header ──────────────────────────────────────────
+@media (max-width: 767px) {
+    header#top {
+        height: 60px !important;
+        min-height: 60px !important;
+
+        .navbar {
+            height: 60px;
+            padding: 0 20px;
+        }
+
+        .navbar-brand {
+            font-size: 22px;
+
+            .muji-brand-sub {
+                font-size: 11px;
+                letter-spacing: .28em;
+            }
+        }
+    }
+}

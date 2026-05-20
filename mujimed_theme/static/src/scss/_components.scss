@@ -1,0 +1,238 @@
+// ============================================================
+// MUJI MED · Component Styles (from components.css)
+// Buttons, Forms, Pills, Cards, Steps, Breadcrumbs
+// ============================================================
+
+// ─── Typography helpers ─────────────────────────────────────
+.muji-eyebrow {
+    font-family: $muji-ff-sans;
+    font-size: 11px;
+    letter-spacing: .32em;
+    text-transform: uppercase;
+    color: $muji-clay;
+    font-weight: 500;
+
+    &--ink { color: $muji-espresso; }
+    &--mist { color: $muji-mist; }
+}
+
+.muji-serif {
+    font-family: $muji-ff-serif;
+    font-weight: 500;
+    letter-spacing: .02em;
+    color: $muji-espresso;
+}
+
+.muji-display {
+    font-family: $muji-ff-display;
+    font-weight: 400;
+    font-style: italic;
+    color: $muji-espresso;
+}
+
+.muji-label {
+    font-size: 12px;
+    color: $muji-slate;
+    letter-spacing: .06em;
+}
+
+.muji-muted { color: $muji-slate; }
+.muji-tiny { font-size: 11px; letter-spacing: .06em; }
+
+// ─── Buttons ────────────────────────────────────────────────
+// Override Odoo's default btn styles
+.btn.muji-btn,
+.muji-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 28px;
+    font-size: 13px;
+    letter-spacing: .18em;
+    border-radius: $muji-r-pill;
+    font-weight: 500;
+    transition: all .2s;
+    white-space: nowrap;
+
+    &--primary {
+        background: $muji-espresso;
+        color: $muji-cream;
+        border: none;
+        &:hover { background: $muji-ink; color: $muji-cream; }
+    }
+
+    &--clay {
+        background: $muji-clay;
+        color: #fff;
+        border: none;
+        &:hover { background: $muji-rust; color: #fff; }
+    }
+
+    &--ghost {
+        background: transparent;
+        color: $muji-espresso;
+        border: 1px solid $muji-espresso;
+        &:hover { background: $muji-espresso; color: $muji-cream; }
+    }
+
+    &--outline {
+        background: transparent;
+        color: $muji-espresso;
+        border: 1px solid $muji-line-2;
+        &:hover { border-color: $muji-espresso; }
+    }
+
+    &--text {
+        padding: 8px 0;
+        background: transparent;
+        color: $muji-clay;
+        border: none;
+        font-weight: 500;
+        &:hover { color: $muji-rust; }
+    }
+
+    &--lg { padding: 18px 40px; font-size: 14px; }
+    &--sm { padding: 10px 18px; font-size: 11px; }
+    &--block { width: 100%; }
+}
+
+// ─── Form Fields ────────────────────────────────────────────
+.muji-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    label {
+        font-size: 11px;
+        letter-spacing: .24em;
+        text-transform: uppercase;
+        color: $muji-slate;
+        font-weight: 500;
+    }
+
+    input, textarea, select {
+        background: #fff;
+        border: 1px solid $muji-line-2;
+        border-radius: $muji-r-sm;
+        padding: 14px 16px;
+        font-size: 14px;
+        color: $muji-ink;
+        outline: none;
+        transition: border-color .2s;
+        font-family: $muji-ff-sans;
+
+        &:focus { border-color: $muji-clay; }
+        &::placeholder { color: $muji-mist; }
+    }
+
+    &--filled input {
+        background: $muji-off;
+        border-color: $muji-line;
+    }
+}
+
+// ─── Pills / Badges ────────────────────────────────────────
+.muji-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: $muji-r-pill;
+    font-size: 11px;
+    letter-spacing: .16em;
+    font-weight: 500;
+
+    &--sand { background: $muji-sand; color: $muji-espresso; }
+    &--clay { background: $muji-bisque; color: $muji-rust; }
+    &--sage { background: rgba($muji-sage, .3); color: $muji-olive; }
+    &--ink { background: $muji-espresso; color: $muji-cream; }
+    &--outline { border: 1px solid $muji-line-2; color: $muji-espresso; background: transparent; }
+}
+
+// ─── Cards ──────────────────────────────────────────────────
+.muji-card {
+    background: #fff;
+    border: 1px solid $muji-line;
+    border-radius: $muji-r-md;
+    overflow: hidden;
+    transition: all .2s;
+
+    &--soft {
+        background: $muji-off;
+        border-color: transparent;
+    }
+
+    &--cream {
+        background: $muji-cream-2;
+        border: none;
+    }
+}
+
+// ─── Steps (progress bar) ───────────────────────────────────
+.muji-steps {
+    display: flex;
+    align-items: center;
+    font-size: 11px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: $muji-mist;
+}
+
+.muji-steps__item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .num {
+        width: 28px;
+        height: 28px;
+        border: 1px solid $muji-line-2;
+        border-radius: $muji-r-pill;
+        display: grid;
+        place-items: center;
+        font-family: $muji-ff-display;
+        font-style: italic;
+        font-size: 14px;
+        color: $muji-mist;
+    }
+
+    &.is-active {
+        color: $muji-espresso;
+        .num { border-color: $muji-espresso; color: $muji-espresso; }
+    }
+
+    &.is-done {
+        color: $muji-clay;
+        .num { border-color: $muji-clay; background: $muji-clay; color: #fff; }
+    }
+}
+
+.muji-steps__sep {
+    width: 36px;
+    height: 1px;
+    background: $muji-line-2;
+}
+
+// ─── Breadcrumbs ────────────────────────────────────────────
+.muji-crumbs {
+    display: flex;
+    gap: 10px;
+    font-size: 12px;
+    letter-spacing: .14em;
+    color: $muji-slate;
+
+    a { color: $muji-clay; &:hover { color: $muji-rust; } }
+    .sep { color: $muji-mist; }
+}
+
+// ─── Dividers ───────────────────────────────────────────────
+.muji-divider {
+    height: 1px;
+    background: $muji-line;
+    border: none;
+    margin: 0;
+
+    &--ink { background: $muji-espresso; }
+    &--dotted { background: none; border-top: 1px dashed $muji-line-2; }
+}

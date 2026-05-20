@@ -1,0 +1,144 @@
+// ============================================================
+// MUJI MED · Global Overrides
+// Background, text, headings, Odoo component overrides
+// ============================================================
+
+// ─── Base body ──────────────────────────────────────────────
+body {
+    background-color: $muji-cream !important;
+    color: $muji-ink;
+    font-family: $muji-ff-sans;
+    font-size: 15px;
+    line-height: 1.55;
+    letter-spacing: .01em;
+}
+
+// ─── Headings ───────────────────────────────────────────────
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+    font-family: $muji-ff-serif !important;
+    font-weight: 500;
+    color: $muji-espresso;
+    letter-spacing: .02em;
+    line-height: 1.2;
+}
+
+// ─── Links ──────────────────────────────────────────────────
+a {
+    color: $muji-clay;
+    &:hover { color: $muji-rust; }
+}
+
+// ─── Odoo Button Overrides ──────────────────────────────────
+.btn-primary {
+    background-color: $muji-clay !important;
+    border-color: $muji-clay !important;
+    border-radius: $muji-r-pill !important;
+    font-family: $muji-ff-sans;
+    letter-spacing: .12em;
+
+    &:hover, &:focus {
+        background-color: $muji-rust !important;
+        border-color: $muji-rust !important;
+    }
+}
+
+.btn-secondary {
+    background-color: $muji-mocha !important;
+    border-color: $muji-mocha !important;
+    border-radius: $muji-r-pill !important;
+    color: $muji-cream !important;
+
+    &:hover, &:focus {
+        background-color: $muji-espresso !important;
+        border-color: $muji-espresso !important;
+    }
+}
+
+.btn-outline-primary {
+    color: $muji-espresso !important;
+    border-color: $muji-line-2 !important;
+    border-radius: $muji-r-pill !important;
+
+    &:hover {
+        background-color: $muji-espresso !important;
+        border-color: $muji-espresso !important;
+        color: $muji-cream !important;
+    }
+}
+
+// ─── Form controls ──────────────────────────────────────────
+.form-control {
+    border-color: $muji-line-2;
+    border-radius: $muji-r-sm;
+    font-family: $muji-ff-sans;
+
+    &:focus {
+        border-color: $muji-clay;
+        box-shadow: 0 0 0 2px rgba($muji-clay, .15);
+    }
+}
+
+// ─── Cards ──────────────────────────────────────────────────
+.card {
+    border-color: $muji-line;
+    border-radius: $muji-r-md;
+}
+
+// ─── Odoo website sections ──────────────────────────────────
+.o_colored_level,
+section {
+    // Override white backgrounds to cream
+    &.o_cc5 { background-color: $muji-cream !important; }
+}
+
+// ─── Portal sidebar ─────────────────────────────────────────
+.o_portal_sidebar {
+    .nav-link {
+        color: $muji-espresso;
+        font-family: $muji-ff-sans;
+        font-size: 13px;
+        letter-spacing: .06em;
+
+        &.active, &:hover {
+            color: $muji-clay;
+        }
+    }
+}
+
+// ─── Tables ─────────────────────────────────────────────────
+.table {
+    th {
+        font-size: 11px;
+        letter-spacing: .18em;
+        text-transform: uppercase;
+        color: $muji-slate;
+        font-weight: 500;
+        border-bottom-color: $muji-line;
+    }
+
+    td {
+        border-bottom-color: $muji-line;
+        color: $muji-ink;
+    }
+}
+
+// ─── Badges / Status ────────────────────────────────────────
+.badge {
+    border-radius: $muji-r-pill;
+    font-size: 11px;
+    letter-spacing: .12em;
+    font-weight: 500;
+}
+
+// ─── Selection / Dropdown ───────────────────────────────────
+.dropdown-menu {
+    border-color: $muji-line;
+    border-radius: $muji-r-md;
+    box-shadow: $muji-sh-2;
+}
+
+// ─── Mobile adjustments ─────────────────────────────────────
+@media (max-width: 767px) {
+    body { font-size: 14px; }
+}

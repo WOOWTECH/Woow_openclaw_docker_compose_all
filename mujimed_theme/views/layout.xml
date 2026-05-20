@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Hide footer entirely per design spec (HANDOFF §4.1) -->
+    <template id="hide_footer" inherit_id="website.layout" name="Mujimed: Hide Footer">
+        <xpath expr="//div[@id='footer']" position="replace">
+            <!-- Footer removed per Mujimed design spec -->
+        </xpath>
+    </template>
+
+</odoo>

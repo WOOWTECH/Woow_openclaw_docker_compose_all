@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Primary variables: Odoo color/font mapping (loaded before Bootstrap) -->
+    <record id="asset_primary_variables" model="ir.asset">
+        <field name="name">Mujimed: primary variables</field>
+        <field name="bundle">web._assets_primary_variables</field>
+        <field name="path">mujimed_theme/static/src/scss/primary_variables.scss</field>
+    </record>
+
+    <!-- Frontend styles: tokens + components + header + login + global -->
+    <record id="asset_tokens" model="ir.asset">
+        <field name="name">Mujimed: design tokens</field>
+        <field name="bundle">web.assets_frontend</field>
+        <field name="path">mujimed_theme/static/src/scss/_tokens.scss</field>
+    </record>
+
+    <record id="asset_components" model="ir.asset">
+        <field name="name">Mujimed: components</field>
+        <field name="bundle">web.assets_frontend</field>
+        <field name="path">mujimed_theme/static/src/scss/_components.scss</field>
+    </record>
+
+    <record id="asset_header" model="ir.asset">
+        <field name="name">Mujimed: header</field>
+        <field name="bundle">web.assets_frontend</field>
+        <field name="path">mujimed_theme/static/src/scss/_header.scss</field>
+    </record>
+
+    <record id="asset_login" model="ir.asset">
+        <field name="name">Mujimed: login pages</field>
+        <field name="bundle">web.assets_frontend</field>
+        <field name="path">mujimed_theme/static/src/scss/_login.scss</field>
+    </record>
+
+    <record id="asset_global" model="ir.asset">
+        <field name="name">Mujimed: global overrides</field>
+        <field name="bundle">web.assets_frontend</field>
+        <field name="path">mujimed_theme/static/src/scss/_global.scss</field>
+    </record>
+
+</odoo>

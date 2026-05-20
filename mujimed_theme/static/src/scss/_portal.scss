@@ -18,8 +18,77 @@
 
 // ─── Portal home /my ────────────────────────────────────────
 .o_portal_my_home {
+
+    // Member greeting area
+    .o_portal_my_details_card,
+    .o_portal_my_home_greeting {
+        background: $muji-cream-2;
+        border: 1px solid $muji-line;
+        border-radius: $muji-r-md;
+        padding: 24px;
+        margin-bottom: 28px;
+
+        h3, .o_greeting_title {
+            font-family: $muji-ff-serif;
+            font-size: 24px;
+            color: $muji-espresso;
+            margin-bottom: 4px;
+        }
+
+        .text-muted, .o_greeting_subtitle {
+            font-size: 13px;
+            color: $muji-slate;
+            letter-spacing: .04em;
+        }
+
+        .o_portal_my_details_avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: $muji-r-pill;
+            background: $muji-bisque;
+            color: $muji-rust;
+            display: grid;
+            place-items: center;
+        }
+    }
+
+    // Pending invoice banner
+    .o_portal_my_home_banner,
+    .alert {
+        background: $muji-bisque !important;
+        border: none !important;
+        border-radius: $muji-r-md;
+        padding: 20px 24px;
+        color: $muji-espresso;
+
+        .btn, a.btn {
+            background: $muji-mocha;
+            color: $muji-cream;
+            border: none;
+            border-radius: $muji-r-pill;
+            padding: 10px 24px;
+            font-size: 13px;
+            letter-spacing: .12em;
+
+            &:hover { background: $muji-espresso; }
+        }
+    }
+
+    // Notification area
+    .o_portal_my_home_notifications,
+    .o_portal_notifications {
+        .card {
+            border-color: $muji-line;
+
+            .text-muted {
+                color: $muji-mist !important;
+                font-size: 13px;
+            }
+        }
+    }
+
+    // Stat cards
     .o_portal_docs {
-        // Stat cards
         .card, .o_portal_doc_spinner {
             border: 1px solid $muji-line;
             border-radius: $muji-r-md;
@@ -28,6 +97,7 @@
 
             &:hover {
                 box-shadow: $muji-sh-1;
+                border-color: $muji-clay;
             }
 
             .o_portal_doc_title {
@@ -44,21 +114,32 @@
         }
     }
 
-    // Member greeting card
-    .o_portal_my_details_card {
-        background: #fff;
-        border: 1px solid $muji-line;
-        border-radius: $muji-r-md;
-        padding: 22px;
+    // Quick action cards (你的訂單, 發票)
+    .o_portal_category,
+    .o_portal_docs .card {
+        padding: 20px;
+        transition: all .2s;
 
-        .o_portal_my_details_avatar {
+        &:hover {
+            box-shadow: $muji-sh-1;
+            border-color: $muji-clay;
+        }
+
+        img, .o_portal_icon {
             width: 48px;
             height: 48px;
-            border-radius: $muji-r-pill;
-            background: $muji-bisque;
-            color: $muji-rust;
-            display: grid;
-            place-items: center;
+            object-fit: contain;
+        }
+
+        h5 {
+            font-family: $muji-ff-serif;
+            font-size: 18px;
+            color: $muji-espresso;
+        }
+
+        .text-muted {
+            font-size: 13px;
+            color: $muji-slate !important;
         }
     }
 }

@@ -174,14 +174,15 @@ body[data-main-object*="login"] .o_frontend_layout > main {
 }
 
 // ─── Split layout container ──────────────────────────────────
-// When brand panel is present, make parent flex row
+// Actual Odoo 18 DOM: <main> > .muji-login-brand + .oe_website_login_container
+// The brand panel and form container are siblings inside <main>
 body:has(.muji-login-brand) {
     #wrapwrap, .o_frontend_layout {
         min-height: 100vh;
     }
 
-    .o_frontend_layout > main,
-    main.oe_website_login_container {
+    // Make <main> a flex row
+    .o_frontend_layout > main {
         display: flex !important;
         flex-direction: row !important;
         min-height: 100vh;
@@ -189,14 +190,21 @@ body:has(.muji-login-brand) {
         background: $muji-cream !important;
     }
 
-    // Form side takes remaining space
-    .oe_login_form,
-    .oe_signup_form,
-    .oe_reset_password_form {
+    // Form container takes remaining space
+    .oe_website_login_container {
         flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 40px;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        min-height: 100vh;
+        padding: 40px !important;
+        background: $muji-cream !important;
+        flex-direction: column;
+    }
+
+    // Footer copyright should not show in login split
+    .o_footer_copyright,
+    .o_brand_promotion {
+        display: none !important;
     }
 }

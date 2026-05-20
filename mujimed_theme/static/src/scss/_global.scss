@@ -138,6 +138,19 @@ section {
     box-shadow: $muji-sh-2;
 }
 
+// ─── Odoo branding removal (belt & suspenders) ──────────────
+// CSS fallback — hides all Odoo copyright/branding elements
+// regardless of their DOM position or template origin
+.o_footer_copyright,
+.o_footer_copyright_name,
+a[href*="odoo.com"],
+.o_powered_by_odoo,
+[data-oe-model="ir.ui.view"] a[href*="odoo.com"],
+small:has(> a[href*="odoo.com"]),
+div:has(> a[href*="odoo.com"]):not(header):not(nav):not(.container) {
+    display: none !important;
+}
+
 // ─── Mobile adjustments ─────────────────────────────────────
 @media (max-width: 767px) {
     body { font-size: 14px; }

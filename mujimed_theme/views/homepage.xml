@@ -29,14 +29,7 @@
                             </t>
                         </p>
                         <div class="muji-hero__cta">
-                            <t t-if="website.id == 1">
-                                <a href="/appointment" class="muji-btn muji-btn--primary muji-btn--lg">預約療程</a>
-                                <a href="/web/login" class="muji-btn muji-btn--ghost">會員登入</a>
-                            </t>
-                            <t t-if="website.id == 3">
-                                <a href="/shop" class="muji-btn muji-btn--primary muji-btn--lg">瀏覽商品</a>
-                                <a href="/web/login" class="muji-btn muji-btn--ghost">企業登入</a>
-                            </t>
+                            <a href="/web/login" class="muji-btn muji-btn--primary muji-btn--lg">會員登入</a>
                         </div>
                     </div>
                     <div class="muji-hero__divider"></div>
@@ -162,13 +155,13 @@
                     <div class="muji-cta-banner__inner">
                         <t t-if="website.id == 1">
                             <h2>Begin Your Journey</h2>
-                            <p>立即預約，開啟您的美麗旅程</p>
-                            <a href="/appointment" class="muji-btn muji-btn--clay muji-btn--lg">立即預約</a>
+                            <p>登入會員中心，開啟您的美麗旅程</p>
+                            <a href="/web/login" class="muji-btn muji-btn--clay muji-btn--lg">會員登入</a>
                         </t>
                         <t t-if="website.id == 3">
                             <h2>Partner With Us</h2>
-                            <p>成為木盈醫美合作夥伴，共創雙贏</p>
-                            <a href="/shop" class="muji-btn muji-btn--clay muji-btn--lg">開始採購</a>
+                            <p>登入會員中心，開始您的採購之旅</p>
+                            <a href="/web/login" class="muji-btn muji-btn--clay muji-btn--lg">會員登入</a>
                         </t>
                     </div>
                 </section>

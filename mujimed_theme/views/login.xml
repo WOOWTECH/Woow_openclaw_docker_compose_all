@@ -7,12 +7,9 @@
         <xpath expr="//t[@t-call='website.layout']" position="before">
             <t t-set="no_header" t-value="True"/>
         </xpath>
-    </template>
 
-    <!-- Inject branding panel before the login form container -->
-    <template id="muji_login_branding" inherit_id="web.login"
-              name="Mujimed: Login Branding Panel">
-        <xpath expr="//div[hasclass('oe_login_form')]" position="before">
+        <!-- Inject branding panel before the login form container -->
+        <xpath expr="//div[hasclass('oe_website_login_container')]" position="before">
             <div class="muji-login-brand">
                 <div class="muji-login-brand__inner">
                     <span class="muji-eyebrow">MUJIMED</span>

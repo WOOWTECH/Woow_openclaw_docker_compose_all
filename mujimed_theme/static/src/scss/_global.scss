@@ -79,6 +79,64 @@ a {
     }
 }
 
+// ─── Select / Dropdown ────────────────────────────────────────
+.form-select, select.form-control {
+    border-color: $muji-line-2;
+    border-radius: $muji-r-sm;
+    font-family: $muji-ff-sans;
+    font-size: 14px;
+    color: $muji-espresso;
+    padding: 10px 40px 10px 14px;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%233D2B22' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+
+    &:focus {
+        border-color: $muji-clay;
+        box-shadow: 0 0 0 2px rgba($muji-clay, .15);
+    }
+}
+
+// ─── Quantity widget (shared across shop/cart) ────────────────
+.css_quantity, .o_quantity {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid $muji-line-2;
+    border-radius: $muji-r-pill;
+    overflow: hidden;
+
+    a, button, .btn-link, .js_add_cart_json {
+        width: 36px;
+        height: 36px;
+        display: grid;
+        place-items: center;
+        color: $muji-espresso;
+        background: transparent;
+        border: none;
+        text-decoration: none;
+        font-size: 16px;
+        cursor: pointer;
+
+        &:hover { background: $muji-cream-2; }
+    }
+
+    input[type="text"], input.quantity {
+        width: 44px;
+        text-align: center;
+        border: none;
+        border-left: 1px solid $muji-line-2;
+        border-right: 1px solid $muji-line-2;
+        font-family: $muji-ff-display;
+        font-size: 15px;
+        color: $muji-espresso;
+        padding: 6px 0;
+        background: transparent;
+
+        &:focus { outline: none; }
+    }
+}
+
 // ─── Cards ──────────────────────────────────────────────────
 .card {
     border-color: $muji-line;

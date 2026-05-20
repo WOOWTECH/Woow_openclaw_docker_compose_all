@@ -163,6 +163,72 @@
         padding: 32px 24px !important;
     }
 
+    // Login branding panel — hide on mobile
+    .muji-login-brand {
+        display: none !important;
+    }
+
+    // Homepage sections
+    .muji-hero {
+        min-height: 100svh;
+        padding: 80px 20px 60px;
+
+        &__title { font-size: 44px; }
+        &__zhname { font-size: 15px; letter-spacing: .28em; }
+        &__tagline { font-size: 16px; margin-bottom: 32px; }
+        &__cta {
+            flex-direction: column;
+            align-items: stretch;
+            .muji-btn { width: 100%; }
+        }
+        &__divider { left: 20px; right: 20px; }
+    }
+
+    .muji-services {
+        padding: 60px 20px;
+
+        &__inner > h2 { font-size: 28px; margin-bottom: 36px; }
+
+        &__grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            &--3col { grid-template-columns: 1fr; }
+        }
+
+        &__card {
+            padding: 28px 20px;
+            h3 { font-size: 16px; }
+        }
+    }
+
+    .muji-trust {
+        padding: 60px 20px;
+
+        &__inner > h2 { font-size: 28px; margin-bottom: 36px; }
+        &__grid {
+            grid-template-columns: 1fr;
+            gap: 32px;
+        }
+    }
+
+    .muji-cta-banner {
+        padding: 60px 20px;
+        &__inner {
+            h2 { font-size: 32px; }
+            p { font-size: 15px; }
+        }
+    }
+
+    .muji-contact {
+        padding: 48px 20px 32px;
+
+        &__inner {
+            grid-template-columns: 1fr;
+            gap: 32px;
+            text-align: center;
+        }
+    }
+
     // Hide desktop-only elements
     .muji-desktop-only { display: none !important; }
 }
@@ -188,6 +254,34 @@
         .nav {
             min-width: 200px;
         }
+    }
+
+    // Homepage tablet
+    .muji-hero {
+        padding: 100px 32px 60px;
+        &__title { font-size: 56px; }
+    }
+
+    .muji-services {
+        padding: 80px 32px;
+        &__grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .muji-trust, .muji-cta-banner, .muji-contact {
+        padding: 80px 32px;
+    }
+
+    .muji-contact__inner {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    // Login: narrower brand panel
+    .muji-login-brand {
+        flex: 0 0 38% !important;
+        max-width: 38% !important;
+        padding: 60px 32px;
+
+        &__title { font-size: 44px; }
     }
 }
 

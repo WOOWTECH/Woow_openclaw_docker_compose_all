@@ -1,0 +1,262 @@
+// ============================================================
+// MUJI MED · Homepage Styles
+// Full-bleed landing: Hero, Services, Trust, CTA, Contact
+// ============================================================
+
+.muji-homepage {
+    background: $muji-cream;
+    overflow-x: hidden;
+}
+
+// ─── SECTION 1: Hero ─────────────────────────────────────────
+.muji-hero {
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 64px 80px;
+    position: relative;
+
+    &__inner {
+        max-width: 680px;
+    }
+
+    .muji-eyebrow {
+        margin-bottom: 24px;
+        display: block;
+    }
+
+    &__title {
+        font-family: $muji-ff-display;
+        font-style: italic;
+        font-size: 72px;
+        line-height: 1;
+        margin-bottom: 12px;
+        color: $muji-espresso;
+    }
+
+    &__zhname {
+        font-family: $muji-ff-serif;
+        font-size: 18px;
+        letter-spacing: .36em;
+        color: $muji-mocha;
+        display: block;
+        margin-bottom: 32px;
+    }
+
+    &__tagline {
+        font-family: $muji-ff-serif;
+        font-size: 20px;
+        color: $muji-slate;
+        margin-bottom: 48px;
+        line-height: 1.8;
+    }
+
+    &__cta {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    &__divider {
+        position: absolute;
+        bottom: 0;
+        left: 64px;
+        right: 64px;
+        height: 1px;
+        background: $muji-line;
+    }
+}
+
+// ─── SECTION 2: Services ──────────────────────────────────────
+.muji-services {
+    padding: 100px 64px;
+
+    &__inner {
+        max-width: 1120px;
+        margin: 0 auto;
+        text-align: center;
+
+        .muji-eyebrow { margin-bottom: 16px; display: block; }
+        > h2 { font-size: 36px; margin-bottom: 56px; }
+    }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+
+        &--3col { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    &__card {
+        padding: 40px 28px;
+        text-align: center;
+        transition: all .2s;
+
+        &:hover {
+            box-shadow: $muji-sh-2;
+            transform: translateY(-2px);
+        }
+
+        h3 {
+            font-size: 20px;
+            margin: 20px 0 12px;
+        }
+
+        p {
+            font-size: 14px;
+            color: $muji-slate;
+            line-height: 1.7;
+            margin: 0;
+        }
+    }
+
+    &__icon {
+        font-size: 28px;
+        color: $muji-clay;
+        line-height: 1;
+    }
+}
+
+// ─── SECTION 3: Trust Signals ─────────────────────────────────
+.muji-trust {
+    padding: 100px 64px;
+    background: $muji-cream-2;
+
+    &__inner {
+        max-width: 1120px;
+        margin: 0 auto;
+        text-align: center;
+
+        .muji-eyebrow { margin-bottom: 16px; display: block; }
+        > h2 { font-size: 36px; margin-bottom: 56px; }
+    }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 48px;
+        text-align: left;
+    }
+
+    &__item {
+        h4 {
+            font-family: $muji-ff-serif;
+            font-size: 18px;
+            color: $muji-espresso;
+            margin: 16px 0 12px;
+        }
+        p {
+            font-size: 14px;
+            color: $muji-slate;
+            line-height: 1.7;
+            margin: 0;
+        }
+    }
+
+    &__num {
+        font-family: $muji-ff-display;
+        font-style: italic;
+        font-size: 40px;
+        color: $muji-clay;
+        opacity: .6;
+    }
+}
+
+// ─── SECTION 4: CTA Banner ───────────────────────────────────
+.muji-cta-banner {
+    padding: 100px 64px;
+    text-align: center;
+
+    &__inner {
+        max-width: 680px;
+        margin: 0 auto;
+
+        h2 {
+            font-family: $muji-ff-display;
+            font-style: italic;
+            font-size: 48px;
+            color: $muji-espresso;
+            margin-bottom: 16px;
+        }
+        p {
+            font-family: $muji-ff-serif;
+            font-size: 18px;
+            color: $muji-slate;
+            margin-bottom: 40px;
+        }
+    }
+}
+
+// ─── SECTION 5: Contact Footer ───────────────────────────────
+.muji-contact {
+    padding: 80px 64px 40px;
+    background: $muji-espresso;
+    color: $muji-cream;
+
+    &__inner {
+        max-width: 1120px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 40px;
+    }
+
+    &__logo {
+        font-family: $muji-ff-display;
+        font-style: italic;
+        font-size: 32px;
+        color: $muji-cream;
+        display: block;
+    }
+
+    &__zhname {
+        font-family: $muji-ff-serif;
+        font-size: 16px;
+        color: $muji-blush;
+        display: block;
+        margin-top: 8px;
+    }
+
+    &__info, &__links {
+        p { margin-bottom: 8px; font-size: 14px; }
+        a {
+            display: block;
+            color: $muji-blush;
+            margin-bottom: 8px;
+            font-size: 14px;
+            text-decoration: none;
+            &:hover { color: $muji-cream; }
+        }
+    }
+
+    .muji-label {
+        color: $muji-mist;
+        margin-bottom: 16px;
+    }
+
+    &__divider {
+        grid-column: 1 / -1;
+        height: 1px;
+        background: rgba($muji-cream, .15);
+    }
+
+    &__copy {
+        grid-column: 1 / -1;
+        text-align: center;
+        color: $muji-mist;
+        font-size: 11px;
+        letter-spacing: .06em;
+    }
+}
+
+// ─── B2B overrides ────────────────────────────────────────────
+html[data-website-id="3"] {
+    .muji-hero__title { color: $muji-mocha; }
+    .muji-cta-banner { background: $muji-cream-2; }
+}

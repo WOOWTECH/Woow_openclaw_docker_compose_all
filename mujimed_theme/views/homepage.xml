@@ -1,13 +1,205 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Hide header on homepage per design spec.
-         The homepage uses website.homepage which calls website.layout.
-         We set no_header=True on the homepage template. -->
+    <!-- Homepage: immersive one-page landing (header hidden) -->
     <template id="muji_homepage_no_header" inherit_id="website.homepage"
-              name="Mujimed: Hide Header on Homepage">
+              name="Mujimed: Homepage Content">
+
+        <!-- Keep header hidden -->
         <xpath expr="//div[@id='wrap']" position="before">
             <t t-set="no_header" t-value="True"/>
+        </xpath>
+
+        <!-- Inject homepage content -->
+        <xpath expr="//div[@id='wrap']" position="inside">
+            <div class="muji-homepage">
+
+                <!-- ══════ HERO ══════ -->
+                <section class="muji-hero">
+                    <div class="muji-hero__inner">
+                        <span class="muji-eyebrow">MUJIMED</span>
+                        <h1 class="muji-hero__title">Mujimed</h1>
+                        <span class="muji-hero__zhname">木盈醫美</span>
+                        <p class="muji-hero__tagline">
+                            <t t-if="website.id == 1">
+                                以溫柔與專業，喚醒你的自然之美
+                            </t>
+                            <t t-if="website.id == 3">
+                                醫美診所的專業採購夥伴
+                            </t>
+                        </p>
+                        <div class="muji-hero__cta">
+                            <t t-if="website.id == 1">
+                                <a href="/appointment" class="muji-btn muji-btn--primary muji-btn--lg">預約療程</a>
+                                <a href="/web/login" class="muji-btn muji-btn--ghost">會員登入</a>
+                            </t>
+                            <t t-if="website.id == 3">
+                                <a href="/shop" class="muji-btn muji-btn--primary muji-btn--lg">瀏覽商品</a>
+                                <a href="/web/login" class="muji-btn muji-btn--ghost">企業登入</a>
+                            </t>
+                        </div>
+                    </div>
+                    <div class="muji-hero__divider"></div>
+                </section>
+
+                <!-- ══════ SERVICES / PRODUCTS ══════ -->
+                <section class="muji-services">
+                    <div class="muji-services__inner">
+                        <span class="muji-eyebrow">
+                            <t t-if="website.id == 1">OUR TREATMENTS</t>
+                            <t t-if="website.id == 3">PRODUCT CATEGORIES</t>
+                        </span>
+                        <h2 class="muji-serif">
+                            <t t-if="website.id == 1">精選療程</t>
+                            <t t-if="website.id == 3">商品分類</t>
+                        </h2>
+
+                        <!-- B2C: 4 treatment cards -->
+                        <t t-if="website.id == 1">
+                            <div class="muji-services__grid">
+                                <div class="muji-card muji-services__card">
+                                    <div class="muji-services__icon">&#x2726;</div>
+                                    <h3 class="muji-serif">玻尿酸填充</h3>
+                                    <p>自然豐盈，重塑輪廓線條，打造精緻立體感</p>
+                                </div>
+                                <div class="muji-card muji-services__card">
+                                    <div class="muji-services__icon">&#x2726;</div>
+                                    <h3 class="muji-serif">肉毒桿菌素</h3>
+                                    <p>精準注射，撫平歲月痕跡，重現年輕光彩</p>
+                                </div>
+                                <div class="muji-card muji-services__card">
+                                    <div class="muji-services__icon">&#x2726;</div>
+                                    <h3 class="muji-serif">膠原蛋白增生</h3>
+                                    <p>喚醒肌膚自我修復力，由內而外煥發光澤</p>
+                                </div>
+                                <div class="muji-card muji-services__card">
+                                    <div class="muji-services__icon">&#x2726;</div>
+                                    <h3 class="muji-serif">雷射光療</h3>
+                                    <p>科技煥膚，淨透亮白，還原肌膚純淨狀態</p>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!-- B2B: 3 category cards -->
+                        <t t-if="website.id == 3">
+                            <div class="muji-services__grid muji-services__grid--3col">
+                                <div class="muji-card muji-services__card">
+                                    <div class="muji-services__icon">&#x2726;</div>
+                                    <h3 class="muji-serif">注射耗材</h3>
+                                    <p>玻尿酸、肉毒桿菌素、膠原蛋白增生劑，原廠正品供應</p>
+                                </div>
+                                <div class="muji-card muji-services__card">
+                                    <div class="muji-services__icon">&#x2726;</div>
+                                    <h3 class="muji-serif">雷射耗材</h3>
+                                    <p>各式光療設備專用耗材，穩定供貨品質保證</p>
+                                </div>
+                                <div class="muji-card muji-services__card">
+                                    <div class="muji-services__icon">&#x2726;</div>
+                                    <h3 class="muji-serif">體雕設備</h3>
+                                    <p>非侵入式體雕儀器及配件，技術領先市場</p>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </section>
+
+                <!-- ══════ TRUST SIGNALS ══════ -->
+                <section class="muji-trust">
+                    <div class="muji-trust__inner">
+                        <span class="muji-eyebrow">
+                            <t t-if="website.id == 1">WHY MUJIMED</t>
+                            <t t-if="website.id == 3">OUR ADVANTAGE</t>
+                        </span>
+                        <h2 class="muji-serif">
+                            <t t-if="website.id == 1">選擇木盈</t>
+                            <t t-if="website.id == 3">合作優勢</t>
+                        </h2>
+
+                        <t t-if="website.id == 1">
+                            <div class="muji-trust__grid">
+                                <div class="muji-trust__item">
+                                    <span class="muji-trust__num">01</span>
+                                    <h4>專業醫師團隊</h4>
+                                    <p>經驗豐富的醫美專科醫師，一對一諮詢與療程規劃，為您量身定制最佳方案</p>
+                                </div>
+                                <div class="muji-trust__item">
+                                    <span class="muji-trust__num">02</span>
+                                    <h4>原廠認證產品</h4>
+                                    <p>全系列國際原廠正品，每一支產品皆可溯源，安全有保障</p>
+                                </div>
+                                <div class="muji-trust__item">
+                                    <span class="muji-trust__num">03</span>
+                                    <h4>溫馨舒適環境</h4>
+                                    <p>私密療程空間，溫暖細緻的服務，讓您放鬆享受每一次的蛻變</p>
+                                </div>
+                            </div>
+                        </t>
+
+                        <t t-if="website.id == 3">
+                            <div class="muji-trust__grid">
+                                <div class="muji-trust__item">
+                                    <span class="muji-trust__num">01</span>
+                                    <h4>原廠直供</h4>
+                                    <p>與國際大廠直接合作，確保產品品質與供貨穩定，省去中間環節</p>
+                                </div>
+                                <div class="muji-trust__item">
+                                    <span class="muji-trust__num">02</span>
+                                    <h4>企業專屬定價</h4>
+                                    <p>依採購量提供階梯式優惠，有效降低診所營運成本</p>
+                                </div>
+                                <div class="muji-trust__item">
+                                    <span class="muji-trust__num">03</span>
+                                    <h4>快速到貨</h4>
+                                    <p>全台配送，標準訂單 48 小時內出貨，急單當日處理</p>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </section>
+
+                <!-- ══════ CTA BANNER ══════ -->
+                <section class="muji-cta-banner">
+                    <div class="muji-cta-banner__inner">
+                        <t t-if="website.id == 1">
+                            <h2>Begin Your Journey</h2>
+                            <p>立即預約，開啟您的美麗旅程</p>
+                            <a href="/appointment" class="muji-btn muji-btn--clay muji-btn--lg">立即預約</a>
+                        </t>
+                        <t t-if="website.id == 3">
+                            <h2>Partner With Us</h2>
+                            <p>成為木盈醫美合作夥伴，共創雙贏</p>
+                            <a href="/shop" class="muji-btn muji-btn--clay muji-btn--lg">開始採購</a>
+                        </t>
+                    </div>
+                </section>
+
+                <!-- ══════ CONTACT FOOTER ══════ -->
+                <section class="muji-contact">
+                    <div class="muji-contact__inner">
+                        <div class="muji-contact__brand">
+                            <span class="muji-contact__logo">Mujimed</span>
+                            <span class="muji-contact__zhname">木盈醫美</span>
+                        </div>
+                        <div class="muji-contact__info">
+                            <p class="muji-label">CONTACT</p>
+                            <p>02-2711-0207</p>
+                            <p>mujingmed@gmail.com</p>
+                            <p>台北市大安區忠孝東路四段112號12樓之13</p>
+                        </div>
+                        <div class="muji-contact__links">
+                            <p class="muji-label">FOLLOW US</p>
+                            <a href="https://www.instagram.com/mujing.med" target="_blank">Instagram @mujing.med</a>
+                            <a href="https://www.facebook.com/MUJINGMED" target="_blank">Facebook</a>
+                            <a href="https://lin.ee/kwQEDFQ" target="_blank">LINE @mujing</a>
+                        </div>
+                        <div class="muji-contact__divider"></div>
+                        <p class="muji-contact__copy">
+                            &#169; 2026 木盈醫美 Mujimed. All rights reserved.
+                        </p>
+                    </div>
+                </section>
+
+            </div>
         </xpath>
     </template>
 

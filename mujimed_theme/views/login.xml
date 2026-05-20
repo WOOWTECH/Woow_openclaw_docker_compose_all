@@ -1,13 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Hide header on login/signup/reset_password pages.
-         website.login_layout wraps web.login_layout with website.layout,
-         which shows the full header. We re-set no_header=True. -->
+    <!-- Hide header on login/signup/reset_password pages. -->
     <template id="muji_login_no_header" inherit_id="website.login_layout"
-              name="Mujimed: Hide Header on Auth Pages">
+              name="Mujimed: Branded Auth Pages">
         <xpath expr="//t[@t-call='website.layout']" position="before">
             <t t-set="no_header" t-value="True"/>
+        </xpath>
+    </template>
+
+    <!-- Inject branding panel before the login form container -->
+    <template id="muji_login_branding" inherit_id="web.login"
+              name="Mujimed: Login Branding Panel">
+        <xpath expr="//div[hasclass('oe_login_form')]" position="before">
+            <div class="muji-login-brand">
+                <div class="muji-login-brand__inner">
+                    <span class="muji-eyebrow">MUJIMED</span>
+                    <h1 class="muji-login-brand__title">Mujimed</h1>
+                    <span class="muji-login-brand__zhname">木盈醫美</span>
+                    <div class="muji-login-brand__divider"></div>
+                    <p class="muji-login-brand__desc">
+                        以溫柔與專業<br/>喚醒你的自然之美
+                    </p>
+                    <p class="muji-login-brand__sub">
+                        登入會員中心，管理您的預約與療程紀錄
+                    </p>
+                    <div class="muji-login-brand__contact">
+                        <p>02-2711-0207</p>
+                        <p>mujingmed@gmail.com</p>
+                    </div>
+                </div>
+            </div>
         </xpath>
     </template>
 

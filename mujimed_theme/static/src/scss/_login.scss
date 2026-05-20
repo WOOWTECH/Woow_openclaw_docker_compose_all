@@ -99,3 +99,104 @@ body[data-main-object*="login"] .o_frontend_layout > main {
     align-items: center;
     justify-content: center;
 }
+
+// ─── Branding panel (left side of login) ─────────────────────
+.muji-login-brand {
+    background: $muji-espresso;
+    color: $muji-cream;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 60px;
+    min-height: 100vh;
+    flex: 0 0 42%;
+    max-width: 42%;
+
+    &__inner {
+        max-width: 340px;
+        text-align: center;
+    }
+
+    .muji-eyebrow {
+        color: $muji-clay;
+        margin-bottom: 20px;
+        display: block;
+    }
+
+    &__title {
+        font-family: $muji-ff-display;
+        font-style: italic;
+        font-size: 52px;
+        color: $muji-cream;
+        line-height: 1;
+        margin-bottom: 8px;
+    }
+
+    &__zhname {
+        font-family: $muji-ff-serif;
+        font-size: 16px;
+        letter-spacing: .32em;
+        color: $muji-blush;
+        display: block;
+        margin-bottom: 24px;
+    }
+
+    &__divider {
+        height: 1px;
+        background: rgba($muji-cream, .2);
+        margin: 0 auto 28px;
+        max-width: 60px;
+    }
+
+    &__desc {
+        font-family: $muji-ff-serif;
+        font-size: 20px;
+        color: $muji-blush;
+        line-height: 1.8;
+        margin-bottom: 16px;
+    }
+
+    &__sub {
+        font-size: 13px;
+        color: $muji-mist;
+        line-height: 1.7;
+        margin-bottom: 32px;
+    }
+
+    &__contact {
+        p {
+            font-size: 12px;
+            color: $muji-mist;
+            margin-bottom: 4px;
+            letter-spacing: .06em;
+        }
+    }
+}
+
+// ─── Split layout container ──────────────────────────────────
+// When brand panel is present, make parent flex row
+body:has(.muji-login-brand) {
+    #wrapwrap, .o_frontend_layout {
+        min-height: 100vh;
+    }
+
+    .o_frontend_layout > main,
+    main.oe_website_login_container {
+        display: flex !important;
+        flex-direction: row !important;
+        min-height: 100vh;
+        padding: 0 !important;
+        background: $muji-cream !important;
+    }
+
+    // Form side takes remaining space
+    .oe_login_form,
+    .oe_signup_form,
+    .oe_reset_password_form {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px;
+    }
+}

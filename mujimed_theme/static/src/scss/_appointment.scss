@@ -68,26 +68,162 @@
 }
 
 // ─── Appointment calendar ───────────────────────────────────
+// Odoo 18 appointment slot selectors (broader coverage)
 .o_appointment_calendar,
-.o_appointment_slots {
+.o_appointment_slots,
+.o_appointment_select_slots,
+[id*="slots"] {
+
+    // Time slot buttons — override Bootstrap blue border
     .o_slot_button,
-    .o_appointment_slot {
+    .o_appointment_slot,
+    .btn-outline-primary,
+    a.btn[href*="slot"],
+    button[data-slot] {
+        border: 1px solid $muji-line-2 !important;
+        border-radius: $muji-r-sm !important;
+        padding: 14px 18px;
+        font-size: 14px;
+        font-family: $muji-ff-sans;
+        color: $muji-espresso !important;
+        background: #fff !important;
+        transition: all .2s;
+        text-decoration: none;
+
+        &:hover, &:focus, &.active, &.selected {
+            background: $muji-clay !important;
+            border-color: $muji-clay !important;
+            color: #fff !important;
+            box-shadow: none !important;
+        }
+
+        &.disabled, &:disabled {
+            opacity: .4;
+            cursor: not-allowed;
+        }
+
+        // "1可用" availability text
+        small, .text-muted, .o_appointment_slot_availabilities {
+            font-size: 11px;
+            color: $muji-mist;
+            letter-spacing: .06em;
+        }
+    }
+}
+
+// ─── Calendar widget ────────────────────────────────────────
+.o_appointment_calendar,
+.o_appointment_select_date,
+.o_daterange_picker,
+table.table-bordered {
+
+    // Month header (五月 2026)
+    .o_appointment_month,
+    caption,
+    .ui-datepicker-title,
+    th.month {
+        font-family: $muji-ff-serif;
+        font-size: 22px;
+        color: $muji-espresso;
+        font-weight: 500;
+        text-align: center;
+        padding: 16px 0;
+    }
+
+    // Weekday headers (日 一 二 三 四 五 六)
+    thead th,
+    .o_appointment_weekday {
+        font-size: 12px;
+        color: $muji-slate;
+        font-weight: 500;
+        letter-spacing: .08em;
+        text-align: center;
+        padding: 8px;
+    }
+
+    // Date cells
+    td {
+        text-align: center;
+        padding: 0;
+
+        a, button, .o_day {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: $muji-r-sm;
+            color: $muji-ink;
+            font-size: 14px;
+            border: 1px solid transparent;
+            transition: all .15s;
+
+            &:hover {
+                background: $muji-cream-2;
+                border-color: $muji-line;
+                text-decoration: none;
+            }
+
+            &.active, &.o_selected, &.ui-state-active {
+                background: $muji-clay !important;
+                color: #fff !important;
+                border-color: $muji-clay !important;
+            }
+
+            &.today, &.o_today {
+                border-color: $muji-clay;
+                font-weight: 600;
+            }
+
+            &.disabled, &.ui-state-disabled {
+                color: $muji-mist;
+                cursor: not-allowed;
+            }
+        }
+    }
+
+    // Navigation arrows (< >)
+    .o_appointment_prev,
+    .o_appointment_next,
+    .ui-datepicker-prev,
+    .ui-datepicker-next,
+    .btn-light {
+        border: 1px solid $muji-line-2 !important;
+        border-radius: $muji-r-pill !important;
+        color: $muji-espresso !important;
+        background: transparent !important;
+        width: 40px;
+        height: 40px;
+        display: inline-grid;
+        place-items: center;
+
+        &:hover {
+            background: $muji-cream-2 !important;
+            border-color: $muji-espresso !important;
+        }
+    }
+}
+
+// ─── Resource/Staff dropdown ────────────────────────────────
+.o_appointment_select_resources,
+.o_appointment_select_staff {
+    select, .form-select {
         border: 1px solid $muji-line-2;
         border-radius: $muji-r-sm;
         padding: 12px 16px;
-        font-size: 13px;
+        font-size: 14px;
+        font-family: $muji-ff-sans;
         color: $muji-espresso;
-        transition: all .2s;
+        background-color: #fff;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%233D2B22' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 16px center;
+        padding-right: 40px;
 
-        &:hover, &.active, &.selected {
-            background: $muji-clay;
+        &:focus {
             border-color: $muji-clay;
-            color: #fff;
-        }
-
-        &.disabled {
-            opacity: .4;
-            cursor: not-allowed;
+            box-shadow: 0 0 0 2px rgba($muji-clay, .15);
         }
     }
 }

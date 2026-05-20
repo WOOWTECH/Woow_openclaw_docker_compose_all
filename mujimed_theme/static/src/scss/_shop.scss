@@ -5,6 +5,8 @@
 
 // ─── Category tabs / pills ──────────────────────────────────
 .o_wsale_categories,
+.o_wsale_filmstip,
+.o_wsale_filmstip_container,
 .o_shop_category_nav {
     .nav-pills, .nav-tabs, .nav {
         gap: 4px;
@@ -68,6 +70,7 @@
 
 // View toggle buttons (grid/list/filter)
 .o_wsale_display_toggle,
+.o_wsale_apply_layout,
 .o_wsale_apply_options {
     .btn, button {
         border: 1px solid $muji-line-2;
@@ -113,7 +116,7 @@
         }
 
         // Product name — prevent ugly truncation
-        h6, .o_wsale_product_information h6 {
+        h6, .o_wsale_product_information h6, .o_wsale_products_item_title {
             font-family: $muji-ff-serif;
             font-weight: 500;
             color: $muji-espresso;

@@ -136,7 +136,8 @@
     // Portal greeting — smaller
     .o_portal_my_home {
         .o_portal_my_details_card,
-        .o_portal_my_home_greeting {
+        .o_portal_my_home_greeting,
+        .wpu-greeting-card {
             padding: 16px;
 
             h3 { font-size: 20px; }
@@ -145,6 +146,7 @@
 
     // Category tabs — horizontal scroll
     .o_wsale_categories .nav,
+    .o_wsale_filmstip,
     .o_shop_category_nav .nav {
         flex-wrap: nowrap;
         overflow-x: auto;

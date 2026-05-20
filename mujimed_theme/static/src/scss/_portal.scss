@@ -19,29 +19,30 @@
 // ─── Portal home /my ────────────────────────────────────────
 .o_portal_my_home {
 
-    // Member greeting area
+    // Member greeting area (wpu- prefix = woow_portal_ui module)
     .o_portal_my_details_card,
-    .o_portal_my_home_greeting {
+    .o_portal_my_home_greeting,
+    .wpu-greeting-card {
         background: $muji-cream-2;
         border: 1px solid $muji-line;
         border-radius: $muji-r-md;
         padding: 24px;
         margin-bottom: 28px;
 
-        h3, .o_greeting_title {
+        h3, .o_greeting_title, .wpu-greeting-text {
             font-family: $muji-ff-serif;
             font-size: 24px;
             color: $muji-espresso;
             margin-bottom: 4px;
         }
 
-        .text-muted, .o_greeting_subtitle {
+        .text-muted, .o_greeting_subtitle, .wpu-greeting-time {
             font-size: 13px;
             color: $muji-slate;
             letter-spacing: .04em;
         }
 
-        .o_portal_my_details_avatar {
+        .o_portal_my_details_avatar, .wpu-greeting-avatar {
             width: 48px;
             height: 48px;
             border-radius: $muji-r-pill;

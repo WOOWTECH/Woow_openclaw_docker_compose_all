@@ -1,0 +1,130 @@
+// ============================================================
+// MUJI MED · Phase 5: B2B Sub-site Overrides
+// B2B-specific styling applied via body[data-website-id="3"]
+// ============================================================
+
+// ─── B2B body scope ─────────────────────────────────────────
+html[data-website-id="3"] {
+
+    // B2B header CTA (企業詢價 instead of 立即預約)
+    header#top {
+        .muji-header-cta {
+            background: $muji-mocha;
+            &:hover { background: $muji-espresso; }
+        }
+    }
+
+    // ─── B2B Shop overrides ─────────────────────────────────
+    .oe_website_sale {
+        // Product card: show SKU
+        .oe_product_cart {
+            .o_wsale_product_information {
+                .default_code, .product_sku {
+                    display: block !important;
+                    font-size: 11px;
+                    color: $muji-slate;
+                    letter-spacing: .12em;
+                    margin-bottom: 4px;
+                }
+            }
+        }
+    }
+
+    // ─── B2B Quote detail page ──────────────────────────────
+    .o_portal_sale_sidebar {
+        // Accept/Negotiate/Reject buttons
+        .o_portal_order_accept {
+            background: $muji-sage !important;
+            border-color: $muji-sage !important;
+            border-radius: $muji-r-pill !important;
+            color: #fff !important;
+            font-size: 13px;
+            letter-spacing: .12em;
+
+            &:hover { background: $muji-olive !important; border-color: $muji-olive !important; }
+        }
+
+        .o_portal_order_negotiate {
+            background: transparent !important;
+            border: 1px solid $muji-line-2 !important;
+            border-radius: $muji-r-pill !important;
+            color: $muji-espresso !important;
+
+            &:hover { border-color: $muji-espresso !important; }
+        }
+
+        .o_portal_order_decline {
+            background: transparent !important;
+            border: none !important;
+            color: $muji-mist !important;
+            font-size: 12px;
+
+            &:hover { color: $muji-rust !important; }
+        }
+
+        // Salesperson contact card
+        .o_portal_contact_card {
+            background: $muji-cream-2;
+            border-radius: $muji-r-md;
+            padding: 20px;
+            border: 1px solid $muji-line;
+
+            .o_portal_contact_name {
+                font-family: $muji-ff-serif;
+                color: $muji-espresso;
+            }
+
+            .o_portal_contact_role {
+                color: $muji-slate;
+                font-size: 12px;
+            }
+        }
+    }
+
+    // ─── B2B Pricing table ──────────────────────────────────
+    .o_b2b_pricing_table {
+        border: 1px solid $muji-line;
+        border-radius: $muji-r-md;
+        overflow: hidden;
+
+        .pricing-tier {
+            padding: 32px;
+            border-bottom: 1px solid $muji-line;
+
+            &:last-child { border-bottom: none; }
+
+            .tier-name {
+                font-family: $muji-ff-serif;
+                color: $muji-espresso;
+                font-size: 20px;
+            }
+
+            .tier-discount {
+                font-family: $muji-ff-display;
+                font-style: italic;
+                font-size: 36px;
+                color: $muji-mocha;
+            }
+
+            .tier-threshold {
+                color: $muji-slate;
+                font-size: 13px;
+            }
+        }
+
+        // Highlight the recommended tier
+        .pricing-tier.recommended {
+            background: $muji-cream-2;
+            border-left: 3px solid $muji-clay;
+        }
+    }
+}
+
+// ─── Mobile ─────────────────────────────────────────────────
+@media (max-width: 767px) {
+    html[data-website-id="3"] {
+        .o_b2b_pricing_table .pricing-tier {
+            padding: 20px;
+        }
+    }
+}

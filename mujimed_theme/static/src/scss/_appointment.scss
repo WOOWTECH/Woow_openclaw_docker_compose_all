@@ -1,0 +1,209 @@
+// ============================================================
+// MUJI MED · Phase 2: Appointment Flow Styling
+// Covers: /appointment list, detail, calendar, form, payment
+// ============================================================
+
+// ─── Appointment list page ──────────────────────────────────
+.o_appointment_view,
+[data-page-type="appointment"] {
+
+    // Hero section
+    .o_appointment_intro {
+        background: $muji-cream-2 !important;
+        border-bottom: 1px solid $muji-line;
+        padding: 72px 64px 56px;
+
+        h1, .o_appointment_title {
+            font-family: $muji-ff-serif !important;
+            font-size: 48px;
+            color: $muji-espresso;
+            line-height: 1.1;
+        }
+    }
+
+    // Service cards
+    .o_appointment_type_card,
+    .o_wappointment_type {
+        background: #fff;
+        border: 1px solid $muji-line;
+        border-radius: $muji-r-md;
+        overflow: hidden;
+        transition: all .2s;
+
+        &:hover {
+            box-shadow: $muji-sh-2;
+            transform: translateY(-2px);
+        }
+
+        // Duration & time
+        .o_appointment_type_duration {
+            color: $muji-slate;
+            font-size: 11px;
+            letter-spacing: .2em;
+        }
+
+        // Price
+        .o_appointment_type_price {
+            font-family: $muji-ff-display;
+            font-style: italic;
+            font-size: 22px;
+            color: $muji-mocha;
+        }
+
+        // Title
+        h3, .o_appointment_type_name {
+            font-family: $muji-ff-serif;
+            font-size: 20px;
+            color: $muji-espresso;
+        }
+
+        // Book button
+        .btn-primary {
+            @extend .muji-btn;
+            @extend .muji-btn--primary;
+            font-size: 11px;
+            padding: 10px 18px;
+        }
+    }
+}
+
+// ─── Appointment calendar ───────────────────────────────────
+.o_appointment_calendar,
+.o_appointment_slots {
+    .o_slot_button,
+    .o_appointment_slot {
+        border: 1px solid $muji-line-2;
+        border-radius: $muji-r-sm;
+        padding: 12px 16px;
+        font-size: 13px;
+        color: $muji-espresso;
+        transition: all .2s;
+
+        &:hover, &.active, &.selected {
+            background: $muji-clay;
+            border-color: $muji-clay;
+            color: #fff;
+        }
+
+        &.disabled {
+            opacity: .4;
+            cursor: not-allowed;
+        }
+    }
+}
+
+// ─── Staff selection ────────────────────────────────────────
+.o_appointment_resources,
+.o_appointment_employees {
+    .o_resource_card,
+    .o_employee_card {
+        border: 1px solid $muji-line;
+        border-radius: $muji-r-md;
+        padding: 20px;
+        background: #fff;
+        cursor: pointer;
+        transition: all .2s;
+
+        &:hover, &.selected {
+            border-color: $muji-clay;
+            box-shadow: 0 0 0 2px rgba($muji-clay, .15);
+        }
+
+        .o_employee_name {
+            font-family: $muji-ff-serif;
+            color: $muji-espresso;
+        }
+
+        .o_employee_title {
+            color: $muji-slate;
+            font-size: 12px;
+        }
+    }
+}
+
+// ─── Booking form ───────────────────────────────────────────
+.o_appointment_form {
+    .form-group, .o_appointment_form_field {
+        margin-bottom: 20px;
+
+        label {
+            font-size: 11px;
+            letter-spacing: .24em;
+            text-transform: uppercase;
+            color: $muji-slate;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+            border: 1px solid $muji-line-2;
+            border-radius: $muji-r-sm;
+            padding: 14px 16px;
+            font-size: 14px;
+
+            &:focus {
+                border-color: $muji-clay;
+                box-shadow: 0 0 0 2px rgba($muji-clay, .15);
+            }
+        }
+    }
+}
+
+// ─── Progress steps override ────────────────────────────────
+.o_appointment_progress,
+.o_wsale_progress {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 24px 0;
+
+    .step, .o_step {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 11px;
+        letter-spacing: .18em;
+        text-transform: uppercase;
+        color: $muji-mist;
+
+        .num, .step-number {
+            width: 28px;
+            height: 28px;
+            border: 1px solid $muji-line-2;
+            border-radius: $muji-r-pill;
+            display: grid;
+            place-items: center;
+            font-family: $muji-ff-display;
+            font-style: italic;
+            font-size: 14px;
+        }
+
+        &.active, &.current {
+            color: $muji-espresso;
+            .num, .step-number { border-color: $muji-espresso; color: $muji-espresso; }
+        }
+
+        &.done, &.completed {
+            color: $muji-clay;
+            .num, .step-number { background: $muji-clay; border-color: $muji-clay; color: #fff; }
+        }
+    }
+
+    .sep, .step-separator {
+        width: 36px;
+        height: 1px;
+        background: $muji-line-2;
+        margin: 0 8px;
+    }
+}
+
+// ─── Mobile ─────────────────────────────────────────────────
+@media (max-width: 767px) {
+    .o_appointment_view,
+    [data-page-type="appointment"] {
+        .o_appointment_intro {
+            padding: 40px 20px 32px;
+            h1, .o_appointment_title { font-size: 32px; }
+        }
+    }
+}

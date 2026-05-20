@@ -1,0 +1,198 @@
+// ============================================================
+// MUJI MED · Phase 3: Shop / eCommerce Flow Styling
+// Covers: /shop list, product detail, cart, checkout, payment
+// ============================================================
+
+// ─── Shop page ──────────────────────────────────────────────
+#products_grid,
+.oe_website_sale {
+
+    // Background
+    background-color: $muji-cream !important;
+
+    // Product cards
+    .oe_product_cart,
+    .o_wsale_product_grid_wrapper .oe_product {
+        .oe_product_image {
+            border-radius: $muji-r-md $muji-r-md 0 0;
+            overflow: hidden;
+        }
+
+        .card, .oe_product_cart {
+            border: 1px solid $muji-line;
+            border-radius: $muji-r-md;
+            background: #fff;
+            overflow: hidden;
+            transition: all .2s;
+
+            &:hover {
+                box-shadow: $muji-sh-2;
+                transform: translateY(-2px);
+            }
+        }
+
+        // Product name
+        h6, .o_wsale_product_information h6 {
+            font-family: $muji-ff-serif;
+            font-weight: 500;
+            color: $muji-espresso;
+            font-size: 16px;
+        }
+
+        // Price
+        .product_price, .oe_currency_value {
+            font-family: $muji-ff-display;
+            font-style: italic;
+            color: $muji-mocha;
+        }
+
+        // Add to cart
+        .a-submit, .js_add_cart_json {
+            background: $muji-clay !important;
+            border-color: $muji-clay !important;
+            border-radius: $muji-r-pill !important;
+            color: #fff !important;
+
+            &:hover {
+                background: $muji-rust !important;
+                border-color: $muji-rust !important;
+            }
+        }
+    }
+
+    // Category sidebar
+    .o_wsale_categories,
+    #o_wsale_offcanvas_category {
+        .nav-link {
+            font-size: 13px;
+            letter-spacing: .06em;
+            color: $muji-espresso;
+            padding: 10px 14px;
+            border-radius: $muji-r-sm;
+
+            &.active, &:hover {
+                background: $muji-espresso;
+                color: $muji-cream;
+            }
+        }
+
+        .eyebrow-label {
+            font-size: 11px;
+            letter-spacing: .32em;
+            text-transform: uppercase;
+            color: $muji-clay;
+            font-weight: 500;
+        }
+    }
+}
+
+// ─── Product detail page ────────────────────────────────────
+#product_detail,
+.o_wsale_product_page {
+    background: $muji-cream !important;
+
+    // Product title
+    h1, .product_name {
+        font-family: $muji-ff-serif !important;
+        color: $muji-espresso;
+    }
+
+    // Price
+    .product_price .oe_price .oe_currency_value {
+        font-family: $muji-ff-display;
+        font-style: italic;
+        font-size: 32px;
+        color: $muji-mocha;
+    }
+
+    // Add to cart button
+    #add_to_cart, .a-submit {
+        background: $muji-espresso !important;
+        border-color: $muji-espresso !important;
+        border-radius: $muji-r-pill !important;
+        padding: 14px 28px;
+        font-size: 13px;
+        letter-spacing: .18em;
+
+        &:hover {
+            background: $muji-ink !important;
+        }
+    }
+
+    // Description
+    .o_product_page_description {
+        color: $muji-ink;
+        line-height: 1.85;
+    }
+}
+
+// ─── Cart ───────────────────────────────────────────────────
+.oe_cart,
+#wrap .oe_cart {
+    background: $muji-cream !important;
+
+    table {
+        th {
+            font-size: 11px;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            color: $muji-slate;
+            font-weight: 500;
+        }
+    }
+
+    // Summary card
+    #cart_total, .o_cart_summary {
+        background: #fff;
+        border: 1px solid $muji-line;
+        border-radius: $muji-r-md;
+        padding: 24px;
+    }
+
+    .btn-primary {
+        border-radius: $muji-r-pill !important;
+    }
+}
+
+// ─── Checkout ───────────────────────────────────────────────
+.oe_website_sale .oe_cart .checkout_autoformat,
+.o_wsale_checkout {
+    background: $muji-cream !important;
+
+    .form-control {
+        border-color: $muji-line-2;
+        border-radius: $muji-r-sm;
+
+        &:focus {
+            border-color: $muji-clay;
+            box-shadow: 0 0 0 2px rgba($muji-clay, .15);
+        }
+    }
+
+    label {
+        font-size: 12px;
+        color: $muji-slate;
+        font-weight: 500;
+    }
+}
+
+// ─── Order confirmation ─────────────────────────────────────
+.oe_website_sale_tx_status {
+    .card {
+        border-color: $muji-line;
+        border-radius: $muji-r-md;
+    }
+
+    .text-success, .text-info {
+        color: $muji-sage !important;
+    }
+}
+
+// ─── Mobile ─────────────────────────────────────────────────
+@media (max-width: 767px) {
+    .oe_website_sale {
+        .oe_product_cart .card {
+            border-radius: $muji-r-sm;
+        }
+    }
+}

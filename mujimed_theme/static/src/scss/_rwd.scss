@@ -1,0 +1,158 @@
+// ============================================================
+// MUJI MED · Phase 6: RWD Fine-tuning
+// Mobile-first responsive adjustments for 390px target
+// ============================================================
+
+// ─── Breakpoints ────────────────────────────────────────────
+// Mobile: < 768px (target 390px)
+// Tablet: 768px - 1023px
+// Desktop: >= 1024px
+
+// ─── Mobile base ────────────────────────────────────────────
+@media (max-width: 767px) {
+
+    body {
+        font-size: 14px;
+    }
+
+    // Spacing reduction
+    section {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+
+    // Typography scale down
+    h1, .h1 { font-size: 28px !important; }
+    h2, .h2 { font-size: 24px !important; }
+    h3, .h3 { font-size: 20px !important; }
+
+    // Full-width buttons on mobile
+    .muji-btn--block-mobile {
+        width: 100%;
+    }
+
+    // Stack columns
+    .muji-grid-stack {
+        grid-template-columns: 1fr !important;
+    }
+
+    // Portal sidebar → horizontal scroll
+    .o_portal_sidebar .nav,
+    .woow_portal_sidebar .nav {
+        flex-direction: row;
+        overflow-x: auto;
+        white-space: nowrap;
+        gap: 4px;
+        padding-bottom: 8px;
+        -webkit-overflow-scrolling: touch;
+
+        .nav-link, a {
+            flex-shrink: 0;
+            font-size: 12px;
+        }
+    }
+
+    // Steps → compact
+    .muji-steps {
+        font-size: 10px;
+        letter-spacing: .12em;
+
+        .muji-steps__item .num {
+            width: 24px;
+            height: 24px;
+            font-size: 12px;
+        }
+
+        .muji-steps__sep {
+            width: 16px;
+        }
+
+        // Hide step labels on mobile, show only numbers
+        .muji-steps__item .label {
+            display: none;
+        }
+    }
+
+    // Cards → full width
+    .muji-card,
+    .card {
+        border-radius: $muji-r-sm;
+    }
+
+    // Product grid → 2 cols
+    #products_grid .oe_product {
+        width: 50%;
+    }
+
+    // Tables → horizontal scroll
+    .table-responsive {
+        -webkit-overflow-scrolling: touch;
+    }
+
+    // Login card
+    .muji-login-card,
+    .oe_login_form .card,
+    .oe_signup_form .card {
+        max-width: 100% !important;
+        margin: 0 16px;
+        padding: 32px 24px !important;
+    }
+
+    // Hide desktop-only elements
+    .muji-desktop-only { display: none !important; }
+}
+
+// ─── Tablet ─────────────────────────────────────────────────
+@media (min-width: 768px) and (max-width: 1023px) {
+
+    section {
+        padding-left: 32px !important;
+        padding-right: 32px !important;
+    }
+
+    h1, .h1 { font-size: 36px !important; }
+
+    // Product grid → 3 cols
+    #products_grid .oe_product {
+        width: 33.333%;
+    }
+
+    // Portal layout: narrower sidebar
+    .o_portal_sidebar,
+    .woow_portal_sidebar {
+        .nav {
+            min-width: 200px;
+        }
+    }
+}
+
+// ─── Desktop large ──────────────────────────────────────────
+@media (min-width: 1440px) {
+    .container {
+        max-width: 1320px;
+    }
+}
+
+// ─── Mobile-only show ───────────────────────────────────────
+.muji-mobile-only {
+    display: none !important;
+
+    @media (max-width: 767px) {
+        display: block !important;
+    }
+}
+
+// ─── Print styles ───────────────────────────────────────────
+@media print {
+    header#top,
+    .o_portal_sidebar,
+    .muji-steps,
+    .muji-crumbs {
+        display: none !important;
+    }
+
+    body {
+        background: #fff !important;
+        color: #000 !important;
+    }
+}

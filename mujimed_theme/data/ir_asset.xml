@@ -39,4 +39,39 @@
         <field name="path">mujimed_theme/static/src/scss/_global.scss</field>
     </record>
 
+    <!-- Phase 2: Appointment flow -->
+    <record id="asset_appointment" model="ir.asset">
+        <field name="name">Mujimed: appointment flow</field>
+        <field name="bundle">web.assets_frontend</field>
+        <field name="path">mujimed_theme/static/src/scss/_appointment.scss</field>
+    </record>
+
+    <!-- Phase 3: Shop / eCommerce -->
+    <record id="asset_shop" model="ir.asset">
+        <field name="name">Mujimed: shop ecommerce</field>
+        <field name="bundle">web.assets_frontend</field>
+        <field name="path">mujimed_theme/static/src/scss/_shop.scss</field>
+    </record>
+
+    <!-- Phase 4: Portal pages -->
+    <record id="asset_portal" model="ir.asset">
+        <field name="name">Mujimed: portal pages</field>
+        <field name="bundle">web.assets_frontend</field>
+        <field name="path">mujimed_theme/static/src/scss/_portal.scss</field>
+    </record>
+
+    <!-- Phase 5: B2B sub-site -->
+    <record id="asset_b2b" model="ir.asset">
+        <field name="name">Mujimed: B2B overrides</field>
+        <field name="bundle">web.assets_frontend</field>
+        <field name="path">mujimed_theme/static/src/scss/_b2b.scss</field>
+    </record>
+
+    <!-- Phase 6: RWD fine-tuning -->
+    <record id="asset_rwd" model="ir.asset">
+        <field name="name">Mujimed: responsive design</field>
+        <field name="bundle">web.assets_frontend</field>
+        <field name="path">mujimed_theme/static/src/scss/_rwd.scss</field>
+    </record>
+
 </odoo>

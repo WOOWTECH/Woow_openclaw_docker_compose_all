@@ -1,0 +1,240 @@
+// ============================================================
+// MUJI MED · Phase 4: Portal Pages Styling
+// Covers: /my, /my/orders, /my/invoices, /my/account, etc.
+// ============================================================
+
+// ─── Portal layout ──────────────────────────────────────────
+.o_portal {
+    background: $muji-cream !important;
+
+    // Hero / page header
+    .o_portal_wrap > .container > .row > .col > h3,
+    .o_portal_wrap .o_page_header h3 {
+        font-family: $muji-ff-serif !important;
+        font-size: 44px;
+        color: $muji-espresso;
+    }
+}
+
+// ─── Portal home /my ────────────────────────────────────────
+.o_portal_my_home {
+    .o_portal_docs {
+        // Stat cards
+        .card, .o_portal_doc_spinner {
+            border: 1px solid $muji-line;
+            border-radius: $muji-r-md;
+            background: #fff;
+            transition: all .2s;
+
+            &:hover {
+                box-shadow: $muji-sh-1;
+            }
+
+            .o_portal_doc_title {
+                font-family: $muji-ff-serif;
+                color: $muji-espresso;
+            }
+
+            .o_stat_value {
+                font-family: $muji-ff-display;
+                font-style: italic;
+                font-size: 32px;
+                color: $muji-mocha;
+            }
+        }
+    }
+
+    // Member greeting card
+    .o_portal_my_details_card {
+        background: #fff;
+        border: 1px solid $muji-line;
+        border-radius: $muji-r-md;
+        padding: 22px;
+
+        .o_portal_my_details_avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: $muji-r-pill;
+            background: $muji-bisque;
+            color: $muji-rust;
+            display: grid;
+            place-items: center;
+        }
+    }
+}
+
+// ─── Portal sidebar (from woow_portal_ui) ───────────────────
+.o_portal_sidebar,
+.woow_portal_sidebar {
+    .nav {
+        .nav-link, a {
+            font-size: 13px;
+            letter-spacing: .06em;
+            color: $muji-espresso;
+            padding: 11px 14px;
+            border-radius: $muji-r-sm;
+            transition: background .2s;
+
+            &.active, &:hover {
+                background: $muji-cream-2;
+                color: $muji-espresso;
+            }
+        }
+    }
+
+    // Badge counter
+    .badge {
+        background: $muji-clay !important;
+        color: #fff;
+        border-radius: $muji-r-pill;
+        font-size: 10px;
+        min-width: 20px;
+        height: 20px;
+        display: inline-grid;
+        place-items: center;
+    }
+}
+
+// ─── Portal tables (orders, invoices) ───────────────────────
+.o_portal_my_doc_table,
+.table.o_list_table {
+    th {
+        font-size: 11px;
+        letter-spacing: .18em;
+        text-transform: uppercase;
+        color: $muji-slate;
+        font-weight: 500;
+        border-bottom: 1px solid $muji-line;
+        padding: 14px 16px;
+    }
+
+    td {
+        padding: 14px 16px;
+        border-bottom: 1px solid $muji-line;
+        color: $muji-ink;
+        font-size: 14px;
+        vertical-align: middle;
+    }
+
+    // Status pills
+    .badge, .o_status {
+        border-radius: $muji-r-pill;
+        font-size: 11px;
+        letter-spacing: .12em;
+        padding: 6px 14px;
+    }
+
+    tr:hover td {
+        background: $muji-off;
+    }
+}
+
+// ─── Portal detail page (order/invoice/quote) ───────────────
+.o_portal_sale_sidebar,
+.o_portal_invoice_sidebar {
+    .card {
+        border-color: $muji-line;
+        border-radius: $muji-r-md;
+    }
+
+    // Order info
+    h4, h5 {
+        font-family: $muji-ff-serif;
+        color: $muji-espresso;
+    }
+
+    // Amount
+    .o_portal_sidebar_amount {
+        font-family: $muji-ff-display;
+        font-style: italic;
+        font-size: 28px;
+        color: $muji-mocha;
+    }
+}
+
+// ─── Account edit page ──────────────────────────────────────
+.o_portal_details {
+    .form-group {
+        margin-bottom: 20px;
+
+        label {
+            font-size: 11px;
+            letter-spacing: .24em;
+            text-transform: uppercase;
+            color: $muji-slate;
+            font-weight: 500;
+        }
+
+        .form-control {
+            border: 1px solid $muji-line-2;
+            border-radius: $muji-r-sm;
+            padding: 14px 16px;
+
+            &:focus {
+                border-color: $muji-clay;
+                box-shadow: 0 0 0 2px rgba($muji-clay, .15);
+            }
+        }
+    }
+}
+
+// ─── Portal chatter (mail.thread) ───────────────────────────
+.o_portal_chatter {
+    .o_message {
+        border-bottom: 1px solid $muji-line;
+        padding: 16px 0;
+    }
+
+    .o_message_author {
+        font-family: $muji-ff-serif;
+        color: $muji-espresso;
+        font-size: 14px;
+    }
+
+    .o_message_date {
+        color: $muji-mist;
+        font-size: 11px;
+    }
+
+    textarea.form-control {
+        border-color: $muji-line-2;
+        border-radius: $muji-r-sm;
+
+        &:focus {
+            border-color: $muji-clay;
+        }
+    }
+}
+
+// ─── Pagination ─────────────────────────────────────────────
+.o_portal_pager {
+    .page-link {
+        border-color: $muji-line-2;
+        color: $muji-espresso;
+        border-radius: $muji-r-sm;
+
+        &:hover {
+            background: $muji-cream-2;
+        }
+    }
+
+    .page-item.active .page-link {
+        background: $muji-clay;
+        border-color: $muji-clay;
+        color: #fff;
+    }
+}
+
+// ─── Mobile ─────────────────────────────────────────────────
+@media (max-width: 767px) {
+    .o_portal {
+        .o_portal_wrap > .container > .row > .col > h3 {
+            font-size: 28px;
+        }
+    }
+
+    .o_portal_sidebar,
+    .woow_portal_sidebar {
+        .nav { flex-direction: row; overflow-x: auto; }
+    }
+}

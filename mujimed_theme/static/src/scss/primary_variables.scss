@@ -7,19 +7,19 @@
 $o-theme-font-configs: (
     'Cormorant Garamond': (
         'family': ('Cormorant Garamond', serif),
-        'url': 'Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500',
+        'url': 'Cormorant+Garamond:ital,wght@0,400..700\3b 1,400..500',
     ),
     'Noto Serif TC': (
         'family': ('Noto Serif TC', serif),
-        'url': 'Noto+Serif+TC:wght@400;500;600;700',
+        'url': 'Noto+Serif+TC:wght@400..700',
     ),
     'Plus Jakarta Sans': (
         'family': ('Plus Jakarta Sans', sans-serif),
-        'url': 'Plus+Jakarta+Sans:wght@300;400;500;600;700',
+        'url': 'Plus+Jakarta+Sans:wght@300..700',
     ),
     'Noto Sans TC': (
         'family': ('Noto Sans TC', sans-serif),
-        'url': 'Noto+Sans+TC:wght@300;400;500;700',
+        'url': 'Noto+Sans+TC:wght@300..700',
     ),
 );
 

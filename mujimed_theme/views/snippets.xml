@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Cart product description: hide raw HTML description text.
+        Odoo 18 cart renders product short_description with t-esc,
+        causing raw HTML tags to display. We handle this via CSS.
+    -->
+
+</odoo>

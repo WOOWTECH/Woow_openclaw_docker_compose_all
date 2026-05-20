@@ -9,6 +9,7 @@
     'data': [
         'data/ir_asset.xml',
         'views/layout.xml',
+        'views/snippets.xml',
         'views/login.xml',
         'views/homepage.xml',
     ],

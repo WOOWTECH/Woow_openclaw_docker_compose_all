@@ -131,6 +131,135 @@
 #wrap .oe_cart {
     background: $muji-cream !important;
 
+    // Hide raw HTML description text (shows <p> tags)
+    .td-product_name small,
+    .o_cart_product .text-muted,
+    .o_cart_product .o_wsale_product_information small {
+        display: none;
+    }
+
+    // Quantity controls styling
+    .css_quantity {
+        display: inline-flex;
+        align-items: center;
+        border: 1px solid $muji-line-2;
+        border-radius: $muji-r-pill;
+        overflow: hidden;
+
+        .js_add_cart_json,
+        .btn-link {
+            width: 36px;
+            height: 36px;
+            display: grid;
+            place-items: center;
+            background: transparent;
+            border: none;
+            color: $muji-espresso;
+            font-size: 16px;
+            text-decoration: none;
+
+            &:hover {
+                background: $muji-cream-2;
+            }
+        }
+
+        input.quantity {
+            width: 44px;
+            text-align: center;
+            border: none;
+            border-left: 1px solid $muji-line-2;
+            border-right: 1px solid $muji-line-2;
+            font-family: $muji-ff-display;
+            font-size: 15px;
+            color: $muji-espresso;
+            padding: 6px 0;
+            background: transparent;
+
+            &:focus { outline: none; }
+        }
+    }
+
+    // Delete button
+    .js_delete_product,
+    .td-action .btn {
+        color: $muji-mist;
+        border: none;
+        background: transparent;
+
+        &:hover { color: $muji-rust; }
+    }
+
+    // Cart summary card
+    #cart_total, .o_cart_summary {
+        background: #fff;
+        border: 1px solid $muji-line;
+        border-radius: $muji-r-md;
+        padding: 28px;
+
+        // Price summary labels
+        .text-muted, label {
+            font-size: 13px;
+            color: $muji-slate;
+            letter-spacing: .04em;
+        }
+
+        // Total amount
+        .oe_currency_value,
+        .o_total_amount {
+            font-family: $muji-ff-display;
+            font-style: italic;
+            font-size: 28px;
+            color: $muji-mocha;
+        }
+
+        // Subtotal / tax lines
+        .o_subtotal, .o_tax {
+            font-size: 14px;
+            color: $muji-ink;
+        }
+    }
+
+    // Coupon input
+    .oe_website_sale_coupon,
+    form[action*="coupon"] {
+        display: flex;
+        gap: 8px;
+
+        input {
+            flex: 1;
+            border: 1px solid $muji-line-2;
+            border-radius: $muji-r-sm;
+            padding: 12px 16px;
+            font-size: 14px;
+
+            &:focus {
+                border-color: $muji-clay;
+                box-shadow: 0 0 0 2px rgba($muji-clay, .15);
+            }
+        }
+
+        .btn {
+            background: $muji-mocha;
+            color: $muji-cream;
+            border-radius: $muji-r-sm;
+            padding: 12px 20px;
+            font-size: 13px;
+            letter-spacing: .12em;
+            border: none;
+
+            &:hover { background: $muji-espresso; }
+        }
+    }
+
+    // Checkout button
+    a[href="/shop/checkout"],
+    .btn-primary {
+        border-radius: $muji-r-pill !important;
+        padding: 16px 32px;
+        font-size: 14px;
+        letter-spacing: .14em;
+    }
+
     table {
         th {
             font-size: 11px;
@@ -139,18 +268,6 @@
             color: $muji-slate;
             font-weight: 500;
         }
-    }
-
-    // Summary card
-    #cart_total, .o_cart_summary {
-        background: #fff;
-        border: 1px solid $muji-line;
-        border-radius: $muji-r-md;
-        padding: 24px;
-    }
-
-    .btn-primary {
-        border-radius: $muji-r-pill !important;
     }
 }
 

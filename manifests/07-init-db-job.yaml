@@ -43,7 +43,7 @@ spec:
             - odoo
             - --config=/etc/odoo/odoo.conf
             - --database=inzense
-            - --init=base
+            - --init=base,web_editor
             - --load-language=zh_TW
             - --without-demo=
             - --stop-after-init

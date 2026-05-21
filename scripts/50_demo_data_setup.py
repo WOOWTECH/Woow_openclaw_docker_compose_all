@@ -367,6 +367,8 @@ for store in POS_STORES:
     }
     if picking_type:
         vals["picking_type_id"] = picking_type[0]
+    if wh_id:
+        vals["warehouse_id"] = wh_id
 
     pos_id = create("pos.config", vals)
     pos_config_ids[store["name"]] = pos_id

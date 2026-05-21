@@ -197,7 +197,6 @@ In `manifests/07-init-db-job.yaml`, replace lines 46-47:
 **Before:**
 ```yaml
             - --init=base,contacts,project,calendar,mail,account,mrp,point_of_sale,stock,website,website_sale,loyalty,website_blog,purchase,sale_management,hr,crm
-            - --load-language=zh_TW
 ```
 
 **After:**
@@ -205,7 +204,7 @@ In `manifests/07-init-db-job.yaml`, replace lines 46-47:
             - --init=base
 ```
 
-This removes all modules except `base` and removes the `zh_TW` language loading.
+This removes all modules except `base`. The `--load-language=zh_TW` line is kept for Taiwan locale.
 
 - [ ] **Step 2: Verify the change**
 
@@ -219,7 +218,7 @@ Expected: one line showing `--init=base` only.
 grep "load-language" "manifests/07-init-db-job.yaml"
 ```
 
-Expected: no output (line removed).
+Expected: one line showing `--load-language=zh_TW` (kept for Taiwan locale).
 
 - [ ] **Step 3: Commit the manifest change**
 

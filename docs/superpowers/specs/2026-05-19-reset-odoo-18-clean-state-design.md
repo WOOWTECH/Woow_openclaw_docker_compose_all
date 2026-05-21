@@ -12,7 +12,7 @@ Completely reset the Inzense Odoo 18 database and filestore back to a bare Odoo 
 | WOOWTECH Addons PVC | Keep as-is, not installed |
 | Odoo Filestore PVC | Delete and recreate |
 | PostgreSQL Data PVC | Delete and recreate |
-| Language / Locale | English (en_US) / UTC — Odoo defaults |
+| Language / Locale | Traditional Chinese (zh_TW) / Asia/Taipei |
 | Init Job | Modify existing `07-init-db-job.yaml` to only init `base` |
 | ConfigMap (`odoo.conf`) | No changes |
 | Cloudflare Tunnel | Untouched |
@@ -92,11 +92,12 @@ Edit `manifests/07-init-db-job.yaml`:
 **After:**
 ```yaml
 - --init=base
+- --load-language=zh_TW
 ```
 
 Changes:
 - Remove all modules except `base`
-- Remove `--load-language=zh_TW` line entirely
+- Keep `--load-language=zh_TW` for Taiwan locale
 
 ### Step 7: Delete Old Init Job (if exists)
 

@@ -43,7 +43,7 @@ spec:
             - odoo
             - --config=/etc/odoo/odoo.conf
             - --database=inzense
-            - --init=base,contacts,project,calendar,mail,account,mrp,point_of_sale,stock,website,website_sale,loyalty,website_blog,purchase,sale_management,hr,crm
+            - --init=base
             - --load-language=zh_TW
             - --without-demo=
             - --stop-after-init

@@ -18,38 +18,39 @@ class ImportPosOrderWizard(models.TransientModel):
     _description = 'Import POS Orders'
 
     pos_config_id = fields.Many2one(
-        'pos.config', string='POS Store', required=True,
-        help='Target POS store. Orders will be created in this store '
-             'and stock will be deducted from its warehouse.',
+        'pos.config', string='出貨門市',
+        help='目標 POS 門市。訂單將在此門市建立，庫存從該門市倉庫扣除。',
     )
-    file = fields.Binary(string='File')
-    file_name = fields.Char(string='File Name')
+    file = fields.Binary(string='檔案')
+    file_name = fields.Char(string='檔案名稱')
     import_type = fields.Selection([
         ('csv', 'CSV'),
         ('excel', 'Excel (.xlsx)'),
-    ], string='File Type', default='csv', required=True)
+    ], string='檔案類型', default='csv', required=True)
     product_by = fields.Selection([
-        ('name', 'Name'),
-        ('code', 'Internal Reference'),
-        ('barcode', 'Barcode'),
-    ], string='Product Match By', default='name', required=True)
+        ('name', '名稱'),
+        ('code', '內部參照'),
+        ('barcode', '條碼'),
+    ], string='產品比對方式', default='name', required=True)
     error_mode = fields.Selection([
-        ('strict', 'Strict (all or nothing)'),
-        ('flexible', 'Flexible (skip error rows)'),
-    ], string='Error Handling', default='strict', required=True)
+        ('strict', '嚴格模式（全部或不匯入）'),
+        ('flexible', '寬鬆模式（跳過錯誤行）'),
+    ], string='錯誤處理', default='strict', required=True)
 
     # ── Main entry point ──────────────────────────────────────────
 
     def action_import(self):
         self.ensure_one()
+        if not self.pos_config_id:
+            raise UserError(_("請選擇出貨門市。"))
         if not self.file:
-            raise UserError(_("Please upload a file."))
+            raise UserError(_("請上傳檔案。"))
 
         data = base64.b64decode(self.file)
         rows = self._parse_csv(data) if self.import_type == 'csv' else self._parse_excel(data)
 
         if not rows:
-            raise UserError(_("The file is empty or has no data rows."))
+            raise UserError(_("檔案為空或沒有資料行。"))
 
         self._validate_headers(set(rows[0].keys()))
 
@@ -58,7 +59,7 @@ class ImportPosOrderWizard(models.TransientModel):
         for idx, row in enumerate(rows, start=2):
             order_ref = (row.get('ORDER') or '').strip()
             if not order_ref:
-                raise UserError(_("Row %d: ORDER column is empty.") % idx)
+                raise UserError(_("第 %d 行：ORDER 欄位為空。") % idx)
             order_groups.setdefault(order_ref, []).append((idx, row))
 
         # Ensure pay_later payment method is available
@@ -82,19 +83,18 @@ class ImportPosOrderWizard(models.TransientModel):
         self._close_session(session)
 
         if not created_ids:
-            raise UserError(_("No orders were imported."))
+            raise UserError(_("沒有匯入任何訂單。"))
 
         created_orders = self.env['pos.order'].browse(created_ids)
         total_lines = sum(len(o.lines) for o in created_orders)
 
-        msg = _("Successfully imported %d POS order(s) with %d line(s) "
-                "into %s.") % (len(created_orders), total_lines,
-                               self.pos_config_id.name)
+        msg = _("成功匯入 %d 筆 POS 訂單，共 %d 個明細行，至 %s。") % (
+            len(created_orders), total_lines, self.pos_config_id.name)
 
         if errors:
-            msg += '\n\n' + _("Skipped rows:") + '\n'
+            msg += '\n\n' + _("跳過的行：") + '\n'
             for row_num, error_msg in errors:
-                msg += _("  Row %d: %s") % (row_num, error_msg) + '\n'
+                msg += _("  第 %d 行：%s") % (row_num, error_msg) + '\n'
 
         # Show imported orders
         action = self.env['ir.actions.act_window']._for_xml_id(
@@ -186,10 +186,10 @@ class ImportPosOrderWizard(models.TransientModel):
 
         if errors:
             error_details = '\n'.join(
-                _("Row %d: %s") % (r, m) for r, m in errors
+                _("第 %d 行：%s") % (r, m) for r, m in errors
             )
             raise UserError(
-                _("Import failed. No orders were created.\n\n%s") % error_details
+                _("匯入失敗。未建立任何訂單。\n\n%s") % error_details
             )
 
         created_ids = []
@@ -287,8 +287,7 @@ class ImportPosOrderWizard(models.TransientModel):
             return list(reader)
         except csv.Error:
             raise UserError(
-                _("Cannot read this file as CSV. "
-                  "Please check the file format or select Excel (.xlsx).")
+                _("無法將此檔案以 CSV 格式讀取。請檢查檔案格式或選擇 Excel (.xlsx)。")
             )
 
     def _parse_excel(self, data):
@@ -296,8 +295,7 @@ class ImportPosOrderWizard(models.TransientModel):
             import openpyxl
         except ImportError:
             raise UserError(
-                _("The 'openpyxl' Python library is required for Excel import. "
-                  "Install it with: pip install openpyxl")
+                _("Excel 匯入需要 'openpyxl' Python 套件。請使用以下指令安裝：pip install openpyxl")
             )
         try:
             wb = openpyxl.load_workbook(
@@ -305,8 +303,7 @@ class ImportPosOrderWizard(models.TransientModel):
             )
         except Exception:
             raise UserError(
-                _("Cannot read this file as Excel (.xlsx). "
-                  "Please check the file format or select CSV.")
+                _("無法將此檔案以 Excel (.xlsx) 格式讀取。請檢查檔案格式或選擇 CSV。")
             )
         sheet = wb.active
         rows_iter = sheet.iter_rows()
@@ -332,26 +329,26 @@ class ImportPosOrderWizard(models.TransientModel):
         missing = REQUIRED_COLUMNS - normalized
         if missing:
             raise UserError(
-                _("Missing required columns: %s") % ', '.join(sorted(missing))
+                _("缺少必填欄位：%s") % ', '.join(sorted(missing))
             )
 
     # ── Lookups ───────────────────────────────────────────────────
 
     def _find_partner(self, name, row_num):
         if not name:
-            raise UserError(_("Row %d: CUSTOMER is empty.") % row_num)
+            raise UserError(_("第 %d 行：CUSTOMER 欄位為空。") % row_num)
         partner = self.env['res.partner'].search(
             [('name', '=ilike', name)], limit=1
         )
         if not partner:
             raise UserError(
-                _("Row %d: Customer '%s' not found.") % (row_num, name)
+                _("第 %d 行：找不到客戶「%s」。") % (row_num, name)
             )
         return partner
 
     def _find_product(self, value, row_num):
         if not value:
-            raise UserError(_("Row %d: PRODUCT is empty.") % row_num)
+            raise UserError(_("第 %d 行：PRODUCT 欄位為空。") % row_num)
         field_map = {
             'name': 'name',
             'code': 'default_code',
@@ -365,7 +362,7 @@ class ImportPosOrderWizard(models.TransientModel):
         if not product:
             label = dict(self._fields['product_by'].selection)[self.product_by]
             raise UserError(
-                _("Row %d: Product with %s '%s' not found.") % (
+                _("第 %d 行：找不到 %s 為「%s」的產品。") % (
                     row_num, label, value
                 )
             )
@@ -374,13 +371,13 @@ class ImportPosOrderWizard(models.TransientModel):
     def _parse_float(self, value, field_name, row_num):
         if not value:
             raise UserError(
-                _("Row %d: %s is empty.") % (row_num, field_name)
+                _("第 %d 行：%s 欄位為空。") % (row_num, field_name)
             )
         try:
             return float(value)
         except ValueError:
             raise UserError(
-                _("Row %d: %s value '%s' is not a valid number.") % (
+                _("第 %d 行：%s 的值「%s」不是有效數字。") % (
                     row_num, field_name, value
                 )
             )

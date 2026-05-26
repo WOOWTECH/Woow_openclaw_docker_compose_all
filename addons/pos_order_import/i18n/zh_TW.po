@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* pos_order_import
+# 	* pos_order_import
 #
 msgid ""
 msgstr ""
@@ -8,16 +8,13 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-26 00:00+0000\n"
 "PO-Revision-Date: 2026-05-26 00:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: Chinese (Traditional) <>\n"
 "Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#. module: pos_order_import
-#: model:ir.actions.act_window,name:pos_order_import.action_import_pos_order_wizard
-#: model:ir.ui.menu,name:pos_order_import.menu_import_pos_order
-msgid "Import POS Orders"
-msgstr "匯入 POS 訂單"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: pos_order_import
 #: model:ir.model,name:pos_order_import.model_import_pos_order_wizard
@@ -35,9 +32,24 @@ msgid "File"
 msgstr "檔案"
 
 #. module: pos_order_import
+#: model:ir.model.fields,field_description:pos_order_import.field_import_pos_order_wizard__file_name
+msgid "File Name"
+msgstr "檔案名稱"
+
+#. module: pos_order_import
 #: model:ir.model.fields,field_description:pos_order_import.field_import_pos_order_wizard__import_type
 msgid "File Type"
 msgstr "檔案類型"
+
+#. module: pos_order_import
+#: model:ir.model.fields.selection,name:pos_order_import.field_import_pos_order_wizard__import_type__csv
+msgid "CSV"
+msgstr "CSV"
+
+#. module: pos_order_import
+#: model:ir.model.fields.selection,name:pos_order_import.field_import_pos_order_wizard__import_type__excel
+msgid "Excel (.xlsx)"
+msgstr "Excel (.xlsx)"
 
 #. module: pos_order_import
 #: model:ir.model.fields,field_description:pos_order_import.field_import_pos_order_wizard__product_by
@@ -45,122 +57,214 @@ msgid "Product Match By"
 msgstr "產品比對方式"
 
 #. module: pos_order_import
+#: model:ir.model.fields.selection,name:pos_order_import.field_import_pos_order_wizard__product_by__name
+msgid "Name"
+msgstr "名稱"
+
+#. module: pos_order_import
+#: model:ir.model.fields.selection,name:pos_order_import.field_import_pos_order_wizard__product_by__code
+msgid "Internal Reference"
+msgstr "內部參照"
+
+#. module: pos_order_import
+#: model:ir.model.fields.selection,name:pos_order_import.field_import_pos_order_wizard__product_by__barcode
+msgid "Barcode"
+msgstr "條碼"
+
+#. module: pos_order_import
 #: model:ir.model.fields,field_description:pos_order_import.field_import_pos_order_wizard__error_mode
 msgid "Error Handling"
 msgstr "錯誤處理"
 
 #. module: pos_order_import
-#: model:ir.model.fields,selection:pos_order_import.field_import_pos_order_wizard__import_type__csv
-msgid "CSV"
-msgstr "CSV"
-
-#. module: pos_order_import
-#: model:ir.model.fields,selection:pos_order_import.field_import_pos_order_wizard__import_type__excel
-msgid "Excel (.xlsx)"
-msgstr "Excel (.xlsx)"
-
-#. module: pos_order_import
-#: model:ir.model.fields,selection:pos_order_import.field_import_pos_order_wizard__product_by__name
-msgid "Name"
-msgstr "名稱"
-
-#. module: pos_order_import
-#: model:ir.model.fields,selection:pos_order_import.field_import_pos_order_wizard__product_by__code
-msgid "Internal Reference"
-msgstr "內部參照"
-
-#. module: pos_order_import
-#: model:ir.model.fields,selection:pos_order_import.field_import_pos_order_wizard__product_by__barcode
-msgid "Barcode"
-msgstr "條碼"
-
-#. module: pos_order_import
-#: model:ir.model.fields,selection:pos_order_import.field_import_pos_order_wizard__error_mode__strict
+#: model:ir.model.fields.selection,name:pos_order_import.field_import_pos_order_wizard__error_mode__strict
 msgid "Strict (all or nothing)"
 msgstr "嚴格模式（全部或不匯入）"
 
 #. module: pos_order_import
-#: model:ir.model.fields,selection:pos_order_import.field_import_pos_order_wizard__error_mode__flexible
+#: model:ir.model.fields.selection,name:pos_order_import.field_import_pos_order_wizard__error_mode__flexible
 msgid "Flexible (skip error rows)"
 msgstr "寬鬆模式（跳過錯誤行）"
 
 #. module: pos_order_import
-#: code:addons/pos_order_import/wizard/pos_order_import_wizard.py
-msgid "Please upload a file."
-msgstr "請上載檔案。"
+#: model_terms:ir.ui.view,arch_db:pos_order_import.import_pos_order_wizard_form
+msgid "Import POS Orders"
+msgstr "匯入 POS 訂單"
 
 #. module: pos_order_import
-#: code:addons/pos_order_import/wizard/pos_order_import_wizard.py
-msgid "The file is empty or has no data rows."
-msgstr "檔案為空或沒有資料行。"
+#: model_terms:ir.ui.view,arch_db:pos_order_import.import_pos_order_wizard_form
+msgid "POS Store"
+msgstr "出貨門市"
 
 #. module: pos_order_import
-#: code:addons/pos_order_import/wizard/pos_order_import_wizard.py
-msgid "No orders were imported."
-msgstr "沒有匯入任何訂單。"
+#: model_terms:ir.ui.view,arch_db:pos_order_import.import_pos_order_wizard_form
+msgid "File Settings"
+msgstr "檔案設定"
 
 #. module: pos_order_import
-#: code:addons/pos_order_import/wizard/pos_order_import_wizard.py
-msgid "Import failed. No orders were created.\n\n%s"
-msgstr "匯入失敗。沒有建立任何訂單。\n\n%s"
-
-#. module: pos_order_import
-#: code:addons/pos_order_import/wizard/pos_order_import_wizard.py
-msgid "Skipped rows:"
-msgstr "跳過的行："
-
-#. module: pos_order_import
-#: code:addons/pos_order_import/wizard/pos_order_import_wizard.py
-msgid "Successfully imported %d POS order(s) with %d line(s) into %s."
-msgstr "成功匯入 %d 筆 POS 訂單，共 %d 行商品，至 %s。"
-
-#. module: pos_order_import
-#: code:addons/pos_order_import/wizard/pos_order_import_wizard.py
-msgid "Customer Account"
-msgstr "客戶帳戶"
-
-#. module: pos_order_import
-#: code:addons/pos_order_import/wizard/pos_order_import_wizard.py
-msgid "Missing required columns: %s"
-msgstr "缺少必填欄位：%s"
-
-#. module: pos_order_import
-#: code:addons/pos_order_import/wizard/pos_order_import_wizard.py
-msgid "Cannot read this file as CSV. Please check the file format or select Excel (.xlsx)."
-msgstr "無法讀取此 CSV 檔案。請檢查檔案格式或選擇 Excel (.xlsx)。"
-
-#. module: pos_order_import
-#: code:addons/pos_order_import/wizard/pos_order_import_wizard.py
-msgid "Cannot read this file as Excel (.xlsx). Please check the file format or select CSV."
-msgstr "無法讀取此 Excel (.xlsx) 檔案。請檢查檔案格式或選擇 CSV。"
-
-#. module: pos_order_import
-#: code:addons/pos_order_import/wizard/pos_order_import_wizard.py
-msgid "The 'openpyxl' Python library is required for Excel import. Install it with: pip install openpyxl"
-msgstr "Excel 匯入需要 'openpyxl' Python 套件。請執行：pip install openpyxl"
-
-#. module: pos_order_import
-#: code:addons/pos_order_import/wizard/pos_order_import_wizard.py
-msgid "Download CSV Template"
-msgstr "下載 CSV 範本"
-
-#. module: pos_order_import
-#: code:addons/pos_order_import/wizard/pos_order_import_wizard.py
-msgid "Download Excel Template"
-msgstr "下載 Excel 範本"
-
-#. module: pos_order_import
-msgid "Import"
-msgstr "匯入"
-
-#. module: pos_order_import
-msgid "Cancel"
-msgstr "取消"
-
-#. module: pos_order_import
+#: model_terms:ir.ui.view,arch_db:pos_order_import.import_pos_order_wizard_form
 msgid "Import Options"
 msgstr "匯入選項"
 
 #. module: pos_order_import
-msgid "File Settings"
-msgstr "檔案設定"
+#: model_terms:ir.ui.view,arch_db:pos_order_import.import_pos_order_wizard_form
+msgid "Download CSV Template"
+msgstr "下載 CSV 範本"
+
+#. module: pos_order_import
+#: model_terms:ir.ui.view,arch_db:pos_order_import.import_pos_order_wizard_form
+msgid "Download Excel Template"
+msgstr "下載 Excel 範本"
+
+#. module: pos_order_import
+#: model_terms:ir.ui.view,arch_db:pos_order_import.import_pos_order_wizard_form
+msgid "Import"
+msgstr "匯入"
+
+#. module: pos_order_import
+#: model_terms:ir.ui.view,arch_db:pos_order_import.import_pos_order_wizard_form
+msgid "Cancel"
+msgstr "取消"
+
+#. module: pos_order_import
+#. odoo-python
+#: code:addons/pos_order_import/wizard/pos_order_import_wizard.py:0
+#, python-format
+msgid "Please upload a file."
+msgstr "請上傳檔案。"
+
+#. module: pos_order_import
+#. odoo-python
+#: code:addons/pos_order_import/wizard/pos_order_import_wizard.py:0
+#, python-format
+msgid "The file is empty or has no data rows."
+msgstr "檔案為空或沒有資料行。"
+
+#. module: pos_order_import
+#. odoo-python
+#: code:addons/pos_order_import/wizard/pos_order_import_wizard.py:0
+#, python-format
+msgid "Row %d: ORDER column is empty."
+msgstr "第 %d 行：ORDER 欄位為空。"
+
+#. module: pos_order_import
+#. odoo-python
+#: code:addons/pos_order_import/wizard/pos_order_import_wizard.py:0
+#, python-format
+msgid "No orders were imported."
+msgstr "沒有匯入任何訂單。"
+
+#. module: pos_order_import
+#. odoo-python
+#: code:addons/pos_order_import/wizard/pos_order_import_wizard.py:0
+#, python-format
+msgid "Successfully imported %d POS order(s) with %d line(s) into %s."
+msgstr "成功匯入 %d 筆 POS 訂單，共 %d 個明細行，至 %s。"
+
+#. module: pos_order_import
+#. odoo-python
+#: code:addons/pos_order_import/wizard/pos_order_import_wizard.py:0
+#, python-format
+msgid "Skipped rows:"
+msgstr "跳過的行："
+
+#. module: pos_order_import
+#. odoo-python
+#: code:addons/pos_order_import/wizard/pos_order_import_wizard.py:0
+#, python-format
+msgid "  Row %d: %s"
+msgstr "  第 %d 行：%s"
+
+#. module: pos_order_import
+#. odoo-python
+#: code:addons/pos_order_import/wizard/pos_order_import_wizard.py:0
+#, python-format
+msgid "Import failed. No orders were created.\n\n%s"
+msgstr "匯入失敗。未建立任何訂單。\n\n%s"
+
+#. module: pos_order_import
+#. odoo-python
+#: code:addons/pos_order_import/wizard/pos_order_import_wizard.py:0
+#, python-format
+msgid "Missing required columns: %s"
+msgstr "缺少必填欄位：%s"
+
+#. module: pos_order_import
+#. odoo-python
+#: code:addons/pos_order_import/wizard/pos_order_import_wizard.py:0
+#, python-format
+msgid "Customer Account"
+msgstr "客戶帳戶"
+
+#. module: pos_order_import
+#. odoo-python
+#: code:addons/pos_order_import/wizard/pos_order_import_wizard.py:0
+#, python-format
+msgid "Row %d: CUSTOMER is empty."
+msgstr "第 %d 行：CUSTOMER 欄位為空。"
+
+#. module: pos_order_import
+#. odoo-python
+#: code:addons/pos_order_import/wizard/pos_order_import_wizard.py:0
+#, python-format
+msgid "Row %d: Customer '%s' not found."
+msgstr "第 %d 行：找不到客戶「%s」。"
+
+#. module: pos_order_import
+#. odoo-python
+#: code:addons/pos_order_import/wizard/pos_order_import_wizard.py:0
+#, python-format
+msgid "Row %d: PRODUCT is empty."
+msgstr "第 %d 行：PRODUCT 欄位為空。"
+
+#. module: pos_order_import
+#. odoo-python
+#: code:addons/pos_order_import/wizard/pos_order_import_wizard.py:0
+#, python-format
+msgid "Row %d: Product with %s '%s' not found."
+msgstr "第 %d 行：找不到 %s 為「%s」的產品。"
+
+#. module: pos_order_import
+#. odoo-python
+#: code:addons/pos_order_import/wizard/pos_order_import_wizard.py:0
+#, python-format
+msgid "Row %d: %s is empty."
+msgstr "第 %d 行：%s 欄位為空。"
+
+#. module: pos_order_import
+#. odoo-python
+#: code:addons/pos_order_import/wizard/pos_order_import_wizard.py:0
+#, python-format
+msgid "Row %d: %s value '%s' is not a valid number."
+msgstr "第 %d 行：%s 的值「%s」不是有效數字。"
+
+#. module: pos_order_import
+#. odoo-python
+#: code:addons/pos_order_import/wizard/pos_order_import_wizard.py:0
+#, python-format
+msgid "The 'openpyxl' Python library is required for Excel import. Install it with: pip install openpyxl"
+msgstr "Excel 匯入需要 'openpyxl' Python 套件。請使用以下指令安裝：pip install openpyxl"
+
+#. module: pos_order_import
+#. odoo-python
+#: code:addons/pos_order_import/wizard/pos_order_import_wizard.py:0
+#, python-format
+msgid "Cannot read this file as CSV. Please check the file format or select Excel (.xlsx)."
+msgstr "無法將此檔案以 CSV 格式讀取。請檢查檔案格式或選擇 Excel (.xlsx)。"
+
+#. module: pos_order_import
+#. odoo-python
+#: code:addons/pos_order_import/wizard/pos_order_import_wizard.py:0
+#, python-format
+msgid "Cannot read this file as Excel (.xlsx). Please check the file format or select CSV."
+msgstr "無法將此檔案以 Excel (.xlsx) 格式讀取。請檢查檔案格式或選擇 CSV。"
+
+#. module: pos_order_import
+#: model:ir.actions.act_window,name:pos_order_import.action_import_pos_order_wizard
+msgid "Import POS Orders"
+msgstr "匯入 POS 訂單"
+
+#. module: pos_order_import
+#: model:ir.ui.menu,name:pos_order_import.menu_import_pos_order
+msgid "Import POS Orders"
+msgstr "匯入 POS 訂單"

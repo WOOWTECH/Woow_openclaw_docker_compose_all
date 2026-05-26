@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <menuitem id="menu_import_pos_order"
+                  name="Import POS Orders"
+                  parent="point_of_sale.menu_point_of_sale"
+                  action="pos_order_import.action_import_pos_order_wizard"
+                  sequence="50"/>
+    </data>
+</odoo>

@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: clone-woowtech-addons-v2
+  name: clone-woowtech-addons-v3
   namespace: inzense
   labels:
     app.kubernetes.io/name: inzense-odoo
@@ -50,6 +50,35 @@ spec:
                 else
                   echo "Cloning $repo..."
                   git clone "https://x-access-token:${GH_TOKEN}@github.com/WOOWTECH/$repo.git" || echo "WARNING: Failed to clone $repo"
+                fi
+              done
+
+              # ─── Woow_odoo_loyalty_card_enhance (selective modules) ───
+              LOYALTY_REPO="Woow_odoo_loyalty_card_enhance"
+              if [ -d "$LOYALTY_REPO" ]; then
+                echo "Updating $LOYALTY_REPO..."
+                cd "$LOYALTY_REPO"
+                git pull || true
+                cd /mnt/extra-addons
+              else
+                echo "Cloning $LOYALTY_REPO..."
+                git clone "https://x-access-token:${GH_TOKEN}@github.com/WOOWTECH/$LOYALTY_REPO.git" || echo "WARNING: Failed to clone $LOYALTY_REPO"
+              fi
+
+              # Symlink only desired modules (exclude consign/membership)
+              LOYALTY_MODULES="
+              woow_member_center
+              woow_mc_coupon
+              woow_mc_ewallet
+              woow_mc_gift_card
+              woow_mc_loyalty
+              "
+              for mod in $LOYALTY_MODULES; do
+                src="/mnt/extra-addons/$LOYALTY_REPO/addons/$mod"
+                dst="/mnt/extra-addons/$mod"
+                if [ -d "$src" ] && [ ! -e "$dst" ]; then
+                  ln -s "$src" "$dst"
+                  echo "  Linked $mod"
                 fi
               done
 

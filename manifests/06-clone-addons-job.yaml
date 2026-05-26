@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: clone-woowtech-addons-v3
+  name: clone-woowtech-addons-v4
   namespace: inzense
   labels:
     app.kubernetes.io/name: inzense-odoo
@@ -75,6 +75,34 @@ spec:
               "
               for mod in $LOYALTY_MODULES; do
                 src="/mnt/extra-addons/$LOYALTY_REPO/addons/$mod"
+                dst="/mnt/extra-addons/$mod"
+                if [ -d "$src" ] && [ ! -e "$dst" ]; then
+                  ln -s "$src" "$dst"
+                  echo "  Linked $mod"
+                fi
+              done
+
+              # ─── woowtech_odoo_salesenhance (selective modules) ───
+              SALES_REPO="woowtech_odoo_salesenhance"
+              if [ -d "$SALES_REPO" ]; then
+                echo "Updating $SALES_REPO..."
+                cd "$SALES_REPO"
+                git pull || true
+                cd /mnt/extra-addons
+              else
+                echo "Cloning $SALES_REPO..."
+                git clone "https://x-access-token:${GH_TOKEN}@github.com/WOOWTECH/$SALES_REPO.git" || echo "WARNING: Failed to clone $SALES_REPO"
+              fi
+
+              # Symlink sales enhance modules
+              SALES_MODULES="
+              sale_order_import
+              pos_order_import
+              sales_enhance
+              so_merge_pdf_app
+              "
+              for mod in $SALES_MODULES; do
+                src="/mnt/extra-addons/$SALES_REPO/$mod"
                 dst="/mnt/extra-addons/$mod"
                 if [ -d "$src" ] && [ ! -e "$dst" ]; then
                   ln -s "$src" "$dst"

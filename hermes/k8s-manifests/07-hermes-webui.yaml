@@ -133,6 +133,14 @@ spec:
                         lynx imagemagick pandoc git-lfs mosh httpie && \
                       ln -sf /usr/bin/fdfind /usr/local/bin/fd
                     ) > /tmp/tools-install.log 2>&1 &
+                    # Gateway state refresher: keep gateway_state.json fresh
+                    # so WebUI detects the external gateway daemon (#1879)
+                    (while true; do
+                      NOW=$(python3 -c "from datetime import datetime,timezone;print(datetime.now(timezone.utc).isoformat())")
+                      printf '{"gateway_state":"running","updated_at":"%s","pid":1,"platform":"hermes-agent","version":"0.13.0"}\n' "$NOW" \
+                        > /home/hermeswebui/.hermes/gateway_state.json 2>/dev/null
+                      sleep 30
+                    done) &
           tty: true
           volumeMounts:
             - name: hermes-home

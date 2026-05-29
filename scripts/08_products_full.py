@@ -509,6 +509,26 @@ def get_product_description(name):
             return desc
     return ""
 
+
+# ================================================================
+# EAN-13 barcode generation (471 = Taiwan, 0001 = Inzense)
+# ================================================================
+def ean13_check_digit(code12):
+    """Calculate EAN-13 check digit for a 12-digit string."""
+    total = 0
+    for i, ch in enumerate(code12):
+        total += int(ch) * (1 if i % 2 == 0 else 3)
+    return str((10 - (total % 10)) % 10)
+
+
+def make_ean13(seq):
+    """Generate EAN-13 barcode: 471 + 0001 + 5-digit seq + check digit."""
+    code12 = f"471000{seq:06d}"
+    return code12 + ean13_check_digit(code12)
+
+
+barcode_seq = 0  # global counter for barcode assignment
+
 # ================================================================
 # STEP 1: Clean demo product data
 # ================================================================
@@ -739,6 +759,11 @@ for i, prod in enumerate(products_data):
         real_desc = get_product_description(name)
         sale_desc = real_desc if real_desc else prod.get("description", "")
 
+        # Assign sequential barcode and internal reference
+        barcode_seq += 1
+        product_barcode = make_ean13(barcode_seq)
+        product_ref = f"INZ-{barcode_seq:03d}"
+
         vals = {
             "name": name,
             "list_price": list_price,
@@ -748,6 +773,8 @@ for i, prod in enumerate(products_data):
             "website_published": False,  # We'll publish later
             "public_categ_ids": [(6, 0, pub_cat_ids)],
             "description_sale": sale_desc,
+            "barcode": product_barcode,
+            "default_code": product_ref,
         }
         if main_image_data:
             vals["image_1920"] = main_image_data
@@ -773,6 +800,8 @@ for i, prod in enumerate(products_data):
         created_count += 1
         if created_count % 20 == 0:
             print(f"  Created {created_count} products... (current: {name[:40]})")
+        if created_count <= 5 or created_count % 10 == 0:
+            print(f"    {product_ref} | {product_barcode} | {name[:45]}")
     except Exception as e:
         error_count += 1
         if error_count <= 5:

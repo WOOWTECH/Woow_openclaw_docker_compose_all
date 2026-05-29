@@ -74,7 +74,7 @@ homepage_arch = f'''<t t-name="website.homepage" t-inherit="website.homepage_def
                             <p style="color: #D8B772; font-family: 'Roboto Slab', serif; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 8px;">Agarwood Collection</p>
                             <h2 style="font-size: 30px; margin-bottom: 20px; color: #27292C;">沉香系列</h2>
                             <p style="color: #7A7A7A; font-size: 15px; line-height: 2;">
-                                沉香線香系列，採用優質沉香為主要原料，產品有加里萬丹沉香、泰國沉香等。緩釋神秘古雅香氣，助於冥想與放鬆，適合室內空間提升氛圍之選。
+                                沉香線香系列，採用優質沉香為主要原料，涵蓋柬埔寨土沉香、泰國水沉香、加里萬丹土沉香、安汶土沉香、巴布亞土沉香、越南惠安沉香等多種珍貴產地的沉香。野生品種沉香的豐富韻味，幽遠靜謐中帶來放鬆和舒適感，適合供佛、空間芳香與淨化心靈。
                             </p>
                             <a href="/shop" class="btn btn-primary mt-3" style="border-radius: 30px; padding: 10px 30px;">SHOP NOW</a>
                         </div>
@@ -95,7 +95,7 @@ homepage_arch = f'''<t t-name="website.homepage" t-inherit="website.homepage_def
                             <p style="color: #D8B772; font-family: 'Roboto Slab', serif; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 8px;">Sandalwood Collection</p>
                             <h2 style="font-size: 30px; margin-bottom: 20px; color: #27292C;">檀香系列</h2>
                             <p style="color: #7A7A7A; font-size: 15px; line-height: 2;">
-                                檀香系列，以淨化心靈為訴求，散發溫暖木質香調，深層淨化身心。產品包括印度老山檀香、綠檀香等，適合打造祥和莊嚴的修身空間。
+                                檀香系列，以淨化心靈為訴求，散發溫暖木質香調，深層淨化身心。嚴選正印度老山檀香、正印尼古邦老山檀香、西澳新山檀香（根部／頭部／大綜）、巴拉圭綠檀、琥珀巴西紫檀等頂級檀香。溫暖濃郁的奶香和醇厚的檸檬香，多層次的豐富變化，適合打造祥和莊嚴的修身空間。
                             </p>
                             <a href="/shop" class="btn btn-primary mt-3" style="border-radius: 30px; padding: 10px 30px;">SHOP NOW</a>
                         </div>
@@ -116,7 +116,49 @@ homepage_arch = f'''<t t-name="website.homepage" t-inherit="website.homepage_def
                             <p style="color: #D8B772; font-family: 'Roboto Slab', serif; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 8px;">Functional Collection</p>
                             <h2 style="font-size: 30px; margin-bottom: 20px; color: #27292C;">功能系列</h2>
                             <p style="color: #7A7A7A; font-size: 15px; line-height: 2;">
-                                功能系列，包括財神香、善緣香與除障香，各具吸引財富、增進人緣、消除障礙等功能，以植物精華調和，適合特定需求者使用，強化意向，營造正面能量。
+                                功能系列，針對不同生活需求精心調配。財神香以西澳洲檀香根部與伊朗玫瑰招財開運；善緣香增加貴人運與事業運；除障香以十七種天然香材排除個人障礙；排寒香排除身心靈沉重能量；十方清淨以六種珍貴沉香帶來身心靈清明；壇城樂土淨化安定氣場；平安香祈求出行平安；幸運香開啟好運能量；靈感香激發創意覺醒；療心香療癒撫慰心靈；姻緣香牽引美好緣分。
+                            </p>
+                            <a href="/shop" class="btn btn-primary mt-3" style="border-radius: 30px; padding: 10px 30px;">SHOP NOW</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================ -->
+            <!-- SECTION 5b: 脈輪系列 -->
+            <!-- ============================================ -->
+            <section style="background-color: #f9f7f4; padding: 70px 0;">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6 order-lg-2 mb-4">
+                            <img src="{img_url("lifestyle-incense.jpg")}" alt="脈輪系列" class="img-fluid" style="border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.1);"/>
+                        </div>
+                        <div class="col-lg-6 order-lg-1 mb-4">
+                            <p style="color: #D8B772; font-family: 'Roboto Slab', serif; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 8px;">Chakra Collection</p>
+                            <h2 style="font-size: 30px; margin-bottom: 20px; color: #27292C;">脈輪系列</h2>
+                            <p style="color: #7A7A7A; font-size: 15px; line-height: 2;">
+                                以人體七大脈輪為靈感設計的系列線香。根輪香帶來穩定與安全感；丹田輪香激發創造力；太陽輪香增強自信與個人力量；心輪香帶來愛與療癒；喉輪香促進溝通表達；眉心輪香提升直覺與洞察力；頂輪香連結高層意識與靈性覺醒。每款皆以對應的天然香材精心調配。
+                            </p>
+                            <a href="/shop" class="btn btn-primary mt-3" style="border-radius: 30px; padding: 10px 30px;">SHOP NOW</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================ -->
+            <!-- SECTION 5c: 台灣系列 -->
+            <!-- ============================================ -->
+            <section style="background-color: #fff; padding: 70px 0;">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6 mb-4">
+                            <img src="{img_url("incense-animation.gif")}" alt="台灣系列" class="img-fluid" style="border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.1);"/>
+                        </div>
+                        <div class="col-lg-6 mb-4">
+                            <p style="color: #D8B772; font-family: 'Roboto Slab', serif; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 8px;">Taiwan Collection</p>
+                            <h2 style="font-size: 30px; margin-bottom: 20px; color: #27292C;">台灣系列</h2>
+                            <p style="color: #7A7A7A; font-size: 15px; line-height: 2;">
+                                採用台灣特有的珍貴木材製作，每款皆帶有台灣的歷史痕跡。台灣肖楠香味稀少珍貴；台灣黃檜散發獨特清新木質香氣；台灣龍柏穩重而沉靜；台灣牛樟帶有獨特樟腦清香；台灣香茅清新驅蚊。結合在地植物香氣，體驗台灣自然之美。
                             </p>
                             <a href="/shop" class="btn btn-primary mt-3" style="border-radius: 30px; padding: 10px 30px;">SHOP NOW</a>
                         </div>
@@ -139,9 +181,66 @@ homepage_arch = f'''<t t-name="website.homepage" t-inherit="website.homepage_def
                                 點一支香，開啟你與各個神明之間的連結吧！在東方信仰文化中，香品不僅是一種香氛產品，也是人們與上天溝通的媒介。Matt老師希望透過「神明系列」線香，讓大家可以享受天然好香，也能對這些協助穩定人民心靈和生活的神明仙佛，有更進一步的認識。
                             </p>
                             <p style="color: #eee; font-size: 15px; line-height: 2;">
-                                邀請你一起點一支「神明系列」線香，感受各神明仙佛給予我們的祝福！
+                                系列涵蓋觀世音菩薩、財神爺、天上聖母（媽祖）、福德正神（土地公）、關聖帝君、月老星君、藥師佛、玉皇上帝、佛祖（釋迦摩尼佛）、文昌帝君、玄天上帝、城隍爺、註生娘娘、九天玄女、中壇元帥（三太子）、閻羅王、純陽祖師（呂洞賓）、降龍羅漢（濟公）等，每款皆有獨特的香氣層次與祝福寓意。
                             </p>
                             <a href="/shop" class="btn btn-primary mt-3" style="border-radius: 30px; padding: 12px 35px;">SHOP NOW</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================ -->
+            <!-- SECTION 6b: 優惠組合 Showcase -->
+            <!-- ============================================ -->
+            <section style="background-color: #fff; padding: 70px 0;">
+                <div class="container">
+                    <div class="text-center mb-4">
+                        <p style="color: #D8B772; font-family: 'Roboto Slab', serif; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 8px;">Combo Sets</p>
+                        <h2 style="font-size: 30px; margin-bottom: 15px; color: #27292C;">精選優惠組合</h2>
+                        <p style="color: #7A7A7A; font-size: 15px;">依據不同需求精心搭配，讓您一次擁有最適合的香品組合</p>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div style="background: #f9f7f4; border-radius: 8px; padding: 25px; text-align: center;">
+                                <h4 style="color: #27292C; font-size: 16px; margin-bottom: 8px;">神明保庇熱賣組</h4>
+                                <p style="color: #7A7A7A; font-size: 13px;">財運增益、身體安康、感情圓滿等主題組合</p>
+                                <a href="/shop" style="color: #E4916E; font-weight: 600; font-size: 13px;">瀏覽組合 →</a>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div style="background: #f9f7f4; border-radius: 8px; padding: 25px; text-align: center;">
+                                <h4 style="color: #27292C; font-size: 16px; margin-bottom: 8px;">上班創業必備組</h4>
+                                <p style="color: #7A7A7A; font-size: 13px;">職場必備、貴人好運、小人退散等主題組合</p>
+                                <a href="/shop" style="color: #E4916E; font-weight: 600; font-size: 13px;">瀏覽組合 →</a>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div style="background: #f9f7f4; border-radius: 8px; padding: 25px; text-align: center;">
+                                <h4 style="color: #27292C; font-size: 16px; margin-bottom: 8px;">脈輪療癒優惠組</h4>
+                                <p style="color: #7A7A7A; font-size: 13px;">情緒釋放、穩定能量、靈感開光、決策穩心</p>
+                                <a href="/shop" style="color: #E4916E; font-weight: 600; font-size: 13px;">瀏覽組合 →</a>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div style="background: #f9f7f4; border-radius: 8px; padding: 25px; text-align: center;">
+                                <h4 style="color: #27292C; font-size: 16px; margin-bottom: 8px;">內在穩定能量組</h4>
+                                <p style="color: #7A7A7A; font-size: 13px;">安眠舒心、專注清明、低頻退散、淨化守護</p>
+                                <a href="/shop" style="color: #E4916E; font-weight: 600; font-size: 13px;">瀏覽組合 →</a>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div style="background: #f9f7f4; border-radius: 8px; padding: 25px; text-align: center;">
+                                <h4 style="color: #27292C; font-size: 16px; margin-bottom: 8px;">迷你香系列</h4>
+                                <p style="color: #7A7A7A; font-size: 13px;">約5公分輕巧攜帶，8支/盒，各系列迷你版</p>
+                                <a href="/shop" style="color: #E4916E; font-weight: 600; font-size: 13px;">瀏覽迷你香 →</a>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div style="background: #f9f7f4; border-radius: 8px; padding: 25px; text-align: center;">
+                                <h4 style="color: #27292C; font-size: 16px; margin-bottom: 8px;">拜拜用香</h4>
+                                <p style="color: #7A7A7A; font-size: 13px;">古邦老山檀香、巴拉圭綠檀、柬埔寨沉香等</p>
+                                <a href="/shop" style="color: #E4916E; font-weight: 600; font-size: 13px;">瀏覽拜拜香 →</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -239,7 +338,57 @@ homepage_arch = f'''<t t-name="website.homepage" t-inherit="website.homepage_def
             </section>
 
             <!-- ============================================ -->
-            <!-- SECTION 10: CTA - 身心沉靜 -->
+            <!-- SECTION 10: Testimonials -->
+            <!-- ============================================ -->
+            <section style="background-color: #fff; padding: 70px 0;">
+                <div class="container">
+                    <div class="text-center mb-4">
+                        <p style="color: #D8B772; font-family: 'Roboto Slab', serif; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 8px;">Testimonials</p>
+                        <h2 style="font-size: 30px; margin-bottom: 30px; color: #27292C;">口碑不斷 真實推薦</h2>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div style="background: #f9f7f4; border-radius: 8px; padding: 25px; border-left: 4px solid #D8B772; height: 100%;">
+                                <p style="color: #7A7A7A; font-size: 14px; line-height: 1.8; font-style: italic;">「謝謝您用心製作的香，我朋友拿回家點，沒有過敏耶！她使用外面標榜多天然的產品都無法使用，竟然完好如初。」</p>
+                                <p style="color: #E4916E; font-weight: 600; font-size: 13px; margin-bottom: 0;">— 黃小姐</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div style="background: #f9f7f4; border-radius: 8px; padding: 25px; border-left: 4px solid #D8B772; height: 100%;">
+                                <p style="color: #7A7A7A; font-size: 14px; line-height: 1.8; font-style: italic;">「香氣很純正，比我之前買的好很多。燃燒起來比其他家的耐燃，大約快2小時才燒完，紮實。香灰也比較細緻。」</p>
+                                <p style="color: #E4916E; font-weight: 600; font-size: 13px; margin-bottom: 0;">— 郭先生</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div style="background: #f9f7f4; border-radius: 8px; padding: 25px; border-left: 4px solid #D8B772; height: 100%;">
+                                <p style="color: #7A7A7A; font-size: 14px; line-height: 1.8; font-style: italic;">「善緣香搭配方位真的很有用，我每天認識的新朋友，質都很好。」</p>
+                                <p style="color: #E4916E; font-weight: 600; font-size: 13px; margin-bottom: 0;">— Angely</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div style="background: #f9f7f4; border-radius: 8px; padding: 25px; border-left: 4px solid #D8B772; height: 100%;">
+                                <p style="color: #7A7A7A; font-size: 14px; line-height: 1.8; font-style: italic;">「我冥想的時候點十方清淨，雜念有比較少，而且好香真的超讚。」</p>
+                                <p style="color: #E4916E; font-weight: 600; font-size: 13px; margin-bottom: 0;">— 陳小姐</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div style="background: #f9f7f4; border-radius: 8px; padding: 25px; border-left: 4px solid #D8B772; height: 100%;">
+                                <p style="color: #7A7A7A; font-size: 14px; line-height: 1.8; font-style: italic;">「昨天我點了壇城樂土，感覺特別可以把心靜下來。今天點了土神香，線香燒完後整個空間圍繞著靜謐的感覺。」</p>
+                                <p style="color: #E4916E; font-weight: 600; font-size: 13px; margin-bottom: 0;">— 高小姐</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div style="background: #f9f7f4; border-radius: 8px; padding: 25px; border-left: 4px solid #D8B772; height: 100%;">
+                                <p style="color: #7A7A7A; font-size: 14px; line-height: 1.8; font-style: italic;">「我朋友之前買他牌的，說聞起來會頭痛，你家的用起來完全不會。他也有說你家的煙很少，很喜歡。」</p>
+                                <p style="color: #E4916E; font-weight: 600; font-size: 13px; margin-bottom: 0;">— Emily</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================ -->
+            <!-- SECTION 11: CTA - 身心沉靜 -->
             <!-- ============================================ -->
             <section style="position: relative; min-height: 350px; overflow: hidden;">
                 <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url('{img_url("lifestyle-incense.jpg")}') center center / cover no-repeat;"/>

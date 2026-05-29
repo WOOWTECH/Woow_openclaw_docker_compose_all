@@ -188,8 +188,9 @@ else:
         tmpl_id = m.execute_kw(DB, uid, PWD, "product.label.template", "create", [{
             "name": "Inzense QR Label",
             "barcode_type": "qr",
-            "show_name": True,
+            "show_product_name": True,
             "show_price": True,
+            "show_internal_ref": True,
         }])
         print(f"  Created template: id={tmpl_id}")
     except Exception as e:

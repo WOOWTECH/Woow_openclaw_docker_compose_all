@@ -66,8 +66,6 @@ spec:
             - |
               apk add --no-cache curl tar
               mkdir -p /opt/tools
-              KUBECTL_V=v1.34.3
-              curl -fsSL "https://dl.k8s.io/release/${KUBECTL_V}/bin/linux/amd64/kubectl" -o /opt/tools/kubectl
               curl -fsSL "https://github.com/mikefarah/yq/releases/download/v4.44.6/yq_linux_amd64" -o /opt/tools/yq
               curl -fsSL "https://get.helm.sh/helm-v3.17.3-linux-amd64.tar.gz" | tar xz -C /tmp && cp /tmp/linux-amd64/helm /opt/tools/
               curl -fsSL "https://github.com/argoproj/argo-cd/releases/download/v2.14.12/argocd-linux-amd64" -o /opt/tools/argocd
@@ -128,7 +126,7 @@ spec:
                     (
                       apt-get update -qq && \
                       apt-get install -y -qq --no-install-recommends \
-                        jq fd-find rsync postgresql-client redis-tools \
+                        jq fd-find rsync redis-tools \
                         dnsutils iputils-ping nmap netcat-openbsd traceroute \
                         lynx imagemagick pandoc git-lfs mosh httpie && \
                       ln -sf /usr/bin/fdfind /usr/local/bin/fd

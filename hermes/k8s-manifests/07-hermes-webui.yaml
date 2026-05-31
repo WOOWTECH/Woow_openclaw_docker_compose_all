@@ -168,11 +168,26 @@ spec:
               memory: 2Gi
       volumes:
         - name: hermes-home
-          emptyDir: {}
+          persistentVolumeClaim:
+            claimName: hermes-webui-data
         - name: agent-src
           emptyDir: {}
         - name: tools
           emptyDir: {}
+---
+# PVC for WebUI persistent data (conversations, memory, cron jobs, config)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: hermes-webui-data
+  namespace: hermes
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 5Gi
 ---
 apiVersion: v1
 kind: Service

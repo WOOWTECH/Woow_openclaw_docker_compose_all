@@ -560,12 +560,11 @@ if demo_products:
 else:
     print("No demo products to clean")
 
-# Delete demo public categories (keep our custom ones)
+# Delete demo public categories
 our_cat_names = [
-    "線香", "迷你香", "拜拜用香", "原木筆", "優惠組合",
-    "神明系列", "功能系列", "脈輪系列", "五行系列", "外國系列",
-    "台灣系列", "特色系列", "降真系列", "檀香系列", "沉香系列",
-    "福石手串", "會員專區",
+    "功能系列", "特色系列", "脈輪系列", "五行系列", "檀香系列", "沉香系列",
+    "台灣系列", "外國系列", "降真系列", "神明系列", "優惠組合",
+    "長線香", "迷你香", "拜拜用香", "盤香",
 ]
 demo_cats = models.execute_kw(db, uid, password, "product.public.category", "search", [
     [["name", "not in", our_cat_names]]
@@ -581,6 +580,7 @@ print("Demo data cleanup done")
 
 # ================================================================
 # STEP 2: Create/update product public categories
+# New hierarchy: 主類別(系列) > 次類別(產品型態)
 # ================================================================
 print("\n" + "=" * 60)
 print("STEP 2: Create product categories")
@@ -604,32 +604,24 @@ def get_or_create_category(name, parent_id=False):
     print(f"  Created category: {name} (parent={parent_id}) -> ID={cat_id}")
     return cat_id
 
-# Top-level categories
-cat_long = get_or_create_category("線香")
-cat_mini = get_or_create_category("迷你香")
-cat_worship = get_or_create_category("拜拜用香")
-cat_pen = get_or_create_category("原木筆")
+# 主類別 = 系列 (top-level)
+series_names = ["功能系列", "特色系列", "脈輪系列", "五行系列", "檀香系列",
+                "沉香系列", "台灣系列", "外國系列", "降真系列", "神明系列"]
+series_ids = {}
+for sn in series_names:
+    series_ids[sn] = get_or_create_category(sn)
+
+# 次類別 = 產品型態 (under each 系列)
+product_types = ["長線香", "迷你香", "拜拜用香", "盤香"]
+sub_ids = {}  # (series, product_type) -> cat_id
+for sn in series_names:
+    for pt in product_types:
+        sub_ids[(sn, pt)] = get_or_create_category(pt, series_ids[sn])
+
+# 優惠組合 (standalone top-level)
 cat_combo = get_or_create_category("優惠組合")
-cat_bracelet = get_or_create_category("福石手串")
-cat_member = get_or_create_category("會員專區")
 
-# Sub-categories for 線香 and 迷你香
-series_names = ["神明系列", "功能系列", "脈輪系列", "五行系列", "外國系列",
-                "台灣系列", "特色系列", "降真系列", "檀香系列", "沉香系列"]
-
-long_sub = {}
-mini_sub = {}
-for series in series_names:
-    long_sub[series] = get_or_create_category(series, cat_long)
-    mini_sub[series] = get_or_create_category(series, cat_mini)
-
-# Combo sub-categories
-combo_names = ["馬年有喜新春開運組", "神明保庇熱賣組", "上班創業必備組", "內在穩定能量組", "脈輪療癒優惠組"]
-combo_sub = {}
-for cn in combo_names:
-    combo_sub[cn] = get_or_create_category(cn, cat_combo)
-
-print(f"Categories setup complete")
+print(f"Categories setup complete: {len(series_names)} 主類別 × {len(product_types)} 次類別 + 優惠組合")
 
 # ================================================================
 # STEP 3: Map category names from scraped data to Odoo IDs
@@ -637,38 +629,36 @@ print(f"Categories setup complete")
 def map_categories(product_categories):
     """Map scraped category strings to Odoo public category IDs."""
     cat_ids = set()
-    cat_str = " ".join(product_categories).lower()
+    cat_str = " ".join(product_categories)
 
-    # Check for 迷你香 first (before 線香 check, since some have both)
-    is_mini = "迷你香" in cat_str
-    is_long = "線香" in cat_str and not is_mini
+    # Determine product type
+    product_type = None
+    if "迷你香" in cat_str:
+        product_type = "迷你香"
+    elif "拜拜" in cat_str:
+        product_type = "拜拜用香"
+    elif "盤香" in cat_str or "環香" in cat_str:
+        product_type = "盤香"
+    elif "線香" in cat_str:
+        product_type = "長線香"
 
-    if is_mini:
-        cat_ids.add(cat_mini)
-        for series in series_names:
-            if series in cat_str:
-                cat_ids.add(mini_sub[series])
-    elif is_long:
-        cat_ids.add(cat_long)
-        for series in series_names:
-            if series in cat_str:
-                cat_ids.add(long_sub[series])
+    # Determine series
+    series = None
+    for sn in series_names:
+        if sn in cat_str:
+            series = sn
+            break
 
-    if "拜拜用香" in cat_str or "拜拜" in cat_str:
-        cat_ids.add(cat_worship)
-    if "原木筆" in cat_str:
-        cat_ids.add(cat_pen)
-    if "福石" in cat_str or "手串" in cat_str:
-        cat_ids.add(cat_bracelet)
+    # Apply categories
+    if series:
+        cat_ids.add(series_ids[series])
+        if product_type and (series, product_type) in sub_ids:
+            cat_ids.add(sub_ids[(series, product_type)])
+
     if "優惠" in cat_str or "組合" in cat_str:
         cat_ids.add(cat_combo)
-        for cn in combo_names:
-            if cn in cat_str:
-                cat_ids.add(combo_sub[cn])
-    if "會員" in cat_str:
-        cat_ids.add(cat_member)
 
-    return list(cat_ids) if cat_ids else [cat_long]  # default to 線香
+    return list(cat_ids) if cat_ids else [series_ids["功能系列"]]  # default
 
 # ================================================================
 # STEP 4: Upload product images and create products

@@ -79,6 +79,8 @@ def get_or_create(model, name, parent_id=False, extra=None):
     vals = {"name": name}
     if parent_id:
         vals["parent_id"] = parent_id
+    else:
+        vals["parent_id"] = False
     if extra:
         vals.update(extra)
     return m.execute_kw(DB, uid, PWD, model, "create", [vals])
@@ -91,15 +93,10 @@ print("\n" + "=" * 60)
 print("PART A: Rebuild product.category (internal)")
 print("=" * 60)
 
-# Keep 'All' (id=1) as root. Create our hierarchy under a 'Inzense' parent.
-# First find or create the Inzense root
-inzense_root = get_or_create("product.category", "禪香不二 Inzense")
-print(f"  Inzense root: id={inzense_root}")
-
-# Create series under Inzense
+# Create series as top-level (no wrapper category)
 int_series = {}
 for sn in SERIES:
-    int_series[sn] = get_or_create("product.category", sn, inzense_root)
+    int_series[sn] = get_or_create("product.category", sn)
 
 # Create product types under each series
 int_sub = {}
@@ -107,8 +104,8 @@ for sn in SERIES:
     for pt in PRODUCT_TYPES:
         int_sub[(sn, pt)] = get_or_create("product.category", pt, int_series[sn])
 
-# Create combo category
-int_combo = get_or_create("product.category", "優惠組合", inzense_root)
+# Create combo category (top-level)
+int_combo = get_or_create("product.category", "優惠組合")
 
 print(f"  Created/found {len(int_series)} series + {len(int_sub)} sub + combo")
 
@@ -139,8 +136,8 @@ for prod in all_products:
 
 print(f"  Assigned internal categories to {int_assigned} products")
 
-# Now clean up old standalone categories
-old_standalone = ["功能系列", "脈輪系列", "五行系列", "優惠組合", "拜拜用香", "年節禮盒"]
+# Now clean up old standalone categories and 禪香不二 wrapper
+old_standalone = ["功能系列", "脈輪系列", "五行系列", "優惠組合", "拜拜用香", "年節禮盒", "禪香不二 Inzense"]
 for oname in old_standalone:
     old_ids = m.execute_kw(DB, uid, PWD, "product.category", "search", [
         [["name", "=", oname], ["parent_id", "=", False]]
@@ -253,11 +250,10 @@ def print_tree(model, label):
     top = [c for c in cats if not c["parent_id"]]
     children = [c for c in cats if c["parent_id"]]
 
-    # For product.category, only show Inzense subtree
+    # For product.category, only show our series (exclude Odoo defaults like All, Expenses etc.)
     if model == "product.category":
-        inz = [c for c in top if "Inzense" in c["name"] or "禪香" in c["name"]]
-        if inz:
-            top = inz
+        our_names = SERIES + ["優惠組合"]
+        top = [c for c in top if c["name"] in our_names]
 
     print(f"\n{label} ({len(top)} top, {len(children)} sub):")
     for t in top:

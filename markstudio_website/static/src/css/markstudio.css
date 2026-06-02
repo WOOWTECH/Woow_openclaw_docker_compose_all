@@ -1887,28 +1887,72 @@ nav.o_main_navbar,
     background: var(--mk-dark) !important;
 }
 
+/* Frontend-to-backend nav (fixed edit bar with apps/edit buttons) */
+.o_frontend_to_backend_nav {
+    background: var(--mk-dark) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+}
+
+.o_frontend_to_backend_nav svg path {
+    fill: var(--mk-white) !important;
+}
+
+.o_frontend_to_backend_buttons,
+.o_frontend_to_backend_buttons a,
+.o_frontend_to_backend_apps_btn,
+.o_frontend_to_backend_edit_btn {
+    background: var(--mk-dark) !important;
+    color: var(--mk-white) !important;
+}
+
+/* Apps dropdown from the edit bar */
+.o_frontend_to_backend_apps_menu {
+    background: var(--mk-dark) !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+}
+
+.o_frontend_to_backend_apps_menu .dropdown-item {
+    color: rgba(255,255,255,0.7) !important;
+}
+
+.o_frontend_to_backend_apps_menu .dropdown-item:hover {
+    background: rgba(255,255,255,0.1) !important;
+    color: var(--mk-white) !important;
+}
+
 /* ============================================================
    DISCUSS / LIVECHAT WIDGET — dark override
-   White chat widget shown to logged-in users
+   White chat widget shown to logged-in users (OWL rendered)
    ============================================================ */
 
-/* Discuss bubble / messaging widget */
-.o-discuss-ChannelSelector,
-.o-discuss-Sidebar,
-.o_Discuss,
+/* Broad catch-all for dynamically injected OWL mail/discuss/livechat */
 .o-mail-ChatWindow,
 .o-mail-ChatWindow-header,
 .o-mail-ChatWindow-content,
 .o-mail-Thread,
+.o-mail-Composer,
+.o-mail-Message,
+.o-discuss-ChannelSelector,
+.o-discuss-Sidebar,
+.o_Discuss,
 .o-livechat-root,
-.o-livechat-LivechatButton {
+.o-livechat-LivechatButton,
+div[class*="o-mail-"],
+div[class*="o-discuss-"],
+div[class*="o-livechat-"] {
     background: var(--mk-dark) !important;
     border-color: rgba(255,255,255,0.2) !important;
     color: rgba(255,255,255,0.8) !important;
 }
 
-/* Chat window composer */
-.o-mail-Composer,
+/* Livechat button bubble */
+.o-livechat-LivechatButton {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5) !important;
+}
+
+/* Chat composer input */
+.o-mail-Composer textarea,
+.o-mail-Composer input,
 .o-mail-Composer-input {
     background: rgba(255,255,255,0.05) !important;
     border-color: rgba(255,255,255,0.2) !important;
@@ -1916,12 +1960,40 @@ nav.o_main_navbar,
 }
 
 /* ============================================================
-   BOTTOM USER BAR — dark override
-   User session bar at bottom of page for logged-in users
+   USER DROPDOWN & BOTTOM BAR — dark override
    ============================================================ */
 
-/* Odoo bottom bar / user switch / debug bar */
-.o_frontend_to_backend_nav,
+/* User dropdown menu (desktop + mobile offcanvas) */
+.js_usermenu {
+    background: var(--mk-dark) !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+    border-radius: 0 !important;
+}
+
+.js_usermenu .dropdown-item {
+    color: rgba(255,255,255,0.7) !important;
+}
+
+.js_usermenu .dropdown-item:hover {
+    background: rgba(255,255,255,0.1) !important;
+    color: var(--mk-white) !important;
+}
+
+.js_usermenu .dropdown-item .fa {
+    color: rgba(255,255,255,0.5) !important;
+}
+
+.js_usermenu .dropdown-divider {
+    border-color: rgba(255,255,255,0.15) !important;
+}
+
+/* User dropdown toggle button */
+.dropdown.o_no_autohide_item .dropdown-toggle,
+.dropdown.dropup.o_no_autohide_item .dropdown-toggle {
+    color: rgba(255,255,255,0.7) !important;
+}
+
+/* Bottom user bar */
 .o_user_switch,
 owl-component[name="web.user_switch"],
 .o_bottom_navbar {
@@ -1930,14 +2002,11 @@ owl-component[name="web.user_switch"],
     color: rgba(255,255,255,0.7) !important;
 }
 
-.o_frontend_to_backend_nav a,
-.o_frontend_to_backend_nav .btn,
 .o_user_switch a,
 .o_bottom_navbar a {
     color: rgba(255,255,255,0.7) !important;
 }
 
-.o_frontend_to_backend_nav a:hover,
 .o_user_switch a:hover,
 .o_bottom_navbar a:hover {
     color: var(--mk-white) !important;

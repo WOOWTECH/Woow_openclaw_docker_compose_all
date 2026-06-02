@@ -1765,12 +1765,51 @@ header#top .o_nav_link_btn:hover {
     border-color: rgba(255,255,255,0.1) !important;
 }
 
-/* Odoo default purple/primary backgrounds → dark */
+/* Odoo default purple/primary/light backgrounds → dark
+   High specificity to override Odoo's bundled CSS */
+html body .bg-100,
+html body .bg-light,
+html body .bg-200,
 .o_portal .bg-primary,
 .o_portal .bg-info,
 .o_portal .bg-100,
-.o_portal .bg-light {
-    background: rgba(255,255,255,0.04) !important;
+.o_portal .bg-light,
+.o_portal_my_home .bg-100,
+.o_portal_my_home .bg-light,
+.o_portal_index_card .bg-100,
+.o_portal_index_card a.bg-100,
+a.bg-100 {
+    background: rgba(255,255,255,0.06) !important;
+    color: rgba(255,255,255,0.85) !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+}
+
+/* Portal card text inside bg-100 links */
+.o_portal_index_card a .fs-5,
+.o_portal_index_card a span,
+.o_portal_index_card a div {
+    color: rgba(255,255,255,0.85) !important;
+}
+
+.o_portal_index_card a .opacity-75 {
+    color: rgba(255,255,255,0.5) !important;
+}
+
+/* Portal card icons — invert SVG images for dark bg */
+.o_portal_index_card .o_portal_icon img {
+    filter: invert(0.8) brightness(1.5);
+}
+
+/* Portal alert cards */
+.o_portal .alert-primary {
+    background: rgba(255,255,255,0.08) !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+    color: rgba(255,255,255,0.85) !important;
+}
+
+.o_portal .alert-primary .alert-link,
+.o_portal .alert-primary .alert-link * {
+    color: rgba(255,255,255,0.85) !important;
 }
 
 /* Portal sidebar toggle / mobile offcanvas */

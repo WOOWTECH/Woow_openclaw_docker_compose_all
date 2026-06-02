@@ -2002,35 +2002,38 @@ div[class*="o-livechat-"] {
    USER DROPDOWN & BOTTOM BAR — dark override
    ============================================================ */
 
-/* User dropdown menu (desktop + mobile offcanvas) */
-.js_usermenu {
-    background: var(--mk-dark) !important;
+/* User dropdown menu (desktop + mobile offcanvas)
+   Override Bootstrap --dropdown-link-color CSS variable + direct color */
+.dropdown-menu.js_usermenu {
+    --dropdown-link-color: #fff !important;
+    --dropdown-link-hover-color: #fff !important;
+    --dropdown-link-hover-bg: rgba(255,255,255,0.15) !important;
+    --bs-dropdown-link-color: #fff !important;
+    --bs-dropdown-link-hover-color: #fff !important;
+    background: #1a1a1a !important;
     border: 1px solid rgba(255,255,255,0.2) !important;
     border-radius: 0 !important;
+    color: #fff !important;
 }
 
-.js_usermenu .dropdown-item {
-    color: var(--mk-white) !important;
+.dropdown-menu.js_usermenu .dropdown-item {
+    color: #fff !important;
 }
 
-.js_usermenu .dropdown-item:hover {
+.dropdown-menu.js_usermenu .dropdown-item:hover {
     background: rgba(255,255,255,0.15) !important;
-    color: var(--mk-white) !important;
+    color: #fff !important;
 }
 
-.js_usermenu .dropdown-item .fa,
-.js_usermenu .dropdown-item .oi,
-.js_usermenu .dropdown-item i {
-    color: var(--mk-white) !important;
+.dropdown-menu.js_usermenu .dropdown-item .fa,
+.dropdown-menu.js_usermenu .dropdown-item .oi,
+.dropdown-menu.js_usermenu .dropdown-item i,
+.dropdown-menu.js_usermenu .dropdown-item .text-primary,
+.dropdown-menu.js_usermenu .dropdown-item .text-primary-emphasis {
+    color: #fff !important;
 }
 
-/* Override Odoo .text-primary on user menu icons */
-.js_usermenu .text-primary,
-.js_usermenu .text-primary-emphasis {
-    color: var(--mk-white) !important;
-}
-
-.js_usermenu .dropdown-divider {
+.dropdown-menu.js_usermenu .dropdown-divider {
     border-color: rgba(255,255,255,0.15) !important;
 }
 

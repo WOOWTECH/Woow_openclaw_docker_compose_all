@@ -2010,16 +2010,24 @@ div[class*="o-livechat-"] {
 }
 
 .js_usermenu .dropdown-item {
-    color: rgba(255,255,255,0.7) !important;
-}
-
-.js_usermenu .dropdown-item:hover {
-    background: rgba(255,255,255,0.1) !important;
     color: var(--mk-white) !important;
 }
 
-.js_usermenu .dropdown-item .fa {
-    color: rgba(255,255,255,0.5) !important;
+.js_usermenu .dropdown-item:hover {
+    background: rgba(255,255,255,0.15) !important;
+    color: var(--mk-white) !important;
+}
+
+.js_usermenu .dropdown-item .fa,
+.js_usermenu .dropdown-item .oi,
+.js_usermenu .dropdown-item i {
+    color: var(--mk-white) !important;
+}
+
+/* Override Odoo .text-primary on user menu icons */
+.js_usermenu .text-primary,
+.js_usermenu .text-primary-emphasis {
+    color: var(--mk-white) !important;
 }
 
 .js_usermenu .dropdown-divider {

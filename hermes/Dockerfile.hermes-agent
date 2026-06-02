@@ -1,8 +1,8 @@
 # =============================================================
 # Hermes Agent Custom Image
-# Base: nousresearch/hermes-agent:latest (Debian 13 trixie)
+# Base: nousresearch/hermes-agent:latest (v0.15+ with s6-overlay)
 # Adds: CLI tools + Chromium/Playwright (no kubectl/psql)
-# User: hermes (UID 10000)
+# User: managed by s6-overlay (HERMES_UID env)
 #
 # Build:
 #   docker build -t hermes-agent-custom:latest \
@@ -113,14 +113,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Shared browser path accessible by both root (build) and hermes user (runtime)
 ENV PLAYWRIGHT_BROWSERS_PATH=/opt/playwright-browsers
 
-# httpie + yt-dlp + playwright (Python)
-RUN pip install --break-system-packages --no-cache-dir httpie yt-dlp playwright
+# httpie + yt-dlp (system Python)
+RUN pip install --break-system-packages --no-cache-dir httpie yt-dlp
 
-# Install Chromium via Python playwright (single source of truth for browser version)
-RUN python3 -m playwright install --with-deps chromium \
+# playwright (system Python + venv)
+RUN /usr/bin/python3 -m pip install --break-system-packages --no-cache-dir playwright \
+    && /opt/hermes/.venv/bin/uv pip install playwright 2>/dev/null || true
+
+# Install Chromium via system python's playwright
+RUN /usr/bin/python3 -m playwright install --with-deps chromium \
     && chmod -R o+rx /opt/playwright-browsers
 
-# Playwright CLI (npm) — shares browsers via PLAYWRIGHT_BROWSERS_PATH
+# Playwright CLI (npm)
 RUN npm install -g @playwright/cli@latest
 
 # ── Layer 6: Cleanup & permissions ─────────────────────────────
@@ -135,5 +139,4 @@ RUN git config --system user.name "Hermes Bot" \
     && git config --system user.email "hermes@woowtech.io" \
     && git config --system init.defaultBranch main
 
-# Restore non-root user
-USER hermes
+# v0.15: s6-overlay manages user switching, do NOT set USER here

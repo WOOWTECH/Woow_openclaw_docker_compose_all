@@ -1754,6 +1754,111 @@ header#top .o_nav_link_btn:hover {
 }
 
 /* ============================================================
+   PORTAL USER PAGES — logged-in user portal dark theme
+   Covers /my, /my/account, /my/orders, /my/bookings etc.
+   ============================================================ */
+
+/* Portal sidebar on mobile — dark theme override purple header */
+.o_portal_my_home .o_portal_navbar,
+.o_portal .o_portal_navbar {
+    background: var(--mk-dark) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+}
+
+/* Odoo default purple/primary backgrounds → dark */
+.o_portal .bg-primary,
+.o_portal .bg-info,
+.o_portal .bg-100,
+.o_portal .bg-light {
+    background: rgba(255,255,255,0.04) !important;
+}
+
+/* Portal sidebar toggle / mobile offcanvas */
+.o_portal .offcanvas,
+.o_portal .offcanvas-body {
+    background: var(--mk-black) !important;
+    color: var(--mk-white) !important;
+}
+
+.o_portal .offcanvas .btn-close {
+    filter: invert(1) !important;
+    opacity: 1 !important;
+}
+
+/* Portal user avatar/name area */
+.o_portal .o_portal_my_details,
+.o_portal .card-header {
+    background: rgba(255,255,255,0.04) !important;
+    border-color: rgba(255,255,255,0.15) !important;
+}
+
+/* Portal record detail cards */
+.o_portal .card,
+.o_portal .o_portal_sidebar .card {
+    background: rgba(255,255,255,0.04) !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+/* Portal sidebar anchors */
+.o_portal .o_portal_sidebar a,
+.o_portal .nav-link {
+    color: rgba(255,255,255,0.6) !important;
+}
+
+.o_portal .o_portal_sidebar a:hover,
+.o_portal .nav-link:hover {
+    color: var(--mk-white) !important;
+}
+
+/* Portal page body/wrap dark bg */
+.o_portal #wrapwrap,
+.o_portal #wrap,
+.o_portal main {
+    background: var(--mk-black) !important;
+}
+
+/* Portal breadcrumb area */
+.o_portal .o_portal_submenu {
+    background: var(--mk-black) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+}
+
+/* Portal alert/info boxes */
+.o_portal .alert-info,
+.o_portal .alert-warning,
+.o_portal .alert-success {
+    background: rgba(255,255,255,0.06) !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+    border-radius: 0 !important;
+    color: rgba(255,255,255,0.8) !important;
+}
+
+/* Portal pager */
+.o_portal .pagination .page-link {
+    background: transparent !important;
+    border-color: rgba(255,255,255,0.2) !important;
+    color: rgba(255,255,255,0.6) !important;
+}
+
+.o_portal .pagination .page-item.active .page-link {
+    background: var(--mk-white) !important;
+    color: var(--mk-black) !important;
+    border-color: var(--mk-white) !important;
+}
+
+/* Portal chatter / message area */
+.o_portal .o_portal_chatter,
+.o_portal #discussion {
+    background: transparent !important;
+}
+
+.o_portal .o_portal_chatter .media-body {
+    color: rgba(255,255,255,0.7) !important;
+}
+
+/* ============================================================
    GENERIC PAGE WRAPPER — dark bg for all non-homepage pages
    that aren't already handled by appointment or portal styles
    ============================================================ */

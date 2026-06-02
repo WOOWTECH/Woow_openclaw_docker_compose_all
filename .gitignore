@@ -48,7 +48,9 @@ build/
 
 # Secrets (never commit real values)
 **/secrets.yaml
+**/01-secrets.yaml
 !k8s-manifests/02-secrets.yaml
+hermes/instances/**/cf-config.json
 
 # Screenshots (temp)
 *.png

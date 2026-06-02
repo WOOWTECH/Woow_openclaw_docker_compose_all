@@ -185,11 +185,11 @@ ROUTE_RESPONSE=$(curl -s -X PUT \
     "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/cfd_tunnel/${CF_TUNNEL_ID}/configurations" \
     -H "Authorization: Bearer ${CF_API_TOKEN}" \
     -H "Content-Type: application/json" \
-    -d "{\"config\":{\"ingress\":[{\"hostname\":\"${DOMAIN}\",\"service\":\"http://hermes-webui-svc.${NAMESPACE}.svc.cluster.local:3000\"},{\"service\":\"http_status:404\"}]}}")
+    -d "{\"config\":{\"ingress\":[{\"hostname\":\"${DOMAIN}\",\"service\":\"http://hermes-webui-svc.${NAMESPACE}.svc.cluster.local:8787\"},{\"service\":\"http_status:404\"}]}}")
 
 ROUTE_SUCCESS=$(echo "${ROUTE_RESPONSE}" | python3 -c "import sys,json; print(json.load(sys.stdin).get('success','false'))" 2>/dev/null || echo "false")
 if [ "${ROUTE_SUCCESS}" = "True" ] || [ "${ROUTE_SUCCESS}" = "true" ]; then
-    ok "Cloudflare route: ${DOMAIN} → hermes-webui-svc:3000"
+    ok "Cloudflare route: ${DOMAIN} → hermes-webui-svc:8787"
 else
     warn "Cloudflare route config may have failed. Response: ${ROUTE_RESPONSE}"
 fi

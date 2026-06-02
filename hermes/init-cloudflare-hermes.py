@@ -14,6 +14,7 @@ import requests
 CF_API_TOKEN = os.environ.get("CF_API_TOKEN", "")
 TUNNEL_NAME = os.environ.get("TUNNEL_NAME", "hermes")
 DOMAIN = os.environ.get("HERMES_DOMAIN", "hermes-woowtechjac.woowtech.io")
+NAMESPACE = os.environ.get("HERMES_NAMESPACE", "hermes")
 BASE_URL = "https://api.cloudflare.com/client/v4"
 
 HEADERS = {
@@ -93,14 +94,15 @@ def main():
         sys.exit(1)
 
     # Step 4: Configure tunnel ingress route → hermes-webui
-    print(f"\n[4/5] Configuring tunnel route: {DOMAIN} → hermes-webui-svc:3000...")
+    svc_url = f"http://hermes-webui-svc.{NAMESPACE}.svc.cluster.local:8787"
+    print(f"\n[4/5] Configuring tunnel route: {DOMAIN} → {svc_url}...")
     try:
         route_config = {
             "config": {
                 "ingress": [
                     {
                         "hostname": DOMAIN,
-                        "service": "http://hermes-webui-svc.hermes.svc.cluster.local:3000",
+                        "service": svc_url,
                     },
                     {
                         "service": "http_status:404",
@@ -109,7 +111,7 @@ def main():
             }
         }
         api_put(f"/accounts/{account_id}/cfd_tunnel/{tunnel_id}/configurations", route_config)
-        print(f"  -> Route configured: {DOMAIN} → hermes-webui-svc:3000")
+        print(f"  -> Route configured: {DOMAIN} → {svc_url}")
     except Exception as e:
         print(f"  [WARN] Route configuration failed: {e}")
         print("  You can configure routes manually in Cloudflare dashboard.")
@@ -123,7 +125,8 @@ def main():
         "DOMAIN": DOMAIN,
         "TUNNEL_NAME": TUNNEL_NAME,
     }
-    config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cf-config.json")
+    output_dir = os.environ.get("CF_CONFIG_OUTPUT_DIR", os.path.dirname(os.path.abspath(__file__)))
+    config_path = os.path.join(output_dir, "cf-config.json")
     with open(config_path, "w") as f:
         json.dump(config, f, indent=2)
 

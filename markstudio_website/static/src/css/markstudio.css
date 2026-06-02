@@ -1859,6 +1859,91 @@ header#top .o_nav_link_btn:hover {
 }
 
 /* ============================================================
+   ODOO BACKEND BAR / ADMIN NAVBAR — dark override
+   Purple bar shown to logged-in admin/internal users on frontend
+   ============================================================ */
+
+/* Main backend navbar (purple → dark) */
+.o_main_navbar,
+nav.o_main_navbar,
+.o_action_manager .o_main_navbar {
+    background: var(--mk-dark) !important;
+    border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+}
+
+.o_main_navbar .o_menu_brand,
+.o_main_navbar .o_menu_sections a,
+.o_main_navbar .o_menu_systray a,
+.o_main_navbar .dropdown-toggle,
+.o_main_navbar .oi,
+.o_main_navbar .fa {
+    color: var(--mk-white) !important;
+}
+
+/* Website publish/edit bar for admin */
+.o_website_systray,
+.o_we_website_top_actions,
+.o_website_preview .o_main_navbar {
+    background: var(--mk-dark) !important;
+}
+
+/* ============================================================
+   DISCUSS / LIVECHAT WIDGET — dark override
+   White chat widget shown to logged-in users
+   ============================================================ */
+
+/* Discuss bubble / messaging widget */
+.o-discuss-ChannelSelector,
+.o-discuss-Sidebar,
+.o_Discuss,
+.o-mail-ChatWindow,
+.o-mail-ChatWindow-header,
+.o-mail-ChatWindow-content,
+.o-mail-Thread,
+.o-livechat-root,
+.o-livechat-LivechatButton {
+    background: var(--mk-dark) !important;
+    border-color: rgba(255,255,255,0.2) !important;
+    color: rgba(255,255,255,0.8) !important;
+}
+
+/* Chat window composer */
+.o-mail-Composer,
+.o-mail-Composer-input {
+    background: rgba(255,255,255,0.05) !important;
+    border-color: rgba(255,255,255,0.2) !important;
+    color: var(--mk-white) !important;
+}
+
+/* ============================================================
+   BOTTOM USER BAR — dark override
+   User session bar at bottom of page for logged-in users
+   ============================================================ */
+
+/* Odoo bottom bar / user switch / debug bar */
+.o_frontend_to_backend_nav,
+.o_user_switch,
+owl-component[name="web.user_switch"],
+.o_bottom_navbar {
+    background: var(--mk-dark) !important;
+    border-top: 1px solid rgba(255,255,255,0.1) !important;
+    color: rgba(255,255,255,0.7) !important;
+}
+
+.o_frontend_to_backend_nav a,
+.o_frontend_to_backend_nav .btn,
+.o_user_switch a,
+.o_bottom_navbar a {
+    color: rgba(255,255,255,0.7) !important;
+}
+
+.o_frontend_to_backend_nav a:hover,
+.o_user_switch a:hover,
+.o_bottom_navbar a:hover {
+    color: var(--mk-white) !important;
+}
+
+/* ============================================================
    GENERIC PAGE WRAPPER — dark bg for all non-homepage pages
    that aren't already handled by appointment or portal styles
    ============================================================ */

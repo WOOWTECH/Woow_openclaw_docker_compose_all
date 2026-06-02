@@ -107,6 +107,12 @@ spec:
             # Connect to hermes-agent gateway
             - name: GATEWAY_HEALTH_URL
               value: "http://hermes-agent-svc:8642"
+            # Gateway API authentication
+            - name: API_SERVER_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: hermes-secrets
+                  key: API_SERVER_KEY
             # LLM - Minimax
             - name: MINIMAX_API_KEY
               valueFrom:

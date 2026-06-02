@@ -1416,6 +1416,363 @@ footer#bottom .o_footer_copyright span {
 }
 
 /* ============================================================
+   NAVBAR LOGIN BUTTON — white outlined, high contrast
+   ============================================================ */
+
+/* Desktop login button (outside #top_menu) */
+header#top .o_nav_link_btn {
+    background: transparent !important;
+    color: var(--mk-white) !important;
+    font-family: var(--mk-sans) !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    padding: 8px 24px !important;
+    border: 1px solid var(--mk-white) !important;
+    border-radius: 0 !important;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.3s;
+}
+
+header#top .o_nav_link_btn:hover {
+    background: var(--mk-white) !important;
+    color: var(--mk-black) !important;
+}
+
+/* ============================================================
+   LOGIN / RESET PASSWORD / AUTH PAGES — dark theme
+   ============================================================ */
+
+/* Full page dark background for auth pages */
+.oe_website_login_container {
+    background: var(--mk-black);
+    min-height: 60vh;
+    padding: 80px 0;
+    position: relative;
+}
+
+/* Semi-transparent background image */
+.oe_website_login_container::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background: url('/markstudio_website/static/src/img/svc-02-stretch.jpg?v=3') center center / cover no-repeat;
+    filter: grayscale(1) brightness(0.12);
+    pointer-events: none;
+}
+
+.oe_website_login_container > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Login form container */
+.oe_login_form {
+    max-width: 440px;
+    margin: 0 auto;
+    background: rgba(255,255,255,0.04) !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+    border-radius: 0 !important;
+    padding: 48px 40px !important;
+    backdrop-filter: blur(10px);
+}
+
+/* Form labels */
+.oe_login_form .form-label,
+.oe_login_form label {
+    font-family: var(--mk-sans) !important;
+    font-size: 13px !important;
+    color: rgba(255,255,255,0.6) !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Form inputs */
+.oe_login_form .form-control {
+    background: rgba(255,255,255,0.05) !important;
+    border: 1px solid rgba(255,255,255,0.3) !important;
+    border-radius: 0 !important;
+    color: var(--mk-white) !important;
+    font-family: var(--mk-sans);
+    font-size: 14px;
+    padding: 12px 16px;
+}
+
+.oe_login_form .form-control:focus {
+    border-color: rgba(255,255,255,0.6) !important;
+    box-shadow: none !important;
+    background: rgba(255,255,255,0.08) !important;
+}
+
+.oe_login_form .form-control::placeholder {
+    color: rgba(255,255,255,0.3) !important;
+}
+
+/* Login button — white outlined retrodandy style */
+.oe_login_form .btn-primary,
+.oe_login_form button[type="submit"] {
+    background: transparent !important;
+    color: var(--mk-white) !important;
+    font-family: var(--mk-sans) !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    padding: 14px 48px !important;
+    border: 2px solid var(--mk-white) !important;
+    border-radius: 0 !important;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.3s;
+}
+
+.oe_login_form .btn-primary:hover,
+.oe_login_form button[type="submit"]:hover {
+    background: var(--mk-white) !important;
+    color: var(--mk-black) !important;
+}
+
+/* Reset password / other links on login page */
+.oe_login_form .btn-link,
+.oe_login_form a {
+    color: rgba(255,255,255,0.5) !important;
+    font-family: var(--mk-sans) !important;
+    font-size: 12px !important;
+    text-decoration: none !important;
+    letter-spacing: 1px;
+    transition: color 0.3s;
+}
+
+.oe_login_form .btn-link:hover,
+.oe_login_form a:hover {
+    color: var(--mk-white) !important;
+}
+
+/* Error/alert messages on login page */
+.oe_website_login_container .alert {
+    background: rgba(255,255,255,0.08) !important;
+    border: 1px solid rgba(255,255,255,0.25) !important;
+    border-left: 3px solid rgba(255,255,255,0.5) !important;
+    border-radius: 0 !important;
+    color: var(--mk-white) !important;
+    font-family: var(--mk-sans);
+    max-width: 440px;
+    margin: 0 auto 24px;
+}
+
+.oe_website_login_container .alert-danger {
+    border-left-color: #c0392b !important;
+}
+
+/* User switch component */
+.oe_website_login_container owl-component {
+    max-width: 440px;
+    margin: 0 auto 16px;
+    display: block;
+}
+
+/* ============================================================
+   PORTAL / MY ACCOUNT PAGES — dark theme
+   ============================================================ */
+
+/* Portal main wrapper */
+.o_portal {
+    background: var(--mk-black) !important;
+    min-height: 60vh;
+}
+
+/* Portal breadcrumb */
+.o_portal .breadcrumb {
+    background: none !important;
+}
+
+.o_portal .breadcrumb-item,
+.o_portal .breadcrumb-item a {
+    font-family: var(--mk-sans);
+    font-size: 13px;
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.o_portal .breadcrumb-item a:hover {
+    color: var(--mk-white);
+}
+
+.o_portal .breadcrumb-item.active {
+    color: rgba(255,255,255,0.6);
+}
+
+.o_portal .breadcrumb-item + .breadcrumb-item::before {
+    color: rgba(255,255,255,0.3);
+}
+
+/* Portal sidebar & cards */
+.o_portal .card,
+.o_portal .o_portal_my_home .card {
+    background: rgba(255,255,255,0.04) !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+.o_portal .card:hover {
+    border-color: rgba(255,255,255,0.4) !important;
+}
+
+.o_portal .card-body {
+    background: transparent !important;
+}
+
+/* Portal headings */
+.o_portal h1, .o_portal h2, .o_portal h3,
+.o_portal h4, .o_portal h5, .o_portal h6 {
+    font-family: var(--mk-serif) !important;
+    color: var(--mk-white) !important;
+}
+
+/* Portal text */
+.o_portal p, .o_portal span, .o_portal div,
+.o_portal label, .o_portal td, .o_portal th {
+    color: rgba(255,255,255,0.7) !important;
+    font-family: var(--mk-sans);
+}
+
+/* Portal links */
+.o_portal a:not(.btn):not(.nav-link):not(.breadcrumb-item):not(.dropdown-item) {
+    color: rgba(255,255,255,0.6);
+    transition: color 0.3s;
+}
+
+.o_portal a:not(.btn):not(.nav-link):not(.breadcrumb-item):not(.dropdown-item):hover {
+    color: var(--mk-white);
+}
+
+/* Portal buttons */
+.o_portal .btn-primary {
+    background: transparent !important;
+    color: var(--mk-white) !important;
+    border: 2px solid var(--mk-white) !important;
+    border-radius: 0 !important;
+    font-family: var(--mk-sans);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 32px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.3s;
+}
+
+.o_portal .btn-primary:hover {
+    background: var(--mk-white) !important;
+    color: var(--mk-black) !important;
+}
+
+.o_portal .btn-secondary,
+.o_portal .btn-outline-secondary {
+    background: transparent !important;
+    color: rgba(255,255,255,0.7) !important;
+    border: 1px solid rgba(255,255,255,0.3) !important;
+    border-radius: 0 !important;
+    font-family: var(--mk-sans);
+    transition: all 0.3s;
+}
+
+.o_portal .btn-secondary:hover,
+.o_portal .btn-outline-secondary:hover {
+    border-color: rgba(255,255,255,0.6) !important;
+    color: var(--mk-white) !important;
+}
+
+/* Portal form inputs */
+.o_portal .form-control,
+.o_portal .form-select {
+    background: rgba(255,255,255,0.05) !important;
+    border: 1px solid rgba(255,255,255,0.3) !important;
+    border-radius: 0 !important;
+    color: var(--mk-white) !important;
+    font-family: var(--mk-sans);
+}
+
+.o_portal .form-control:focus,
+.o_portal .form-select:focus {
+    border-color: rgba(255,255,255,0.6) !important;
+    box-shadow: none !important;
+    background: rgba(255,255,255,0.08) !important;
+}
+
+/* Portal tables */
+.o_portal table {
+    border-color: rgba(255,255,255,0.15) !important;
+}
+
+.o_portal table thead th {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(255,255,255,0.15) !important;
+    color: rgba(255,255,255,0.8) !important;
+    font-family: var(--mk-sans);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.o_portal table td {
+    border-color: rgba(255,255,255,0.1) !important;
+}
+
+/* Portal doc entry cards (My Account home) */
+.o_portal .o_portal_doc_entry,
+.o_portal .list-group-item {
+    background: transparent !important;
+    border-color: rgba(255,255,255,0.15) !important;
+    color: rgba(255,255,255,0.7) !important;
+}
+
+.o_portal .list-group-item:hover {
+    background: rgba(255,255,255,0.05) !important;
+}
+
+/* Portal badges/counts */
+.o_portal .badge {
+    background: transparent !important;
+    border: 1px solid rgba(255,255,255,0.4) !important;
+    border-radius: 0 !important;
+    color: rgba(255,255,255,0.8) !important;
+    font-family: var(--mk-sans);
+}
+
+/* Portal no-shadow overrides */
+.o_portal .shadow,
+.o_portal .shadow-sm {
+    box-shadow: none !important;
+}
+
+/* ============================================================
+   GENERIC PAGE WRAPPER — dark bg for all non-homepage pages
+   that aren't already handled by appointment or portal styles
+   ============================================================ */
+
+/* Ensure #wrap background is dark for non-homepage pages */
+#wrapwrap:not(:has(.mk-hero)) #wrap {
+    background: var(--mk-black);
+}
+
+/* Generic page content text */
+#wrapwrap:not(:has(.mk-hero)) #wrap h1,
+#wrapwrap:not(:has(.mk-hero)) #wrap h2,
+#wrapwrap:not(:has(.mk-hero)) #wrap h3 {
+    color: var(--mk-white);
+    font-family: var(--mk-serif);
+}
+
+#wrapwrap:not(:has(.mk-hero)) #wrap p,
+#wrapwrap:not(:has(.mk-hero)) #wrap span:not(.navbar-toggler-icon),
+#wrapwrap:not(:has(.mk-hero)) #wrap label {
+    color: rgba(255,255,255,0.7);
+    font-family: var(--mk-sans);
+}
+
+/* ============================================================
    RESPONSIVE
    ============================================================ */
 @media (max-width: 991px) {

@@ -1467,8 +1467,10 @@ header#top .o_nav_link_btn:hover {
     z-index: 1;
 }
 
-/* Login form container */
-.oe_login_form {
+/* Auth form containers (login, reset password, signup) */
+.oe_login_form,
+.oe_reset_password_form,
+.oe_website_login_container form {
     max-width: 440px;
     margin: 0 auto;
     background: rgba(255,255,255,0.04) !important;
@@ -1479,8 +1481,9 @@ header#top .o_nav_link_btn:hover {
 }
 
 /* Form labels */
-.oe_login_form .form-label,
-.oe_login_form label {
+.oe_website_login_container form .form-label,
+.oe_website_login_container form .col-form-label,
+.oe_website_login_container form label {
     font-family: var(--mk-sans) !important;
     font-size: 13px !important;
     color: rgba(255,255,255,0.6) !important;
@@ -1489,7 +1492,7 @@ header#top .o_nav_link_btn:hover {
 }
 
 /* Form inputs */
-.oe_login_form .form-control {
+.oe_website_login_container form .form-control {
     background: rgba(255,255,255,0.05) !important;
     border: 1px solid rgba(255,255,255,0.3) !important;
     border-radius: 0 !important;
@@ -1499,19 +1502,19 @@ header#top .o_nav_link_btn:hover {
     padding: 12px 16px;
 }
 
-.oe_login_form .form-control:focus {
+.oe_website_login_container form .form-control:focus {
     border-color: rgba(255,255,255,0.6) !important;
     box-shadow: none !important;
     background: rgba(255,255,255,0.08) !important;
 }
 
-.oe_login_form .form-control::placeholder {
+.oe_website_login_container form .form-control::placeholder {
     color: rgba(255,255,255,0.3) !important;
 }
 
-/* Login button — white outlined retrodandy style */
-.oe_login_form .btn-primary,
-.oe_login_form button[type="submit"] {
+/* Auth buttons — white outlined retrodandy style */
+.oe_website_login_container form .btn-primary,
+.oe_website_login_container form button[type="submit"] {
     background: transparent !important;
     color: var(--mk-white) !important;
     font-family: var(--mk-sans) !important;
@@ -1525,15 +1528,17 @@ header#top .o_nav_link_btn:hover {
     transition: all 0.3s;
 }
 
-.oe_login_form .btn-primary:hover,
-.oe_login_form button[type="submit"]:hover {
+.oe_website_login_container form .btn-primary:hover,
+.oe_website_login_container form button[type="submit"]:hover {
     background: var(--mk-white) !important;
     color: var(--mk-black) !important;
 }
 
-/* Reset password / other links on login page */
-.oe_login_form .btn-link,
-.oe_login_form a {
+/* Auth page links */
+.oe_website_login_container form .btn-link,
+.oe_website_login_container form a,
+.oe_website_login_container .oe_login_buttons a,
+.oe_website_login_container > a {
     color: rgba(255,255,255,0.5) !important;
     font-family: var(--mk-sans) !important;
     font-size: 12px !important;
@@ -1542,8 +1547,9 @@ header#top .o_nav_link_btn:hover {
     transition: color 0.3s;
 }
 
-.oe_login_form .btn-link:hover,
-.oe_login_form a:hover {
+.oe_website_login_container form .btn-link:hover,
+.oe_website_login_container form a:hover,
+.oe_website_login_container > a:hover {
     color: var(--mk-white) !important;
 }
 

@@ -11,7 +11,7 @@ export RESULTS_LOG NAMESPACE
 START_TIME=$(date +%s)
 echo ""
 echo "============================================================"
-echo "  Hermes Enterprise Test Suite -- 5 Rounds + Playwright"
+echo "  Hermes Enterprise Test Suite -- 7 Rounds + Playwright"
 echo "  $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
 echo "============================================================"
 
@@ -35,20 +35,24 @@ run_round "$SCRIPT_DIR/round2-api.sh"          "Round 2: Backend API"
 run_round "$SCRIPT_DIR/round3-security.sh"     "Round 3: Security & Stress"
 run_round "$SCRIPT_DIR/round4-resilience.sh"   "Round 4: Resilience & Recovery"
 run_round "$SCRIPT_DIR/round5-integration.sh"  "Round 5: Cross-Service Integration"
+run_round "$SCRIPT_DIR/round6-llm-integration.sh" "Round 6: LLM Integration & Gateway"
+run_round "$SCRIPT_DIR/round7-webui-features.sh"   "Round 7: WebGUI Features"
 
 # Playwright (optional — uses port-forward for local access)
 echo ""
 echo ">> Starting: Playwright Browser Tests"
 if command -v npx &> /dev/null; then
-  # Start port-forward in background
+  # Start port-forward in background (kept alive for ALL Playwright suites)
   kubectl -n "$NAMESPACE" port-forward svc/hermes-webui-svc 18787:8787 &>/dev/null &
   PF_PID=$!
   sleep 3
   export HERMES_TEST_URL="http://localhost:18787"
+
+  # Suite 1: Basic WebUI E2E (12 tests)
   cd "$SCRIPT_DIR/../../" && npx playwright test \
-    --config hermes/tests/playwright/playwright.config.mjs 2>&1 | tail -20
+    --config hermes/tests/playwright/playwright.config.mjs \
+    hermes/tests/playwright/hermes-webui.spec.mjs 2>&1 | tail -20
   PW_EXIT=$?
-  kill $PF_PID 2>/dev/null; wait $PF_PID 2>/dev/null
   if [[ $PW_EXIT -eq 0 ]]; then
     echo "PASS|Playwright GUI suite (12 tests)" >> "$RESULTS_LOG"
     ((TOTAL_PASS++))
@@ -56,6 +60,22 @@ if command -v npx &> /dev/null; then
     echo "FAIL|Playwright GUI suite|exit=$PW_EXIT" >> "$RESULTS_LOG"
     ((TOTAL_FAIL++))
   fi
+
+  # Suite 2: Feature Verification E2E (18 tests)
+  cd "$SCRIPT_DIR/../../" && npx playwright test \
+    --config hermes/tests/playwright/playwright.config.mjs \
+    hermes/tests/playwright/hermes-webui-features.spec.mjs 2>&1 | tail -20
+  FEAT_EXIT=$?
+  if [[ $FEAT_EXIT -eq 0 ]]; then
+    echo "PASS|Playwright Feature suite (18 tests)" >> "$RESULTS_LOG"
+    ((TOTAL_PASS++))
+  else
+    echo "FAIL|Playwright Feature suite|exit=$FEAT_EXIT" >> "$RESULTS_LOG"
+    ((TOTAL_FAIL++))
+  fi
+
+  # Now kill port-forward after ALL suites complete
+  kill $PF_PID 2>/dev/null; wait $PF_PID 2>/dev/null
 else
   echo "SKIP|Playwright|npx not found" >> "$RESULTS_LOG"
   ((TOTAL_SKIP++))

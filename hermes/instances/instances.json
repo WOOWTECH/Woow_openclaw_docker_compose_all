@@ -1,0 +1,43 @@
+{
+  "default_agent_image": "10.43.80.213:5000/hermes-agent-custom:latest",
+  "default_webui_password": "woowtech",
+  "default_llm_provider": "minimax",
+  "default_llm_model": "minimax/MiniMax-M2.7",
+  "instances": {
+    "woowtech": {
+      "namespace": "hermes",
+      "domain": "woowtech-hermes.woowtech.io",
+      "tunnel_name": "woowtech-hermes",
+      "purpose": "WoowTech Odoo 18 ERP 顧問",
+      "status": "deployed"
+    },
+    "apporoalan": {
+      "namespace": "apporoalan-hermes",
+      "domain": "apporoalan-hermes.woowtech.io",
+      "tunnel_name": "apporoalan-hermes",
+      "purpose": "ESG/WELL/LEED 健康建築顧問",
+      "status": "pending"
+    },
+    "johhanlin": {
+      "namespace": "johhanlin-hermes",
+      "domain": "johhanlin-hermes.woowtech.io",
+      "tunnel_name": "johhanlin-hermes",
+      "purpose": "HSBC 外匯交易顧問",
+      "status": "pending"
+    },
+    "alanlin": {
+      "namespace": "alanlin-hermes",
+      "domain": "alanlin-hermes.woowtech.io",
+      "tunnel_name": "alanlin-hermes",
+      "purpose": "通用 AI 助手",
+      "status": "pending"
+    },
+    "torchmedia": {
+      "namespace": "torchmedia-hermes",
+      "domain": "torchmedia-hermes.woowtech.io",
+      "tunnel_name": "torchmedia-hermes",
+      "purpose": "通用 AI 助手",
+      "status": "pending"
+    }
+  }
+}

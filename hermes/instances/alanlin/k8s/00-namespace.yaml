@@ -1,0 +1,10 @@
+# =============================================================
+# Hermes Smart Home Assistant - Namespace
+# =============================================================
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: alanlin-hermes
+  labels:
+    app.kubernetes.io/part-of: hermes
+    app.kubernetes.io/managed-by: deploy-script

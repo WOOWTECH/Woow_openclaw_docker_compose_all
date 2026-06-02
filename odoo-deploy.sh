@@ -331,21 +331,11 @@ fi
 echo ""
 
 # ─────────────────────────────────────────────────
-# Step 6: Copy local addons (markstudio_website)
+# Step 6: (Removed) markstudio_website migrated to
+# Odoo native website mechanisms (custom_code_head,
+# custom_code_footer, website.page, ir.attachment).
+# No addon copy needed.
 # ─────────────────────────────────────────────────
-if [ -d "${SCRIPT_DIR}/markstudio_website" ]; then
-    info "Copying local addons to Odoo pod..."
-    ODOO_POD=$(kubectl get pod -n "${NAMESPACE}" -l app=odoo -o jsonpath='{.items[0].metadata.name}' 2>/dev/null)
-    if [ -n "${ODOO_POD}" ]; then
-        tar czf /tmp/markstudio_website.tar.gz -C "${SCRIPT_DIR}" markstudio_website/
-        kubectl cp /tmp/markstudio_website.tar.gz "${NAMESPACE}/${ODOO_POD}:/tmp/markstudio_website.tar.gz" -c odoo
-        kubectl exec -n "${NAMESPACE}" "${ODOO_POD}" -c odoo -- tar xzf /tmp/markstudio_website.tar.gz -C /mnt/extra-addons/
-        rm -f /tmp/markstudio_website.tar.gz
-        ok "Local addon 'markstudio_website' copied."
-    else
-        warn "No Odoo pod found — skipping local addon copy."
-    fi
-fi
 echo ""
 
 # ─────────────────────────────────────────────────

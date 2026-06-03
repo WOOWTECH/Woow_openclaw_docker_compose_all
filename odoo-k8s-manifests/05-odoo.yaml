@@ -56,23 +56,40 @@ spec:
                 cd "$ADDONS_DIR/Odoo_reservation_module" && git pull --ff-only 2>/dev/null || true
                 cd "$ADDONS_DIR/woow_odoo_livechat_line" && git pull --ff-only 2>/dev/null || true
                 cd "$ADDONS_DIR/Woow_odoo_n8n_livechat" && git pull --ff-only 2>/dev/null || true
+
+                # Clone newly added repos if missing on existing PVC
+                # Note: clone into woow_line_bridge (Odoo uses dir name as module technical name)
+                if [ ! -d "$ADDONS_DIR/woow_line_bridge/.git" ]; then
+                  echo "[init] Cloning new addon: woow_line_bridge..."
+                  rm -rf "$ADDONS_DIR/Woow_odoo_line_liff" 2>/dev/null || true
+                  git clone --depth 1 \
+                    https://github.com/WOOWTECH/Woow_odoo_line_liff.git \
+                    "$ADDONS_DIR/woow_line_bridge"
+                else
+                  cd "$ADDONS_DIR/woow_line_bridge" && git pull --ff-only 2>/dev/null || true
+                fi
               else
                 echo "[init] First boot — cloning custom addons..."
 
-                echo "[1/3] Cloning Odoo_reservation_module..."
+                echo "[1/4] Cloning Odoo_reservation_module..."
                 git clone --depth 1 \
                   https://github.com/WOOWTECH/Odoo_reservation_module.git \
                   "$ADDONS_DIR/Odoo_reservation_module"
 
-                echo "[2/3] Cloning woow_odoo_livechat_line..."
+                echo "[2/4] Cloning woow_odoo_livechat_line..."
                 git clone --depth 1 \
                   https://github.com/WOOWTECH/woow_odoo_livechat_line.git \
                   "$ADDONS_DIR/woow_odoo_livechat_line"
 
-                echo "[3/3] Cloning Woow_odoo_n8n_livechat..."
+                echo "[3/4] Cloning Woow_odoo_n8n_livechat..."
                 git clone --depth 1 \
                   https://github.com/WOOWTECH/Woow_odoo_n8n_livechat.git \
                   "$ADDONS_DIR/Woow_odoo_n8n_livechat"
+
+                echo "[4/4] Cloning woow_line_bridge (LINE Bridge)..."
+                git clone --depth 1 \
+                  https://github.com/WOOWTECH/Woow_odoo_line_liff.git \
+                  "$ADDONS_DIR/woow_line_bridge"
 
                 echo "[init] All addons cloned successfully."
               fi

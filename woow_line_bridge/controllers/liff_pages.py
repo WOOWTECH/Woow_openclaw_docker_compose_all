@@ -153,12 +153,29 @@ body{{font-family:'Noto Sans TC',sans-serif;background:#FAF6F2;min-height:100vh;
 
     @http.route('/liff/news', type='http', auth='public', website=True)
     def liff_news(self, **kwargs):
-        """最新消息頁（Phase 3 補完內容）"""
+        """最新消息頁"""
         ICP = request.env['ir.config_parameter'].sudo()
         shop_name = ICP.get_param('woow_line_bridge.shop_name', 'Mark Studio 馬克健身')
 
+        article_id = kwargs.get('article_id')
+        if article_id:
+            try:
+                article = request.env['line.news'].sudo().browse(int(article_id))
+                if article.exists() and article.is_published:
+                    return request.render('woow_line_bridge.liff_news_detail', {
+                        'shop_name': shop_name,
+                        'article': article,
+                    })
+            except (ValueError, TypeError):
+                pass
+
+        news_list = request.env['line.news'].sudo().search([
+            ('is_published', '=', True),
+        ], order='published_date desc', limit=20)
+
         values = {
             'shop_name': shop_name,
+            'news_list': news_list,
         }
         return request.render('woow_line_bridge.liff_news_page', values)
 

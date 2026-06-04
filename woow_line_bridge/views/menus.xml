@@ -17,6 +17,13 @@
               action="action_line_user"
               sequence="10"/>
 
+    <!-- 最新消息 -->
+    <menuitem id="menu_line_news"
+              name="最新消息"
+              parent="menu_line_bridge_root"
+              action="action_line_news"
+              sequence="15"/>
+
     <!-- 記錄 -->
     <menuitem id="menu_line_logs"
               name="記錄"

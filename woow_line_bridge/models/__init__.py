@@ -10,4 +10,5 @@ from . import line_event_log
 from . import line_push_log
 from . import res_partner
 from . import res_config_settings
+from . import line_news
 from . import appointment_booking

@@ -139,19 +139,48 @@ class LineBridge(models.AbstractModel):
         except Exception:
             _logger.exception('on_booking_reminded_2h 推播失敗: booking %s', booking.name)
 
-    def on_booking_payment_required(self, booking):
+    def on_booking_payment_required(self, booking, payment_url=''):
         """預約需付款時推播
 
         :param booking: appointment.booking record
+        :param payment_url: 付款連結
         """
-        _logger.info('on_booking_payment_required: booking %s（Phase 2 實作）', booking.name)
+        line_users = self._get_line_users_for_booking(booking)
+        if not line_users:
+            return
 
-    def on_booking_meeting_link_ready(self, booking):
+        try:
+            flex = self.env['line.flex.template'].build_booking_payment_required(
+                booking, payment_url=payment_url,
+            )
+            messages = [{
+                'type': 'flex',
+                'altText': f'待付款 - {booking.name}',
+                'contents': flex,
+            }]
+            self.env['line.service'].push(line_users, messages)
+            _logger.info('on_booking_payment_required: 已推播 booking %s', booking.name)
+        except Exception:
+            _logger.exception('on_booking_payment_required 推播失敗: booking %s', booking.name)
+
+    def on_booking_meeting_link_ready(self, booking, meeting_url=''):
         """預約會議連結準備好時推播
 
         :param booking: appointment.booking record
+        :param meeting_url: 會議連結
         """
-        _logger.info('on_booking_meeting_link_ready: booking %s（Phase 2 實作）', booking.name)
+        line_users = self._get_line_users_for_booking(booking)
+        if not line_users:
+            return
+
+        try:
+            shop_name = self.env['line.flex.template']._get_shop_name()
+            text = f'{shop_name} 會議連結已準備好\n\n預約編號：{booking.name}\n會議連結：{meeting_url}'
+            messages = [{'type': 'text', 'text': text}]
+            self.env['line.service'].push(line_users, messages)
+            _logger.info('on_booking_meeting_link_ready: 已推播 booking %s', booking.name)
+        except Exception:
+            _logger.exception('on_booking_meeting_link_ready 推播失敗: booking %s', booking.name)
 
     # ------------------------------------------------------------------
     # 通用入口

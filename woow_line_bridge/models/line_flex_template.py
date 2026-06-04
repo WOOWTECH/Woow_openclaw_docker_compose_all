@@ -3,8 +3,9 @@
 # LINE Flex Message 模板工廠（AbstractModel）
 # 集中管理所有 Flex Message 版型，方便維護與擴充
 import logging
+import pytz
 
-from odoo import api, models
+from odoo import api, fields, models
 
 _logger = logging.getLogger(__name__)
 
@@ -16,6 +17,9 @@ BRAND_CARD = '#FFFFFF'
 BRAND_TEXT = '#2D2620'
 BRAND_TEXT_SUB = '#6B5B4E'
 LINE_GREEN = '#06C755'
+
+# 星期中文對照
+WEEKDAY_ZH = ['一', '二', '三', '四', '五', '六', '日']
 
 
 class LineFlexTemplate(models.AbstractModel):
@@ -41,6 +45,10 @@ class LineFlexTemplate(models.AbstractModel):
             'woow_line_bridge.shop_name', 'Mark Studio 馬克健身',
         )
 
+    def _get_config(self, key, default=''):
+        """取得 ir.config_parameter 值"""
+        return self.env['ir.config_parameter'].sudo().get_param(key, default)
+
     def _get_liff_id(self, page):
         """取得指定頁面的 LIFF ID
 
@@ -59,6 +67,64 @@ class LineFlexTemplate(models.AbstractModel):
         if liff_id:
             return f'https://liff.line.me/{liff_id}'
         return self._get_base_url() + f'/liff/{page}'
+
+    def _format_booking_dt(self, booking):
+        """格式化預約時間為台灣時區顯示
+
+        :return: (date_str, time_str) 例如 ('2026/06/05 (四)', '14:30')
+        """
+        if not booking.start_datetime:
+            return '(未指定)', ''
+        tz = pytz.timezone('Asia/Taipei')
+        local_dt = pytz.utc.localize(booking.start_datetime).astimezone(tz)
+        weekday = WEEKDAY_ZH[local_dt.weekday()]
+        date_str = local_dt.strftime(f'%Y/%m/%d ({weekday})')
+        time_str = local_dt.strftime('%H:%M')
+        return date_str, time_str
+
+    @staticmethod
+    def _info_row(label, value):
+        """建構 info row（標籤+值 水平排列）"""
+        return {
+            'type': 'box',
+            'layout': 'horizontal',
+            'contents': [
+                {
+                    'type': 'text',
+                    'text': label,
+                    'color': BRAND_TEXT_SUB,
+                    'size': 'sm',
+                    'flex': 0,
+                },
+                {
+                    'type': 'text',
+                    'text': str(value) if value else '-',
+                    'color': BRAND_TEXT,
+                    'size': 'sm',
+                    'flex': 1,
+                    'align': 'end',
+                },
+            ],
+        }
+
+    def _booking_header(self, title, bg_color=None):
+        """建構預約相關 Flex header"""
+        return {
+            'type': 'box',
+            'layout': 'vertical',
+            'backgroundColor': bg_color or BRAND_PRIMARY,
+            'paddingAll': '16px',
+            'contents': [
+                {
+                    'type': 'text',
+                    'text': title,
+                    'color': '#FFFFFF',
+                    'weight': 'bold',
+                    'size': 'lg',
+                    'align': 'center',
+                },
+            ],
+        }
 
     # ------------------------------------------------------------------
     # 公開方法：歡迎訊息
@@ -152,7 +218,7 @@ class LineFlexTemplate(models.AbstractModel):
         }
 
     # ------------------------------------------------------------------
-    # 公開方法：預約確認（Phase 2 補完）
+    # 公開方法：預約確認
     # ------------------------------------------------------------------
 
     def build_booking_confirmed(self, booking):
@@ -163,124 +229,120 @@ class LineFlexTemplate(models.AbstractModel):
         """
         shop_name = self._get_shop_name()
         base_url = self._get_base_url()
+        date_str, time_str = self._format_booking_dt(booking)
+        service_name = booking.appointment_type_id.name or ''
+        staff_name = ''
+        if hasattr(booking, 'staff_user_id') and booking.staff_user_id:
+            staff_name = booking.staff_user_id.name
 
-        start_dt = fields_Datetime_context_timestamp(
-            self, booking.start_datetime,
-        ) if booking.start_datetime else ''
-        # 簡化版，Phase 2 會補完完整格式
-        date_str = str(booking.start_datetime or '')
+        body_contents = [
+            {
+                'type': 'text',
+                'text': f'預約編號：{booking.name or ""}',
+                'color': BRAND_TEXT,
+                'size': 'md',
+                'weight': 'bold',
+            },
+            {'type': 'separator', 'margin': 'md'},
+            self._info_row('服務', service_name),
+            self._info_row('日期', date_str),
+            self._info_row('時間', time_str),
+            self._info_row('地點', shop_name),
+        ]
+        if staff_name:
+            body_contents.insert(5, self._info_row('治療師', staff_name))
+
+        footer_buttons = [
+            {
+                'type': 'button',
+                'action': {
+                    'type': 'uri',
+                    'label': '查看預約詳情',
+                    'uri': f'{base_url}/liff/redirect/booking/{booking.id}',
+                },
+                'style': 'primary',
+                'color': BRAND_PRIMARY,
+            },
+            {
+                'type': 'button',
+                'action': {
+                    'type': 'postback',
+                    'label': '取消預約',
+                    'data': f'action=cancel_booking&booking_id={booking.id}',
+                },
+                'style': 'secondary',
+            },
+        ]
 
         return {
             'type': 'bubble',
             'size': 'mega',
-            'header': {
-                'type': 'box',
-                'layout': 'vertical',
-                'backgroundColor': BRAND_PRIMARY,
-                'paddingAll': '16px',
-                'contents': [
-                    {
-                        'type': 'text',
-                        'text': '預約確認',
-                        'color': '#FFFFFF',
-                        'weight': 'bold',
-                        'size': 'lg',
-                        'align': 'center',
-                    },
-                ],
-            },
+            'header': self._booking_header('預約確認'),
             'body': {
                 'type': 'box',
                 'layout': 'vertical',
                 'backgroundColor': BRAND_BG,
                 'paddingAll': '20px',
                 'spacing': 'md',
-                'contents': [
-                    {
-                        'type': 'text',
-                        'text': f'預約編號：{booking.name or ""}',
-                        'color': BRAND_TEXT,
-                        'size': 'md',
-                        'weight': 'bold',
-                    },
-                    {
-                        'type': 'text',
-                        'text': f'服務：{booking.appointment_type_id.name or ""}',
-                        'color': BRAND_TEXT_SUB,
-                        'size': 'sm',
-                    },
-                    {
-                        'type': 'text',
-                        'text': f'時間：{date_str}',
-                        'color': BRAND_TEXT_SUB,
-                        'size': 'sm',
-                    },
-                    {
-                        'type': 'text',
-                        'text': f'地點：{shop_name}',
-                        'color': BRAND_TEXT_SUB,
-                        'size': 'sm',
-                    },
-                ],
+                'contents': body_contents,
+            },
+            'footer': {
+                'type': 'box',
+                'layout': 'vertical',
+                'spacing': 'sm',
+                'paddingAll': '16px',
+                'contents': footer_buttons,
             },
         }
 
     # ------------------------------------------------------------------
-    # 公開方法：預約取消（Phase 2 補完）
+    # 公開方法：預約取消
     # ------------------------------------------------------------------
 
-    def build_booking_cancelled(self, booking):
+    def build_booking_cancelled(self, booking, reason=''):
         """建構預約取消 Flex Message
 
         :param booking: appointment.booking record
+        :param reason: 取消原因（可選）
         :return: Flex Message contents dict
         """
-        base_url = self._get_base_url()
         member_url = self._liff_url('member')
+        date_str, time_str = self._format_booking_dt(booking)
+        service_name = booking.appointment_type_id.name or ''
+
+        body_contents = [
+            {
+                'type': 'text',
+                'text': f'預約編號：{booking.name or ""}',
+                'color': BRAND_TEXT,
+                'size': 'md',
+                'weight': 'bold',
+            },
+            {'type': 'separator', 'margin': 'md'},
+            self._info_row('服務', service_name),
+            self._info_row('原定時間', f'{date_str} {time_str}'),
+        ]
+        if reason:
+            body_contents.append(self._info_row('取消原因', reason))
 
         return {
             'type': 'bubble',
             'size': 'mega',
-            'header': {
-                'type': 'box',
-                'layout': 'vertical',
-                'backgroundColor': '#E74C3C',
-                'paddingAll': '16px',
-                'contents': [
-                    {
-                        'type': 'text',
-                        'text': '預約已取消',
-                        'color': '#FFFFFF',
-                        'weight': 'bold',
-                        'size': 'lg',
-                        'align': 'center',
-                    },
-                ],
-            },
+            'header': self._booking_header('預約已取消', '#E74C3C'),
             'body': {
                 'type': 'box',
                 'layout': 'vertical',
                 'backgroundColor': BRAND_BG,
                 'paddingAll': '20px',
                 'spacing': 'md',
+                'contents': body_contents,
+            },
+            'footer': {
+                'type': 'box',
+                'layout': 'vertical',
+                'spacing': 'sm',
+                'paddingAll': '16px',
                 'contents': [
-                    {
-                        'type': 'text',
-                        'text': f'預約編號：{booking.name or ""}',
-                        'color': BRAND_TEXT,
-                        'size': 'md',
-                        'weight': 'bold',
-                    },
-                    {
-                        'type': 'text',
-                        'text': f'服務：{booking.appointment_type_id.name or ""}',
-                        'color': BRAND_TEXT_SUB,
-                        'size': 'sm',
-                    },
-                    {
-                        'type': 'separator',
-                        'margin': 'lg',
-                    },
                     {
                         'type': 'button',
                         'action': {
@@ -290,14 +352,13 @@ class LineFlexTemplate(models.AbstractModel):
                         },
                         'style': 'primary',
                         'color': BRAND_PRIMARY,
-                        'margin': 'lg',
                     },
                 ],
             },
         }
 
     # ------------------------------------------------------------------
-    # 公開方法：預約提醒（Phase 2 補完）
+    # 公開方法：預約提醒
     # ------------------------------------------------------------------
 
     def build_booking_reminder(self, booking, hours_before=24):
@@ -308,67 +369,228 @@ class LineFlexTemplate(models.AbstractModel):
         :return: Flex Message contents dict
         """
         shop_name = self._get_shop_name()
-        date_str = str(booking.start_datetime or '')
+        date_str, time_str = self._format_booking_dt(booking)
+        service_name = booking.appointment_type_id.name or ''
         reminder_text = f'您的預約將在 {hours_before} 小時後開始'
 
-        return {
+        body_contents = [
+            {
+                'type': 'text',
+                'text': reminder_text,
+                'color': BRAND_TEXT,
+                'size': 'md',
+                'weight': 'bold',
+                'wrap': True,
+            },
+            {'type': 'separator', 'margin': 'md'},
+            self._info_row('預約編號', booking.name or ''),
+            self._info_row('服務', service_name),
+            self._info_row('時間', f'{date_str} {time_str}'),
+            self._info_row('地點', shop_name),
+        ]
+
+        footer_buttons = []
+        shop_lat = self._get_config('woow_line_bridge.shop_latitude')
+        shop_lng = self._get_config('woow_line_bridge.shop_longitude')
+        if shop_lat and shop_lng:
+            footer_buttons.append({
+                'type': 'button',
+                'action': {
+                    'type': 'uri',
+                    'label': 'Google 地圖導航',
+                    'uri': f'https://www.google.com/maps/dir/?api=1&destination={shop_lat},{shop_lng}',
+                },
+                'style': 'primary',
+                'color': BRAND_PRIMARY,
+            })
+        footer_buttons.append({
+            'type': 'button',
+            'action': {
+                'type': 'postback',
+                'label': '取消預約',
+                'data': f'action=cancel_booking&booking_id={booking.id}',
+            },
+            'style': 'secondary',
+        })
+
+        result = {
             'type': 'bubble',
             'size': 'mega',
-            'header': {
-                'type': 'box',
-                'layout': 'vertical',
-                'backgroundColor': BRAND_PRIMARY,
-                'paddingAll': '16px',
-                'contents': [
-                    {
-                        'type': 'text',
-                        'text': '預約提醒',
-                        'color': '#FFFFFF',
-                        'weight': 'bold',
-                        'size': 'lg',
-                        'align': 'center',
-                    },
-                ],
-            },
+            'header': self._booking_header('預約提醒'),
             'body': {
                 'type': 'box',
                 'layout': 'vertical',
                 'backgroundColor': BRAND_BG,
                 'paddingAll': '20px',
                 'spacing': 'md',
+                'contents': body_contents,
+            },
+            'footer': {
+                'type': 'box',
+                'layout': 'vertical',
+                'spacing': 'sm',
+                'paddingAll': '16px',
+                'contents': footer_buttons,
+            },
+        }
+        return result
+
+    # ------------------------------------------------------------------
+    # 公開方法：待付款通知
+    # ------------------------------------------------------------------
+
+    def build_booking_payment_required(self, booking, payment_url=''):
+        """建構待付款通知 Flex Message
+
+        :param booking: appointment.booking record
+        :param payment_url: 付款連結
+        :return: Flex Message contents dict
+        """
+        date_str, time_str = self._format_booking_dt(booking)
+        service_name = booking.appointment_type_id.name or ''
+
+        body_contents = [
+            {
+                'type': 'text',
+                'text': '您的預約需要完成付款',
+                'color': BRAND_TEXT,
+                'size': 'md',
+                'weight': 'bold',
+                'wrap': True,
+            },
+            {'type': 'separator', 'margin': 'md'},
+            self._info_row('預約編號', booking.name or ''),
+            self._info_row('服務', service_name),
+            self._info_row('時間', f'{date_str} {time_str}'),
+        ]
+
+        footer_buttons = []
+        if payment_url:
+            footer_buttons.append({
+                'type': 'button',
+                'action': {
+                    'type': 'uri',
+                    'label': '立即付款',
+                    'uri': payment_url,
+                },
+                'style': 'primary',
+                'color': LINE_GREEN,
+            })
+        footer_buttons.append({
+            'type': 'button',
+            'action': {
+                'type': 'postback',
+                'label': '取消預約',
+                'data': f'action=cancel_booking&booking_id={booking.id}',
+            },
+            'style': 'secondary',
+        })
+
+        return {
+            'type': 'bubble',
+            'size': 'mega',
+            'header': self._booking_header('待付款通知', '#F39C12'),
+            'body': {
+                'type': 'box',
+                'layout': 'vertical',
+                'backgroundColor': BRAND_BG,
+                'paddingAll': '20px',
+                'spacing': 'md',
+                'contents': body_contents,
+            },
+            'footer': {
+                'type': 'box',
+                'layout': 'vertical',
+                'spacing': 'sm',
+                'paddingAll': '16px',
+                'contents': footer_buttons,
+            },
+        }
+
+    # ------------------------------------------------------------------
+    # 公開方法：新聞推播卡片
+    # ------------------------------------------------------------------
+
+    def build_news_card(self, news):
+        """建構新聞推播 Flex Message
+
+        :param news: line.news record
+        :return: Flex Message contents dict
+        """
+        base_url = self._get_base_url()
+        news_url = self._liff_url('news')
+        shop_name = self._get_shop_name()
+
+        body_contents = [
+            {
+                'type': 'text',
+                'text': news.title or '',
+                'color': BRAND_TEXT,
+                'size': 'lg',
+                'weight': 'bold',
+                'wrap': True,
+            },
+        ]
+        if news.summary:
+            body_contents.append({
+                'type': 'text',
+                'text': news.summary,
+                'color': BRAND_TEXT_SUB,
+                'size': 'sm',
+                'wrap': True,
+                'margin': 'md',
+            })
+        body_contents.append({
+            'type': 'text',
+            'text': shop_name,
+            'color': '#9B8E82',
+            'size': 'xs',
+            'margin': 'lg',
+        })
+
+        result = {
+            'type': 'bubble',
+            'size': 'mega',
+            'header': self._booking_header('最新消息'),
+            'body': {
+                'type': 'box',
+                'layout': 'vertical',
+                'backgroundColor': BRAND_BG,
+                'paddingAll': '20px',
+                'spacing': 'sm',
+                'contents': body_contents,
+            },
+            'footer': {
+                'type': 'box',
+                'layout': 'vertical',
+                'spacing': 'sm',
+                'paddingAll': '16px',
                 'contents': [
                     {
-                        'type': 'text',
-                        'text': reminder_text,
-                        'color': BRAND_TEXT,
-                        'size': 'md',
-                        'weight': 'bold',
-                        'wrap': True,
-                    },
-                    {
-                        'type': 'text',
-                        'text': f'預約編號：{booking.name or ""}',
-                        'color': BRAND_TEXT_SUB,
-                        'size': 'sm',
-                    },
-                    {
-                        'type': 'text',
-                        'text': f'服務：{booking.appointment_type_id.name or ""}',
-                        'color': BRAND_TEXT_SUB,
-                        'size': 'sm',
-                    },
-                    {
-                        'type': 'text',
-                        'text': f'時間：{date_str}',
-                        'color': BRAND_TEXT_SUB,
-                        'size': 'sm',
-                    },
-                    {
-                        'type': 'text',
-                        'text': f'地點：{shop_name}',
-                        'color': BRAND_TEXT_SUB,
-                        'size': 'sm',
+                        'type': 'button',
+                        'action': {
+                            'type': 'uri',
+                            'label': '閱讀全文',
+                            'uri': f'{news_url}?article_id={news.id}' if hasattr(news, 'id') else news_url,
+                        },
+                        'style': 'primary',
+                        'color': BRAND_PRIMARY,
                     },
                 ],
             },
         }
+
+        # 如果有圖片 URL，加 hero image
+        image_url = getattr(news, 'image_url', '') or ''
+        if not image_url and getattr(news, 'image', None):
+            image_url = f'{base_url}/web/image/line.news/{news.id}/image'
+        if image_url:
+            result['hero'] = {
+                'type': 'image',
+                'url': image_url,
+                'size': 'full',
+                'aspectRatio': '20:13',
+                'aspectMode': 'cover',
+            }
+
+        return result

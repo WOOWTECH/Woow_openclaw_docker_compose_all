@@ -55,6 +55,7 @@
         'views/res_partner_views.xml',
         'views/appointment_booking_views.xml',
         'views/res_config_settings_views.xml',
+        'views/line_news_views.xml',
         'views/menus.xml',
     ],
     'assets': {

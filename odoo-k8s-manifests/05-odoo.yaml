@@ -82,7 +82,6 @@ spec:
                 "$ADDONS_DIR/Woow_odoo_n8n_livechat" "Woow_odoo_n8n_livechat"
 
               echo "[init] All addons ready."
-              fi
 
               echo "[init] Addons directory contents:"
               ls -la "$ADDONS_DIR/"

@@ -372,10 +372,23 @@ matrix:
 approvals:
   mode: manual
   timeout: 60
-  cron_mode: auto
+  cron_mode: yolo
   mcp_reload_confirm: true
   destructive_slash_confirm: true
-command_allowlist: []
+command_allowlist:
+  - "python3 *"
+  - "python3 -c *"
+  - "python3 -m *"
+  - "echo *"
+  - "cat *"
+  - "ls *"
+  - "curl *"
+  - "date *"
+  - "uname *"
+  - "uptime *"
+  - "df *"
+  - "free *"
+  - "hostname *"
 quick_commands: {}
 hooks: {}
 hooks_auto_accept: false

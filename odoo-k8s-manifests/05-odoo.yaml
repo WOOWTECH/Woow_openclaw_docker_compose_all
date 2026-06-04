@@ -50,48 +50,38 @@ spec:
               echo "[init] Odoo Custom Addons Init"
               echo "[init] ========================================="
 
-              # Only clone if addons dir is empty (PVC persists across restarts)
-              if [ -d "$ADDONS_DIR/Odoo_reservation_module/.git" ]; then
-                echo "[init] Addons already present — pulling updates..."
-                cd "$ADDONS_DIR/Odoo_reservation_module" && git pull --ff-only 2>/dev/null || true
-                cd "$ADDONS_DIR/woow_odoo_livechat_line" && git pull --ff-only 2>/dev/null || true
-                cd "$ADDONS_DIR/Woow_odoo_n8n_livechat" && git pull --ff-only 2>/dev/null || true
-
-                # Clone newly added repos if missing on existing PVC
-                # Note: clone into woow_line_bridge (Odoo uses dir name as module technical name)
-                if [ ! -d "$ADDONS_DIR/woow_line_bridge/.git" ]; then
-                  echo "[init] Cloning new addon: woow_line_bridge..."
-                  rm -rf "$ADDONS_DIR/Woow_odoo_line_liff" 2>/dev/null || true
-                  git clone --depth 1 \
-                    https://github.com/WOOWTECH/Woow_odoo_line_liff.git \
-                    "$ADDONS_DIR/woow_line_bridge"
+              # Helper: clone-or-pull a repo into a target directory
+              clone_or_pull() {
+                local REPO_URL="$1"
+                local TARGET_DIR="$2"
+                local NAME="$3"
+                if [ -d "$TARGET_DIR/.git" ]; then
+                  echo "[init] Pulling $NAME..."
+                  cd "$TARGET_DIR" && git pull --ff-only 2>/dev/null || true
                 else
-                  cd "$ADDONS_DIR/woow_line_bridge" && git pull --ff-only 2>/dev/null || true
+                  echo "[init] Cloning $NAME..."
+                  rm -rf "$TARGET_DIR" 2>/dev/null || true
+                  git clone --depth 1 "$REPO_URL" "$TARGET_DIR"
                 fi
-              else
-                echo "[init] First boot — cloning custom addons..."
+              }
 
-                echo "[1/4] Cloning Odoo_reservation_module..."
-                git clone --depth 1 \
-                  https://github.com/WOOWTECH/Odoo_reservation_module.git \
-                  "$ADDONS_DIR/Odoo_reservation_module"
+              # Clone/update all addons
+              clone_or_pull "https://github.com/WOOWTECH/Odoo_reservation_module.git" \
+                "$ADDONS_DIR/Odoo_reservation_module" "Odoo_reservation_module"
 
-                echo "[2/4] Cloning woow_odoo_livechat_line..."
-                git clone --depth 1 \
-                  https://github.com/WOOWTECH/woow_odoo_livechat_line.git \
-                  "$ADDONS_DIR/woow_odoo_livechat_line"
+              clone_or_pull "https://github.com/WOOWTECH/woow_line_base.git" \
+                "$ADDONS_DIR/woow_line_base" "woow_line_base"
 
-                echo "[3/4] Cloning Woow_odoo_n8n_livechat..."
-                git clone --depth 1 \
-                  https://github.com/WOOWTECH/Woow_odoo_n8n_livechat.git \
-                  "$ADDONS_DIR/Woow_odoo_n8n_livechat"
+              clone_or_pull "https://github.com/WOOWTECH/Woow_odoo_line_liff.git" \
+                "$ADDONS_DIR/woow_line_bridge" "woow_line_bridge (LIFF)"
 
-                echo "[4/4] Cloning woow_line_bridge (LINE Bridge)..."
-                git clone --depth 1 \
-                  https://github.com/WOOWTECH/Woow_odoo_line_liff.git \
-                  "$ADDONS_DIR/woow_line_bridge"
+              clone_or_pull "https://github.com/WOOWTECH/woow_odoo_livechat_line.git" \
+                "$ADDONS_DIR/woow_odoo_livechat_line" "woow_odoo_livechat_line"
 
-                echo "[init] All addons cloned successfully."
+              clone_or_pull "https://github.com/WOOWTECH/Woow_odoo_n8n_livechat.git" \
+                "$ADDONS_DIR/Woow_odoo_n8n_livechat" "Woow_odoo_n8n_livechat"
+
+              echo "[init] All addons ready."
               fi
 
               echo "[init] Addons directory contents:"

@@ -57,6 +57,14 @@
                                 </div>
                             </div>
                         </setting>
+                        <setting string="Webhook URL" help="將此 URL 貼到 LINE Developer Console → Messaging API → Webhook settings → Webhook URL">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="line_webhook_url" class="col-lg-3 o_light_label"/>
+                                    <field name="line_webhook_url" class="col-lg-6" widget="CopyClipboardChar" readonly="1"/>
+                                </div>
+                            </div>
+                        </setting>
                     </block>
 
                     <block title="LIFF 設定" name="line_liff_settings">
@@ -81,6 +89,22 @@
                                 <div class="row mt16">
                                     <label for="line_liff_id_locations" class="col-lg-3 o_light_label"/>
                                     <field name="line_liff_id_locations" class="col-lg-6"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="LIFF Endpoint URLs" help="在 LINE Developer Console → LIFF → 各 LIFF app 的 Endpoint URL 填入對應網址">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="line_liff_endpoint_member" class="col-lg-3 o_light_label"/>
+                                    <field name="line_liff_endpoint_member" class="col-lg-6" widget="CopyClipboardChar" readonly="1"/>
+                                </div>
+                                <div class="row mt16">
+                                    <label for="line_liff_endpoint_news" class="col-lg-3 o_light_label"/>
+                                    <field name="line_liff_endpoint_news" class="col-lg-6" widget="CopyClipboardChar" readonly="1"/>
+                                </div>
+                                <div class="row mt16">
+                                    <label for="line_liff_endpoint_locations" class="col-lg-3 o_light_label"/>
+                                    <field name="line_liff_endpoint_locations" class="col-lg-6" widget="CopyClipboardChar" readonly="1"/>
                                 </div>
                             </div>
                         </setting>

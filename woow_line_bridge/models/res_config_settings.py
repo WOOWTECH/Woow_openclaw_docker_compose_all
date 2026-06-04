@@ -87,3 +87,32 @@ class ResConfigSettings(models.TransientModel):
         string='營業時間',
         config_parameter='woow_line_bridge.shop_opening_hours',
     )
+
+    # ------------------------------------------------------------------
+    # 輔助資訊（唯讀 computed，方便管理者設定 LINE Console）
+    # ------------------------------------------------------------------
+    line_webhook_url = fields.Char(
+        string='Webhook URL',
+        compute='_compute_line_urls',
+    )
+    line_liff_endpoint_member = fields.Char(
+        string='會員中心 Endpoint',
+        compute='_compute_line_urls',
+    )
+    line_liff_endpoint_news = fields.Char(
+        string='最新消息 Endpoint',
+        compute='_compute_line_urls',
+    )
+    line_liff_endpoint_locations = fields.Char(
+        string='店家位置 Endpoint',
+        compute='_compute_line_urls',
+    )
+
+    @api.depends()
+    def _compute_line_urls(self):
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url', '')
+        for record in self:
+            record.line_webhook_url = f'{base_url}/line/webhook' if base_url else ''
+            record.line_liff_endpoint_member = f'{base_url}/liff/member' if base_url else ''
+            record.line_liff_endpoint_news = f'{base_url}/liff/news' if base_url else ''
+            record.line_liff_endpoint_locations = f'{base_url}/liff/locations' if base_url else ''

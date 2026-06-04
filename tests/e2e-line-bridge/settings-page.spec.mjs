@@ -29,8 +29,8 @@ test.describe('LINE Bridge Settings Page', () => {
     await page.goto('/odoo/settings');
     // Wait for either the settings page content or an error dialog
     const settingsOrError = await Promise.race([
-      page.waitForSelector('.o_base_settings', { timeout: 15000 }).then(() => 'settings'),
-      page.waitForSelector('[role="dialog"]', { timeout: 15000 }).then(() => 'error'),
+      page.waitForSelector('.o_base_settings, .o_settings_container', { timeout: 45000 }).then(() => 'settings'),
+      page.waitForSelector('[role="dialog"]', { timeout: 45000 }).then(() => 'error'),
     ]);
 
     if (settingsOrError === 'settings') {

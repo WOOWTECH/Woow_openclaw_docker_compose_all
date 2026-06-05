@@ -1583,7 +1583,6 @@ header#top .o_nav_link_btn:hover {
 /* Portal main wrapper */
 .o_portal {
     background: var(--mk-black) !important;
-    min-height: 60vh;
 }
 
 /* Portal breadcrumb */
@@ -1644,6 +1643,33 @@ header#top .o_nav_link_btn:hover {
     font-family: var(--mk-sans);
 }
 
+/* Portal text utilities — visible on dark */
+.o_portal .text-muted {
+    color: rgba(255,255,255,0.4) !important;
+}
+
+.o_portal .text-primary {
+    color: var(--mk-white) !important;
+}
+
+.o_portal .text-danger {
+    color: #e74c3c !important;
+}
+
+.o_portal .text-success {
+    color: #2ecc71 !important;
+}
+
+.o_portal .text-warning {
+    color: #f39c12 !important;
+}
+
+/* Portal horizontal rules */
+.o_portal hr {
+    border-color: rgba(255,255,255,0.15) !important;
+    opacity: 1;
+}
+
 /* Portal links */
 .o_portal a:not(.btn):not(.nav-link):not(.breadcrumb-item):not(.dropdown-item) {
     color: rgba(255,255,255,0.6);
@@ -1690,6 +1716,73 @@ header#top .o_nav_link_btn:hover {
     color: var(--mk-white) !important;
 }
 
+/* Portal button-link */
+.o_portal .btn-link {
+    color: rgba(255,255,255,0.6) !important;
+    text-decoration: underline !important;
+    transition: color 0.3s;
+}
+
+.o_portal .btn-link:hover {
+    color: var(--mk-white) !important;
+}
+
+/* Portal button-outline-primary */
+.o_portal .btn-outline-primary {
+    background: transparent !important;
+    color: var(--mk-white) !important;
+    border: 1px solid rgba(255,255,255,0.4) !important;
+    border-radius: 0 !important;
+    transition: all 0.3s;
+}
+
+.o_portal .btn-outline-primary:hover {
+    border-color: var(--mk-white) !important;
+    color: var(--mk-white) !important;
+}
+
+/* Portal button-success */
+.o_portal .btn-success {
+    background: transparent !important;
+    color: var(--mk-white) !important;
+    border: 2px solid var(--mk-white) !important;
+    border-radius: 0 !important;
+    transition: all 0.3s;
+}
+
+.o_portal .btn-success:hover {
+    background: var(--mk-white) !important;
+    color: var(--mk-black) !important;
+}
+
+/* Portal button-warning */
+.o_portal .btn-warning {
+    background: transparent !important;
+    color: var(--mk-white) !important;
+    border: 1px solid rgba(255,255,255,0.4) !important;
+    border-radius: 0 !important;
+    transition: all 0.3s;
+}
+
+.o_portal .btn-warning:hover {
+    border-color: var(--mk-white) !important;
+    color: var(--mk-white) !important;
+}
+
+/* Portal button-danger */
+.o_portal .btn-danger {
+    background: transparent !important;
+    color: #e74c3c !important;
+    border: 1px solid #e74c3c !important;
+    border-radius: 0 !important;
+    transition: all 0.3s;
+}
+
+.o_portal .btn-danger:hover {
+    background: #e74c3c !important;
+    color: var(--mk-white) !important;
+}
+
 /* Portal form inputs */
 .o_portal .form-control,
 .o_portal .form-select {
@@ -1705,6 +1798,17 @@ header#top .o_nav_link_btn:hover {
     border-color: rgba(255,255,255,0.6) !important;
     box-shadow: none !important;
     background: rgba(255,255,255,0.08) !important;
+}
+
+/* Form select option elements — dark bg for native dropdown */
+.o_portal .form-select option {
+    background: var(--mk-dark) !important;
+    color: var(--mk-white) !important;
+}
+
+/* Form placeholders */
+.o_portal .form-control::placeholder {
+    color: rgba(255,255,255,0.3) !important;
 }
 
 /* Portal tables */
@@ -1831,6 +1935,23 @@ a.bg-100 {
     border-color: rgba(255,255,255,0.15) !important;
 }
 
+/* Portal account page avatar — make visible on dark bg */
+.o_portal .o_portal_my_details img {
+    border: 1px solid rgba(255,255,255,0.2) !important;
+    border-radius: 50%;
+}
+
+/* Prevent float-based avatar layout from creating empty space on mobile */
+@media (max-width: 767px) {
+    .o_portal .o_portal_my_details .float-start,
+    .o_portal .o_portal_my_details .float-end {
+        float: none !important;
+        display: block;
+        margin: 0 auto 16px;
+        text-align: center;
+    }
+}
+
 /* Portal record detail cards */
 .o_portal .card,
 .o_portal .o_portal_sidebar .card {
@@ -1849,6 +1970,25 @@ a.bg-100 {
 .o_portal .o_portal_sidebar a:hover,
 .o_portal .nav-link:hover {
     color: var(--mk-white) !important;
+}
+
+/* Portal sidebar — ensure text visibility inside cards */
+.o_portal .o_portal_sidebar .card h5,
+.o_portal .o_portal_sidebar .card h6,
+.o_portal .o_portal_sidebar .card .h5,
+.o_portal .o_portal_sidebar .card .h6 {
+    color: var(--mk-white) !important;
+}
+
+.o_portal .o_portal_sidebar .card p,
+.o_portal .o_portal_sidebar .card span,
+.o_portal .o_portal_sidebar .card small {
+    color: rgba(255,255,255,0.7) !important;
+}
+
+/* Portal sidebar — no excessive spacing */
+.o_portal .o_portal_sidebar {
+    margin-bottom: 0 !important;
 }
 
 /* Portal page body/wrap dark bg */

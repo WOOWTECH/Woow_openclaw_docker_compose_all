@@ -2092,90 +2092,73 @@ a.bg-100 {
 }
 
 /* ============================================================
-   Portal chatter / Communication history — comprehensive dark
-   Odoo 18 portal chatter uses OWL components with various
-   wrapper divs. Must override ALL possible white backgrounds.
+   Portal chatter / Communication history — NUCLEAR dark override
+   The chatter is an OWL component (#discussion.o_portal_chatter).
+   It may sit inside or outside .o_portal. Use broadest selectors.
    ============================================================ */
+
+/* Chatter container — may be inside .o_portal OR standalone */
+.o_portal_chatter,
+#discussion,
 .o_portal .o_portal_chatter,
 .o_portal #discussion {
     background: transparent !important;
+    background-color: transparent !important;
 }
 
-.o_portal .o_portal_chatter .media-body,
-.o_portal .o_portal_chatter p,
-.o_portal .o_portal_chatter span {
+/* Kill ALL white backgrounds on ANY div inside chatter */
+.o_portal_chatter div,
+#discussion div {
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+/* Chatter text */
+.o_portal_chatter p,
+.o_portal_chatter span,
+.o_portal_chatter .media-body,
+#discussion p,
+#discussion span {
     color: rgba(255,255,255,0.7) !important;
 }
 
-/* Chatter composer wrapper — kill ALL white backgrounds
-   Odoo 18 OWL chatter DOM:
-   .o_portal_chatter_composer
-     > .d-flex
-       > img.o_portal_chatter_avatar
-       > .flex-grow-1
-         > .o_portal_chatter_composer_input
-           > .o_portal_chatter_composer_body.border.rounded-3
-             > div.rounded-3              ← inner wrapper
-               > textarea.form-control.border-0
-               > div (buttons: paperclip + send)
-*/
-.o_portal .o_portal_chatter .o_portal_chatter_composer,
-.o_portal .o_portal_chatter .o_portal_chatter_composer_input,
-.o_portal .o_portal_chatter_composer_body,
-.o_portal .o_portal_chatter_composer_body > div,
-.o_portal .o_portal_chatter .card,
-.o_portal .o_portal_chatter .card-body,
-.o_portal #discussion .card,
-.o_portal #discussion .card-body,
-.o_portal .o_portal_chatter > div,
-.o_portal .o_portal_chatter .bg-white,
-.o_portal .o_portal_chatter .bg-light,
-.o_portal .o_portal_chatter .bg-100,
-.o_portal .o_portal_chatter [class*="rounded"],
-.o_portal .o_portal_chatter .border,
-.o_portal .o_portal_chatter .shadow-sm,
-.o_portal .o_portal_chatter .shadow {
+/* Chatter composer body — the white rounded card */
+.o_portal_chatter_composer_body {
     background: transparent !important;
     background-color: transparent !important;
-    border-color: rgba(255,255,255,0.2) !important;
-    box-shadow: none !important;
+    border-color: rgba(255,255,255,0.25) !important;
 }
 
-/* Chatter textarea — Odoo 18 uses .form-control.border-0 */
-.o_portal .o_portal_chatter textarea,
-.o_portal .o_portal_chatter input[type="text"],
-.o_portal .o_portal_chatter .form-control,
-.o_portal .o_portal_chatter .form-control.border-0,
-.o_portal #discussion textarea,
-.o_portal #discussion .form-control {
-    background: rgba(255,255,255,0.05) !important;
+/* Chatter textarea */
+.o_portal_chatter textarea,
+.o_portal_chatter .form-control,
+#discussion textarea,
+#discussion .form-control {
+    background: rgba(255,255,255,0.06) !important;
     border: 1px solid rgba(255,255,255,0.3) !important;
     border-radius: 0 !important;
     color: var(--mk-white) !important;
     font-family: var(--mk-sans);
 }
 
-.o_portal .o_portal_chatter textarea:focus,
-.o_portal .o_portal_chatter .form-control:focus,
-.o_portal #discussion textarea:focus {
+.o_portal_chatter textarea:focus,
+#discussion textarea:focus {
     border-color: rgba(255,255,255,0.6) !important;
     box-shadow: none !important;
-    background: rgba(255,255,255,0.08) !important;
+    background: rgba(255,255,255,0.1) !important;
 }
 
-.o_portal .o_portal_chatter textarea::placeholder,
-.o_portal .o_portal_chatter .form-control::placeholder,
-.o_portal #discussion textarea::placeholder {
+.o_portal_chatter textarea::placeholder,
+#discussion textarea::placeholder {
     color: rgba(255,255,255,0.3) !important;
 }
 
 /* Chatter send button */
-.o_portal .o_portal_chatter .btn-primary,
-.o_portal .o_portal_chatter .o_portal_chatter_composer_btn,
-.o_portal .o_portal_chatter_composer_body .btn,
-.o_portal .o_portal_chatter button[type="submit"],
-.o_portal #discussion .btn-primary,
-.o_portal #discussion .btn {
+.o_portal_chatter .btn-primary,
+.o_portal_chatter .btn,
+.o_portal_chatter_composer_btn,
+#discussion .btn-primary,
+#discussion .btn {
     background: transparent !important;
     color: var(--mk-white) !important;
     border: 2px solid var(--mk-white) !important;
@@ -2188,47 +2171,79 @@ a.bg-100 {
     transition: all 0.3s;
 }
 
-.o_portal .o_portal_chatter .btn-primary:hover,
-.o_portal .o_portal_chatter .o_portal_chatter_composer_btn:hover,
-.o_portal .o_portal_chatter button[type="submit"]:hover,
-.o_portal #discussion .btn-primary:hover {
+.o_portal_chatter .btn-primary:hover,
+.o_portal_chatter_composer_btn:hover,
+#discussion .btn-primary:hover {
     background: var(--mk-white) !important;
     color: var(--mk-black) !important;
 }
 
+/* Chatter attachment button — no border, just icon */
+.o_portal_chatter .o_portal_chatter_attachment_btn,
+.o_portal_chatter .btn.border-0,
+.o_portal_chatter .btn.fa {
+    border: none !important;
+    background: transparent !important;
+    color: rgba(255,255,255,0.5) !important;
+}
+
+.o_portal_chatter .o_portal_chatter_attachment_btn:hover,
+.o_portal_chatter .btn.border-0:hover {
+    color: var(--mk-white) !important;
+}
+
 /* Chatter empty state */
-.o_portal .o_portal_chatter .text-center,
-.o_portal .o_portal_chatter .o_portal_chatter_pager {
+.o_portal_chatter .text-center,
+.o_portal_chatter .o_portal_chatter_pager {
     color: rgba(255,255,255,0.4) !important;
 }
 
-/* Chatter icons (attachment, emoji) */
-.o_portal .o_portal_chatter .fa,
-.o_portal .o_portal_chatter .oi,
-.o_portal .o_portal_chatter i,
-.o_portal #discussion .fa,
-.o_portal #discussion i {
+/* Chatter icons */
+.o_portal_chatter .fa,
+.o_portal_chatter .oi,
+.o_portal_chatter i,
+#discussion .fa,
+#discussion i {
     color: rgba(255,255,255,0.5) !important;
 }
 
 /* Chatter message borders */
-.o_portal .o_portal_chatter .o_portal_chatter_message {
+.o_portal_chatter .o_portal_chatter_message {
     border-color: rgba(255,255,255,0.1) !important;
 }
 
-/* Chatter avatar — visible on dark */
-.o_portal .o_portal_chatter img,
-.o_portal .o_portal_chatter_avatar {
+/* Chatter avatar */
+.o_portal_chatter img,
+.o_portal_chatter_avatar {
     border: 1px solid rgba(255,255,255,0.2);
     border-radius: 50%;
     opacity: 0.8;
 }
 
 /* ============================================================
-   Portal buttons — catch-all for join meeting & similar
-   Button may use .btn-info, .btn-light, .btn-outline-light,
-   or inline Odoo classes. Cover all variants.
+   Portal buttons — catch-all for ALL button variants
+   The "加入會議" button may be .btn without variant, .btn-light,
+   .btn-info, or anything else. Override ALL .btn inside portal.
    ============================================================ */
+
+/* Any .btn inside portal sidebar that isn't already styled */
+.o_portal .o_portal_sidebar .btn,
+.o_portal .o_portal_sidebar a.btn {
+    background: transparent !important;
+    color: var(--mk-white) !important;
+    border: 1px solid rgba(255,255,255,0.4) !important;
+    border-radius: 0 !important;
+    font-family: var(--mk-sans);
+    transition: all 0.3s;
+}
+
+.o_portal .o_portal_sidebar .btn:hover,
+.o_portal .o_portal_sidebar a.btn:hover {
+    border-color: var(--mk-white) !important;
+    color: var(--mk-white) !important;
+}
+
+/* Specific button variants */
 .o_portal .btn-info,
 .o_portal a.btn-info,
 .o_portal .btn-light,
@@ -2248,17 +2263,57 @@ a.bg-100 {
     color: var(--mk-black) !important;
 }
 
-/* Catch-all: any .bg-white or white background inside portal */
+/* Catch-all: .bg-white inside portal */
 .o_portal .bg-white {
     background: rgba(255,255,255,0.04) !important;
 }
 
-/* Ensure form-control inside portal (not just top level) */
+/* Generic portal form-control & textarea */
 .o_portal .form-control,
 .o_portal textarea {
     background: rgba(255,255,255,0.05) !important;
     border: 1px solid rgba(255,255,255,0.3) !important;
     color: var(--mk-white) !important;
+}
+
+/* ============================================================
+   Portal sidebar — fix giant empty space on mobile
+   The sidebar column uses d-flex col-lg-4 and on mobile it
+   stacks BEFORE main content, showing a huge invisible gap.
+   ============================================================ */
+@media (max-width: 991px) {
+    /* Force sidebar to not create tall empty blocks */
+    .o_portal .o_portal_sidebar > .row {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    /* Main content first, sidebar second on mobile */
+    .o_portal .o_portal_sidebar > .row > .col-lg-8,
+    .o_portal .o_portal_sidebar > .row > .col-lg-9,
+    .o_portal .o_portal_sidebar > .row > [id*="content"] {
+        order: 1 !important;
+        margin-top: 0 !important;
+    }
+
+    .o_portal .o_portal_sidebar > .row > .col-lg-4,
+    .o_portal .o_portal_sidebar > .row > .col-lg-3,
+    .o_portal .o_portal_sidebar > .row > .col-xxl-3 {
+        order: 2 !important;
+        margin-top: 16px !important;
+    }
+
+    /* The sidebar column uses d-flex which on mobile can stretch tall */
+    .o_portal .o_portal_sidebar .d-flex.col-lg-4,
+    .o_portal .o_portal_sidebar .d-flex.col-xxl-3 {
+        min-height: 0 !important;
+        height: auto !important;
+    }
+
+    /* Remove big margin on content column (mt-5 mt-lg-0) */
+    .o_portal .mt-5 {
+        margin-top: 0 !important;
+    }
 }
 
 /* ============================================================

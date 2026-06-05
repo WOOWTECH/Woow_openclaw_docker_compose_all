@@ -1893,8 +1893,98 @@ a.bg-100 {
     background: transparent !important;
 }
 
-.o_portal .o_portal_chatter .media-body {
+.o_portal .o_portal_chatter .media-body,
+.o_portal .o_portal_chatter p,
+.o_portal .o_portal_chatter span {
     color: rgba(255,255,255,0.7) !important;
+}
+
+/* Chatter composer — dark theme for textarea & buttons */
+.o_portal .o_portal_chatter textarea,
+.o_portal .o_portal_chatter .o_portal_chatter_composer_input textarea,
+.o_portal .o_portal_chatter_composer_body textarea,
+.o_portal #discussion textarea {
+    background: rgba(255,255,255,0.05) !important;
+    border: 1px solid rgba(255,255,255,0.3) !important;
+    border-radius: 0 !important;
+    color: var(--mk-white) !important;
+    font-family: var(--mk-sans);
+}
+
+.o_portal .o_portal_chatter textarea:focus,
+.o_portal #discussion textarea:focus {
+    border-color: rgba(255,255,255,0.6) !important;
+    box-shadow: none !important;
+    background: rgba(255,255,255,0.08) !important;
+}
+
+.o_portal .o_portal_chatter textarea::placeholder,
+.o_portal #discussion textarea::placeholder {
+    color: rgba(255,255,255,0.3) !important;
+}
+
+/* Chatter send button — dark theme */
+.o_portal .o_portal_chatter .o_portal_chatter_composer_btn,
+.o_portal .o_portal_chatter_composer_body .btn,
+.o_portal .o_portal_chatter button[type="submit"] {
+    background: transparent !important;
+    color: var(--mk-white) !important;
+    border: 2px solid var(--mk-white) !important;
+    border-radius: 0 !important;
+    font-family: var(--mk-sans);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.3s;
+}
+
+.o_portal .o_portal_chatter .o_portal_chatter_composer_btn:hover,
+.o_portal .o_portal_chatter button[type="submit"]:hover {
+    background: var(--mk-white) !important;
+    color: var(--mk-black) !important;
+}
+
+/* Chatter composer wrapper — remove white bg */
+.o_portal .o_portal_chatter .o_portal_chatter_composer,
+.o_portal .o_portal_chatter_composer_body,
+.o_portal .o_portal_chatter .card {
+    background: transparent !important;
+    border-color: rgba(255,255,255,0.2) !important;
+}
+
+/* Chatter empty state */
+.o_portal .o_portal_chatter .text-center,
+.o_portal .o_portal_chatter .o_portal_chatter_pager {
+    color: rgba(255,255,255,0.4) !important;
+}
+
+/* Chatter attachment icon */
+.o_portal .o_portal_chatter .fa,
+.o_portal .o_portal_chatter .oi,
+.o_portal .o_portal_chatter i {
+    color: rgba(255,255,255,0.5) !important;
+}
+
+/* Chatter message borders */
+.o_portal .o_portal_chatter .o_portal_chatter_message {
+    border-color: rgba(255,255,255,0.1) !important;
+}
+
+/* Portal join meeting button — better visibility */
+.o_portal .btn-info,
+.o_portal a.btn-info {
+    background: transparent !important;
+    color: var(--mk-white) !important;
+    border: 2px solid var(--mk-white) !important;
+    border-radius: 0 !important;
+    transition: all 0.3s;
+}
+
+.o_portal .btn-info:hover,
+.o_portal a.btn-info:hover {
+    background: var(--mk-white) !important;
+    color: var(--mk-black) !important;
 }
 
 /* ============================================================

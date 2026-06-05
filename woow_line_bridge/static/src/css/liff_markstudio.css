@@ -126,35 +126,691 @@
 }
 
 /* ============================================================
-   LIFF 模式下的 Portal 頁面調整（馬克品牌色）
+   LIFF 模式 Portal 頁面全面覆蓋
+   覆蓋 markstudio.css dark theme，統一為品牌暖色調
+   使用 html.liff-mode 前綴 + !important 確保覆蓋 dark theme
    ============================================================ */
-html.liff-mode .o_portal_wrap {
-    background-color: #FAF6F2;
+
+/* --- 基底背景 --- */
+html.liff-mode .o_portal,
+html.liff-mode .o_portal #wrapwrap,
+html.liff-mode .o_portal #wrap,
+html.liff-mode .o_portal main,
+html.liff-mode .o_portal_wrap,
+html.liff-mode #wrapwrap,
+html.liff-mode #wrap,
+html.liff-mode main {
+    background: #FAF6F2 !important;
 }
 
+/* 移除 dark theme min-height 避免多餘黑色空間 */
+html.liff-mode .o_portal {
+    background: #FAF6F2 !important;
+    min-height: auto !important;
+}
+
+/* --- 麵包屑 --- */
 html.liff-mode .o_portal .breadcrumb {
-    background-color: #FAF6F2;
-    padding: 8px 16px;
+    background: none !important;
+    padding: 12px 16px !important;
 }
 
-html.liff-mode .btn-primary,
-html.liff-mode .o_portal .btn-primary {
-    background-color: #B8956A;
-    border-color: #B8956A;
+html.liff-mode .o_portal .breadcrumb-item,
+html.liff-mode .o_portal .breadcrumb-item a {
+    color: #6B5B4E !important;
+    font-size: 13px;
 }
 
-html.liff-mode .btn-primary:hover,
-html.liff-mode .o_portal .btn-primary:hover {
-    background-color: #8B6F47;
-    border-color: #8B6F47;
+html.liff-mode .o_portal .breadcrumb-item a:hover {
+    color: #B8956A !important;
 }
 
-html.liff-mode a {
-    color: #B8956A;
+html.liff-mode .o_portal .breadcrumb-item.active {
+    color: #2D2620 !important;
 }
 
-html.liff-mode a:hover {
-    color: #8B6F47;
+html.liff-mode .o_portal .breadcrumb-item + .breadcrumb-item::before {
+    color: #9B8E82 !important;
+}
+
+html.liff-mode .o_portal .o_portal_submenu {
+    background: #FAF6F2 !important;
+    border-color: #E8E0D8 !important;
+}
+
+/* --- 標題 --- */
+html.liff-mode .o_portal h1,
+html.liff-mode .o_portal h2,
+html.liff-mode .o_portal h3,
+html.liff-mode .o_portal h4,
+html.liff-mode .o_portal h5,
+html.liff-mode .o_portal h6 {
+    color: #2D2620 !important;
+    font-family: 'Noto Sans TC', sans-serif !important;
+}
+
+/* --- 文字 --- */
+html.liff-mode .o_portal p,
+html.liff-mode .o_portal span:not(.breadcrumb-item),
+html.liff-mode .o_portal div:not(.liff-member):not(.liff-member-header):not(.liff-member-card-icon),
+html.liff-mode .o_portal label,
+html.liff-mode .o_portal td,
+html.liff-mode .o_portal th,
+html.liff-mode .o_portal li,
+html.liff-mode .o_portal strong,
+html.liff-mode .o_portal small {
+    color: #2D2620 !important;
+}
+
+html.liff-mode .o_portal .text-muted {
+    color: #9B8E82 !important;
+}
+
+/* --- 連結 --- */
+html.liff-mode .o_portal a:not(.btn):not(.nav-link):not(.breadcrumb-item):not(.dropdown-item) {
+    color: #B8956A !important;
+}
+
+html.liff-mode .o_portal a:not(.btn):not(.nav-link):not(.breadcrumb-item):not(.dropdown-item):hover {
+    color: #8B6F47 !important;
+}
+
+/* --- 卡片 --- */
+html.liff-mode .o_portal .card,
+html.liff-mode .o_portal .o_portal_sidebar .card,
+html.liff-mode .o_portal .o_portal_my_home .card {
+    background: #FFFFFF !important;
+    border: 1px solid #E8E0D8 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+html.liff-mode .o_portal .card:hover {
+    border-color: #D4C4B0 !important;
+}
+
+html.liff-mode .o_portal .card-body {
+    background: transparent !important;
+}
+
+html.liff-mode .o_portal .card-header,
+html.liff-mode .o_portal .o_portal_my_details {
+    background: #FAF6F2 !important;
+    border-color: #E8E0D8 !important;
+}
+
+/* --- 按鈕 Primary --- */
+html.liff-mode .o_portal .btn-primary,
+html.liff-mode .btn-primary {
+    background: #B8956A !important;
+    color: #FFFFFF !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    letter-spacing: normal !important;
+    text-transform: none !important;
+    padding: 10px 24px !important;
+}
+
+html.liff-mode .o_portal .btn-primary:hover,
+html.liff-mode .btn-primary:hover {
+    background: #8B6F47 !important;
+    color: #FFFFFF !important;
+}
+
+/* --- 按鈕 Secondary --- */
+html.liff-mode .o_portal .btn-secondary,
+html.liff-mode .o_portal .btn-outline-secondary {
+    background: #FFFFFF !important;
+    color: #B8956A !important;
+    border: 1px solid #B8956A !important;
+    border-radius: 8px !important;
+    letter-spacing: normal !important;
+    text-transform: none !important;
+}
+
+html.liff-mode .o_portal .btn-secondary:hover,
+html.liff-mode .o_portal .btn-outline-secondary:hover {
+    background: #FAF6F2 !important;
+    color: #8B6F47 !important;
+    border-color: #8B6F47 !important;
+}
+
+/* --- 表單欄位 --- */
+html.liff-mode .o_portal .form-control,
+html.liff-mode .o_portal .form-select,
+html.liff-mode .o_portal textarea {
+    background: #FFFFFF !important;
+    border: 1px solid #E8E0D8 !important;
+    border-radius: 8px !important;
+    color: #2D2620 !important;
+}
+
+html.liff-mode .o_portal .form-control:focus,
+html.liff-mode .o_portal .form-select:focus,
+html.liff-mode .o_portal textarea:focus {
+    border-color: #B8956A !important;
+    box-shadow: 0 0 0 2px rgba(184, 149, 106, 0.2) !important;
+    background: #FFFFFF !important;
+}
+
+html.liff-mode .o_portal .form-control::placeholder,
+html.liff-mode .o_portal textarea::placeholder {
+    color: #9B8E82 !important;
+}
+
+/* --- 表格 --- */
+html.liff-mode .o_portal table {
+    border-color: #E8E0D8 !important;
+}
+
+html.liff-mode .o_portal table thead th {
+    background: #FAF6F2 !important;
+    border-color: #E8E0D8 !important;
+    color: #6B5B4E !important;
+}
+
+html.liff-mode .o_portal table td {
+    border-color: #E8E0D8 !important;
+    color: #2D2620 !important;
+}
+
+/* --- 列表項目 --- */
+html.liff-mode .o_portal .o_portal_doc_entry,
+html.liff-mode .o_portal .list-group-item {
+    background: #FFFFFF !important;
+    border-color: #E8E0D8 !important;
+    color: #2D2620 !important;
+}
+
+html.liff-mode .o_portal .list-group-item:hover {
+    background: #FAF6F2 !important;
+}
+
+/* --- 標籤 --- */
+html.liff-mode .o_portal .badge {
+    background: #FAF6F2 !important;
+    border: 1px solid #E8E0D8 !important;
+    border-radius: 6px !important;
+    color: #6B5B4E !important;
+}
+
+/* --- 提示訊息 --- */
+html.liff-mode .o_portal .alert-primary,
+html.liff-mode .o_portal .alert-info,
+html.liff-mode .o_portal .alert-warning,
+html.liff-mode .o_portal .alert-success {
+    background: #FAF6F2 !important;
+    border: 1px solid #E8E0D8 !important;
+    border-radius: 8px !important;
+    color: #2D2620 !important;
+}
+
+html.liff-mode .o_portal .alert a {
+    color: #B8956A !important;
+}
+
+/* --- 背景覆蓋 (bg-100, bg-light) --- */
+html.liff-mode .o_portal .bg-100,
+html.liff-mode .o_portal .bg-light,
+html.liff-mode .o_portal .bg-200,
+html.liff-mode .o_portal .bg-primary,
+html.liff-mode .o_portal .bg-info,
+html.liff-mode .o_portal_my_home .bg-100,
+html.liff-mode .o_portal_my_home .bg-light,
+html.liff-mode .o_portal_index_card .bg-100,
+html.liff-mode .o_portal_index_card a.bg-100,
+html.liff-mode .bg-100,
+html.liff-mode .bg-light {
+    background: #FFFFFF !important;
+    color: #2D2620 !important;
+    border: 1px solid #E8E0D8 !important;
+}
+
+html.liff-mode .o_portal_index_card a .fs-5,
+html.liff-mode .o_portal_index_card a span,
+html.liff-mode .o_portal_index_card a div {
+    color: #2D2620 !important;
+}
+
+html.liff-mode .o_portal_index_card a .opacity-75 {
+    color: #6B5B4E !important;
+}
+
+html.liff-mode .o_portal_index_card .o_portal_icon img {
+    filter: none !important;
+}
+
+/* --- 側邊欄 --- */
+html.liff-mode .o_portal .o_portal_sidebar a,
+html.liff-mode .o_portal .nav-link {
+    color: #6B5B4E !important;
+}
+
+html.liff-mode .o_portal .o_portal_sidebar a:hover,
+html.liff-mode .o_portal .nav-link:hover {
+    color: #B8956A !important;
+}
+
+html.liff-mode .o_portal .o_portal_navbar {
+    background: #FFFFFF !important;
+    border-color: #E8E0D8 !important;
+}
+
+/* --- 分頁 --- */
+html.liff-mode .o_portal .pagination .page-link {
+    background: #FFFFFF !important;
+    border-color: #E8E0D8 !important;
+    color: #6B5B4E !important;
+}
+
+html.liff-mode .o_portal .pagination .page-item.active .page-link {
+    background: #B8956A !important;
+    color: #FFFFFF !important;
+    border-color: #B8956A !important;
+}
+
+/* --- Offcanvas / 手機側邊選單 --- */
+html.liff-mode .o_portal .offcanvas,
+html.liff-mode .o_portal .offcanvas-body {
+    background: #FFFFFF !important;
+    color: #2D2620 !important;
+}
+
+html.liff-mode .o_portal .offcanvas .btn-close {
+    filter: none !important;
+}
+
+/* --- 陰影覆蓋 --- */
+html.liff-mode .o_portal .shadow,
+html.liff-mode .o_portal .shadow-sm {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* ============================================================
+   LIFF Portal 聊天區 / Chatter
+   ============================================================ */
+html.liff-mode .o_portal .o_portal_chatter,
+html.liff-mode .o_portal #discussion {
+    background: transparent !important;
+}
+
+html.liff-mode .o_portal .o_portal_chatter .media-body,
+html.liff-mode .o_portal .o_portal_chatter p,
+html.liff-mode .o_portal .o_portal_chatter span,
+html.liff-mode .o_portal .o_portal_chatter div {
+    color: #2D2620 !important;
+}
+
+/* Chatter 輸入框 */
+html.liff-mode .o_portal .o_portal_chatter textarea,
+html.liff-mode .o_portal .o_portal_chatter .o_portal_chatter_composer_input textarea,
+html.liff-mode .o_portal .o_portal_chatter_composer_body textarea,
+html.liff-mode .o_portal #discussion textarea {
+    background: #FFFFFF !important;
+    border: 1px solid #E8E0D8 !important;
+    border-radius: 8px !important;
+    color: #2D2620 !important;
+}
+
+html.liff-mode .o_portal .o_portal_chatter textarea:focus,
+html.liff-mode .o_portal #discussion textarea:focus {
+    border-color: #B8956A !important;
+    box-shadow: 0 0 0 2px rgba(184, 149, 106, 0.2) !important;
+}
+
+/* Chatter 發送按鈕 */
+html.liff-mode .o_portal .o_portal_chatter .o_portal_chatter_composer_btn,
+html.liff-mode .o_portal .o_portal_chatter_composer_body .btn,
+html.liff-mode .o_portal .o_portal_chatter button[type="submit"] {
+    background: #B8956A !important;
+    color: #FFFFFF !important;
+    border: none !important;
+    border-radius: 8px !important;
+}
+
+html.liff-mode .o_portal .o_portal_chatter .o_portal_chatter_composer_btn:hover,
+html.liff-mode .o_portal .o_portal_chatter button[type="submit"]:hover {
+    background: #8B6F47 !important;
+}
+
+/* Chatter 空訊息提示 */
+html.liff-mode .o_portal .o_portal_chatter .o_portal_chatter_pager,
+html.liff-mode .o_portal .o_portal_chatter .text-center {
+    color: #9B8E82 !important;
+}
+
+/* OWL Mail 元件 (討論區 Composer) */
+html.liff-mode .o-mail-ChatWindow,
+html.liff-mode .o-mail-ChatWindow-header,
+html.liff-mode .o-mail-ChatWindow-content,
+html.liff-mode .o-mail-Thread,
+html.liff-mode .o-mail-Composer,
+html.liff-mode .o-mail-Message,
+html.liff-mode div[class*="o-mail-"],
+html.liff-mode div[class*="o-discuss-"] {
+    background: #FFFFFF !important;
+    border-color: #E8E0D8 !important;
+    color: #2D2620 !important;
+}
+
+html.liff-mode .o-mail-Composer textarea,
+html.liff-mode .o-mail-Composer input,
+html.liff-mode .o-mail-Composer-input {
+    background: #FFFFFF !important;
+    border-color: #E8E0D8 !important;
+    color: #2D2620 !important;
+}
+
+/* ============================================================
+   LIFF 模式空間修正 — 移除多餘空白
+   ============================================================ */
+
+/* 移除 portal 頁面過大 min-height 產生的空白 */
+html.liff-mode .o_portal .container {
+    padding-top: 0 !important;
+}
+
+/* 大頭貼/個人資訊區預設 float 留白修正 */
+html.liff-mode .o_portal .o_portal_my_details .row::before,
+html.liff-mode .o_portal .o_portal_my_details .row::after {
+    display: none !important;
+}
+
+/* 移除 non-homepage 頁面的 dark bg */
+html.liff-mode #wrapwrap:not(:has(.mk-hero)) #wrap {
+    background: #FAF6F2 !important;
+}
+
+html.liff-mode #wrapwrap:not(:has(.mk-hero)) #wrap h1,
+html.liff-mode #wrapwrap:not(:has(.mk-hero)) #wrap h2,
+html.liff-mode #wrapwrap:not(:has(.mk-hero)) #wrap h3 {
+    color: #2D2620 !important;
+}
+
+html.liff-mode #wrapwrap:not(:has(.mk-hero)) #wrap p,
+html.liff-mode #wrapwrap:not(:has(.mk-hero)) #wrap span:not(.navbar-toggler-icon),
+html.liff-mode #wrapwrap:not(:has(.mk-hero)) #wrap label {
+    color: #2D2620 !important;
+}
+
+/* ============================================================
+   LIFF 模式預約頁覆蓋
+   將 .mk-appointment-page dark 背景改為品牌暖色
+   ============================================================ */
+html.liff-mode.mk-appointment-page #wrap {
+    background: #FAF6F2 !important;
+}
+
+/* 移除暗色背景圖 */
+html.liff-mode.mk-appointment-page #wrap::before {
+    display: none !important;
+}
+
+/* 預約頁標題 */
+html.liff-mode.mk-appointment-page #wrap h1,
+html.liff-mode.mk-appointment-page #wrap h2.mb-4 {
+    color: #2D2620 !important;
+}
+
+/* 預約頁麵包屑 */
+html.liff-mode.mk-appointment-page .breadcrumb-item,
+html.liff-mode.mk-appointment-page .breadcrumb-item a {
+    color: #6B5B4E !important;
+}
+
+html.liff-mode.mk-appointment-page .breadcrumb-item a:hover {
+    color: #B8956A !important;
+}
+
+html.liff-mode.mk-appointment-page .breadcrumb-item.active {
+    color: #2D2620 !important;
+}
+
+html.liff-mode.mk-appointment-page .breadcrumb-item + .breadcrumb-item::before {
+    color: #9B8E82 !important;
+}
+
+/* 預約頁卡片 */
+html.liff-mode.mk-appointment-page .card {
+    background: #FFFFFF !important;
+    border: 1px solid #E8E0D8 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+html.liff-mode.mk-appointment-page .card:hover {
+    border-color: #D4C4B0 !important;
+}
+
+html.liff-mode.mk-appointment-page .card-body {
+    background: transparent !important;
+}
+
+html.liff-mode.mk-appointment-page .card-header {
+    background: #FAF6F2 !important;
+    border-bottom: 1px solid #E8E0D8 !important;
+}
+
+html.liff-mode.mk-appointment-page .card-footer {
+    background: transparent !important;
+    border-top: 1px solid #E8E0D8 !important;
+}
+
+/* 預約卡片文字 */
+html.liff-mode.mk-appointment-page .card h1,
+html.liff-mode.mk-appointment-page .card h2,
+html.liff-mode.mk-appointment-page .card h3,
+html.liff-mode.mk-appointment-page .card h5,
+html.liff-mode.mk-appointment-page .card .card-title,
+html.liff-mode.mk-appointment-page .card-header h4,
+html.liff-mode.mk-appointment-page .card-header .mb-0 {
+    color: #2D2620 !important;
+    font-family: 'Noto Sans TC', sans-serif !important;
+}
+
+html.liff-mode.mk-appointment-page .card p,
+html.liff-mode.mk-appointment-page .card span,
+html.liff-mode.mk-appointment-page .card label,
+html.liff-mode.mk-appointment-page .card div,
+html.liff-mode.mk-appointment-page .card small,
+html.liff-mode.mk-appointment-page .card .card-text {
+    color: #2D2620 !important;
+}
+
+html.liff-mode.mk-appointment-page .mk-appt-meta,
+html.liff-mode.mk-appointment-page .mk-appt-meta i {
+    color: #6B5B4E !important;
+}
+
+html.liff-mode.mk-appointment-page .mk-appt-desc {
+    color: #6B5B4E !important;
+}
+
+/* 預約頁徽章 */
+html.liff-mode.mk-appointment-page .badge {
+    background: #FAF6F2 !important;
+    border: 1px solid #E8E0D8 !important;
+    border-radius: 6px !important;
+    color: #6B5B4E !important;
+}
+
+html.liff-mode.mk-appointment-page .badge i {
+    color: #6B5B4E !important;
+}
+
+/* 預約頁按鈕 */
+html.liff-mode.mk-appointment-page .btn-primary,
+html.liff-mode.mk-appointment-page a.btn-primary,
+html.liff-mode.mk-appointment-page .card .btn {
+    background: #B8956A !important;
+    color: #FFFFFF !important;
+    border: none !important;
+    border-radius: 8px !important;
+    letter-spacing: normal !important;
+    text-transform: none !important;
+}
+
+html.liff-mode.mk-appointment-page .btn-primary:hover,
+html.liff-mode.mk-appointment-page a.btn-primary:hover,
+html.liff-mode.mk-appointment-page .card .btn:hover {
+    background: #8B6F47 !important;
+    color: #FFFFFF !important;
+}
+
+/* 預約表單欄位 */
+html.liff-mode.mk-appointment-page select,
+html.liff-mode.mk-appointment-page .form-select,
+html.liff-mode.mk-appointment-page .form-control,
+html.liff-mode.mk-appointment-page input[type="text"],
+html.liff-mode.mk-appointment-page input[type="email"],
+html.liff-mode.mk-appointment-page input[type="tel"],
+html.liff-mode.mk-appointment-page input[type="number"],
+html.liff-mode.mk-appointment-page textarea {
+    background: #FFFFFF !important;
+    border: 1px solid #E8E0D8 !important;
+    border-radius: 8px !important;
+    color: #2D2620 !important;
+}
+
+html.liff-mode.mk-appointment-page select:focus,
+html.liff-mode.mk-appointment-page .form-select:focus,
+html.liff-mode.mk-appointment-page .form-control:focus,
+html.liff-mode.mk-appointment-page input:focus,
+html.liff-mode.mk-appointment-page textarea:focus {
+    border-color: #B8956A !important;
+    box-shadow: 0 0 0 2px rgba(184, 149, 106, 0.2) !important;
+    background: #FFFFFF !important;
+}
+
+html.liff-mode.mk-appointment-page input::placeholder,
+html.liff-mode.mk-appointment-page textarea::placeholder {
+    color: #9B8E82 !important;
+}
+
+html.liff-mode.mk-appointment-page label,
+html.liff-mode.mk-appointment-page .form-label {
+    color: #6B5B4E !important;
+}
+
+/* 預約日曆 */
+html.liff-mode.mk-appointment-page .reservation-day {
+    background: #FFFFFF !important;
+    color: #2D2620 !important;
+    border: 1px solid #E8E0D8 !important;
+    border-radius: 6px !important;
+}
+
+html.liff-mode.mk-appointment-page .reservation-day.disabled {
+    color: #D4C4B0 !important;
+    border-color: #E8E0D8 !important;
+    background: #FAF6F2 !important;
+}
+
+html.liff-mode.mk-appointment-page .reservation-day.selected {
+    background: #B8956A !important;
+    color: #FFFFFF !important;
+    border-color: #B8956A !important;
+}
+
+html.liff-mode.mk-appointment-page .reservation-day:not(.disabled):hover {
+    background: #FAF6F2 !important;
+    border-color: #B8956A !important;
+}
+
+html.liff-mode.mk-appointment-page .reservation-header h5,
+html.liff-mode.mk-appointment-page [role="application"] h5 {
+    color: #2D2620 !important;
+}
+
+html.liff-mode.mk-appointment-page .reservation-grid strong {
+    color: #6B5B4E !important;
+}
+
+html.liff-mode.mk-appointment-page h5 {
+    color: #2D2620 !important;
+}
+
+html.liff-mode.mk-appointment-page .text-muted {
+    color: #9B8E82 !important;
+}
+
+/* 時段按鈕 */
+html.liff-mode.mk-appointment-page #slots-container a,
+html.liff-mode.mk-appointment-page #available-slots a,
+html.liff-mode.mk-appointment-page .btn-outline-primary {
+    background: #FFFFFF !important;
+    color: #2D2620 !important;
+    border: 1px solid #E8E0D8 !important;
+    border-radius: 8px !important;
+}
+
+html.liff-mode.mk-appointment-page #slots-container a:hover,
+html.liff-mode.mk-appointment-page #available-slots a:hover,
+html.liff-mode.mk-appointment-page .btn-outline-primary:hover {
+    background: #B8956A !important;
+    color: #FFFFFF !important;
+    border-color: #B8956A !important;
+}
+
+html.liff-mode.mk-appointment-page .btn-outline-primary.active {
+    background: #B8956A !important;
+    color: #FFFFFF !important;
+}
+
+html.liff-mode.mk-appointment-page #slots-container a div,
+html.liff-mode.mk-appointment-page #slots-container a span {
+    color: #6B5B4E !important;
+}
+
+html.liff-mode.mk-appointment-page #slots-container a:hover div,
+html.liff-mode.mk-appointment-page #slots-container a:hover span {
+    color: rgba(255,255,255,0.8) !important;
+}
+
+/* 預約頁提示 */
+html.liff-mode.mk-appointment-page .alert,
+html.liff-mode.mk-appointment-page .alert-info {
+    background: #FAF6F2 !important;
+    border: 1px solid #E8E0D8 !important;
+    border-left: 3px solid #B8956A !important;
+    border-radius: 8px !important;
+    color: #2D2620 !important;
+}
+
+html.liff-mode.mk-appointment-page .alert strong,
+html.liff-mode.mk-appointment-page .alert-info strong {
+    color: #2D2620 !important;
+}
+
+html.liff-mode.mk-appointment-page .alert small,
+html.liff-mode.mk-appointment-page .alert .text-muted {
+    color: #9B8E82 !important;
+}
+
+html.liff-mode.mk-appointment-page .alert i {
+    color: #B8956A !important;
+}
+
+/* 預約頁連結 */
+html.liff-mode.mk-appointment-page a:not(.btn):not(.breadcrumb-item):not(.navbar-brand):not(.nav-link):not(.dropdown-item) {
+    color: #B8956A !important;
+}
+
+html.liff-mode.mk-appointment-page a:not(.btn):not(.breadcrumb-item):not(.navbar-brand):not(.nav-link):not(.dropdown-item):hover {
+    color: #8B6F47 !important;
+}
+
+/* 預約頁 shadow 覆蓋 */
+html.liff-mode.mk-appointment-page .shadow,
+html.liff-mode.mk-appointment-page .shadow-sm {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* 預約卡片圖覆蓋 */
+html.liff-mode.mk-appointment-page .card-img-top {
+    filter: none !important;
+    border-bottom: 1px solid #E8E0D8 !important;
 }
 
 /* ============================================================

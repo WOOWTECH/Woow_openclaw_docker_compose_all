@@ -105,39 +105,56 @@
 })();
 
 /** Mark Studio — Portal chatter dark theme enforcement
- *  Odoo's .o_cc1 color class sets background-color:#fff via compiled SCSS.
- *  CSS !important cannot reliably override it (specificity issue in bundled assets).
- *  This script forces transparent background on chatter OWL components.
+ *  Odoo 18 OWL Chatter renders inside Shadow DOM (#chatterRoot).
+ *  External CSS cannot penetrate Shadow DOM boundaries.
+ *  This script injects a <style> tag directly into the Shadow DOM
+ *  when it's created, applying the dark theme from inside.
  */
 (function () {
-    function fixChatterBg() {
-        var chatter = document.querySelector('.o_portal_chatter') || document.querySelector('#discussion');
-        if (!chatter) return;
-        var els = chatter.querySelectorAll('.o_cc, .o_cc1, .o_cc2, .o_cc3, .o_cc4, .o_cc5');
-        for (var i = 0; i < els.length; i++) {
-            els[i].style.setProperty('background-color', 'transparent', 'important');
-            els[i].style.setProperty('background', 'transparent', 'important');
-            els[i].style.setProperty('color', 'rgba(255,255,255,0.7)', 'important');
-        }
+    var DARK_CSS = [
+        '.o-mail-Chatter, .o-portal-Chatter, .o-mail-Chatter-top { background: transparent !important; }',
+        '.o-mail-Composer-bg, .o-mail-Composer-actions { background: rgba(255,255,255,0.05) !important; }',
+        '.o-mail-Composer-input, textarea.o-mail-Composer-bg { background: rgba(255,255,255,0.05) !important; color: #fff !important; }',
+        '.o-mail-Composer-input::placeholder { color: rgba(255,255,255,0.3) !important; }',
+        '.o-mail-Composer-fake { background: rgba(255,255,255,0.05) !important; }',
+        '.o-mail-Composer-send { background: transparent !important; color: #fff !important; border: 2px solid #fff !important; border-radius: 0 !important; }',
+        '.o-mail-Composer-send:hover { background: #fff !important; color: #000 !important; }',
+        '.o-mail-PickerContent { background: #1a1a1a !important; }',
+        '.o-mail-Composer .btn:not(.o-mail-Composer-send) { color: rgba(255,255,255,0.5) !important; }',
+        '.o-mail-Chatter p, .o-mail-Chatter span, .o-mail-Chatter div { color: rgba(255,255,255,0.7) !important; }',
+        '.o-mail-Thread { background: transparent !important; }',
+        '.o-mail-Message { border-color: rgba(255,255,255,0.1) !important; }',
+        '.shadow-sm { box-shadow: none !important; }',
+        '.text-body { color: rgba(255,255,255,0.7) !important; }',
+        '.text-muted { color: rgba(255,255,255,0.4) !important; }',
+        '.border-secondary { border-color: rgba(255,255,255,0.25) !important; }',
+        '.o_cc, .o_cc1, .o_cc2, .o_cc3, .o_cc4, .o_cc5 { background: transparent !important; color: rgba(255,255,255,0.7) !important; }'
+    ].join('\n');
+
+    function injectDarkTheme(shadowRoot) {
+        if (shadowRoot.querySelector('#mk-dark-chatter')) return;
+        var style = document.createElement('style');
+        style.id = 'mk-dark-chatter';
+        style.textContent = DARK_CSS;
+        shadowRoot.appendChild(style);
     }
 
-    // Run on load and observe for OWL lazy rendering
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', fixChatterBg);
-    } else {
-        fixChatterBg();
-    }
+    // Poll for Shadow DOM — re-query element each cycle to avoid stale refs
+    var pollInterval = setInterval(function () {
+        var root = document.querySelector('#chatterRoot');
+        if (!root) return;
+        if (!root.shadowRoot) return;
+        injectDarkTheme(root.shadowRoot);
+        // Keep observing for re-renders
+        try {
+            var innerObserver = new MutationObserver(function () {
+                injectDarkTheme(root.shadowRoot);
+            });
+            innerObserver.observe(root.shadowRoot, { childList: true, subtree: true });
+        } catch (e) {}
+        clearInterval(pollInterval);
+    }, 300);
 
-    // MutationObserver for OWL component rendering
-    var observer = new MutationObserver(function () { fixChatterBg(); });
-    var target = document.querySelector('#chatterRoot') || document.querySelector('.o_portal_chatter');
-    if (target) {
-        observer.observe(target, { childList: true, subtree: true });
-    } else {
-        // Wait for DOM then observe
-        document.addEventListener('DOMContentLoaded', function () {
-            var t = document.querySelector('#chatterRoot') || document.querySelector('.o_portal_chatter');
-            if (t) observer.observe(t, { childList: true, subtree: true });
-        });
-    }
+    // Stop after 60 seconds
+    setTimeout(function () { clearInterval(pollInterval); }, 60000);
 })();

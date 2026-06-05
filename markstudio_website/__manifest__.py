@@ -20,6 +20,9 @@
             'markstudio_website/static/src/css/markstudio.css',
             'markstudio_website/static/src/js/smooth_scroll.js',
         ],
+        'portal.assets_chatter': [
+            'markstudio_website/static/src/css/markstudio_chatter.css',
+        ],
     },
     'installable': True,
     'auto_install': False,

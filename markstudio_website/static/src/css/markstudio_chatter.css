@@ -1,0 +1,122 @@
+/**
+ * markstudio_website/static/src/css/markstudio_chatter.css
+ * Dark theme override for OWL Chatter inside Shadow DOM
+ * This file is loaded into portal.assets_chatter bundle
+ * so it can reach the Shadow DOM rendered components.
+ */
+
+/* Chatter container */
+.o-mail-Chatter,
+.o-portal-Chatter {
+    background: transparent !important;
+}
+
+/* Sticky top area — was white */
+.o-mail-Chatter-top {
+    background: var(--mk-black, #000) !important;
+}
+
+/* Composer background — the main white card */
+.o-mail-Composer-bg {
+    background: rgba(255,255,255,0.05) !important;
+    background-color: rgba(255,255,255,0.05) !important;
+}
+
+/* Composer border */
+.o-mail-Composer-bg.border {
+    border-color: rgba(255,255,255,0.25) !important;
+}
+
+/* Composer textarea */
+.o-mail-Composer-input,
+.o-mail-Composer-input.o-mail-Composer-bg {
+    background: rgba(255,255,255,0.05) !important;
+    background-color: rgba(255,255,255,0.05) !important;
+    color: #fff !important;
+}
+
+.o-mail-Composer-input::placeholder {
+    color: rgba(255,255,255,0.3) !important;
+}
+
+/* Fake textarea (for height calculation) */
+.o-mail-Composer-fake {
+    background: rgba(255,255,255,0.05) !important;
+}
+
+/* Composer actions bar */
+.o-mail-Composer-actions,
+.o-mail-Composer-quickActions {
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+/* Send button — Retrodandy style */
+.o-mail-Composer-send {
+    background: transparent !important;
+    color: #fff !important;
+    border: 2px solid #fff !important;
+    border-radius: 0 !important;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.3s;
+}
+
+.o-mail-Composer-send:hover {
+    background: #fff !important;
+    color: #000 !important;
+}
+
+/* Emoji picker */
+.o-mail-PickerContent {
+    background: #1a1a1a !important;
+    color: #fff !important;
+}
+
+/* Icon buttons (attachment, emoji) */
+.o-mail-Composer .btn:not(.o-mail-Composer-send),
+.o-mail-Composer-actions .btn {
+    color: rgba(255,255,255,0.5) !important;
+}
+
+.o-mail-Composer .btn:not(.o-mail-Composer-send):hover {
+    color: #fff !important;
+}
+
+/* Message text */
+.o-mail-Chatter p,
+.o-mail-Chatter span,
+.o-mail-Chatter div,
+.o-mail-Chatter .text-muted {
+    color: rgba(255,255,255,0.7) !important;
+}
+
+/* Thread messages */
+.o-mail-Thread {
+    background: transparent !important;
+}
+
+.o-mail-Message {
+    border-color: rgba(255,255,255,0.1) !important;
+}
+
+/* Avatar */
+.o-mail-Composer-avatar {
+    border: 1px solid rgba(255,255,255,0.2);
+    opacity: 0.8;
+}
+
+/* Shadow DOM specific: override Bootstrap defaults */
+.shadow-sm {
+    box-shadow: none !important;
+}
+
+.text-body {
+    color: rgba(255,255,255,0.7) !important;
+}
+
+.border-secondary {
+    border-color: rgba(255,255,255,0.25) !important;
+}

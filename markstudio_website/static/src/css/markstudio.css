@@ -1982,6 +1982,40 @@ a.bg-100 {
     display: none !important;
 }
 
+/* Empty oe_structure divs (Odoo adds these for website editor) */
+.o_portal .oe_structure:empty,
+.o_portal .oe_structure.mb32:empty {
+    display: none !important;
+    margin: 0 !important;
+}
+
+/* Fix mt-5 on mobile: content column uses mt-5 mt-lg-0 causing 48px gap */
+@media (max-width: 991px) {
+    .o_portal .o_portal_sidebar .mt-5,
+    .o_portal .col-12.mt-5 {
+        margin-top: 0 !important;
+    }
+}
+
+/* Vertical rule between sidebar & content — dark theme */
+.o_portal .vr.bg-300,
+.o_portal .vr {
+    background-color: rgba(255,255,255,0.1) !important;
+}
+
+/* Chatter attachment button — reset border-0 to match dark theme */
+.o_portal .o_portal_chatter .o_portal_chatter_attachment_btn,
+.o_portal .o_portal_chatter .btn.border-0 {
+    border: none !important;
+    background: transparent !important;
+    color: rgba(255,255,255,0.5) !important;
+}
+
+.o_portal .o_portal_chatter .o_portal_chatter_attachment_btn:hover,
+.o_portal .o_portal_chatter .btn.border-0:hover {
+    color: var(--mk-white) !important;
+}
+
 /* Portal record detail cards */
 .o_portal .card,
 .o_portal .o_portal_sidebar .card {
@@ -2073,9 +2107,22 @@ a.bg-100 {
     color: rgba(255,255,255,0.7) !important;
 }
 
-/* Chatter composer wrapper — kill ALL white backgrounds */
+/* Chatter composer wrapper — kill ALL white backgrounds
+   Odoo 18 OWL chatter DOM:
+   .o_portal_chatter_composer
+     > .d-flex
+       > img.o_portal_chatter_avatar
+       > .flex-grow-1
+         > .o_portal_chatter_composer_input
+           > .o_portal_chatter_composer_body.border.rounded-3
+             > div.rounded-3              ← inner wrapper
+               > textarea.form-control.border-0
+               > div (buttons: paperclip + send)
+*/
 .o_portal .o_portal_chatter .o_portal_chatter_composer,
+.o_portal .o_portal_chatter .o_portal_chatter_composer_input,
 .o_portal .o_portal_chatter_composer_body,
+.o_portal .o_portal_chatter_composer_body > div,
 .o_portal .o_portal_chatter .card,
 .o_portal .o_portal_chatter .card-body,
 .o_portal #discussion .card,
@@ -2084,7 +2131,7 @@ a.bg-100 {
 .o_portal .o_portal_chatter .bg-white,
 .o_portal .o_portal_chatter .bg-light,
 .o_portal .o_portal_chatter .bg-100,
-.o_portal .o_portal_chatter .rounded,
+.o_portal .o_portal_chatter [class*="rounded"],
 .o_portal .o_portal_chatter .border,
 .o_portal .o_portal_chatter .shadow-sm,
 .o_portal .o_portal_chatter .shadow {
@@ -2094,10 +2141,11 @@ a.bg-100 {
     box-shadow: none !important;
 }
 
-/* Chatter textarea */
+/* Chatter textarea — Odoo 18 uses .form-control.border-0 */
 .o_portal .o_portal_chatter textarea,
 .o_portal .o_portal_chatter input[type="text"],
 .o_portal .o_portal_chatter .form-control,
+.o_portal .o_portal_chatter .form-control.border-0,
 .o_portal #discussion textarea,
 .o_portal #discussion .form-control {
     background: rgba(255,255,255,0.05) !important;

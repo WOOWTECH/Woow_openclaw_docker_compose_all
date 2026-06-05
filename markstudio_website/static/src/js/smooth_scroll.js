@@ -113,22 +113,27 @@
 (function () {
     var DARK_CSS = [
         '.o-mail-Chatter, .o-portal-Chatter, .o-mail-Chatter-top { background: transparent !important; }',
-        '.o-mail-Composer-bg, .o-mail-Composer-actions { background: rgba(255,255,255,0.05) !important; }',
-        '.o-mail-Composer-input, textarea.o-mail-Composer-bg { background: rgba(255,255,255,0.05) !important; color: #fff !important; }',
-        '.o-mail-Composer-input::placeholder { color: rgba(255,255,255,0.3) !important; }',
-        '.o-mail-Composer-fake { background: rgba(255,255,255,0.05) !important; }',
-        '.o-mail-Composer-send { background: transparent !important; color: #fff !important; border: 2px solid #fff !important; border-radius: 0 !important; }',
+        '.o-mail-Composer-bg, .o-mail-Composer-actions { background: rgba(255,255,255,0.08) !important; }',
+        '.o-mail-Composer-input, textarea.o-mail-Composer-bg { background: rgba(255,255,255,0.08) !important; color: #fff !important; }',
+        '.o-mail-Composer-input::placeholder { color: rgba(255,255,255,0.4) !important; }',
+        '.o-mail-Composer-fake { background: rgba(255,255,255,0.08) !important; }',
+        '.o-mail-Composer-send { background: transparent !important; color: #fff !important; border: 2px solid #fff !important; border-radius: 0 !important; font-family: var(--mk-sans, sans-serif); letter-spacing: 2px; text-transform: uppercase; }',
         '.o-mail-Composer-send:hover { background: #fff !important; color: #000 !important; }',
         '.o-mail-PickerContent { background: #1a1a1a !important; }',
-        '.o-mail-Composer .btn:not(.o-mail-Composer-send) { color: rgba(255,255,255,0.5) !important; }',
-        '.o-mail-Chatter p, .o-mail-Chatter span, .o-mail-Chatter div { color: rgba(255,255,255,0.7) !important; }',
+        '.o-mail-Composer .btn:not(.o-mail-Composer-send) { color: rgba(255,255,255,0.6) !important; }',
+        '.o-mail-Composer .btn:not(.o-mail-Composer-send):hover { color: #fff !important; }',
+        '* { color: rgba(255,255,255,0.85) !important; }',
+        'a { color: rgba(255,255,255,0.6) !important; }',
+        'a:hover { color: #fff !important; }',
         '.o-mail-Thread { background: transparent !important; }',
-        '.o-mail-Message { border-color: rgba(255,255,255,0.1) !important; }',
+        '.o-mail-Message { border-color: rgba(255,255,255,0.15) !important; }',
+        '.o-mail-Message-author, .o-mail-Message-date { color: rgba(255,255,255,0.5) !important; }',
         '.shadow-sm { box-shadow: none !important; }',
-        '.text-body { color: rgba(255,255,255,0.7) !important; }',
-        '.text-muted { color: rgba(255,255,255,0.4) !important; }',
+        '.text-body { color: rgba(255,255,255,0.85) !important; }',
+        '.text-muted { color: rgba(255,255,255,0.5) !important; }',
         '.border-secondary { border-color: rgba(255,255,255,0.25) !important; }',
-        '.o_cc, .o_cc1, .o_cc2, .o_cc3, .o_cc4, .o_cc5 { background: transparent !important; color: rgba(255,255,255,0.7) !important; }'
+        '.o_cc, .o_cc1, .o_cc2, .o_cc3, .o_cc4, .o_cc5 { background: transparent !important; color: rgba(255,255,255,0.85) !important; }',
+        '.o-mail-Composer-avatar { opacity: 0.7; border: 1px solid rgba(255,255,255,0.2); }'
     ].join('\n');
 
     function injectDarkTheme(shadowRoot) {

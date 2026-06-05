@@ -2270,7 +2270,7 @@ a.bg-100 {
    .btn-info, or anything else. Override ALL .btn inside portal.
    ============================================================ */
 
-/* Any .btn inside portal sidebar that isn't already styled */
+/* All sidebar buttons — consistent full-width Retrodandy style */
 .o_portal .o_portal_sidebar .btn,
 .o_portal .o_portal_sidebar a.btn {
     background: transparent !important;
@@ -2278,12 +2278,33 @@ a.bg-100 {
     border: 1px solid rgba(255,255,255,0.4) !important;
     border-radius: 0 !important;
     font-family: var(--mk-sans);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 12px 24px;
+    width: 100% !important;
+    display: block !important;
+    text-align: center;
+    letter-spacing: 1px;
     transition: all 0.3s;
 }
 
 .o_portal .o_portal_sidebar .btn:hover,
 .o_portal .o_portal_sidebar a.btn:hover {
     border-color: var(--mk-white) !important;
+    color: var(--mk-white) !important;
+    background: rgba(255,255,255,0.08) !important;
+}
+
+/* Danger button keeps red accent */
+.o_portal .o_portal_sidebar .btn-outline-danger,
+.o_portal .o_portal_sidebar .btn-danger {
+    border-color: #e74c3c !important;
+    color: #e74c3c !important;
+}
+
+.o_portal .o_portal_sidebar .btn-outline-danger:hover,
+.o_portal .o_portal_sidebar .btn-danger:hover {
+    background: #e74c3c !important;
     color: var(--mk-white) !important;
 }
 

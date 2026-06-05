@@ -1585,6 +1585,13 @@ header#top .o_nav_link_btn:hover {
     background: var(--mk-black) !important;
 }
 
+/* Prevent horizontal overflow — offcanvas menu causes scroll on mobile */
+.o_portal #wrapwrap,
+.o_portal body,
+#wrapwrap {
+    overflow-x: hidden !important;
+}
+
 /* Portal breadcrumb */
 .o_portal .breadcrumb {
     background: none !important;
@@ -2106,9 +2113,12 @@ a.bg-100 {
     background-color: transparent !important;
 }
 
-/* Kill ALL white backgrounds on ANY div inside chatter */
+/* Kill ALL white backgrounds on ANY div inside chatter
+   OWL mounts into #chatterRoot, all descendants must be transparent */
 .o_portal_chatter div,
-#discussion div {
+#discussion div,
+#chatterRoot div,
+#chatterRoot *:not(textarea):not(input):not(button):not(.btn) {
     background: transparent !important;
     background-color: transparent !important;
 }

@@ -2101,41 +2101,72 @@ a.bg-100 {
 /* ============================================================
    Portal chatter / Communication history — NUCLEAR dark override
    The chatter is an OWL component (#discussion.o_portal_chatter).
-   It may sit inside or outside .o_portal. Use broadest selectors.
+   OWL renders into #chatterRoot. Odoo uses --o-cc1-bg: #FFFFFF
+   for color class backgrounds. Must override CSS variables AND
+   all possible background sources.
    ============================================================ */
 
-/* Chatter container — may be inside .o_portal OR standalone */
+/* Override Odoo color class variables inside chatter */
 .o_portal_chatter,
 #discussion,
-.o_portal .o_portal_chatter,
-.o_portal #discussion {
+#chatterRoot {
+    --o-cc1-bg: transparent !important;
+    --o-cc1-text: rgba(255,255,255,0.7) !important;
+    --bs-body-bg: transparent !important;
+    --bs-card-bg: transparent !important;
+    --bs-tertiary-bg: transparent !important;
     background: transparent !important;
     background-color: transparent !important;
 }
 
-/* Kill ALL white backgrounds on ANY div inside chatter
-   OWL mounts into #chatterRoot, all descendants must be transparent */
-.o_portal_chatter div,
-#discussion div,
-#chatterRoot div,
-#chatterRoot *:not(textarea):not(input):not(button):not(.btn) {
+/* Kill ALL backgrounds on every element inside chatter.
+   Odoo uses .o_cc.o_cc1 with background-color from compiled SCSS.
+   Must target .o_cc explicitly with highest specificity. */
+.o_portal_chatter *:not(textarea):not(input),
+#discussion *:not(textarea):not(input),
+#chatterRoot *:not(textarea):not(input) {
     background: transparent !important;
     background-color: transparent !important;
+    --o-cc1-bg: transparent !important;
+    --bs-body-bg: transparent !important;
+}
+
+/* Odoo color classes — the real source of white background */
+.o_portal_chatter .o_cc,
+.o_portal_chatter .o_cc1,
+.o_portal_chatter .o_cc.o_cc1,
+#discussion .o_cc,
+#discussion .o_cc1,
+#discussion .o_cc.o_cc1,
+#chatterRoot .o_cc,
+#chatterRoot .o_cc1,
+#chatterRoot .o_cc.o_cc1,
+.o_portal .o_portal_chatter .o_cc,
+.o_portal .o_portal_chatter .o_cc1,
+.o_portal #discussion .o_cc,
+.o_portal #discussion .o_cc1 {
+    background: transparent !important;
+    background-color: transparent !important;
+    --o-cc1-bg: transparent !important;
+    color: rgba(255,255,255,0.7) !important;
 }
 
 /* Chatter text */
 .o_portal_chatter p,
 .o_portal_chatter span,
+.o_portal_chatter div,
 .o_portal_chatter .media-body,
 #discussion p,
-#discussion span {
+#discussion span,
+#chatterRoot p,
+#chatterRoot span {
     color: rgba(255,255,255,0.7) !important;
 }
 
-/* Chatter composer body — the white rounded card */
-.o_portal_chatter_composer_body {
-    background: transparent !important;
-    background-color: transparent !important;
+/* Chatter composer body border */
+.o_portal_chatter_composer_body,
+.o_portal_chatter [class*="border"],
+#chatterRoot [class*="border"] {
     border-color: rgba(255,255,255,0.25) !important;
 }
 
@@ -2143,7 +2174,9 @@ a.bg-100 {
 .o_portal_chatter textarea,
 .o_portal_chatter .form-control,
 #discussion textarea,
-#discussion .form-control {
+#discussion .form-control,
+#chatterRoot textarea,
+#chatterRoot .form-control {
     background: rgba(255,255,255,0.06) !important;
     border: 1px solid rgba(255,255,255,0.3) !important;
     border-radius: 0 !important;
@@ -2152,7 +2185,8 @@ a.bg-100 {
 }
 
 .o_portal_chatter textarea:focus,
-#discussion textarea:focus {
+#discussion textarea:focus,
+#chatterRoot textarea:focus {
     border-color: rgba(255,255,255,0.6) !important;
     box-shadow: none !important;
     background: rgba(255,255,255,0.1) !important;

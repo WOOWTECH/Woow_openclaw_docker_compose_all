@@ -103,3 +103,41 @@
         enhance();
     }
 })();
+
+/** Mark Studio — Portal chatter dark theme enforcement
+ *  Odoo's .o_cc1 color class sets background-color:#fff via compiled SCSS.
+ *  CSS !important cannot reliably override it (specificity issue in bundled assets).
+ *  This script forces transparent background on chatter OWL components.
+ */
+(function () {
+    function fixChatterBg() {
+        var chatter = document.querySelector('.o_portal_chatter') || document.querySelector('#discussion');
+        if (!chatter) return;
+        var els = chatter.querySelectorAll('.o_cc, .o_cc1, .o_cc2, .o_cc3, .o_cc4, .o_cc5');
+        for (var i = 0; i < els.length; i++) {
+            els[i].style.setProperty('background-color', 'transparent', 'important');
+            els[i].style.setProperty('background', 'transparent', 'important');
+            els[i].style.setProperty('color', 'rgba(255,255,255,0.7)', 'important');
+        }
+    }
+
+    // Run on load and observe for OWL lazy rendering
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', fixChatterBg);
+    } else {
+        fixChatterBg();
+    }
+
+    // MutationObserver for OWL component rendering
+    var observer = new MutationObserver(function () { fixChatterBg(); });
+    var target = document.querySelector('#chatterRoot') || document.querySelector('.o_portal_chatter');
+    if (target) {
+        observer.observe(target, { childList: true, subtree: true });
+    } else {
+        // Wait for DOM then observe
+        document.addEventListener('DOMContentLoaded', function () {
+            var t = document.querySelector('#chatterRoot') || document.querySelector('.o_portal_chatter');
+            if (t) observer.observe(t, { childList: true, subtree: true });
+        });
+    }
+})();

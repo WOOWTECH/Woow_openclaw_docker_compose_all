@@ -292,10 +292,11 @@ class LineWebhookController(http.Controller):
 
     def _postback_rebook(self, event, line_uid, params, reply_token):
         """重新預約（postback）"""
-        member_url = request.env['line.flex.template'].sudo()._liff_url('member')
+        base_url = request.env['ir.config_parameter'].sudo().get_param('web.base.url', '')
+        rebook_url = f'{base_url}/liff/redirect/book'
         request.env['line.service'].sudo().reply(reply_token, [{
             'type': 'text',
-            'text': f'請點擊連結重新預約：\n{member_url}',
+            'text': f'請點擊連結重新預約：\n{rebook_url}',
         }])
 
     def _postback_navigate(self, event, line_uid, params, reply_token):
@@ -340,10 +341,9 @@ class LineWebhookController(http.Controller):
             'my-bookings': '我的預約',
             'news': '最新消息',
             'locations': '店家位置',
-            'member': '會員中心',
         }
-        label = target_labels.get(target, '會員中心')
-        page = target if target in ('news', 'locations', 'member') else 'member'
+        label = target_labels.get(target, '立即預約')
+        page = target if target in ('news', 'locations') else 'book'
         url = flex_tmpl._liff_url(page)
 
         request.env['line.service'].sudo().reply(reply_token, [{

@@ -46,7 +46,6 @@
         'data/mail_template.xml',
         # 3. 視圖
         'views/liff_base.xml',
-        'views/liff_member.xml',
         'views/liff_news.xml',
         'views/liff_locations.xml',
         'views/assets.xml',
@@ -63,7 +62,6 @@
             'woow_line_bridge/static/src/js/liff_helper.js',
             'woow_line_bridge/static/src/js/liff_inject.js',
             'woow_line_bridge/static/src/css/liff.css',
-            'woow_line_bridge/static/src/css/liff_markstudio.css',
         ],
     },
     'application': True,

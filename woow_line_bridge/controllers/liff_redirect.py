@@ -63,7 +63,7 @@ class LiffRedirectController(http.Controller):
 
         if not id_token and not access_token:
             _logger.warning('liff_redirect: 缺少 id_token 和 access_token')
-            return None, request.redirect('/liff/member?error=no_token')
+            return None, request.redirect('/web/login?error=no_token')
 
         # 驗證：優先 ID Token，備援 Access Token
         line_service = request.env['line.service'].sudo()
@@ -81,22 +81,22 @@ class LiffRedirectController(http.Controller):
 
         if not payload:
             _logger.warning('liff_redirect: 所有 token 驗證失敗')
-            return None, request.redirect('/liff/member?error=invalid_token')
+            return None, request.redirect('/web/login?error=invalid_token')
 
         line_uid = payload.get('sub')
         if not line_uid:
-            return None, request.redirect('/liff/member?error=no_uid')
+            return None, request.redirect('/web/login?error=no_uid')
 
         # 建立或更新 LINE 用戶
         LineUser = request.env['line.user'].sudo()
         line_user = LineUser.create_or_update_from_liff(payload)
         if not line_user:
-            return None, request.redirect('/liff/member?error=user_creation_failed')
+            return None, request.redirect('/web/login?error=user_creation_failed')
 
         # 確保有對應的 portal user
         partner, user = self._ensure_portal_user(line_user, payload)
         if not user:
-            return None, request.redirect('/liff/member?error=login_failed')
+            return None, request.redirect('/web/login?error=login_failed')
 
         # 建立 session：Odoo 18 authenticate(db, credential_dict)
         db = request.env.cr.dbname
@@ -112,7 +112,7 @@ class LiffRedirectController(http.Controller):
             })
         except Exception:
             _logger.exception('liff_redirect: session.authenticate 失敗')
-            return None, request.redirect('/liff/member?error=login_failed')
+            return None, request.redirect('/web/login?error=login_failed')
 
         return user, None
 
@@ -181,11 +181,11 @@ class LiffRedirectController(http.Controller):
         html = f"""<!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Loading...</title>
-<style>body{{display:flex;align-items:center;justify-content:center;min-height:100vh;background:#FAF6F2;margin:0;}}
-.s{{width:40px;height:40px;border:4px solid #E0D5C8;border-top-color:#B8956A;border-radius:50%;animation:r .8s linear infinite;margin:0 auto 16px;}}
+<style>body{{display:flex;align-items:center;justify-content:center;min-height:100vh;background:#F5F5F5;margin:0;}}
+.s{{width:40px;height:40px;border:4px solid #E5E5E5;border-top-color:#333333;border-radius:50%;animation:r .8s linear infinite;margin:0 auto 16px;}}
 @keyframes r{{to{{transform:rotate(360deg)}}}}</style></head>
 <body><div style="text-align:center"><div class="s"></div>
-<p id="st" style="color:#6B5B4E;font-family:sans-serif;font-size:14px;">正在登入中...</p></div>
+<p id="st" style="color:#666666;font-family:sans-serif;font-size:14px;">正在登入中...</p></div>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <script>
 (function(){{
@@ -311,6 +311,6 @@ liff.init({{liffId:liffId}}).then(function(){{
             except (ValueError, IndexError):
                 pass
 
-        # 預設回會員中心
-        _logger.warning('liff_redirect: 未知的 target=%s，導回會員中心', target)
-        return '/liff/member'
+        # 預設回登入頁
+        _logger.warning('liff_redirect: 未知的 target=%s，導回登入頁', target)
+        return '/web/login'

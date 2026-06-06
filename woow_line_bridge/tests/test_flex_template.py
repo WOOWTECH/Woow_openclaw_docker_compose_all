@@ -25,11 +25,15 @@ class TestFlexTemplate(TransactionCase):
         self.assertEqual(flex['header']['type'], 'box')
         self.assertEqual(flex['body']['type'], 'box')
 
+    def _get_accent_color(self, flex):
+        """取得 header accent strip 的顏色"""
+        return flex['header']['contents'][0]['backgroundColor']
+
     def test_build_welcome_structure(self):
         result = self.tmpl.build_welcome('TestUser')
         self._validate_bubble(result)
-        # 驗證 header 品牌色
-        self.assertEqual(result['header']['backgroundColor'], '#B8956A')
+        # 驗證 header accent strip 使用 STATUS_INFO
+        self.assertEqual(self._get_accent_color(result), '#3B82F6')
 
     def test_build_welcome_empty_name(self):
         result = self.tmpl.build_welcome('')
@@ -58,8 +62,8 @@ class TestFlexTemplate(TransactionCase):
         booking.appointment_type_id.name = 'Test Service'
         result = self.tmpl.build_booking_cancelled(booking)
         self._validate_bubble(result)
-        # 驗證紅色 header
-        self.assertEqual(result['header']['backgroundColor'], '#E74C3C')
+        # 驗證紅色 accent strip (STATUS_ERROR)
+        self.assertEqual(self._get_accent_color(result), '#EF4444')
 
     def test_build_booking_cancelled_with_reason(self):
         booking = MagicMock()
@@ -97,8 +101,8 @@ class TestFlexTemplate(TransactionCase):
         booking.appointment_type_id.name = 'Test Service'
         result = self.tmpl.build_booking_payment_required(booking, payment_url='https://pay.example.com')
         self._validate_bubble(result)
-        # 橙色 header
-        self.assertEqual(result['header']['backgroundColor'], '#F39C12')
+        # 橙色 accent strip (STATUS_WARNING)
+        self.assertEqual(self._get_accent_color(result), '#F59E0B')
         # 有付款按鈕
         footer_contents = result['footer']['contents']
         pay_buttons = [b for b in footer_contents if '付款' in b.get('action', {}).get('label', '')]

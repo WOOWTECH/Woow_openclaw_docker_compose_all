@@ -95,10 +95,6 @@
                         <setting string="LIFF Endpoint URLs" help="在 LINE Developer Console → LIFF → 各 LIFF app 的 Endpoint URL 填入對應網址">
                             <div class="content-group">
                                 <div class="row mt16">
-                                    <label for="line_liff_endpoint_member" class="col-lg-3 o_light_label"/>
-                                    <field name="line_liff_endpoint_member" class="col-lg-6" widget="CopyClipboardChar" readonly="1"/>
-                                </div>
-                                <div class="row mt16">
                                     <label for="line_liff_endpoint_news" class="col-lg-3 o_light_label"/>
                                     <field name="line_liff_endpoint_news" class="col-lg-6" widget="CopyClipboardChar" readonly="1"/>
                                 </div>

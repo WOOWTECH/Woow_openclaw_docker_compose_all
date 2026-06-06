@@ -95,10 +95,6 @@ class ResConfigSettings(models.TransientModel):
         string='Webhook URL',
         compute='_compute_line_urls',
     )
-    line_liff_endpoint_member = fields.Char(
-        string='會員中心 Endpoint',
-        compute='_compute_line_urls',
-    )
     line_liff_endpoint_news = fields.Char(
         string='最新消息 Endpoint',
         compute='_compute_line_urls',
@@ -113,6 +109,5 @@ class ResConfigSettings(models.TransientModel):
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url', '')
         for record in self:
             record.line_webhook_url = f'{base_url}/line/webhook' if base_url else ''
-            record.line_liff_endpoint_member = f'{base_url}/liff/member' if base_url else ''
             record.line_liff_endpoint_news = f'{base_url}/liff/news' if base_url else ''
             record.line_liff_endpoint_locations = f'{base_url}/liff/locations' if base_url else ''

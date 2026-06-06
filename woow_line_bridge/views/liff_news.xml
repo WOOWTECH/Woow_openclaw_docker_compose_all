@@ -10,7 +10,7 @@
 
                 <!-- 頂部 -->
                 <div class="liff-page-header">
-                    <a href="/liff/member" class="liff-back-btn">
+                    <a href="javascript:history.back()" class="liff-back-btn">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2D2620" stroke-width="2">
                             <polyline points="15 18 9 12 15 6"/>
                         </svg>

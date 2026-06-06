@@ -45,7 +45,9 @@ class AppointmentBooking(models.Model):
 
     def action_confirm(self):
         """覆寫預約確認，加入 LINE 推播 hook"""
-        result = super().action_confirm()
+        result = super(AppointmentBooking, self.with_context(
+            skip_line_notification=True
+        )).action_confirm()
 
         if not self.env.context.get('skip_line_notification'):
             for booking in self:
@@ -67,7 +69,9 @@ class AppointmentBooking(models.Model):
 
     def action_cancel(self):
         """覆寫預約取消，加入 LINE 推播 hook"""
-        result = super().action_cancel()
+        result = super(AppointmentBooking, self.with_context(
+            skip_line_notification=True
+        )).action_cancel()
 
         if not self.env.context.get('skip_line_notification'):
             for booking in self:

@@ -9,14 +9,20 @@ from odoo import api, fields, models
 
 _logger = logging.getLogger(__name__)
 
-# 馬克健身品牌色
-BRAND_PRIMARY = '#B8956A'
-BRAND_SECONDARY = '#8B6F47'
-BRAND_BG = '#FAF6F2'
-BRAND_CARD = '#FFFFFF'
-BRAND_TEXT = '#2D2620'
-BRAND_TEXT_SUB = '#6B5B4E'
-LINE_GREEN = '#06C755'
+# Grayscale palette (matches line.flex.factory in woow_line_base)
+CLR_BLACK = '#1A1A1A'
+CLR_DARK = '#333333'
+CLR_MID = '#666666'
+CLR_LABEL = '#999999'
+CLR_BORDER = '#E5E5E5'
+CLR_BG = '#F5F5F5'
+CLR_WHITE = '#FFFFFF'
+
+# Semantic status colors (header accent strip only)
+STATUS_SUCCESS = '#22C55E'
+STATUS_ERROR = '#EF4444'
+STATUS_WARNING = '#F59E0B'
+STATUS_INFO = '#3B82F6'
 
 # 星期中文對照
 WEEKDAY_ZH = ['一', '二', '三', '四', '五', '六', '日']
@@ -42,7 +48,7 @@ class LineFlexTemplate(models.AbstractModel):
     def _get_shop_name(self):
         """取得店家名稱"""
         return self.env['ir.config_parameter'].sudo().get_param(
-            'woow_line_bridge.shop_name', 'Mark Studio 馬克健身',
+            'woow_line_bridge.shop_name', '',
         )
 
     def _get_config(self, key, default=''):
@@ -92,14 +98,14 @@ class LineFlexTemplate(models.AbstractModel):
                 {
                     'type': 'text',
                     'text': label,
-                    'color': BRAND_TEXT_SUB,
+                    'color': CLR_LABEL,
                     'size': 'sm',
                     'flex': 0,
                 },
                 {
                     'type': 'text',
                     'text': str(value) if value else '-',
-                    'color': BRAND_TEXT,
+                    'color': CLR_DARK,
                     'size': 'sm',
                     'flex': 1,
                     'align': 'end',
@@ -107,21 +113,35 @@ class LineFlexTemplate(models.AbstractModel):
             ],
         }
 
-    def _booking_header(self, title, bg_color=None):
+    def _booking_header(self, title, status_color=None):
         """建構預約相關 Flex header"""
         return {
             'type': 'box',
             'layout': 'vertical',
-            'backgroundColor': bg_color or BRAND_PRIMARY,
-            'paddingAll': '16px',
+            'paddingAll': '0px',
             'contents': [
                 {
-                    'type': 'text',
-                    'text': title,
-                    'color': '#FFFFFF',
-                    'weight': 'bold',
-                    'size': 'lg',
-                    'align': 'center',
+                    'type': 'box',
+                    'layout': 'vertical',
+                    'backgroundColor': status_color or STATUS_INFO,
+                    'height': '4px',
+                    'contents': [],
+                },
+                {
+                    'type': 'box',
+                    'layout': 'vertical',
+                    'backgroundColor': CLR_BG,
+                    'paddingAll': '16px',
+                    'contents': [
+                        {
+                            'type': 'text',
+                            'text': title,
+                            'color': CLR_BLACK,
+                            'weight': 'bold',
+                            'size': 'lg',
+                            'align': 'center',
+                        },
+                    ],
                 },
             ],
         }
@@ -137,46 +157,31 @@ class LineFlexTemplate(models.AbstractModel):
         :return: Flex Message contents dict
         """
         shop_name = self._get_shop_name()
-        member_url = self._liff_url('member')
+        book_url = f'{self._get_base_url()}/liff/redirect/book'
         greeting = f'{display_name} 您好！' if display_name else '您好！'
 
         return {
             'type': 'bubble',
             'size': 'mega',
-            'header': {
-                'type': 'box',
-                'layout': 'vertical',
-                'backgroundColor': BRAND_PRIMARY,
-                'paddingAll': '20px',
-                'contents': [
-                    {
-                        'type': 'text',
-                        'text': f'歡迎來到{shop_name}',
-                        'color': '#FFFFFF',
-                        'weight': 'bold',
-                        'size': 'lg',
-                        'align': 'center',
-                    },
-                ],
-            },
+            'header': self._booking_header(f'歡迎來到{shop_name}', STATUS_INFO),
             'body': {
                 'type': 'box',
                 'layout': 'vertical',
-                'backgroundColor': BRAND_BG,
+                'backgroundColor': CLR_WHITE,
                 'paddingAll': '20px',
                 'spacing': 'md',
                 'contents': [
                     {
                         'type': 'text',
                         'text': greeting,
-                        'color': BRAND_TEXT,
+                        'color': CLR_DARK,
                         'size': 'md',
                         'weight': 'bold',
                     },
                     {
                         'type': 'text',
-                        'text': '感謝您加入我們的 LINE 好友！\n點擊下方按鈕開始體驗專業按摩伸展服務。',
-                        'color': BRAND_TEXT_SUB,
+                        'text': '感謝您加入我們的 LINE 好友！\n點擊下方按鈕開始使用服務。',
+                        'color': CLR_LABEL,
                         'size': 'sm',
                         'wrap': True,
                     },
@@ -195,10 +200,10 @@ class LineFlexTemplate(models.AbstractModel):
                                 'action': {
                                     'type': 'uri',
                                     'label': '立即預約',
-                                    'uri': member_url,
+                                    'uri': book_url,
                                 },
                                 'style': 'primary',
-                                'color': BRAND_PRIMARY,
+                                'color': CLR_DARK,
                                 'height': 'md',
                             },
                             {
@@ -206,7 +211,7 @@ class LineFlexTemplate(models.AbstractModel):
                                 'action': {
                                     'type': 'uri',
                                     'label': '會員中心',
-                                    'uri': member_url,
+                                    'uri': book_url,
                                 },
                                 'style': 'secondary',
                                 'height': 'md',
@@ -239,7 +244,7 @@ class LineFlexTemplate(models.AbstractModel):
             {
                 'type': 'text',
                 'text': f'預約編號：{booking.name or ""}',
-                'color': BRAND_TEXT,
+                'color': CLR_DARK,
                 'size': 'md',
                 'weight': 'bold',
             },
@@ -261,7 +266,7 @@ class LineFlexTemplate(models.AbstractModel):
                     'uri': f'{base_url}/liff/redirect/booking/{booking.id}',
                 },
                 'style': 'primary',
-                'color': BRAND_PRIMARY,
+                'color': CLR_DARK,
             },
             {
                 'type': 'button',
@@ -277,11 +282,11 @@ class LineFlexTemplate(models.AbstractModel):
         return {
             'type': 'bubble',
             'size': 'mega',
-            'header': self._booking_header('預約確認'),
+            'header': self._booking_header('預約確認', STATUS_SUCCESS),
             'body': {
                 'type': 'box',
                 'layout': 'vertical',
-                'backgroundColor': BRAND_BG,
+                'backgroundColor': CLR_WHITE,
                 'paddingAll': '20px',
                 'spacing': 'md',
                 'contents': body_contents,
@@ -306,7 +311,7 @@ class LineFlexTemplate(models.AbstractModel):
         :param reason: 取消原因（可選）
         :return: Flex Message contents dict
         """
-        member_url = self._liff_url('member')
+        rebook_url = f'{self._get_base_url()}/liff/redirect/book'
         date_str, time_str = self._format_booking_dt(booking)
         service_name = booking.appointment_type_id.name or ''
 
@@ -314,7 +319,7 @@ class LineFlexTemplate(models.AbstractModel):
             {
                 'type': 'text',
                 'text': f'預約編號：{booking.name or ""}',
-                'color': BRAND_TEXT,
+                'color': CLR_DARK,
                 'size': 'md',
                 'weight': 'bold',
             },
@@ -328,11 +333,11 @@ class LineFlexTemplate(models.AbstractModel):
         return {
             'type': 'bubble',
             'size': 'mega',
-            'header': self._booking_header('預約已取消', '#E74C3C'),
+            'header': self._booking_header('預約已取消', STATUS_ERROR),
             'body': {
                 'type': 'box',
                 'layout': 'vertical',
-                'backgroundColor': BRAND_BG,
+                'backgroundColor': CLR_WHITE,
                 'paddingAll': '20px',
                 'spacing': 'md',
                 'contents': body_contents,
@@ -348,10 +353,10 @@ class LineFlexTemplate(models.AbstractModel):
                         'action': {
                             'type': 'uri',
                             'label': '重新預約',
-                            'uri': member_url,
+                            'uri': rebook_url,
                         },
                         'style': 'primary',
-                        'color': BRAND_PRIMARY,
+                        'color': CLR_DARK,
                     },
                 ],
             },
@@ -377,7 +382,7 @@ class LineFlexTemplate(models.AbstractModel):
             {
                 'type': 'text',
                 'text': reminder_text,
-                'color': BRAND_TEXT,
+                'color': CLR_DARK,
                 'size': 'md',
                 'weight': 'bold',
                 'wrap': True,
@@ -401,7 +406,7 @@ class LineFlexTemplate(models.AbstractModel):
                     'uri': f'https://www.google.com/maps/dir/?api=1&destination={shop_lat},{shop_lng}',
                 },
                 'style': 'primary',
-                'color': BRAND_PRIMARY,
+                'color': CLR_DARK,
             })
         footer_buttons.append({
             'type': 'button',
@@ -416,11 +421,11 @@ class LineFlexTemplate(models.AbstractModel):
         result = {
             'type': 'bubble',
             'size': 'mega',
-            'header': self._booking_header('預約提醒'),
+            'header': self._booking_header('預約提醒', STATUS_INFO),
             'body': {
                 'type': 'box',
                 'layout': 'vertical',
-                'backgroundColor': BRAND_BG,
+                'backgroundColor': CLR_WHITE,
                 'paddingAll': '20px',
                 'spacing': 'md',
                 'contents': body_contents,
@@ -453,7 +458,7 @@ class LineFlexTemplate(models.AbstractModel):
             {
                 'type': 'text',
                 'text': '您的預約需要完成付款',
-                'color': BRAND_TEXT,
+                'color': CLR_DARK,
                 'size': 'md',
                 'weight': 'bold',
                 'wrap': True,
@@ -474,7 +479,7 @@ class LineFlexTemplate(models.AbstractModel):
                     'uri': payment_url,
                 },
                 'style': 'primary',
-                'color': LINE_GREEN,
+                'color': STATUS_SUCCESS,
             })
         footer_buttons.append({
             'type': 'button',
@@ -489,11 +494,11 @@ class LineFlexTemplate(models.AbstractModel):
         return {
             'type': 'bubble',
             'size': 'mega',
-            'header': self._booking_header('待付款通知', '#F39C12'),
+            'header': self._booking_header('待付款通知', STATUS_WARNING),
             'body': {
                 'type': 'box',
                 'layout': 'vertical',
-                'backgroundColor': BRAND_BG,
+                'backgroundColor': CLR_WHITE,
                 'paddingAll': '20px',
                 'spacing': 'md',
                 'contents': body_contents,
@@ -525,7 +530,7 @@ class LineFlexTemplate(models.AbstractModel):
             {
                 'type': 'text',
                 'text': news.title or '',
-                'color': BRAND_TEXT,
+                'color': CLR_DARK,
                 'size': 'lg',
                 'weight': 'bold',
                 'wrap': True,
@@ -535,7 +540,7 @@ class LineFlexTemplate(models.AbstractModel):
             body_contents.append({
                 'type': 'text',
                 'text': news.summary,
-                'color': BRAND_TEXT_SUB,
+                'color': CLR_LABEL,
                 'size': 'sm',
                 'wrap': True,
                 'margin': 'md',
@@ -543,7 +548,7 @@ class LineFlexTemplate(models.AbstractModel):
         body_contents.append({
             'type': 'text',
             'text': shop_name,
-            'color': '#9B8E82',
+            'color': CLR_LABEL,
             'size': 'xs',
             'margin': 'lg',
         })
@@ -551,11 +556,11 @@ class LineFlexTemplate(models.AbstractModel):
         result = {
             'type': 'bubble',
             'size': 'mega',
-            'header': self._booking_header('最新消息'),
+            'header': self._booking_header('最新消息', STATUS_INFO),
             'body': {
                 'type': 'box',
                 'layout': 'vertical',
-                'backgroundColor': BRAND_BG,
+                'backgroundColor': CLR_WHITE,
                 'paddingAll': '20px',
                 'spacing': 'sm',
                 'contents': body_contents,
@@ -574,7 +579,7 @@ class LineFlexTemplate(models.AbstractModel):
                             'uri': f'{news_url}?article_id={news.id}' if hasattr(news, 'id') else news_url,
                         },
                         'style': 'primary',
-                        'color': BRAND_PRIMARY,
+                        'color': CLR_DARK,
                     },
                 ],
             },

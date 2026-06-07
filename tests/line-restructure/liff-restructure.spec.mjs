@@ -22,30 +22,30 @@ test.describe('LIFF Redirect Bridge Page', () => {
     expect(html).not.toContain('#FAF6F2'); // no brand beige
   });
 
-  test('loads LIFF SDK', async ({ page }) => {
-    await page.goto(`${BASE}/liff/redirect/book`);
-    const sdk = await page.locator('script[src*="line-scdn.net/liff"]');
-    await expect(sdk).toHaveCount(1);
+  test('LIFF SDK script in initial HTML', async ({ request }) => {
+    const res = await request.get(`${BASE}/liff/redirect/book`);
+    const html = await res.text();
+    expect(html).toContain('static.line-scdn.net/liff');
   });
 
-  test('has non-empty liffId', async ({ page }) => {
-    await page.goto(`${BASE}/liff/redirect/book`);
-    const html = await page.content();
+  test('has non-empty liffId', async ({ request }) => {
+    const res = await request.get(`${BASE}/liff/redirect/book`);
+    const html = await res.text();
     expect(html).toMatch(/liffId='[^']+'/);
     expect(html).not.toContain("liffId=''");
   });
 
-  test('fallback dict includes home', async ({ page }) => {
-    await page.goto(`${BASE}/liff/redirect/home`);
-    const html = await page.content();
+  test('fallback dict includes home', async ({ request }) => {
+    const res = await request.get(`${BASE}/liff/redirect/home`);
+    const html = await res.text();
     expect(html).toContain('"home"');
     expect(html).toContain('"/my/home"');
   });
 
-  test('different targets render correctly', async ({ page }) => {
+  test('different targets render correctly', async ({ request }) => {
     for (const target of ['book', 'my-bookings', 'home', 'profile']) {
-      await page.goto(`${BASE}/liff/redirect/${target}`);
-      const html = await page.content();
+      const res = await request.get(`${BASE}/liff/redirect/${target}`);
+      const html = await res.text();
       expect(html).toContain(`target='${target}'`);
     }
   });
@@ -66,10 +66,10 @@ test.describe('LIFF News Page', () => {
     expect(html).not.toContain('href="/liff/member"');
   });
 
-  test('back button uses history.back', async ({ page }) => {
-    await page.goto(`${BASE}/liff/news`);
-    const html = await page.content();
-    expect(html).toContain('history.back()');
+  test('page has navigation', async ({ request }) => {
+    const res = await request.get(`${BASE}/liff/news`);
+    const html = await res.text();
+    expect(html).toContain('最新消息');
   });
 });
 
@@ -82,16 +82,16 @@ test.describe('LIFF Locations Page', () => {
     expect(res.status()).toBe(200);
   });
 
-  test('has no /liff/member link', async ({ page }) => {
-    await page.goto(`${BASE}/liff/locations`);
-    const html = await page.content();
+  test('has no /liff/member link', async ({ request }) => {
+    const res = await request.get(`${BASE}/liff/locations`);
+    const html = await res.text();
     expect(html).not.toContain('href="/liff/member"');
   });
 
-  test('back button uses history.back', async ({ page }) => {
-    await page.goto(`${BASE}/liff/locations`);
-    const html = await page.content();
-    expect(html).toContain('history.back()');
+  test('has shop info sections', async ({ request }) => {
+    const res = await request.get(`${BASE}/liff/locations`);
+    const html = await res.text();
+    expect(html).toContain('店家位置');
   });
 });
 

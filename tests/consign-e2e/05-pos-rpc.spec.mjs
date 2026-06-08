@@ -68,7 +68,7 @@ test.describe('POS RPC endpoints', () => {
     test.skip(!posConfigId, 'No POS config found');
 
     const result = await rpcCall(page, 'pos.config', 'use_consign_card_code',
-      [[posConfigId], 'INVALID-XXXXX-99999', false]);
+      [[posConfigId], 'INVALID-XXXXX-99999', partner.id]);
 
     expect(result.successful).toBe(false);
     expect(result.payload?.not_found).toBe(true);

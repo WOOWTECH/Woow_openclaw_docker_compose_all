@@ -112,11 +112,20 @@ test.describe('Backend redemption', () => {
   });
 
   test('card form shows redemption wizard button (UI)', async () => {
+    // Read card code for search
+    const [c] = await read(page, 'loyalty.card', [cardId], ['code']);
     await page.goto(`${BASE}/odoo/action-woow_loyalty_consign.loyalty_card_consign_action`);
     await page.waitForSelector('.o_list_view', { timeout: 30000 });
 
-    // Click the card row
-    const row = page.locator(`.o_data_row:has-text("${partner.name}")`).first();
+    // Search by card code to find quickly
+    const searchInput = page.locator('.o_searchview_input');
+    if (await searchInput.isVisible().catch(() => false)) {
+      await searchInput.fill(c.code);
+      await searchInput.press('Enter');
+      await page.waitForTimeout(2000);
+    }
+
+    const row = page.locator('.o_data_row').first();
     await row.click();
     await page.waitForSelector('.o_form_view', { timeout: 15000 });
 

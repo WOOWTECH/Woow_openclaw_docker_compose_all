@@ -104,7 +104,7 @@ test.describe('E: Edge cases and error handling', () => {
     test.skip(!posConfigId, 'No POS config found');
 
     const result = await rpcCall(page, 'pos.config', 'use_consign_card_code',
-      [[posConfigId], 'BOGUS-INVALID-99999', false]);
+      [[posConfigId], 'BOGUS-INVALID-99999', partner.id]);
 
     expect(result.successful).toBe(false);
     expect(result.payload?.not_found).toBe(true);

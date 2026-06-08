@@ -71,10 +71,18 @@ test.describe('Chatter notifications', () => {
   });
 
   test('card form shows chatter in backend (UI)', async () => {
+    const [c] = await read(page, 'loyalty.card', [cardId], ['code']);
     await page.goto(`${BASE}/odoo/action-woow_loyalty_consign.loyalty_card_consign_action`);
     await page.waitForSelector('.o_list_view', { timeout: 30000 });
 
-    const row = page.locator(`.o_data_row:has-text("${partner.name}")`).first();
+    const searchInput = page.locator('.o_searchview_input');
+    if (await searchInput.isVisible().catch(() => false)) {
+      await searchInput.fill(c.code);
+      await searchInput.press('Enter');
+      await page.waitForTimeout(2000);
+    }
+
+    const row = page.locator('.o_data_row').first();
     await row.click();
     await page.waitForSelector('.o_form_view', { timeout: 15000 });
 

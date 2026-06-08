@@ -81,6 +81,9 @@ spec:
               clone_or_pull "https://github.com/WOOWTECH/Woow_odoo_n8n_livechat.git" \
                 "$ADDONS_DIR/Woow_odoo_n8n_livechat" "Woow_odoo_n8n_livechat"
 
+              clone_or_pull "https://github.com/WOOWTECH/Woow_odoo_loyalty_card_enhance.git" \
+                "$ADDONS_DIR/Woow_odoo_loyalty_card_enhance" "Woow_odoo_loyalty_card_enhance"
+
               echo "[init] All addons ready."
 
               echo "[init] Addons directory contents:"

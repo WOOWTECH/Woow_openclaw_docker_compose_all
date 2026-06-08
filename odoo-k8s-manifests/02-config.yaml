@@ -19,7 +19,7 @@ data:
     db_maxconn = 64
 
     ; --- Paths ---
-    addons_path = /mnt/extra-addons,/mnt/extra-addons/Odoo_reservation_module,/mnt/extra-addons/Woow_odoo_n8n_livechat,/usr/lib/python3/dist-packages/odoo/addons
+    addons_path = /mnt/extra-addons,/mnt/extra-addons/Odoo_reservation_module,/mnt/extra-addons/Woow_odoo_n8n_livechat,/mnt/extra-addons/Woow_odoo_loyalty_card_enhance/addons,/usr/lib/python3/dist-packages/odoo/addons
     data_dir = /var/lib/odoo
 
     ; --- HTTP ---

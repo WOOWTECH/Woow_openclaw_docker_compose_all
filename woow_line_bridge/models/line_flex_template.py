@@ -577,16 +577,14 @@ class LineFlexTemplate(models.AbstractModel):
             },
         }
 
-        # 如果有圖片 URL，加 hero image（LINE 要求 https）
-        image_url = getattr(news, 'image_url', '') or ''
-        if not image_url and getattr(news, 'image', None):
-            image_url = f'{base_url}/liff/news/image/{news.id}'
-        if image_url:
+        # Hero image: 本地上傳圖片透過公開端點提供
+        if news.image:
+            img_url = f'{base_url}/liff/news/image/{news.id}'
             # LINE Flex Message 圖片 URL 必須是 https
-            image_url = image_url.replace('http://', 'https://', 1)
+            img_url = img_url.replace('http://', 'https://', 1)
             result['hero'] = {
                 'type': 'image',
-                'url': image_url,
+                'url': img_url,
                 'size': 'full',
                 'aspectRatio': '20:13',
                 'aspectMode': 'cover',

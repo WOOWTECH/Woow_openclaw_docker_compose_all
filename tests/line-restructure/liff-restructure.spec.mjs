@@ -31,8 +31,9 @@ test.describe('LIFF Redirect Bridge Page', () => {
   test('has non-empty liffId', async ({ request }) => {
     const res = await request.get(`${BASE}/liff/redirect/book`);
     const html = await res.text();
-    expect(html).toMatch(/liffId='[^']+'/);
-    expect(html).not.toContain("liffId=''");
+    // json.dumps() produces double-quoted strings in the JS context
+    expect(html).toMatch(/liffId[=:]["'][^"']+["']/);
+    expect(html).not.toContain('liffId=""');
   });
 
   test('fallback dict includes home', async ({ request }) => {
@@ -46,7 +47,8 @@ test.describe('LIFF Redirect Bridge Page', () => {
     for (const target of ['book', 'my-bookings', 'home', 'profile']) {
       const res = await request.get(`${BASE}/liff/redirect/${target}`);
       const html = await res.text();
-      expect(html).toContain(`target='${target}'`);
+      // json.dumps() produces double-quoted strings: serverTarget="book"
+      expect(html).toContain(`serverTarget="${target}"`);
     }
   });
 });

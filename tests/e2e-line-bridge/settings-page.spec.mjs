@@ -3,7 +3,7 @@
 import { test, expect } from '@playwright/test';
 
 const ADMIN_LOGIN = process.env.ODOO_ADMIN_LOGIN || 'admin';
-const ADMIN_PASSWORD = process.env.ODOO_ADMIN_PASSWORD || '';
+const ADMIN_PASSWORD = process.env.ODOO_ADMIN_PASSWORD || 'admin';
 
 test.describe('LINE Bridge Settings Page', () => {
 

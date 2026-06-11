@@ -193,15 +193,16 @@ test.describe('N: Multi-LIFF-Config Architecture', () => {
     console.log(`[OK] N11: /line/webhook returns 403 (no signature)`);
   });
 
-  // ── N12: Webhook /line/webhook/999 returns 404 (invalid config) ──
-  test('N12: Webhook /line/webhook/999 returns 404 for non-existent config', async ({ request }) => {
+  // ── N12: Webhook /line/webhook/999 fallbacks to default config (403 = sig check) ──
+  test('N12: Webhook /line/webhook/999 fallbacks to default config (403 sig fail)', async ({ request }) => {
     const resp = await request.post(`${BASE}/line/webhook/999`, {
       data: JSON.stringify({ events: [] }),
       headers: { 'Content-Type': 'application/json' },
     });
-    expect(resp.status()).toBe(404);
+    // Non-existent config_id now falls back to default config → signature verification → 403
+    expect(resp.status()).toBe(403);
 
-    console.log(`[OK] N12: /line/webhook/999 returns 404`);
+    console.log(`[OK] N12: /line/webhook/999 fallbacks to default → 403 (sig fail)`);
   });
 
   // ── N13: LIFF redirect endpoint still works ──

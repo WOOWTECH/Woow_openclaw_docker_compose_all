@@ -39,15 +39,16 @@ test.describe('LIFF Redirect Bridge — /liff/redirect/*', () => {
     expect(html).toContain('/my/account');
   });
 
-  test('POST without token redirects to /liff/member?error=no_token', async ({ request }) => {
+  test('POST without token redirects with error=no_token', async ({ request }) => {
     const resp = await request.post('/liff/redirect/book', {
       form: {},
       maxRedirects: 0,
     });
-    // Should be a redirect (302)
+    // Should be a redirect (302 or 303)
     expect([302, 303]).toContain(resp.status());
     const location = resp.headers()['location'] || '';
-    expect(location).toContain('/liff/member');
+    // /liff/member was removed; redirect now goes to /web/login
+    expect(location).toContain('/web/login');
     expect(location).toContain('error=no_token');
   });
 

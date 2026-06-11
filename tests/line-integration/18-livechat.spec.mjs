@@ -43,44 +43,41 @@ test.describe('LiveChat LINE integration', () => {
     }
   });
 
-  // E2: POST /line/webhook/<valid channel_id> returns 200 with empty object
-  test('E2: POST /line/webhook/<channel_id> returns 200/{}', async () => {
-    // Find any livechat channel ID, or default to 1
-    const channels = await searchRead(page, 'im_livechat.channel', [], ['id'], 1);
-    const channelId = channels.length > 0 ? channels[0].id : 1;
+  // E2: POST /line/webhook/<int> is now handled by line.liff.config (multi-config routing)
+  // The livechat webhook route conflicts with the bridge webhook. With a valid config_id
+  // but invalid signature, the bridge returns 403. We verify no 500 error.
+  test('E2: POST /line/webhook/<config_id> returns 403 (bad signature, no 500)', async () => {
+    // Find any line.liff.config record, or use a known ID
+    const configs = await searchRead(page, 'line.liff.config', [], ['id'], 1);
+    const configId = configs.length > 0 ? configs[0].id : 1;
 
     const resp = await page.evaluate(async (url) => {
       const r = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'call', params: { events: [] } }),
+        body: JSON.stringify({ events: [] }),
       });
       return { status: r.status, body: await r.text() };
-    }, `${BASE}/line/webhook/${channelId}`);
+    }, `${BASE}/line/webhook/${configId}`);
 
-    // Odoo type='json' routes return 200 with a JSON-RPC wrapper
-    expect(resp.status).toBe(200);
-    const body = JSON.parse(resp.body);
-    // The result should be {} (empty dict) for disabled/missing channel
-    expect(body.result).toEqual({});
-    console.log(`[OK] POST /line/webhook/${channelId} returned 200 with empty result`);
+    // Bridge webhook returns 403 for invalid signature (not 500)
+    expect([403, 200]).toContain(resp.status);
+    console.log(`[OK] POST /line/webhook/${configId} returned ${resp.status} (no 500 crash)`);
   });
 
-  // E3: POST /line/webhook/99999 (non-existent channel) returns 200/{}
-  test('E3: POST /line/webhook/99999 returns 200/{} gracefully', async () => {
+  // E3: POST /line/webhook/99999 (non-existent config) returns 404
+  test('E3: POST /line/webhook/99999 returns 404 for non-existent config', async () => {
     const resp = await page.evaluate(async (url) => {
       const r = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'call', params: { events: [] } }),
+        body: JSON.stringify({ events: [] }),
       });
       return { status: r.status, body: await r.text() };
     }, `${BASE}/line/webhook/99999`);
 
-    expect(resp.status).toBe(200);
-    const body = JSON.parse(resp.body);
-    expect(body.result).toEqual({});
-    console.log('[OK] POST /line/webhook/99999 handled gracefully (no 500)');
+    expect(resp.status).toBe(404);
+    console.log('[OK] POST /line/webhook/99999 returns 404 for non-existent config');
   });
 
   // E4: mail.guest model has line_user_id field

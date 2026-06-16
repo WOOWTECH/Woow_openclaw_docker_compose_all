@@ -260,6 +260,7 @@ spec:
         env:
         - {name: HERMES_DASHBOARD, value: "1"}
         - {name: HERMES_DASHBOARD_INSECURE, value: "1"}
+        - {name: HERMES_DASHBOARD_TUI, value: "1"}
         - {name: HERMES_UID, value: "1000"}
         - {name: HERMES_GID, value: "1000"}
         - {name: API_SERVER_ENABLED, value: "true"}
@@ -323,6 +324,7 @@ spec:
           rm -f /home/hermeswebui/.hermes/.skills_prompt_snapshot.json 2>/dev/null
           if [ -f /hermeswebui_init.bash ]; then
             sed -i 's/chmod 700 "\$itdir"/chmod 755 "\$itdir"/' /hermeswebui_init.bash 2>/dev/null
+            sed -i '/cd \/app; python server.py/i test -f /home/hermeswebui/.hermes/replace_icons.sh && sh /home/hermeswebui/.hermes/replace_icons.sh 2>/dev/null || true' /hermeswebui_init.bash 2>/dev/null
             exec /hermeswebui_init.bash
           else
             echo "WebUI init script not found, sleeping..."

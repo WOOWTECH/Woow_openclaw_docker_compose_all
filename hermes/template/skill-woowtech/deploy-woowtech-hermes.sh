@@ -64,7 +64,7 @@ spec:
       storage: 5Gi
 EOF
 
-# 3. Deploy combined pod (copy from reference)
+# 3. Deploy combined pod (copy from reference, inject HERMES_DASHBOARD_TUI + branding)
 $KC_NONAMESPACE -n $REF_NS get deploy hermes -o json | python3 -c "
 import sys, json
 d = json.load(sys.stdin)
@@ -73,14 +73,32 @@ for k in ['resourceVersion','uid','creationTimestamp','generation']:
     d['metadata'].pop(k, None)
 d['metadata']['annotations'] = {}
 d.pop('status', None)
-# Update password to admin
-        # Remove postStart hook (will add after setup)
-        if "lifecycle" in c: del c["lifecycle"]
 for c in d['spec']['template']['spec']['containers']:
+    if c['name'] == 'hermes-agent':
+        # Ensure HERMES_DASHBOARD_TUI=1 is set
+        env = c.setdefault('env', [])
+        tui_found = False
+        for e in env:
+            if e['name'] == 'HERMES_DASHBOARD_TUI':
+                e['value'] = '1'
+                tui_found = True
+        if not tui_found:
+            env.append({'name': 'HERMES_DASHBOARD_TUI', 'value': '1'})
     if c['name'] == 'hermes-webui':
+        # Remove postStart hook (will add after setup)
+        c.pop('lifecycle', None)
         for e in c.get('env', []):
             if e['name'] == 'HERMES_WEBUI_PASSWORD':
                 e['value'] = 'admin'
+        # Inject branding into startup args before server.py
+        if c.get('args'):
+            for i, a in enumerate(c['args']):
+                if 'hermeswebui_init.bash' in str(a) and 'replace_icons' not in str(a):
+                    c['args'][i] = a.replace(
+                        'exec /hermeswebui_init.bash',
+                        \"\"\"sed -i '/cd \\\\/app; python server.py/i test -f /home/hermeswebui/.hermes/replace_icons.sh && sh /home/hermeswebui/.hermes/replace_icons.sh 2>/dev/null || true' /hermeswebui_init.bash 2>/dev/null
+          exec /hermeswebui_init.bash\"\"\"
+                    )
 json.dump(d, sys.stdout)
 " | $KC apply -f -
 
@@ -157,9 +175,62 @@ os.chmod(p, 0o666)
 # 12. Fix permissions
 $KC exec deploy/hermes -c hermes-agent -- chmod 666 /opt/data/cron/jobs.json 2>/dev/null
 
+# 13. Fix TUI permissions (required for Dashboard embedded Chat/Terminal)
+echo "Fixing TUI permissions..."
+$KC exec deploy/hermes -c hermes-agent -- chown -R hermes:hermes /opt/hermes/ui-tui/ 2>/dev/null || true
+
+# 14. Copy hermes-agent source directory (required for WebUI gateway mode)
+echo "Copying hermes-agent source for WebUI gateway..."
+$KC exec deploy/hermes -c hermes-agent -- sh -c 'if [ ! -d /opt/data/hermes-agent ]; then cp -a /opt/hermes /opt/data/hermes-agent && rm -rf /opt/data/hermes-agent/.git; fi'
+
+# 15. Install tmux (for parallel agent dispatch)
+echo "Installing tmux..."
+$KC exec deploy/hermes -c hermes-agent -- sh -c 'apt-get update -qq && apt-get install -y -qq tmux' 2>/dev/null || true
+
+# 16. Install superpowers skills
+echo "Installing superpowers skills..."
+TMPDIR_SP=$(mktemp -d)
+git clone --depth 1 https://github.com/obra/superpowers.git "$TMPDIR_SP/superpowers" 2>/dev/null
+tar czf "$TMPDIR_SP/superpowers-skills.tar.gz" -C "$TMPDIR_SP/superpowers" skills/
+$KC cp "$TMPDIR_SP/superpowers-skills.tar.gz" deploy/hermes:/tmp/ -c hermes-agent
+$KC exec deploy/hermes -c hermes-agent -- tar xzf /tmp/superpowers-skills.tar.gz -C /opt/data/
+rm -rf "$TMPDIR_SP"
+
+# 17. Enable ALL skills via WebUI API
+echo "Enabling all skills..."
+sleep 5
+POD=$($KC get pod -l app=hermes -o jsonpath='{.items[0].metadata.name}')
+$KC port-forward "$POD" 18787:8787 &
+PF_PID=$!
+sleep 3
+curl -s -c /tmp/woow-cookie -X POST -H "Content-Type: application/json" \
+  -d '{"password":"admin"}' http://localhost:18787/api/auth/login >/dev/null 2>&1
+SKILLS=$(curl -s -b /tmp/woow-cookie http://localhost:18787/api/skills | python3 -c "
+import sys,json
+try:
+    [print(s['name']) for s in json.load(sys.stdin).get('skills',[])]
+except: pass
+" 2>/dev/null)
+for S in $SKILLS; do
+  curl -s -b /tmp/woow-cookie -X POST -H "Content-Type: application/json" \
+    -d "{\"name\":\"$S\",\"enabled\":true}" http://localhost:18787/api/skills/toggle >/dev/null 2>&1
+done
+kill $PF_PID 2>/dev/null || true
+rm -f /tmp/woow-cookie
+
+# 18. CF tunnel config reminder (dashboard subdomain)
+INSTANCE_SHORT=$(echo "$NS" | sed 's/-hermes//')
+DASHBOARD_DOMAIN="${INSTANCE_SHORT}-dashboard.woowtech.io"
+
 echo ""
 echo "============================================================"
 echo "  WoowTech Hermes deployed!"
-echo "  URL: https://$DOMAIN"
-echo "  Password: admin"
+echo "  WebUI URL : https://$DOMAIN"
+echo "  Dashboard : https://$DASHBOARD_DOMAIN  (port 9119)"
+echo "  Password  : admin"
+echo "============================================================"
+echo ""
+echo ">>> MANUAL: Add CF tunnel ingress for dashboard:"
+echo "    - hostname: $DASHBOARD_DOMAIN"
+echo "      service: http://${NS}-agent-svc.${NS}.svc.cluster.local:9119"
 echo "============================================================"

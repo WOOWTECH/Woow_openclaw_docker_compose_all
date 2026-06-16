@@ -44,6 +44,12 @@ spec:
             # Enable dashboard
             - name: HERMES_DASHBOARD
               value: "1"
+            # Enable in-browser Chat tab (embedded terminal via PTY/WebSocket)
+            - name: HERMES_DASHBOARD_TUI
+              value: "1"
+            # Required when binding to 0.0.0.0 without OAuth auth gate
+            - name: HERMES_DASHBOARD_INSECURE
+              value: "1"
             # API server for OpenAI-compatible endpoint
             - name: API_SERVER_ENABLED
               value: "true"

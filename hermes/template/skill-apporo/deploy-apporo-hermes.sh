@@ -150,7 +150,7 @@ os.makedirs(os.path.dirname(p), exist_ok=True)
 json.dump({'hidden_tabs':['kanban','todos'],'onboarding_completed':True,'send_key':'enter','theme':'dark'}, open(p,'w'), indent=2)
 "
 
-# 9. Copy WoowTech icons + branding from template
+# 9. Copy Apporo icons + branding from template
 $KC exec deploy/hermes -c hermes-webui -- mkdir -p /home/hermeswebui/.hermes/icons
 for ICON in favicon.svg favicon-32.png favicon-192.png favicon-512.png favicon-512.svg favicon.ico apple-touch-icon.png; do
   if [ -f "$SCRIPT_DIR/icons/$ICON" ]; then

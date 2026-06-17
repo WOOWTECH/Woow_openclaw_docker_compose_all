@@ -121,12 +121,12 @@ nav_checks = {
     "首頁 in menu": "首頁" in menu_names,
     "商品 in menu": "商品" in menu_names,
     "關於我們 in menu": "關於我們" in menu_names,
-    "常見問題 in menu": "常見問題" in menu_names,
-    "聯絡我們 in menu": "聯絡我們" in menu_names,
     "會員中心 in menu": "會員中心" in menu_names,
     "Category dropdown exists": any("category=" in (m["url"] or "") for m in menus),
-    "6+ top menu items": len([m for m in menus if m["parent_id"] and "category" not in (m["url"] or "")]) >= 6,
+    "4+ top menu items": len([m for m in menus if m["parent_id"] and "category" not in (m["url"] or "")]) >= 4,
     "Menu in Chinese": all(any('\u4e00' <= c <= '\u9fff' for c in m["name"]) for m in menus if m["name"] not in ["Home"]),
+    "About has contact info": (lambda: ("0926-926-851" in (urllib.request.urlopen(f"{URL}/about-us").read().decode("utf-8"))) if fetch_page("/about-us")[0] == 200 else False)(),
+    "No orphan FAQ": fetch_page("/qa")[0] in (404, 403),
 }
 nav_pass = sum(1 for v in nav_checks.values() if v)
 nav_score = round(nav_pass / len(nav_checks) * 10, 1)

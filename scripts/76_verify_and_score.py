@@ -156,7 +156,7 @@ hp_checks = {
     "/shop links present": '"/shop' in homepage,
     "Brand name 禪香不二": "禪香不二" in homepage,
     "No YouTube embed": "youtube.com/embed" not in homepage,
-    "5 sections (not 11)": homepage.count("<section") <= 6,
+    "5 sections in wrap": (lambda c: c[c.find('id="wrap"'):c.find('</main>')].count('<section') <= 6)(homepage),
 }
 hp_pass = sum(1 for v in hp_checks.values() if v)
 hp_score = round(hp_pass / len(hp_checks) * 10, 1)

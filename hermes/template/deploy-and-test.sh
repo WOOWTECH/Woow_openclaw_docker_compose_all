@@ -117,7 +117,7 @@ bash "$SCRIPT_DIR/post-deploy-setup.sh" "$NS" "$CTX"
 # ─────────────────────────────────────────────────
 # PHASE 2: COMPREHENSIVE TESTS
 # ─────────────────────────────────────────────────
-section "Phase 2: Comprehensive Tests (30 checks)"
+section "Phase 2: Comprehensive Tests (34 checks)"
 
 # --- 2.1 Pod Health ---
 section "2.1 Pod Health (5 tests)"
@@ -268,6 +268,25 @@ echo "$LOGIN_PAGE" | grep -qi "hermes\|password\|sign" && p "Login page renders"
 
 BACKEND=$($KC exec deploy/hermes -c hermes-webui -- sh -c 'echo $HERMES_WEBUI_CHAT_BACKEND' 2>/dev/null)
 [[ "$BACKEND" == "gateway" ]] && p "Chat backend: gateway" || f "Chat backend" "$BACKEND"
+
+# --- 2.10 Branding (4 injection points) ---
+section "2.10 Branding (4 tests)"
+
+# Check if branding script exists on PVC
+BRANDING=$($KC exec deploy/hermes -c hermes-webui -- test -f /home/hermeswebui/.hermes/apply_branding.py && echo "yes" 2>/dev/null)
+[[ "$BRANDING" == "yes" ]] && p "apply_branding.py exists" || f "apply_branding.py" "missing from PVC"
+
+# Check empty-logo replacement in index.html (must NOT contain gold caduceus, MUST contain custom SVG)
+EMPTY_LOGO=$($KC exec deploy/hermes -c hermes-webui -- grep -c 'empty-logo.*svg\|empty-logo.*path' /app/static/index.html 2>/dev/null)
+[[ "${EMPTY_LOGO:-0}" -ge 1 ]] && p "Empty-state logo branded" || f "Empty-state logo" "still default caduceus"
+
+# Check CSS hide-tabs injection
+CSS_HIDE=$($KC exec deploy/hermes -c hermes-webui -- grep -c "HIDE_KANBAN_TODOS" /app/static/index.html 2>/dev/null)
+[[ "${CSS_HIDE:-0}" -ge 1 ]] && p "CSS tab-hide injected" || f "CSS tab-hide" "missing from index.html"
+
+# Check replace_icons.sh is wired into hermeswebui_init.bash
+INIT_HOOK=$($KC exec deploy/hermes -c hermes-webui -- grep -c "replace_icons" /hermeswebui_init.bash 2>/dev/null)
+[[ "${INIT_HOOK:-0}" -ge 1 ]] && p "replace_icons.sh in init.bash" || f "Init hook" "replace_icons.sh not injected into init.bash"
 
 # ─────────────────────────────────────────────────
 # PHASE 3: REPORT

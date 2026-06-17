@@ -1,5 +1,12 @@
 #!/bin/sh
-sleep 5
+# Wait for hermeswebui_init.bash rsync to populate /app/static/index.html
+# The init script rsyncs /apptoo/ -> /app/ which overwrites index.html.
+# We must wait for that to finish before applying branding.
+for i in $(seq 1 30); do
+  [ -f /app/static/index.html ] && break
+  sleep 2
+done
+sleep 2  # extra buffer after index.html appears
 
 # 1. Copy icon files from PVC to app static
 if [ -f /home/hermeswebui/.hermes/icons/favicon-32.png ]; then

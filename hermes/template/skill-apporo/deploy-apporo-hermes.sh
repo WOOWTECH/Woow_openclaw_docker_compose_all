@@ -181,6 +181,7 @@ $KC exec deploy/hermes -c hermes-agent -- chmod 666 /opt/data/cron/jobs.json 2>/
 # 13. Fix TUI permissions (required for Dashboard embedded Chat/Terminal)
 echo "Fixing TUI permissions..."
 $KC exec deploy/hermes -c hermes-agent -- chown -R hermes:hermes /opt/hermes/ui-tui/ 2>/dev/null || true
+$KC exec deploy/hermes -c hermes-agent -- sh -c "cd /opt/hermes/ui-tui && node scripts/build.mjs" 2>/dev/null || true
 
 # 14. Copy hermes-agent source directory (required for WebUI gateway mode)
 echo "Copying hermes-agent source for WebUI gateway..."

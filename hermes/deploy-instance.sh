@@ -278,7 +278,7 @@ spec:
             secretKeyRef:
               name: ${PREFIX}-secrets
               key: MINIMAX_API_KEY
-        - {name: PLAYWRIGHT_BROWSERS_PATH, value: /shared-pw}
+        - {name: PLAYWRIGHT_BROWSERS_PATH, value: /opt/data/playwright-browsers}
         - {name: PATH, value: "/opt/data/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/google-cloud-sdk/bin"}
         ports:
         - {containerPort: 8642, name: gateway}
@@ -343,7 +343,7 @@ spec:
             secretKeyRef:
               name: ${PREFIX}-secrets
               key: MINIMAX_API_KEY
-        - {name: PLAYWRIGHT_BROWSERS_PATH, value: /opt/playwright-browsers}
+        - {name: PLAYWRIGHT_BROWSERS_PATH, value: /opt/data/playwright-browsers}
         - {name: LD_LIBRARY_PATH, value: /opt/shared-tools/lib}
         - {name: PATH, value: "/opt/shared-tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"}
         - {name: HERMES_WEBUI_HOST, value: "0.0.0.0"}

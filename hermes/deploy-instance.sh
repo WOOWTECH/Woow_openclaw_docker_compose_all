@@ -261,6 +261,7 @@ spec:
         - {name: HERMES_DASHBOARD, value: "1"}
         - {name: HERMES_DASHBOARD_INSECURE, value: "1"}
         - {name: HERMES_DASHBOARD_TUI, value: "1"}
+        - {name: HERMES_TUI_DIR, value: "/opt/data/ui-tui"}
         - {name: HERMES_UID, value: "1000"}
         - {name: HERMES_GID, value: "1000"}
         - {name: API_SERVER_ENABLED, value: "true"}

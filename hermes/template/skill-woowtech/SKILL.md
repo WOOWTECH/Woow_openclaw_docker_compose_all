@@ -29,11 +29,12 @@ bash deploy-woowtech-hermes.sh clienta-hermes clienta-hermes.woowtech.io woow-k3
 - `HERMES_DASHBOARD_INSECURE=1` — 允許無認證存取
 - `HERMES_DASHBOARD_TUI=1` — 啟用內嵌 Chat/Terminal (TUI)
 
-### Dashboard TUI 權限修復
-部署後必須執行：
-```bash
-kubectl exec POD -c hermes-agent -- chown -R hermes:hermes /opt/hermes/ui-tui/
-```
+### Dashboard TUI 權限修復（已自動化）
+部署腳本自動執行以下步驟：
+1. `chown -R hermes:hermes /opt/hermes/ui-tui/` (修復 image layer 權限)
+2. 複製 `ui-tui` 到 PVC (`/opt/data/ui-tui`)
+3. 設定 `HERMES_TUI_DIR=/opt/data/ui-tui` 環境變數（永久修復，Pod 重啟不受影響）
+4. 寫入 `MINIMAX_API_KEY` 到 `/opt/data/.env`（TUI 讀取 .env 檔案，非容器環境變數）
 
 ### CF Tunnel 配置
 每個實例需要兩個 CF tunnel ingress 規則：
@@ -57,11 +58,21 @@ kubectl exec POD -c hermes-agent -- chown -R hermes:hermes /opt/hermes/ui-tui/
 
 ## 部署後自動化步驟（腳本包含）
 1. TUI 權限修復 (`chown -R hermes:hermes /opt/hermes/ui-tui/`)
-2. Agent 原始碼複製 (`/opt/hermes` -> `/opt/data/hermes-agent`，WebUI gateway 模式所需)
-3. tmux 安裝 (支援 parallel agent dispatch)
-4. Superpowers skills 安裝 (obra/superpowers GitHub)
-5. 全部 skills 啟用 (透過 WebUI `/api/skills/toggle` API)
-6. 品牌注入至 `hermeswebui_init.bash`（`server.py` 啟動前自動執行 `replace_icons.sh`）
+2. **TUI PVC 永久修復**: 複製 `ui-tui` 到 `/opt/data/ui-tui` (PVC)，設定 `HERMES_TUI_DIR=/opt/data/ui-tui` 環境變數（Pod 重啟後不需重新 chown）
+3. **.env API key 寫入**: 寫入 `MINIMAX_API_KEY` 到 `/opt/data/.env`（TUI 讀取 .env 檔案，非容器環境變數）
+4. Agent 原始碼複製 (`/opt/hermes` -> `/opt/data/hermes-agent`，WebUI gateway 模式所需)
+5. tmux 安裝 (支援 parallel agent dispatch)
+6. Superpowers skills 安裝 (obra/superpowers GitHub)
+7. 全部 skills 啟用 (透過 WebUI `/api/skills/toggle` API)
+8. 品牌注入至 `hermeswebui_init.bash`（`server.py` 啟動前自動執行 `replace_icons.sh`）
+
+## Known Issues & Fixes
+
+| 問題 | 原因 | 修復方式 |
+|------|------|----------|
+| Dashboard TUI 顯示 "No API key configured" | TUI 讀取 `/opt/data/.env` 檔案，非容器環境變數 | 部署腳本自動寫入 `MINIMAX_API_KEY` 到 `.env` |
+| Dashboard TUI 在 Pod 重啟後壞掉 | image layer 的 `ui-tui/` 權限被重設 | `HERMES_TUI_DIR=/opt/data/ui-tui` 從 PVC 讀取，永久修復 |
+| WebUI model 與 Dashboard 不同步 | WebUI 和 Dashboard 使用獨立的 model 設定 | 在 WebUI Chat 中使用 `/model` 指令切換 |
 
 ## 檔案清單
 | 檔案 | 用途 |

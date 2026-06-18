@@ -183,6 +183,22 @@ echo "Fixing TUI permissions..."
 $KC exec deploy/hermes -c hermes-agent -- chown -R hermes:hermes /opt/hermes/ui-tui/ 2>/dev/null || true
 $KC exec deploy/hermes -c hermes-agent -- sh -c "cd /opt/hermes/ui-tui && node scripts/build.mjs" 2>/dev/null || true
 
+# 13b. Copy ui-tui to PVC for permanent TUI fix (survives pod restarts)
+echo "Copying ui-tui to PVC..."
+$KC exec deploy/hermes -c hermes-agent -- sh -c '
+  test -d /opt/data/ui-tui/dist || (cp -a /opt/hermes/ui-tui /opt/data/ui-tui && chown -R hermes:hermes /opt/data/ui-tui && cd /opt/data/ui-tui && node scripts/build.mjs)
+' 2>/dev/null || true
+
+# 13c. Set HERMES_TUI_DIR env var on deployment (reads TUI from PVC, survives restarts)
+$KC_NONAMESPACE -n $NS patch deployment hermes --type='json' -p='[{"op":"add","path":"/spec/template/spec/containers/0/env/-","value":{"name":"HERMES_TUI_DIR","value":"/opt/data/ui-tui"}}]' 2>/dev/null || true
+
+# 13d. Write MINIMAX_API_KEY to .env (TUI reads .env file, not container env vars)
+echo "Writing .env..."
+$KC exec deploy/hermes -c hermes-agent -- sh -c '
+  grep -q "MINIMAX_API_KEY" /opt/data/.env 2>/dev/null || echo "MINIMAX_API_KEY=$MINIMAX_API_KEY" >> /opt/data/.env
+  chmod 600 /opt/data/.env
+' 2>/dev/null || true
+
 # 14. Copy hermes-agent source directory (required for WebUI gateway mode)
 echo "Copying hermes-agent source for WebUI gateway..."
 $KC exec deploy/hermes -c hermes-agent -- sh -c 'if [ ! -d /opt/data/hermes-agent ]; then cp -a /opt/hermes /opt/data/hermes-agent && rm -rf /opt/data/hermes-agent/.git; fi'

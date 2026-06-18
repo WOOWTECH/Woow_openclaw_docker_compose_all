@@ -50,27 +50,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 ENV LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 TZ=Asia/Taipei
 
 # ── Layer 2: Binary downloads ──────────────────────────────────
-# yq, helm, argocd, cloudflared, gh
+# yq, cloudflared, gh (removed: helm, argocd, docker — no targets in container)
 ARG YQ_VERSION=v4.44.6
-ARG HELM_VERSION=v3.17.3
-ARG ARGOCD_VERSION=v2.14.12
 ARG GH_VERSION=2.73.0
 
 # yq (mikefarah)
 RUN curl -fsSL "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64" \
         -o /usr/local/bin/yq \
     && chmod +x /usr/local/bin/yq
-
-# helm
-RUN curl -fsSL "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz" \
-        | tar xz -C /tmp \
-    && cp /tmp/linux-amd64/helm /usr/local/bin/helm \
-    && rm -rf /tmp/linux-amd64
-
-# argocd CLI
-RUN curl -fsSL "https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_VERSION}/argocd-linux-amd64" \
-        -o /usr/local/bin/argocd \
-    && chmod +x /usr/local/bin/argocd
 
 # cloudflared
 RUN curl -fsSL "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64" \
@@ -83,10 +70,16 @@ RUN curl -fsSL "https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_$
     && cp /tmp/gh_${GH_VERSION}_linux_amd64/bin/gh /usr/local/bin/gh \
     && rm -rf /tmp/gh_*
 
+# Removed: helm (56MB, no kubeconfig), argocd (179MB, no server), docker (30MB, no socket)
+
 # ── Layer 3: Google Cloud SDK ────────────────────────────────
 
-# Remove google-chrome-stable from base image (replaced by Chromium via Playwright)
-RUN apt-get update && apt-get remove -y google-chrome-stable 2>/dev/null || true \
+# Remove unused tools from base image (saves ~265MB)
+# - google-chrome-stable: replaced by Chromium via Playwright
+# - docker.io: no Docker socket in container (30MB)
+RUN apt-get update \
+    && apt-get remove -y google-chrome-stable docker.io 2>/dev/null || true \
+    && rm -f /usr/local/bin/helm /usr/local/bin/argocd 2>/dev/null \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 

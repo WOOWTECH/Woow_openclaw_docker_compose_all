@@ -134,6 +134,21 @@ RUN rm -rf /tmp/* /var/lib/apt/lists/* 2>/dev/null; \
              /home/hermes/.ssh /home/hermes/.config \
     && chown -R hermes:hermes /home/hermes
 
+# ── Layer 7: Fix Dashboard TUI permissions ────────────────────
+# The base image builds ui-tui as UID 10000 but runtime hermes user
+# is remapped to UID 1000 via HERMES_UID. The upstream stage2-hook
+# skips chown when HERMES_HOME (PVC) is already owned correctly,
+# leaving ui-tui owned by 10000. This breaks the TUI build/PTY.
+# See: https://github.com/NousResearch/hermes-agent/issues/23402
+
+# Fix A: chown at build time (zero runtime cost)
+RUN chown -R hermes:hermes /opt/hermes/ui-tui /opt/hermes/node_modules 2>/dev/null || true
+
+# Fix B: s6 cont-init.d hook to re-assert on every boot (defense in depth)
+RUN printf '#!/command/with-contenv sh\nchown -R hermes:hermes /opt/hermes/ui-tui /opt/hermes/node_modules 2>/dev/null || true\n' \
+      > /etc/cont-init.d/016-fix-tui-perms \
+    && chmod +x /etc/cont-init.d/016-fix-tui-perms
+
 # ── Git config for Hermes bot identity ─────────────────────────
 RUN git config --system user.name "Hermes Bot" \
     && git config --system user.email "hermes@woowtech.io" \

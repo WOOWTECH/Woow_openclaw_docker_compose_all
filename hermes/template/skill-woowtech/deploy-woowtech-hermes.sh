@@ -84,6 +84,8 @@ for c in d['spec']['template']['spec']['containers']:
                 tui_found = True
         if not tui_found:
             env.append({'name': 'HERMES_DASHBOARD_TUI', 'value': '1'})
+        # Add postStart: remove unused tools + hermes CLI symlink
+        c['lifecycle'] = {'postStart': {'exec': {'command': ['sh', '-c', 'rm -f /usr/local/bin/argocd /usr/local/bin/helm /usr/bin/docker 2>/dev/null; ln -sf /opt/hermes/.venv/bin/hermes /usr/local/bin/hermes 2>/dev/null || true']}}}
     if c['name'] == 'hermes-webui':
         # Remove postStart hook (will add after setup)
         c.pop('lifecycle', None)

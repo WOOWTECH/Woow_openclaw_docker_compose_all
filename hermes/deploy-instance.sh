@@ -299,6 +299,10 @@ spec:
           initialDelaySeconds: 10
           periodSeconds: 10
           failureThreshold: 6
+        lifecycle:
+          postStart:
+            exec:
+              command: [sh, -c, "rm -f /usr/local/bin/argocd /usr/local/bin/helm /usr/bin/docker 2>/dev/null; ln -sf /opt/hermes/.venv/bin/hermes /usr/local/bin/hermes 2>/dev/null || true"]
         volumeMounts:
         - {name: hermes-data, mountPath: /opt/data}
         - {name: playwright-shared, mountPath: /shared-pw}

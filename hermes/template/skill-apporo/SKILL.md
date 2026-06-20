@@ -58,16 +58,45 @@ Apporo 實例必須使用 **Token Plan key** (`sk-cp-` prefix)，**不要使用*
 - **密碼**: 預設 `admin`
 - **SOUL**: 通用 AI 助手（無隱私資料）
 - **持久化**: postStart hook + init.bash 注入確保品牌自動恢復
+- **Web 搜尋**: ddgs (DuckDuckGo) 套件安裝到 venv，`web.backend: ddgs`
+
+## postStart Lifecycle Hook（每次 Pod 啟動自動執行）
+1. 移除未使用工具：argocd, helm, docker
+2. 建立 hermes CLI symlink：`/usr/local/bin/hermes`
+3. 移除 15 個不需要的內建技能（apple, gaming, email, social-media, yuanbao 等）
+4. 安裝 ddgs Python 套件到 venv site-packages（web_search 工具）
+
+## WoowTech 自建技能體系（13 項，三層架構）
+```
+woowtech/
+├── 01-building-tech/     ← Layer 1: 底層技術
+│   ├── knx/              ← KNX 建築自動化核心
+│   ├── knx-ets/          ← ETS 工程工具
+│   ├── knx-ets-parser/   ← ETS 匯出解析
+│   ├── knx-training/     ← KNX 培訓與認證
+│   ├── basalte/          ← Basalte 硬體
+│   ├── home-assistant/   ← HA 自動化
+│   └── aiot/             ← AIoT 智慧建築整合
+├── 02-certification/     ← Layer 2: 認證標準
+│   ├── well-standard/    ← WELL v2 知識庫 (ESG-S)
+│   ├── well-strategy/    ← WELL 認證策略
+│   ├── leed-bdc/         ← LEED BD+C 總覽 (ESG-E)
+│   ├── leed-energy/      ← LEED EAc2 能效
+│   └── leed-water/       ← LEED WE 水效
+└── 03-esg/               ← Layer 3: ESG 頂層框架
+    └── esg-framework/    ← E+S+G 三支柱整合
+```
 
 ## 部署後自動化步驟（腳本包含）
-1. TUI 權限修復 (`chown -R hermes:hermes /opt/hermes/ui-tui/`)
-2. **TUI PVC 永久修復**: 複製 `ui-tui` 到 `/opt/data/ui-tui` (PVC)，設定 `HERMES_TUI_DIR=/opt/data/ui-tui` 環境變數（Pod 重啟後不需重新 chown）
-3. **.env API key 寫入**: 寫入 `MINIMAX_API_KEY` 到 `/opt/data/.env`（TUI 讀取 .env 檔案，非容器環境變數）
-4. Agent 原始碼複製 (`/opt/hermes` -> `/opt/data/hermes-agent`，WebUI gateway 模式所需)
-5. tmux 安裝 (支援 parallel agent dispatch)
-6. Superpowers skills 安裝 (obra/superpowers GitHub)
-7. 全部 skills 啟用 (透過 WebUI `/api/skills/toggle` API)
-8. 品牌注入至 `hermeswebui_init.bash`（`server.py` 啟動前自動執行 `replace_icons.sh`）
+1. TUI 權限修復 + PVC 永久修復（`HERMES_TUI_DIR=/opt/data/ui-tui`）
+2. .env API key 寫入（TUI 讀取 .env 檔案）
+3. Agent 原始碼複製（WebUI gateway 模式所需）
+4. tmux 安裝（支援 parallel agent dispatch）
+5. Superpowers skills 安裝（obra/superpowers, 14 項）
+6. WoowTech 自建技能安裝（woowtech/, 13 項）
+7. 全部 skills 啟用（透過 WebUI `/api/skills/toggle` API）
+8. 品牌注入至 `hermeswebui_init.bash`
+9. Web 搜尋啟用（ddgs 套件 + `web.backend: ddgs`）
 
 ## Known Issues & Fixes
 

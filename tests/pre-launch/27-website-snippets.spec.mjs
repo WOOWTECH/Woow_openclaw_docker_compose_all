@@ -1,27 +1,34 @@
 // tests/pre-launch/27-website-snippets.spec.mjs
-// W1-W12: Mark Studio homepage snippet conversion verification
+// W1-W12: O.G老地方身體修復 homepage snippet conversion verification
 //
 // Validates that the custom website snippets are correctly installed,
-// structured, and functional on the Mark Studio production site.
+// structured, and functional on the O.G老地方身體修復 production site.
 import { test, expect } from '@playwright/test';
 import { loginAsAdmin, BASE } from '../line-integration/helpers/odoo-rpc.mjs';
 
 const SECTION_IDS = [
-  'hero', 'stats', 'services', 'technique',
-  'experience', 'booking', 'news', 'faq', 'contact',
+  'hero', 'story', 'services', 'flow',
+  'booking', 'contact',
 ];
 
-// Each section uses a CSS class prefixed with mk- (the snippet naming convention)
+// Each section uses a CSS class prefixed with og- (the snippet naming convention)
 const SECTION_CLASS_MAP = {
-  hero: 'mk-hero',
-  stats: 'mk-stats',
-  services: 'mk-services',
-  technique: 'mk-technique',
-  experience: 'mk-experience',
-  booking: 'mk-booking-cta',
-  news: 'mk-news',
-  faq: 'mk-faq',
-  contact: 'mk-contact',
+  hero: 'og-hero',
+  story: 'og-story',
+  services: 'og-services',
+  flow: 'og-flow',
+  booking: 'og-booking',
+  contact: 'og-contact',
+};
+
+// Each section uses a data-snippet attribute with s_og_ prefix
+const SECTION_SNIPPET_MAP = {
+  hero: 's_og_hero',
+  story: 's_og_story',
+  services: 's_og_services',
+  flow: 's_og_flow',
+  booking: 's_og_booking',
+  contact: 's_og_contact',
 };
 
 test.describe('W: Website Snippet Conversion Tests', () => {
@@ -36,9 +43,9 @@ test.describe('W: Website Snippet Conversion Tests', () => {
   });
 
   // =================================================================
-  // W2: All 9 sections present
+  // W2: All 6 sections present
   // =================================================================
-  test('W2: All 9 sections present on homepage', async ({ page }) => {
+  test('W2: All 6 sections present on homepage', async ({ page }) => {
     await page.goto(`${BASE}/`, { waitUntil: 'domcontentloaded' });
 
     const missing = [];
@@ -52,13 +59,13 @@ test.describe('W: Website Snippet Conversion Tests', () => {
     }
 
     expect(missing, `Missing section IDs: ${missing.join(', ')}`).toHaveLength(0);
-    console.log(`[OK] W2: All 9 sections found: ${SECTION_IDS.join(', ')}`);
+    console.log(`[OK] W2: All 6 sections found: ${SECTION_IDS.join(', ')}`);
   });
 
   // =================================================================
-  // W3: Each section has its mk- CSS class (snippet identity marker)
+  // W3: Each section has its og- CSS class (snippet identity marker)
   // =================================================================
-  test('W3: Each section has its mk- CSS class (snippet identity)', async ({ page }) => {
+  test('W3: Each section has its og- CSS class (snippet identity)', async ({ page }) => {
     await page.goto(`${BASE}/`, { waitUntil: 'domcontentloaded' });
 
     const results = [];
@@ -80,8 +87,8 @@ test.describe('W: Website Snippet Conversion Tests', () => {
       console.log(`  #${r.id}: class="${r.classes}" expected="${r.expectedClass}" ${r.ok ? 'OK' : 'FAIL: ' + r.reason}`);
     }
 
-    expect(failures, `Sections missing mk- class: ${failures.map(f => f.id).join(', ')}`).toHaveLength(0);
-    console.log(`[OK] W3: All sections have their mk- CSS class`);
+    expect(failures, `Sections missing og- class: ${failures.map(f => f.id).join(', ')}`).toHaveLength(0);
+    console.log(`[OK] W3: All sections have their og- CSS class`);
   });
 
   // =================================================================
@@ -109,9 +116,9 @@ test.describe('W: Website Snippet Conversion Tests', () => {
   });
 
   // =================================================================
-  // W5: Hero section content — "MARK STUDIO" and subtitle text
+  // W5: Hero section content — "O.G" or "老地方" text
   // =================================================================
-  test('W5: Hero section contains MARK STUDIO text', async ({ page }) => {
+  test('W5: Hero section contains O.G branding text', async ({ page }) => {
     await page.goto(`${BASE}/`, { waitUntil: 'domcontentloaded' });
 
     const heroSection = page.locator('#hero');
@@ -120,17 +127,18 @@ test.describe('W: Website Snippet Conversion Tests', () => {
     if (heroCount === 0) {
       // Fallback: search entire page for the text
       const bodyText = await page.textContent('body');
-      expect(bodyText).toContain('MARK');
-      console.log(`[OK] W5: "MARK" found in page body (no #hero section)`);
+      const hasOG = bodyText.includes('O.G') || bodyText.includes('老地方');
+      expect(hasOG, 'Neither "O.G" nor "老地方" found in page body').toBe(true);
+      console.log(`[OK] W5: O.G branding found in page body (no #hero section)`);
       return;
     }
 
     const heroText = await heroSection.textContent();
     // Check for the studio name
-    const hasMarkStudio = heroText.includes('MARK') || heroText.includes('Mark');
-    expect(hasMarkStudio, `Hero text does not contain "MARK": "${heroText.slice(0, 200)}"`).toBe(true);
+    const hasOG = heroText.includes('O.G') || heroText.includes('老地方');
+    expect(hasOG, `Hero text does not contain "O.G" or "老地方": "${heroText.slice(0, 200)}"`).toBe(true);
 
-    console.log(`[OK] W5: Hero section contains MARK STUDIO branding`);
+    console.log(`[OK] W5: Hero section contains O.G branding`);
   });
 
   // =================================================================
@@ -227,23 +235,23 @@ test.describe('W: Website Snippet Conversion Tests', () => {
   });
 
   // =================================================================
-  // W9: All markstudio_website images load (no 404)
+  // W9: All website snippet images load (no 404)
   // =================================================================
-  test('W9: All markstudio_website images load without 404', async ({ page }) => {
-    // Track all image request statuses
+  test('W9: All website snippet images load without 404', async ({ page }) => {
+    // Track all image request statuses for both old and new module naming
     const imageStatuses = [];
     page.on('response', (response) => {
       const url = response.url();
-      if (url.includes('markstudio_website') && /\.(png|jpg|jpeg|gif|svg|webp)/i.test(url)) {
+      if ((url.includes('markstudio_website') || url.includes('og_website') || url.includes('s_og_')) && /\.(png|jpg|jpeg|gif|svg|webp)/i.test(url)) {
         imageStatuses.push({ url: url.substring(0, 120), status: response.status() });
       }
     });
 
     await page.goto(`${BASE}/`, { waitUntil: 'load', timeout: 45000 });
 
-    // Also count img tags with markstudio_website in src
-    const imgCount = await page.locator('img[src*="markstudio_website"]').count();
-    console.log(`  Found ${imgCount} img elements with markstudio_website in src`);
+    // Count img tags from website snippets
+    const imgCount = await page.locator('img[src*="markstudio_website"], img[src*="og_website"], img[src*="web/image"]').count();
+    console.log(`  Found ${imgCount} img elements from website snippets`);
 
     // Check tracked responses for 404s
     const failed = imageStatuses.filter(i => i.status >= 400);
@@ -253,108 +261,77 @@ test.describe('W: Website Snippet Conversion Tests', () => {
     }
 
     if (imageStatuses.length === 0 && imgCount === 0) {
-      console.log(`  [INFO] No markstudio_website images found -- snippet may use different asset paths`);
+      console.log(`  [INFO] No snippet images found -- snippet may use different asset paths`);
       // Not a failure -- the module might use different naming
       return;
     }
 
     expect(failed, `${failed.length} image(s) returned 4xx/5xx`).toHaveLength(0);
-    console.log(`[OK] W9: All ${imageStatuses.length} markstudio_website images loaded successfully`);
+    console.log(`[OK] W9: All ${imageStatuses.length} website snippet images loaded successfully`);
   });
 
   // =================================================================
-  // W10: FAQ accordion works -- click <details> and verify it opens
+  // W10: data-snippet attributes present on all sections
   // =================================================================
-  test('W10: FAQ accordion opens on click', async ({ page }) => {
+  test('W10: data-snippet attributes present on all sections', async ({ page }) => {
     await page.goto(`${BASE}/`, { waitUntil: 'domcontentloaded' });
 
-    // Look for FAQ section
-    const faqExists = await page.locator('#faq').count();
-    if (faqExists === 0) {
-      console.log(`  [SKIP] W10: No #faq section found`);
-      test.skip();
-      return;
+    const results = [];
+    for (const id of SECTION_IDS) {
+      const el = page.locator(`#${id}`);
+      const count = await el.count();
+      if (count === 0) {
+        results.push({ id, ok: false, reason: 'element not found' });
+        continue;
+      }
+      const snippet = await el.getAttribute('data-snippet') || '';
+      const expectedSnippet = SECTION_SNIPPET_MAP[id];
+      const ok = snippet === expectedSnippet;
+      results.push({ id, snippet, expectedSnippet, ok, reason: ok ? '' : `data-snippet="${snippet}" expected "${expectedSnippet}"` });
     }
 
-    // Find <details> elements within FAQ
-    let detailsElements = page.locator('#faq details');
-    let detailsCount = await detailsElements.count();
-
-    if (detailsCount === 0) {
-      // Try broader search
-      detailsElements = page.locator('details');
-      detailsCount = await detailsElements.count();
-      console.log(`  No <details> in #faq, found ${detailsCount} on page overall`);
+    const failures = results.filter(r => !r.ok);
+    for (const r of results) {
+      console.log(`  #${r.id}: data-snippet="${r.snippet}" expected="${r.expectedSnippet}" ${r.ok ? 'OK' : 'FAIL: ' + r.reason}`);
     }
 
-    if (detailsCount === 0) {
-      // Check for Bootstrap collapse pattern
-      const collapseCount = await page.locator('#faq .collapse, #faq [data-bs-toggle="collapse"]').count();
-      console.log(`  Bootstrap collapse elements in #faq: ${collapseCount}`);
-      expect(collapseCount, 'No accordion/details elements found in FAQ').toBeGreaterThanOrEqual(1);
-
-      const toggle = page.locator('#faq [data-bs-toggle="collapse"]').first();
-      await toggle.click();
-      await page.waitForTimeout(500);
-      console.log(`[OK] W10: FAQ collapse toggled`);
-      return;
-    }
-
-    // Click the first <details> summary to open/close it
-    const firstDetails = detailsElements.first();
-    const wasOpen = await firstDetails.getAttribute('open');
-    console.log(`  First <details> initially open: ${wasOpen !== null}`);
-
-    const summary = firstDetails.locator('summary');
-    await summary.click();
-    await page.waitForTimeout(300);
-
-    const isOpenNow = await firstDetails.getAttribute('open');
-    // Toggle should have changed state
-    if (wasOpen === null) {
-      expect(isOpenNow, 'Details element did not open after click').not.toBeNull();
-    } else {
-      expect(isOpenNow).toBeNull();
-    }
-
-    console.log(`[OK] W10: FAQ accordion toggle works (details count: ${detailsCount})`);
+    expect(failures, `Sections with wrong data-snippet: ${failures.map(f => `${f.id}(${f.reason})`).join(', ')}`).toHaveLength(0);
+    console.log(`[OK] W10: All sections have correct s_og_ data-snippet attributes`);
   });
 
   // =================================================================
-  // W11: /news redirects to /#news
+  // W11: Contact section contains map or address information
   // =================================================================
-  test('W11: /news redirects to /#news', async ({ request, page }) => {
-    // Use request API to check for redirect without following
-    const response = await request.get(`${BASE}/news`, {
-      maxRedirects: 0,
-      failOnStatusCode: false,
-    });
+  test('W11: Contact section contains map or address info', async ({ page }) => {
+    await page.goto(`${BASE}/`, { waitUntil: 'domcontentloaded' });
 
-    const status = response.status();
-    const locationHeader = response.headers()['location'] || '';
-
-    console.log(`  GET /news status: ${status}`);
-    console.log(`  Location header: ${locationHeader}`);
-
-    if (status === 301 || status === 302 || status === 303 || status === 308) {
-      // Redirect -- check if it goes to /#news
-      const redirectsToHash = locationHeader.includes('#news') || locationHeader.includes('/#news');
-      expect(redirectsToHash, `Redirect location "${locationHeader}" does not point to /#news`).toBe(true);
-      console.log(`[OK] W11: /news redirects (${status}) to ${locationHeader}`);
-    } else if (status === 200) {
-      // Follow with browser to check final URL
-      await page.goto(`${BASE}/news`, { waitUntil: 'domcontentloaded' });
-      const finalUrl = page.url();
-      console.log(`  Final URL after navigation: ${finalUrl}`);
-      const landedOnNews = finalUrl.includes('#news') || finalUrl.includes('/news');
-      expect(landedOnNews, `GET /news returned 200 but final URL is ${finalUrl}`).toBe(true);
-      console.log(`[OK] W11: /news served as 200 (final URL: ${finalUrl})`);
-    } else if (status === 404) {
-      console.log(`  [INFO] /news returned 404 -- route may not be configured`);
+    const contactExists = await page.locator('#contact').count();
+    if (contactExists === 0) {
+      console.log(`  [SKIP] W11: No #contact section found`);
       test.skip();
-    } else {
-      expect(status, `Unexpected status ${status} for /news`).toBeLessThan(400);
+      return;
     }
+
+    const contactSection = page.locator('#contact');
+    const contactHtml = await contactSection.innerHTML();
+
+    // Check for map iframe, address text, or contact-related content
+    const indicators = {
+      hasIframe: contactHtml.includes('<iframe'),
+      hasMap: contactHtml.toLowerCase().includes('map') || contactHtml.includes('google.com/maps'),
+      hasAddress: contactHtml.includes('地址') || contactHtml.includes('address') || contactHtml.includes('台'),
+      hasPhone: contactHtml.includes('tel:') || contactHtml.includes('電話') || contactHtml.includes('phone'),
+      hasLink: contactHtml.includes('<a '),
+    };
+
+    const foundIndicators = Object.entries(indicators).filter(([, v]) => v).map(([k]) => k);
+
+    for (const [key, val] of Object.entries(indicators)) {
+      console.log(`  ${key}: ${val}`);
+    }
+
+    expect(foundIndicators.length, 'Contact section has no map, address, or contact info').toBeGreaterThan(0);
+    console.log(`[OK] W11: Contact section contains: ${foundIndicators.join(', ')}`);
   });
 
   // =================================================================

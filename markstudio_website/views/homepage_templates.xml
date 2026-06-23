@@ -7,128 +7,243 @@
             <div id="wrap" class="oe_structure">
 
                 <!-- 1. HERO -->
-                <section id="hero" class="og-hero" data-snippet="s_og_hero" data-name="OG Hero">
-                    <div class="og-hero-overlay"/>
-                    <div class="og-hero-content">
-                        <h1 class="og-hero-brand">O.G</h1>
-                        <h2 class="og-hero-name">老地方</h2>
-                        <p class="og-hero-subtitle">身體修復</p>
-                        <p class="og-hero-slogan">不修表面，修根本。</p>
+                <section id="hero" class="mk-hero" data-snippet="s_mk_hero" data-name="OG Hero">
+                    <div class="mk-hero-bg"/>
+                    <div class="mk-hero-content">
+                        <h1 class="mk-hero-title">O.G 老地方</h1>
+                        <p class="mk-hero-subtitle">不修表面，修根本。</p>
                     </div>
                 </section>
 
-                <!-- 2. STORY -->
-                <section id="story" class="og-story" data-snippet="s_og_story" data-name="OG 品牌故事">
-                    <div class="container">
-                        <div class="og-accent-line"/>
-                        <h2 class="og-section-title-en">WHY O.G?</h2>
-                        <p class="og-story-text">你的身體不是壞了，是偏了。生活、姿勢、訓練累積的代償，讓筋膜糾結、關節卡住。O.G 不是等你痛了才來的地方——是讓你的身體回到它原本該有的狀態。老派的手藝，解決根本的問題。</p>
+                <!-- 2. STATS -->
+                <section id="stats" class="mk-stats" data-snippet="s_mk_stats" data-name="OG Stats">
+                    <div class="mk-stats-circles">
+                        <div class="mk-stat-circle">
+                            <span class="mk-stat-desc">專業修復師</span>
+                            <span class="mk-stat-num">10<sup>+</sup></span>
+                            <span class="mk-stat-unit">位</span>
+                        </div>
+                        <div class="mk-stat-circle">
+                            <span class="mk-stat-desc">為專業運動員</span>
+                            <span class="mk-stat-desc">提供身體修復</span>
+                            <i class="fa fa-users mk-stat-icon"/>
+                        </div>
+                        <div class="mk-stat-circle">
+                            <span class="mk-stat-desc">到店修復者</span>
+                            <span class="mk-stat-desc">數量超過</span>
+                            <span class="mk-stat-num">5,000<sup>+</sup></span>
+                            <span class="mk-stat-unit">人</span>
+                        </div>
                     </div>
                 </section>
 
                 <!-- 3. SERVICES -->
-                <section id="services" class="og-services" data-snippet="s_og_services" data-name="OG 服務項目">
-                    <div class="container">
-                        <div class="og-accent-line"/>
-                        <h2 class="og-section-title-en">SERVICES</h2>
-                        <div class="row og-svc-row">
-                            <div class="col-lg-4 col-md-6 mb-4">
-                                <div class="og-svc-card">
-                                    <div class="og-svc-img">
-                                        <img src="/markstudio_website/static/src/img/og-svc-01-joint.jpg" alt="關節鬆動" loading="lazy"/>
-                                    </div>
-                                    <div class="og-svc-body">
-                                        <span class="og-svc-num">01</span>
-                                        <h3 class="og-svc-title">關節鬆動</h3>
-                                        <p class="og-svc-desc">鬆開卡住的關節活動度，讓動作回到正軌。透過精準的手法，恢復關節該有的活動範圍，減少代償動作帶來的二次傷害。</p>
-                                    </div>
+                <section id="services" class="mk-services" data-snippet="s_mk_services" data-name="OG 服務項目">
+                    <div class="container position-relative">
+                        <h2 class="mk-sec-title">服務</h2>
+                        <div class="mk-sec-line"/>
+                        <div class="mk-why-title">Why O.G?</div>
+                        <div class="mk-svc">
+                            <div class="mk-svc-left">
+                                <div class="mk-svc-num">01</div>
+                                <div class="mk-svc-heading">
+                                    <span class="mk-svc-hl">關節鬆動，</span><br/>
+                                    <span class="mk-svc-hl">讓動作回到正軌</span>
                                 </div>
+                                <p class="mk-svc-text">鬆開卡住的關節活動度，透過精準的手法恢復關節該有的活動範圍，減少代償動作帶來的二次傷害。</p>
                             </div>
-                            <div class="col-lg-4 col-md-6 mb-4">
-                                <div class="og-svc-card">
-                                    <div class="og-svc-img">
-                                        <img src="/markstudio_website/static/src/img/og-svc-02-fascia.jpg" alt="筋膜張力平衡" loading="lazy"/>
-                                    </div>
-                                    <div class="og-svc-body">
-                                        <span class="og-svc-num">02</span>
-                                        <h3 class="og-svc-title">筋膜張力平衡</h3>
-                                        <p class="og-svc-desc">平衡全身筋膜張力鏈，從根源消除代償。筋膜是串聯全身的網絡，一處緊繃可能牽動全身。我們從整體張力出發，重新校準你的身體。</p>
-                                    </div>
-                                </div>
+                            <div class="mk-svc-right">
+                                <div class="mk-svc-img"><img src="/markstudio_website/static/src/img/svc-01-massage.jpg?v=3" alt="關節鬆動" loading="lazy"/></div>
                             </div>
-                            <div class="col-lg-4 col-md-6 mb-4">
-                                <div class="og-svc-card">
-                                    <div class="og-svc-img">
-                                        <img src="/markstudio_website/static/src/img/og-svc-03-tool.jpg" alt="IASTM 筋膜刀" loading="lazy"/>
-                                    </div>
-                                    <div class="og-svc-body">
-                                        <span class="og-svc-num">03</span>
-                                        <h3 class="og-svc-title">IASTM 筋膜刀</h3>
-                                        <p class="og-svc-desc">精準處理軟組織沾黏，加速修復與還原。使用專業器械深入處理纖維化組織，打破沾黏循環，讓組織重新獲得彈性與滑動能力。</p>
-                                    </div>
-                                </div>
+                        </div>
+                        <div class="mk-svc">
+                            <div class="mk-svc-left">
+                                <div class="mk-svc-num">02</div>
+                                <div class="mk-svc-heading"><span class="mk-svc-hl">筋膜張力平衡，從根源消除代償</span></div>
+                                <p class="mk-svc-text">筋膜是串聯全身的網絡，一處緊繃可能牽動全身。我們從整體張力出發，重新校準你的身體，平衡全身筋膜張力鏈。</p>
+                            </div>
+                            <div class="mk-svc-right">
+                                <div class="mk-svc-img"><img src="/markstudio_website/static/src/img/svc-02-stretch.jpg?v=3" alt="筋膜張力平衡" loading="lazy"/></div>
+                            </div>
+                        </div>
+                        <div class="mk-svc">
+                            <div class="mk-svc-left">
+                                <div class="mk-svc-num">03</div>
+                                <div class="mk-svc-heading"><span class="mk-svc-hl">IASTM 筋膜刀精準修復</span></div>
+                                <p class="mk-svc-text">使用專業器械精準處理軟組織沾黏，深入處理纖維化組織，打破沾黏循環，讓組織重新獲得彈性與滑動能力，加速修復與還原。</p>
+                            </div>
+                            <div class="mk-svc-right">
+                                <div class="mk-svc-img"><img src="/markstudio_website/static/src/img/svc-03-personal.jpg?v=3" alt="IASTM 筋膜刀" loading="lazy"/></div>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <!-- 4. FLOW -->
-                <section id="flow" class="og-flow" data-snippet="s_og_flow" data-name="OG 修復流程">
+                <!-- 4. TECHNIQUE -->
+                <section id="technique" class="mk-technique" data-snippet="s_mk_technique" data-name="OG 修復理念">
                     <div class="container">
-                        <div class="og-accent-line"/>
-                        <h2 class="og-section-title-en">HOW IT WORKS</h2>
-                        <div class="og-flow-steps">
-                            <div class="og-flow-step">
-                                <span class="og-flow-num">01</span>
-                                <h3 class="og-flow-title">身體評估</h3>
-                                <p class="og-flow-desc">了解你的身體歷史、疼痛模式與日常習慣</p>
+                        <h2 class="mk-big-serif">Why O.G?</h2>
+                        <h3 class="mk-technique-sub">老派的手藝，解決根本的問題</h3>
+                        <p class="mk-technique-text">你的身體不是壞了，是偏了。生活、姿勢、訓練累積的代償，讓筋膜糾結、關節卡住。O.G 不是等你痛了才來的地方——是讓你的身體回到它原本該有的狀態。像老師傅修車一樣，一個關節一個關節地把你調回來。不靠花俏的噱頭，靠的是紮實的手藝和對人體的深刻理解。</p>
+                        <div class="row mt-5">
+                            <div class="col-md-6">
+                                <div class="mk-svc-img"><img src="/markstudio_website/static/src/img/tech-left.jpg?v=3" alt="身體修復技術" loading="lazy"/></div>
                             </div>
-                            <div class="og-flow-step">
-                                <span class="og-flow-num">02</span>
-                                <h3 class="og-flow-title">問題定位</h3>
-                                <p class="og-flow-desc">透過動作測試與觸診，精準找出失衡根源</p>
-                            </div>
-                            <div class="og-flow-step">
-                                <span class="og-flow-num">03</span>
-                                <h3 class="og-flow-title">手技修復</h3>
-                                <p class="og-flow-desc">針對問題源頭，逐層鬆解、調校、還原</p>
-                            </div>
-                            <div class="og-flow-step">
-                                <span class="og-flow-num">04</span>
-                                <h3 class="og-flow-title">維護建議</h3>
-                                <p class="og-flow-desc">給你帶得走的修復知識，延續調校效果</p>
+                            <div class="col-md-6">
+                                <div class="mk-svc-img"><img src="/markstudio_website/static/src/img/tech-right.jpg?v=3" alt="深層筋膜修復" loading="lazy"/></div>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <!-- 5. BOOKING CTA -->
-                <section id="booking" class="og-booking" data-snippet="s_og_booking" data-name="OG 預約區塊">
+                <!-- 5. EXPERIENCE -->
+                <section id="experience" class="mk-experience" data-snippet="s_mk_experience" data-name="OG 修復流程">
                     <div class="container">
-                        <div class="og-accent-line"/>
-                        <h2 class="og-booking-title">準備好了？</h2>
-                        <p class="og-booking-sub">你的身體記得每一次傷害，也記得每一次修復。<br/>讓 O.G 幫你找回身體原本的樣子。</p>
-                        <a href="/appointment/1/schedule" class="og-cta-btn">立即預約</a>
+                        <h2 class="mk-big-serif">The Restoration</h2>
+                        <p class="mk-exp-sub">每次修復服務以了解你的身體開始，以你帶走修復知識結束。</p>
+                        <div class="mk-steps">
+                            <div class="mk-step">
+                                <div class="mk-step-num">01</div>
+                                <h4 class="mk-step-title">身體評估</h4>
+                                <div class="mk-step-img"><img src="/markstudio_website/static/src/img/exp-01-consult.jpg?v=3" alt="身體評估" loading="lazy"/></div>
+                            </div>
+                            <div class="mk-step">
+                                <div class="mk-step-num">02</div>
+                                <h4 class="mk-step-title">問題定位</h4>
+                                <div class="mk-step-img"><img src="/markstudio_website/static/src/img/exp-02-measure.jpg?v=3" alt="問題定位" loading="lazy"/></div>
+                            </div>
+                            <div class="mk-step">
+                                <div class="mk-step-num">03</div>
+                                <h4 class="mk-step-title">手技修復</h4>
+                                <div class="mk-step-img"><img src="/markstudio_website/static/src/img/exp-03-stretch.jpg?v=3" alt="手技修復" loading="lazy"/></div>
+                            </div>
+                            <div class="mk-step">
+                                <div class="mk-step-num">04</div>
+                                <h4 class="mk-step-title">維護建議</h4>
+                                <div class="mk-step-img"><img src="/markstudio_website/static/src/img/exp-04-advice.jpg?v=3" alt="維護建議" loading="lazy"/></div>
+                            </div>
+                        </div>
                     </div>
                 </section>
 
-                <!-- 6. CONTACT -->
-                <section id="contact" class="og-contact" data-snippet="s_og_contact" data-name="OG 聯繫資訊">
+                <!-- 6. BOOKING CTA -->
+                <section id="booking" class="mk-booking-cta" data-snippet="s_mk_booking" data-name="OG 預約區塊">
+                    <div class="container position-relative">
+                        <h2 class="mk-big-serif" style="color: var(--mk-white);">準備好了？</h2>
+                        <p class="mk-booking-sub text-center">讓身體回到它該有的狀態</p>
+                        <div class="mk-booking-card">
+                            <div class="mk-booking-card-img">
+                                <img src="/markstudio_website/static/src/img/svc-01-massage.jpg?v=3" alt="身體修復"/>
+                            </div>
+                            <div class="mk-booking-card-body">
+                                <h3 class="mk-booking-card-title">身體修復療程</h3>
+                                <div class="mk-booking-card-meta">
+                                    <span><i class="fa fa-clock-o"/> 60 分鐘</span>
+                                    <span><i class="fa fa-user"/> O.G 師傅</span>
+                                    <span><i class="fa fa-tag"/> 首次體驗</span>
+                                </div>
+                                <p class="mk-booking-card-desc">
+                                    由專業修復師針對你的身體狀況，運用關節鬆動、筋膜張力平衡與 IASTM 筋膜刀，量身打造最適合的修復方案。
+                                </p>
+                                <a href="/appointment/1/schedule" class="mk-cta-btn">立即預約</a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 7. NEWS / SOCIAL -->
+                <section id="news" class="mk-news" data-snippet="s_mk_news" data-name="OG 最新消息">
                     <div class="container">
-                        <div class="og-accent-line"/>
-                        <h2 class="og-section-title-en">CONTACT</h2>
-                        <div class="og-contact-body">
-                            <div class="og-contact-item">
-                                <span class="og-contact-label">電話</span>
-                                <a href="tel:+886-0900-000-000" class="og-contact-link">0900-000-000</a>
+                        <h2 class="mk-sec-title">最新消息</h2>
+                        <div class="mk-sec-line"/>
+                        <p class="mk-news-sub">關注 O.G 老地方的社群媒體，掌握最新動態與修復知識</p>
+                        <div class="mk-social-block">
+                            <div class="d-flex align-items-center mb-4">
+                                <span class="markstudio-social-icon markstudio-ig me-3"><i class="fa fa-instagram fa-2x"/></span>
+                                <h3 class="mk-social-heading mb-0">Instagram</h3>
                             </div>
-                            <div class="og-contact-item">
-                                <span class="og-contact-label">信箱</span>
-                                <a href="mailto:info@og-bodywork.com" class="og-contact-link">info@og-bodywork.com</a>
+                            <div class="mk-social-placeholder text-center p-5">
+                                <i class="fa fa-instagram fa-4x mb-3" style="color: #E1306C;"/>
+                                <p class="mb-2">Instagram 動態將顯示於此</p>
+                                <a href="#" class="mk-social-link" target="_blank" rel="noopener noreferrer"><i class="fa fa-external-link me-1"/> 前往 Instagram</a>
                             </div>
-                            <div class="og-contact-item">
-                                <span class="og-contact-label">地址</span>
-                                <span class="og-contact-link">台北市大安區（詳細地址）</span>
+                        </div>
+                        <div class="mk-social-block">
+                            <div class="d-flex align-items-center mb-4">
+                                <span class="markstudio-social-icon markstudio-fb me-3"><i class="fa fa-facebook fa-2x"/></span>
+                                <h3 class="mk-social-heading mb-0">Facebook</h3>
+                            </div>
+                            <div class="mk-social-placeholder text-center p-5">
+                                <i class="fa fa-facebook-square fa-4x mb-3" style="color: #1877F2;"/>
+                                <p class="mb-2">Facebook 粉絲專頁動態將顯示於此</p>
+                                <a href="#" class="mk-social-link" target="_blank" rel="noopener noreferrer"><i class="fa fa-external-link me-1"/> 前往 Facebook</a>
+                            </div>
+                        </div>
+                        <div class="mk-social-block">
+                            <div class="d-flex align-items-center mb-4">
+                                <span class="markstudio-social-icon markstudio-yt me-3"><i class="fa fa-youtube-play fa-2x"/></span>
+                                <h3 class="mk-social-heading mb-0">YouTube</h3>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 col-md-6 mb-4">
+                                    <div class="markstudio-video-card">
+                                        <div class="ratio ratio-16x9"><div class="mk-social-placeholder d-flex align-items-center justify-content-center"><i class="fa fa-youtube-play fa-3x" style="color: #FF0000;"/></div></div>
+                                        <p class="mt-2 small" style="color: #888;">影片標題 1</p>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6 mb-4">
+                                    <div class="markstudio-video-card">
+                                        <div class="ratio ratio-16x9"><div class="mk-social-placeholder d-flex align-items-center justify-content-center"><i class="fa fa-youtube-play fa-3x" style="color: #FF0000;"/></div></div>
+                                        <p class="mt-2 small" style="color: #888;">影片標題 2</p>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6 mb-4">
+                                    <div class="markstudio-video-card">
+                                        <div class="ratio ratio-16x9"><div class="mk-social-placeholder d-flex align-items-center justify-content-center"><i class="fa fa-youtube-play fa-3x" style="color: #FF0000;"/></div></div>
+                                        <p class="mt-2 small" style="color: #888;">影片標題 3</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <a href="#" class="mk-social-link" target="_blank" rel="noopener noreferrer"><i class="fa fa-youtube-play me-1"/> 前往 YouTube 頻道</a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 8. FAQ -->
+                <section id="faq" class="mk-faq" data-snippet="s_mk_faq" data-name="OG 常見問題">
+                    <div class="container">
+                        <h2 class="mk-sec-title mk-sec-title-dark">常見問題</h2>
+                        <div class="mk-sec-line"/>
+                        <div class="mk-faq-list">
+                            <details class="mk-faq-item"><summary>Q1: 身體修復跟一般按摩有什麼不同？<i class="fa fa-chevron-down"/></summary><div class="mk-faq-ans"><p>O.G 的身體修復著重在找出疼痛的根源，透過關節鬆動、筋膜張力平衡和 IASTM 筋膜刀，從結構面解決問題，而非只是放鬆表層肌肉。</p></div></details>
+                            <details class="mk-faq-item"><summary>Q2: 我需要準備什麼嗎？<i class="fa fa-chevron-down"/></summary><div class="mk-faq-ans"><p>不需要準備任何東西，我們會提供舒適的服裝供您更換，請輕鬆前來即可。</p></div></details>
+                            <details class="mk-faq-item"><summary>Q3: 需要事先預約嗎？<i class="fa fa-chevron-down"/></summary><div class="mk-faq-ans"><p>建議事先透過線上預約系統預約，以確保您到店時能立即享受服務。若無預約，需視當日現場狀況安排。</p></div></details>
+                            <details class="mk-faq-item"><summary>Q4: 我想取消或變更預約。<i class="fa fa-chevron-down"/></summary><div class="mk-faq-ans"><p>可以，請於預約時間前 24 小時透過系統取消或更改。</p></div></details>
+                            <details class="mk-faq-item"><summary>Q5: 身體很僵硬也可以做修復嗎？<i class="fa fa-chevron-down"/></summary><div class="mk-faq-ans"><p>身體僵硬的人更需要修復！我們會根據您的身體狀況調整手法強度，循序漸進地改善關節活動度和筋膜張力。</p></div></details>
+                            <details class="mk-faq-item"><summary>Q6: 修復後多久會感受到效果？<i class="fa fa-chevron-down"/></summary><div class="mk-faq-ans"><p>多數人在第一次修復後就能感受到活動度的改善。持續性的改善建議定期回來調校，讓效果持續累積。</p></div></details>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 9. CONTACT -->
+                <section id="contact" class="mk-contact" data-snippet="s_mk_contact" data-name="OG 聯繫我們">
+                    <div class="container">
+                        <h2 class="mk-sec-title">聯繫我們</h2>
+                        <div class="mk-sec-line"/>
+                        <div class="mk-contact-body">
+                            <div class="mk-contact-item">
+                                <span class="mk-contact-label">預約專線</span>
+                                <a href="tel:+886-0900-000-000" class="mk-contact-link">0900-000-000</a>
+                            </div>
+                            <div class="mk-contact-item">
+                                <span class="mk-contact-label">來信諮詢</span>
+                                <a href="mailto:info@og-bodywork.com" class="mk-contact-link">Email Us</a>
+                            </div>
+                            <div class="mk-contact-item">
+                                <span class="mk-contact-label">Photos</span>
+                                <a href="https://unsplash.com" class="mk-contact-link" target="_blank" rel="noopener noreferrer">Unsplash</a>
                             </div>
                         </div>
                     </div>

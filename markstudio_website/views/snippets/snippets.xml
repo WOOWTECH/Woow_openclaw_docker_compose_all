@@ -1,32 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo><data>
-<!-- 在 Website Builder 的 snippet 面板註冊 O.G老地方 區塊群組 -->
-<template id="snippets" inherit_id="website.snippets" name="OG Snippets">
+<!-- 在 Website Builder 的 snippet 面板註冊 Mark Studio 區塊群組 -->
+<template id="snippets" inherit_id="website.snippets" name="Mark Studio Snippets">
     <xpath expr="//t[@id='installed_snippets_hook']" position="after">
-        <t snippet-group="og_bodywork"
+        <t snippet-group="markstudio"
            t-snippet="website.s_snippet_group"
-           string="O.G老地方"
+           string="Mark Studio"
            t-thumbnail="/website/static/src/img/snippets_thumbs/s_media_list.svg"/>
     </xpath>
 
     <xpath expr="//snippets[@id='snippet_structure']" position="inside">
-        <t t-snippet="markstudio_website.s_og_hero" string="OG Hero" group="og_bodywork">
-            <keywords>hero, banner, OG, 首頁, 橫幅, 老地方</keywords>
+        <t t-snippet="markstudio_website.s_mk_hero" string="MK Hero" group="markstudio">
+            <keywords>hero, banner, mark studio, 首頁, 橫幅</keywords>
         </t>
-        <t t-snippet="markstudio_website.s_og_story" string="OG 品牌故事" group="og_bodywork">
-            <keywords>story, brand, 品牌故事, why, OG</keywords>
+        <t t-snippet="markstudio_website.s_mk_stats" string="MK 數據" group="markstudio">
+            <keywords>statistics, numbers, 數據, 統計</keywords>
         </t>
-        <t t-snippet="markstudio_website.s_og_services" string="OG 服務" group="og_bodywork">
-            <keywords>services, 服務, 關節, 筋膜, IASTM</keywords>
+        <t t-snippet="markstudio_website.s_mk_services" string="MK 服務" group="markstudio">
+            <keywords>services, 服務, massage, stretch</keywords>
         </t>
-        <t t-snippet="markstudio_website.s_og_flow" string="OG 流程" group="og_bodywork">
-            <keywords>flow, steps, 流程, 步驟, 修復</keywords>
+        <t t-snippet="markstudio_website.s_mk_technique" string="MK 技術" group="markstudio">
+            <keywords>technique, core balance stretch, 技術</keywords>
         </t>
-        <t t-snippet="markstudio_website.s_og_booking" string="OG 預約" group="og_bodywork">
+        <t t-snippet="markstudio_website.s_mk_experience" string="MK 流程" group="markstudio">
+            <keywords>experience, steps, 流程, 步驟</keywords>
+        </t>
+        <t t-snippet="markstudio_website.s_mk_booking" string="MK 預約" group="markstudio">
             <keywords>booking, appointment, 預約, CTA</keywords>
         </t>
-        <t t-snippet="markstudio_website.s_og_contact" string="OG 聯繫" group="og_bodywork">
-            <keywords>contact, email, phone, 聯繫, 地址</keywords>
+        <t t-snippet="markstudio_website.s_mk_news" string="MK 最新消息" group="markstudio">
+            <keywords>news, social, instagram, facebook, youtube, 最新消息</keywords>
+        </t>
+        <t t-snippet="markstudio_website.s_mk_faq" string="MK 常見問題" group="markstudio">
+            <keywords>faq, questions, 常見問題, FAQ</keywords>
+        </t>
+        <t t-snippet="markstudio_website.s_mk_contact" string="MK 聯繫" group="markstudio">
+            <keywords>contact, email, phone, 聯繫</keywords>
         </t>
     </xpath>
 </template>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo><data>
+<template id="s_og_booking" name="OG Booking">
+    <section id="booking" class="og-booking" data-snippet="s_og_booking" data-name="OG 預約區塊">
+        <div class="container">
+            <div class="og-accent-line"/>
+            <h2 class="og-booking-title">準備好了？</h2>
+            <p class="og-booking-sub">你的身體記得每一次傷害，也記得每一次修復。<br/>讓 O.G 幫你找回身體原本的樣子。</p>
+            <a href="/appointment/1/schedule" class="og-cta-btn">立即預約</a>
+        </div>
+    </section>
+</template>
+</data></odoo>

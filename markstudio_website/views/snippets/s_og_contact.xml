@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo><data>
+<template id="s_og_contact" name="OG Contact">
+    <section id="contact" class="og-contact" data-snippet="s_og_contact" data-name="OG 聯繫資訊">
+        <div class="container">
+            <div class="og-accent-line"/>
+            <h2 class="og-section-title-en">CONTACT</h2>
+            <div class="og-contact-body">
+                <div class="og-contact-item">
+                    <span class="og-contact-label">電話</span>
+                    <a href="tel:+886-0900-000-000" class="og-contact-link">0900-000-000</a>
+                </div>
+                <div class="og-contact-item">
+                    <span class="og-contact-label">信箱</span>
+                    <a href="mailto:info@og-bodywork.com" class="og-contact-link">info@og-bodywork.com</a>
+                </div>
+                <div class="og-contact-item">
+                    <span class="og-contact-label">地址</span>
+                    <span class="og-contact-link">台北市大安區（詳細地址）</span>
+                </div>
+            </div>
+        </div>
+    </section>
+</template>
+</data></odoo>

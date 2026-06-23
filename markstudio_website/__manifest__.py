@@ -1,23 +1,20 @@
 # -*- coding: utf-8 -*-
 {
-    'name': 'Mark Studio Website',
-    'version': '18.0.3.0.0',
+    'name': 'O.G 老地方身體修復 Website',
+    'version': '18.0.4.0.0',
     'category': 'Website',
-    'summary': '馬克健身按摩預約平台 — Website Builder 可編輯首頁',
+    'summary': 'O.G老地方身體修復 — Website Builder 可編輯首頁',
     'author': 'WoowTech',
     'license': 'LGPL-3',
     'depends': ['website'],
     'data': [
         # Snippet 定義（必須在首頁之前載入）
-        'views/snippets/s_mk_hero.xml',
-        'views/snippets/s_mk_stats.xml',
-        'views/snippets/s_mk_services.xml',
-        'views/snippets/s_mk_technique.xml',
-        'views/snippets/s_mk_experience.xml',
-        'views/snippets/s_mk_booking.xml',
-        'views/snippets/s_mk_news.xml',
-        'views/snippets/s_mk_faq.xml',
-        'views/snippets/s_mk_contact.xml',
+        'views/snippets/s_og_hero.xml',
+        'views/snippets/s_og_story.xml',
+        'views/snippets/s_og_services.xml',
+        'views/snippets/s_og_flow.xml',
+        'views/snippets/s_og_booking.xml',
+        'views/snippets/s_og_contact.xml',
         'views/snippets/snippets.xml',
         # 首頁（繼承 website.homepage）
         'views/homepage_templates.xml',

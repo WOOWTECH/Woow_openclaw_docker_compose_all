@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo><data>
+<template id="s_og_hero" name="OG Hero">
+    <section id="hero" class="og-hero" data-snippet="s_og_hero" data-name="OG Hero">
+        <div class="og-hero-overlay"/>
+        <div class="og-hero-content">
+            <h1 class="og-hero-brand">O.G</h1>
+            <h2 class="og-hero-name">老地方</h2>
+            <p class="og-hero-subtitle">身體修復</p>
+            <p class="og-hero-slogan">不修表面，修根本。</p>
+        </div>
+    </section>
+</template>
+</data></odoo>

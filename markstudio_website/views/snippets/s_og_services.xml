@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo><data>
+<template id="s_og_services" name="OG Services">
+    <section id="services" class="og-services" data-snippet="s_og_services" data-name="OG 服務項目">
+        <div class="container">
+            <div class="og-accent-line"/>
+            <h2 class="og-section-title-en">SERVICES</h2>
+            <div class="row og-svc-row">
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="og-svc-card">
+                        <div class="og-svc-img">
+                            <img src="/markstudio_website/static/src/img/og-svc-01-joint.jpg" alt="關節鬆動" loading="lazy"/>
+                        </div>
+                        <div class="og-svc-body">
+                            <span class="og-svc-num">01</span>
+                            <h3 class="og-svc-title">關節鬆動</h3>
+                            <p class="og-svc-desc">鬆開卡住的關節活動度，讓動作回到正軌。透過精準的手法，恢復關節該有的活動範圍，減少代償動作帶來的二次傷害。</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="og-svc-card">
+                        <div class="og-svc-img">
+                            <img src="/markstudio_website/static/src/img/og-svc-02-fascia.jpg" alt="筋膜張力平衡" loading="lazy"/>
+                        </div>
+                        <div class="og-svc-body">
+                            <span class="og-svc-num">02</span>
+                            <h3 class="og-svc-title">筋膜張力平衡</h3>
+                            <p class="og-svc-desc">平衡全身筋膜張力鏈，從根源消除代償。筋膜是串聯全身的網絡，一處緊繃可能牽動全身。我們從整體張力出發，重新校準你的身體。</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="og-svc-card">
+                        <div class="og-svc-img">
+                            <img src="/markstudio_website/static/src/img/og-svc-03-tool.jpg" alt="IASTM 筋膜刀" loading="lazy"/>
+                        </div>
+                        <div class="og-svc-body">
+                            <span class="og-svc-num">03</span>
+                            <h3 class="og-svc-title">IASTM 筋膜刀</h3>
+                            <p class="og-svc-desc">精準處理軟組織沾黏，加速修復與還原。使用專業器械深入處理纖維化組織，打破沾黏循環，讓組織重新獲得彈性與滑動能力。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</template>
+</data></odoo>

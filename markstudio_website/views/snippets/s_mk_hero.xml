@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo><data>
+<template id="s_mk_hero" name="MK Hero">
+    <section id="hero" class="mk-hero" data-snippet="s_mk_hero" data-name="MK Hero">
+        <div class="mk-hero-bg"/>
+        <div class="mk-hero-content">
+            <h1 class="mk-hero-title">MARK STUDIO</h1>
+            <p class="mk-hero-subtitle">專業按摩 · 伸展 · 放鬆</p>
+        </div>
+    </section>
+</template>
+</data></odoo>

@@ -72,11 +72,6 @@
         // Add mk-appt-detail class for CSS targeting
         card.classList.add('mk-appt-detail');
 
-        // Create image div
-        var imgDiv = document.createElement('div');
-        imgDiv.className = 'mk-appt-detail-img';
-        card.insertBefore(imgDiv, body);
-
         // Replace badge text and add meta info
         var badgeContainer = body.querySelector('.mb-3');
         if (badgeContainer) {

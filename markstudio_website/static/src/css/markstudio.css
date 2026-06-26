@@ -952,10 +952,9 @@ header#top .oe_search_button {
     max-width: 800px;
 }
 
+/* Detail image removed — no longer injected by JS */
 .mk-appointment-page .mk-appt-detail-img {
-    flex: 0 0 280px;
-    background: url('/markstudio_website/static/src/img/svc-01-massage.jpg?v=3') center center / cover no-repeat;
-    filter: grayscale(1) brightness(0.85);
+    display: none !important;
 }
 
 .mk-appointment-page .mk-appt-detail .card-body {
@@ -994,8 +993,7 @@ header#top .oe_search_button {
         flex-direction: column !important;
     }
     .mk-appointment-page .mk-appt-detail-img {
-        flex: none;
-        height: 200px;
+        display: none !important;
     }
 }
 

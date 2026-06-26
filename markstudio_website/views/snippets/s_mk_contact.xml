@@ -1,22 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo><data>
-<template id="s_mk_contact" name="MK Contact">
-    <section id="contact" class="mk-contact" data-snippet="s_mk_contact" data-name="MK 聯繫我們">
+<template id="s_mk_contact" name="OG Contact">
+    <section id="contact" class="mk-contact" data-snippet="s_mk_contact" data-name="OG 聯繫我們">
         <div class="container">
             <h2 class="mk-sec-title">聯繫我們</h2>
             <div class="mk-sec-line"/>
             <div class="mk-contact-body">
                 <div class="mk-contact-item">
-                    <span class="mk-contact-label">緊急聯絡窗口</span>
-                    <a href="tel:+886-0900-000-000" class="mk-contact-link">0900-000-000</a>
-                </div>
-                <div class="mk-contact-item">
-                    <span class="mk-contact-label">來信按鈕</span>
-                    <a href="mailto:info@markstudio.com.tw" class="mk-contact-link">Email Us</a>
-                </div>
-                <div class="mk-contact-item">
-                    <span class="mk-contact-label">Photos</span>
-                    <a href="https://unsplash.com" class="mk-contact-link" target="_blank" rel="noopener noreferrer">Unsplash</a>
+                    <span class="mk-contact-label">地址</span>
+                    <span class="mk-contact-link">長安西路177巷10號</span>
                 </div>
             </div>
         </div>

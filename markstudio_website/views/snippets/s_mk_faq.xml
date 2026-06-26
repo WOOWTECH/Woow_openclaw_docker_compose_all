@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo><data>
-<template id="s_mk_faq" name="MK FAQ">
-    <section id="faq" class="mk-faq" data-snippet="s_mk_faq" data-name="MK 常見問題">
+<template id="s_mk_faq" name="OG FAQ">
+    <section id="faq" class="mk-faq" data-snippet="s_mk_faq" data-name="OG 常見問題">
         <div class="container">
             <h2 class="mk-sec-title mk-sec-title-dark">常見問題</h2>
             <div class="mk-sec-line"/>
             <div class="mk-faq-list">
-                <details class="mk-faq-item"><summary>Q1: 請問伸展課程會是怎麼進行的呢？<i class="fa fa-chevron-down"/></summary><div class="mk-faq-ans"><p>我們的教練會先了解您的身體狀況，接著進行柔軟度測量，然後根據您的需求進行一對一伸展，最後提供專業建議。</p></div></details>
-                <details class="mk-faq-item"><summary>Q2: 我需要準備任何東西前往嗎？<i class="fa fa-chevron-down"/></summary><div class="mk-faq-ans"><p>您不需要準備任何東西，我們會提供舒適的服裝供您更換，請輕鬆前來即可。</p></div></details>
-                <details class="mk-faq-item"><summary>Q3: 請問需要事先做預約嗎？<i class="fa fa-chevron-down"/></summary><div class="mk-faq-ans"><p>建議事先透過線上預約系統預約，以確保您到店時能立即享受服務。若無預約，需視當日現場狀況安排。</p></div></details>
-                <details class="mk-faq-item"><summary>Q4: 我想取消或是變更預約。<i class="fa fa-chevron-down"/></summary><div class="mk-faq-ans"><p>可以，請於預約時間前 24 小時透過系統取消或更改。</p></div></details>
-                <details class="mk-faq-item"><summary>Q5: 伸展可以放鬆嗎？<i class="fa fa-chevron-down"/></summary><div class="mk-faq-ans"><p>當然可以！我們的專業教練會根據您的身體狀況調整力道，讓您在過程中完全放鬆。</p></div></details>
-                <details class="mk-faq-item"><summary>Q6: 我的身體很僵硬也可以做伸展嗎？<i class="fa fa-chevron-down"/></summary><div class="mk-faq-ans"><p>身體僵硬的人更需要伸展！我們的教練會根據您的柔軟度來調整伸展強度，循序漸進地改善您的身體狀況。</p></div></details>
+                <details class="mk-faq-item"><summary>Q1: 身體修復跟一般按摩有什麼不同？<i class="fa fa-chevron-down"/></summary><div class="mk-faq-ans"><p>O.G 的身體修復著重在找出疼痛的根源，透過關節鬆動、筋膜張力平衡和 IASTM 筋膜刀，從結構面解決問題，而非只是放鬆表層肌肉。</p></div></details>
+                <details class="mk-faq-item"><summary>Q2: 我需要準備什麼嗎？<i class="fa fa-chevron-down"/></summary><div class="mk-faq-ans"><p>不需要準備任何東西，我們會提供舒適的服裝供您更換，請輕鬆前來即可。</p></div></details>
+                <details class="mk-faq-item"><summary>Q3: 需要事先預約嗎？<i class="fa fa-chevron-down"/></summary><div class="mk-faq-ans"><p>建議事先透過線上預約系統預約，以確保您到店時能立即享受服務。若無預約，需視當日現場狀況安排。</p></div></details>
+                <details class="mk-faq-item"><summary>Q4: 我想取消或變更預約。<i class="fa fa-chevron-down"/></summary><div class="mk-faq-ans"><p>可以，請於預約時間前 24 小時透過系統取消或更改。</p></div></details>
+                <details class="mk-faq-item"><summary>Q5: 身體很僵硬也可以做修復嗎？<i class="fa fa-chevron-down"/></summary><div class="mk-faq-ans"><p>身體僵硬的人更需要修復！我們會根據您的身體狀況調整手法強度，循序漸進地改善關節活動度和筋膜張力。</p></div></details>
+                <details class="mk-faq-item"><summary>Q6: 修復後多久會感受到效果？<i class="fa fa-chevron-down"/></summary><div class="mk-faq-ans"><p>多數人在第一次修復後就能感受到活動度的改善。持續性的改善建議定期回來調校，讓效果持續累積。</p></div></details>
             </div>
         </div>
     </section>

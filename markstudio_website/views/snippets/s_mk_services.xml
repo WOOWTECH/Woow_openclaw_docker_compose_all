@@ -1,45 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo><data>
-<template id="s_mk_services" name="MK Services">
-    <section id="services" class="mk-services" data-snippet="s_mk_services" data-name="MK 服務介紹">
+<template id="s_mk_services" name="OG Services">
+    <section id="services" class="mk-services" data-snippet="s_mk_services" data-name="OG 服務項目">
         <div class="container position-relative">
             <h2 class="mk-sec-title">服務</h2>
             <div class="mk-sec-line"/>
-            <div class="mk-why-title">Why Mark Studio?</div>
+            <div class="mk-why-title">Why O.G?</div>
 
             <div class="mk-svc">
                 <div class="mk-svc-left">
                     <div class="mk-svc-num">01</div>
                     <div class="mk-svc-heading">
-                        <span class="mk-svc-hl">運用獨創技術，</span><br/>
-                        <span class="mk-svc-hl">帶給您前所未有的感受</span>
+                        <span class="mk-svc-hl">關節鬆動，</span><br/>
+                        <span class="mk-svc-hl">讓動作回到正軌</span>
                     </div>
-                    <p class="mk-svc-text">馬克健身使用獨創的核心平衡伸展術，針對僵硬的深層肌群進行放鬆和伸展。致力於從根源上解決您的煩惱，減少復發頻率。</p>
+                    <p class="mk-svc-text">鬆開卡住的關節活動度，透過精準的手法恢復關節該有的活動範圍，減少代償動作帶來的二次傷害。</p>
                 </div>
                 <div class="mk-svc-right">
-                    <div class="mk-svc-img"><img src="/markstudio_website/static/src/img/svc-01-massage.jpg?v=3" alt="深層按摩服務" loading="lazy"/></div>
+                    <div class="mk-svc-img"><img src="/markstudio_website/static/src/img/svc-01-massage.jpg?v=3" alt="關節鬆動" loading="lazy"/></div>
                 </div>
             </div>
 
             <div class="mk-svc">
                 <div class="mk-svc-left">
                     <div class="mk-svc-num">02</div>
-                    <div class="mk-svc-heading"><span class="mk-svc-hl">全身放鬆，享受伸展</span></div>
-                    <p class="mk-svc-text">在進行伸展的過程中，您所需做的僅僅只是放鬆您的身心。而放鬆狀態下的肌肉更容易被伸展。</p>
+                    <div class="mk-svc-heading"><span class="mk-svc-hl">筋膜張力平衡，從根源消除代償</span></div>
+                    <p class="mk-svc-text">筋膜是串聯全身的網絡，一處緊繃可能牽動全身。我們從整體張力出發，重新校準你的身體，平衡全身筋膜張力鏈。</p>
                 </div>
                 <div class="mk-svc-right">
-                    <div class="mk-svc-img"><img src="/markstudio_website/static/src/img/svc-02-stretch.jpg?v=3" alt="專業伸展服務" loading="lazy"/></div>
+                    <div class="mk-svc-img"><img src="/markstudio_website/static/src/img/svc-02-stretch.jpg?v=3" alt="筋膜張力平衡" loading="lazy"/></div>
                 </div>
             </div>
 
             <div class="mk-svc">
                 <div class="mk-svc-left">
                     <div class="mk-svc-num">03</div>
-                    <div class="mk-svc-heading"><span class="mk-svc-hl">一對一專業伸展</span></div>
-                    <p class="mk-svc-text">教練會依據顧客的不適症狀，對身體不同部位的柔軟性進行判斷，從而提供最適合您的伸展方案。教練也會根據顧客的身體情況提出相關建議，幫助您養成良好伸展習慣，為您身體的健康出謀劃策。</p>
+                    <div class="mk-svc-heading"><span class="mk-svc-hl">IASTM 筋膜刀精準修復</span></div>
+                    <p class="mk-svc-text">使用專業器械精準處理軟組織沾黏，深入處理纖維化組織，打破沾黏循環，讓組織重新獲得彈性與滑動能力，加速修復與還原。</p>
                 </div>
                 <div class="mk-svc-right">
-                    <div class="mk-svc-img"><img src="/markstudio_website/static/src/img/svc-03-personal.jpg?v=3" alt="一對一專業伸展" loading="lazy"/></div>
+                    <div class="mk-svc-img"><img src="/markstudio_website/static/src/img/svc-03-personal.jpg?v=3" alt="IASTM 筋膜刀" loading="lazy"/></div>
                 </div>
             </div>
         </div>

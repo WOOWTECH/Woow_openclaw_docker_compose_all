@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo><data>
-<template id="s_mk_stats" name="MK Stats">
-    <section id="stats" class="mk-stats" data-snippet="s_mk_stats" data-name="MK Stats">
+<template id="s_mk_stats" name="OG Stats">
+    <section id="stats" class="mk-stats" data-snippet="s_mk_stats" data-name="OG Stats">
         <div class="mk-stats-circles">
             <div class="mk-stat-circle">
-                <span class="mk-stat-desc">專業按摩師</span>
+                <span class="mk-stat-desc">專業修復師</span>
                 <span class="mk-stat-num">10<sup>+</sup></span>
                 <span class="mk-stat-unit">位</span>
             </div>
             <div class="mk-stat-circle">
                 <span class="mk-stat-desc">為專業運動員</span>
-                <span class="mk-stat-desc">提供伸展服務</span>
+                <span class="mk-stat-desc">提供身體修復</span>
                 <i class="fa fa-users mk-stat-icon"/>
             </div>
             <div class="mk-stat-circle">
-                <span class="mk-stat-desc">到店消費者</span>
+                <span class="mk-stat-desc">到店修復者</span>
                 <span class="mk-stat-desc">數量超過</span>
                 <span class="mk-stat-num">5,000<sup>+</sup></span>
                 <span class="mk-stat-unit">人</span>

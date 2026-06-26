@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo><data>
-<template id="s_mk_experience" name="MK Experience">
-    <section id="experience" class="mk-experience" data-snippet="s_mk_experience" data-name="MK 服務流程">
+<template id="s_mk_experience" name="OG Experience">
+    <section id="experience" class="mk-experience" data-snippet="s_mk_experience" data-name="OG 修復流程">
         <div class="container">
-            <h2 class="mk-big-serif">The Experience</h2>
-            <p class="mk-exp-sub">每次伸展服務的時間計算以客人到伸展床為開始，以客人離開伸展床為結束。</p>
+            <h2 class="mk-big-serif">The Restoration</h2>
+            <p class="mk-exp-sub">每次修復服務以了解你的身體開始，以你帶走修復知識結束。</p>
             <div class="mk-steps">
                 <div class="mk-step">
                     <div class="mk-step-num">01</div>
-                    <h4 class="mk-step-title">確認客人身體狀況</h4>
-                    <div class="mk-step-img"><img src="/markstudio_website/static/src/img/exp-01-consult.jpg?v=3" alt="確認身體狀況" loading="lazy"/></div>
+                    <h4 class="mk-step-title">身體評估</h4>
+                    <div class="mk-step-img"><img src="/markstudio_website/static/src/img/exp-01-consult.jpg?v=3" alt="身體評估" loading="lazy"/></div>
                 </div>
                 <div class="mk-step">
                     <div class="mk-step-num">02</div>
-                    <h4 class="mk-step-title">測量身體柔軟度</h4>
-                    <div class="mk-step-img"><img src="/markstudio_website/static/src/img/exp-02-measure.jpg?v=3" alt="測量身體柔軟度" loading="lazy"/></div>
+                    <h4 class="mk-step-title">問題定位</h4>
+                    <div class="mk-step-img"><img src="/markstudio_website/static/src/img/exp-02-measure.jpg?v=3" alt="問題定位" loading="lazy"/></div>
                 </div>
                 <div class="mk-step">
                     <div class="mk-step-num">03</div>
-                    <h4 class="mk-step-title">伸展</h4>
-                    <div class="mk-step-img"><img src="/markstudio_website/static/src/img/exp-03-stretch.jpg?v=3" alt="伸展" loading="lazy"/></div>
+                    <h4 class="mk-step-title">手技修復</h4>
+                    <div class="mk-step-img"><img src="/markstudio_website/static/src/img/exp-03-stretch.jpg?v=3" alt="手技修復" loading="lazy"/></div>
                 </div>
                 <div class="mk-step">
                     <div class="mk-step-num">04</div>
-                    <h4 class="mk-step-title">提供專業建議</h4>
-                    <div class="mk-step-img"><img src="/markstudio_website/static/src/img/exp-04-advice.jpg?v=3" alt="提供專業建議" loading="lazy"/></div>
+                    <h4 class="mk-step-title">維護建議</h4>
+                    <div class="mk-step-img"><img src="/markstudio_website/static/src/img/exp-04-advice.jpg?v=3" alt="維護建議" loading="lazy"/></div>
                 </div>
             </div>
         </div>

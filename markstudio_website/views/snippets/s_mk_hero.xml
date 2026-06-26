@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo><data>
-<template id="s_mk_hero" name="MK Hero">
-    <section id="hero" class="mk-hero" data-snippet="s_mk_hero" data-name="MK Hero">
+<template id="s_mk_hero" name="OG Hero">
+    <section id="hero" class="mk-hero" data-snippet="s_mk_hero" data-name="OG Hero">
         <div class="mk-hero-bg"/>
         <div class="mk-hero-content">
-            <h1 class="mk-hero-title">MARK STUDIO</h1>
-            <p class="mk-hero-subtitle">專業按摩 · 伸展 · 放鬆</p>
+            <h1 class="mk-hero-title">O.G 老地方</h1>
+            <p class="mk-hero-subtitle">不修表面，修根本。</p>
         </div>
     </section>
 </template>

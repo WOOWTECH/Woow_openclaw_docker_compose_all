@@ -145,7 +145,7 @@
                                 <p class="mk-booking-card-desc">
                                     由專業修復師針對你的身體狀況，運用關節鬆動、筋膜張力平衡與 IASTM 筋膜刀，量身打造最適合的修復方案。
                                 </p>
-                                <a href="/appointment/1/schedule" class="mk-cta-btn">立即預約</a>
+                                <a href="https://mark182.simplybook.asia/v2/" class="mk-cta-btn">立即預約</a>
                             </div>
                         </div>
                     </div>
@@ -188,19 +188,19 @@
                                 <div class="col-lg-4 col-md-6 mb-4">
                                     <div class="markstudio-video-card">
                                         <div class="ratio ratio-16x9"><div class="mk-social-placeholder d-flex align-items-center justify-content-center"><i class="fa fa-youtube-play fa-3x" style="color: #FF0000;"/></div></div>
-                                        <p class="mt-2 small" style="color: #888;">影片標題 1</p>
+                                        <p class="mt-2 small" style="color: #bbb;">影片標題 1</p>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-md-6 mb-4">
                                     <div class="markstudio-video-card">
                                         <div class="ratio ratio-16x9"><div class="mk-social-placeholder d-flex align-items-center justify-content-center"><i class="fa fa-youtube-play fa-3x" style="color: #FF0000;"/></div></div>
-                                        <p class="mt-2 small" style="color: #888;">影片標題 2</p>
+                                        <p class="mt-2 small" style="color: #bbb;">影片標題 2</p>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-md-6 mb-4">
                                     <div class="markstudio-video-card">
                                         <div class="ratio ratio-16x9"><div class="mk-social-placeholder d-flex align-items-center justify-content-center"><i class="fa fa-youtube-play fa-3x" style="color: #FF0000;"/></div></div>
-                                        <p class="mt-2 small" style="color: #888;">影片標題 3</p>
+                                        <p class="mt-2 small" style="color: #bbb;">影片標題 3</p>
                                     </div>
                                 </div>
                             </div>
@@ -234,16 +234,8 @@
                         <div class="mk-sec-line"/>
                         <div class="mk-contact-body">
                             <div class="mk-contact-item">
-                                <span class="mk-contact-label">預約專線</span>
-                                <a href="tel:+886-0900-000-000" class="mk-contact-link">0900-000-000</a>
-                            </div>
-                            <div class="mk-contact-item">
-                                <span class="mk-contact-label">來信諮詢</span>
-                                <a href="mailto:info@og-bodywork.com" class="mk-contact-link">Email Us</a>
-                            </div>
-                            <div class="mk-contact-item">
-                                <span class="mk-contact-label">Photos</span>
-                                <a href="https://unsplash.com" class="mk-contact-link" target="_blank" rel="noopener noreferrer">Unsplash</a>
+                                <span class="mk-contact-label">地址</span>
+                                <span class="mk-contact-link">長安西路177巷10號</span>
                             </div>
                         </div>
                     </div>

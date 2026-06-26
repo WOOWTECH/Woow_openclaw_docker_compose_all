@@ -4,7 +4,7 @@
     <!-- Inject Google Fonts globally so appointment pages get them too -->
     <template id="markstudio_google_fonts"
               inherit_id="website.layout"
-              name="Mark Studio Google Fonts">
+              name="O.G老地方 Google Fonts">
         <xpath expr="//head" position="inside">
             <link rel="preconnect" href="https://fonts.googleapis.com"/>
             <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>

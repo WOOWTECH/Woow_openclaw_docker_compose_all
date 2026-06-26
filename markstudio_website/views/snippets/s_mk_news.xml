@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo><data>
-<template id="s_mk_news" name="MK News Social">
-    <section id="news" class="mk-news" data-snippet="s_mk_news" data-name="MK 最新消息">
+<template id="s_mk_news" name="OG News Social">
+    <section id="news" class="mk-news" data-snippet="s_mk_news" data-name="OG 最新消息">
         <div class="container">
             <h2 class="mk-sec-title">最新消息</h2>
             <div class="mk-sec-line"/>
-            <p class="mk-news-sub">關注我們的社群媒體，掌握最新動態與優惠資訊</p>
+            <p class="mk-news-sub">關注 O.G 老地方的社群媒體，掌握最新動態與修復知識</p>
 
             <div class="mk-social-block">
                 <div class="d-flex align-items-center mb-4">
@@ -40,19 +40,19 @@
                     <div class="col-lg-4 col-md-6 mb-4">
                         <div class="markstudio-video-card">
                             <div class="ratio ratio-16x9"><div class="mk-social-placeholder d-flex align-items-center justify-content-center"><i class="fa fa-youtube-play fa-3x" style="color: #FF0000;"/></div></div>
-                            <p class="mt-2 small" style="color: #888;">影片標題 1</p>
+                            <p class="mt-2 small" style="color: #bbb;">影片標題 1</p>
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-6 mb-4">
                         <div class="markstudio-video-card">
                             <div class="ratio ratio-16x9"><div class="mk-social-placeholder d-flex align-items-center justify-content-center"><i class="fa fa-youtube-play fa-3x" style="color: #FF0000;"/></div></div>
-                            <p class="mt-2 small" style="color: #888;">影片標題 2</p>
+                            <p class="mt-2 small" style="color: #bbb;">影片標題 2</p>
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-6 mb-4">
                         <div class="markstudio-video-card">
                             <div class="ratio ratio-16x9"><div class="mk-social-placeholder d-flex align-items-center justify-content-center"><i class="fa fa-youtube-play fa-3x" style="color: #FF0000;"/></div></div>
-                            <p class="mt-2 small" style="color: #888;">影片標題 3</p>
+                            <p class="mt-2 small" style="color: #bbb;">影片標題 3</p>
                         </div>
                     </div>
                 </div>

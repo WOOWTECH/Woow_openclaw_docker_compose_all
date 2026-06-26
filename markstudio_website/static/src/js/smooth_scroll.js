@@ -82,8 +82,8 @@
         if (badgeContainer) {
             badgeContainer.innerHTML =
                 '<span class="mk-appt-meta"><i class="fa fa-clock-o"></i> 60 分鐘</span>' +
-                '<span class="mk-appt-meta"><i class="fa fa-user"></i> 馬克</span>' +
-                '<span class="mk-appt-meta"><i class="fa fa-tag"></i> 免費體驗</span>';
+                '<span class="mk-appt-meta"><i class="fa fa-user"></i> O.G 師傅</span>' +
+                '<span class="mk-appt-meta"><i class="fa fa-tag"></i> 首次體驗</span>';
             badgeContainer.className = 'mk-appt-meta-row';
         }
 
@@ -92,7 +92,7 @@
         if (btn) {
             var desc = document.createElement('p');
             desc.className = 'mk-appt-desc';
-            desc.textContent = '由專業教練馬克提供一對一按摩伸展服務，針對您的身體狀況量身打造最適合的療程。';
+            desc.textContent = '由專業修復師針對你的身體狀況，運用關節鬆動、筋膜張力平衡與 IASTM 筋膜刀，量身打造最適合的修復方案。';
             btn.parentNode.insertBefore(desc, btn);
         }
     }

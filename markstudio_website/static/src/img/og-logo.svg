@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 60" width="280" height="60">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700&amp;display=swap');
+    .og-brand { font-family: 'Georgia', 'Noto Serif TC', serif; font-weight: 700; fill: #1a1a1a; }
+    .og-sub { font-family: 'Noto Serif TC', 'Georgia', serif; font-weight: 400; fill: #666; }
+    .og-accent { fill: #C75B12; }
+  </style>
+  <text x="0" y="38" class="og-brand" font-size="36" letter-spacing="2">O.G</text>
+  <rect x="82" y="18" width="3" height="24" rx="1" class="og-accent"/>
+  <text x="94" y="32" class="og-brand" font-size="20">老地方</text>
+  <text x="94" y="50" class="og-sub" font-size="12" letter-spacing="1">身體修復</text>
+</svg>

@@ -12,6 +12,7 @@
                     <div class="mk-hero-content">
                         <h1 class="mk-hero-title">O.G 老地方</h1>
                         <p class="mk-hero-subtitle">不修表面，修根本。</p>
+                        <p class="mk-hero-desc">讓你的身體回到平衡的起點，用職人手藝把你調回來。</p>
                     </div>
                 </section>
 
@@ -145,7 +146,7 @@
                                 <p class="mk-booking-card-desc">
                                     由專業修復師針對你的身體狀況，運用關節鬆動、筋膜張力平衡與 IASTM 筋膜刀，量身打造最適合的修復方案。
                                 </p>
-                                <a href="https://mark182.simplybook.asia/v2/" class="mk-cta-btn">立即預約</a>
+                                <a href="/appointment/1/schedule" class="mk-cta-btn">立即預約</a>
                             </div>
                         </div>
                     </div>

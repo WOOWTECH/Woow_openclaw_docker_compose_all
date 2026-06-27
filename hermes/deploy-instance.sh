@@ -11,7 +11,7 @@ NS="apporoalan-hermes"
 K="kubectl --context $CONTEXT -n $NS"
 NEW_API_KEY="REDACTED_MINIMAX_KEY_3"
 NEW_KEY_B64=$(echo -n "$NEW_API_KEY" | base64 -w0)
-IMAGE="10.43.200.138:5000/hermes-agent-custom:v0.15"
+IMAGE="nousresearch/hermes-agent:latest"
 WEBUI_IMAGE="ghcr.io/nesquena/hermes-webui:latest"
 
 PG_PASS=$(openssl rand -base64 12 | tr -d '/+=' | head -c 16)
@@ -255,11 +255,13 @@ spec:
       containers:
       - name: hermes-agent
         image: ${IMAGE}
-        imagePullPolicy: Never
+        imagePullPolicy: Always
         args: [gateway, run]
         env:
         - {name: HERMES_DASHBOARD, value: "1"}
         - {name: HERMES_DASHBOARD_INSECURE, value: "1"}
+        - {name: HERMES_DASHBOARD_BASIC_AUTH_USERNAME, value: "admin"}
+        - {name: HERMES_DASHBOARD_BASIC_AUTH_PASSWORD, value: "admin"}
         - {name: HERMES_DASHBOARD_TUI, value: "1"}
         - {name: HERMES_TUI_DIR, value: "/opt/data/ui-tui"}
         - {name: HERMES_UID, value: "1000"}

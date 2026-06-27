@@ -9,7 +9,7 @@ K="kubectl --context $CONTEXT -n $NS"
 NEW_API_KEY="REDACTED_MINIMAX_KEY_3"
 NEW_KEY_B64=$(echo -n "$NEW_API_KEY" | base64 -w0)
 API_SERVER_KEY_B64=$(echo -n "$(openssl rand -hex 32)" | base64 -w0)
-IMAGE="10.43.200.138:5000/hermes-agent-custom:v0.15"
+IMAGE="nousresearch/hermes-agent:latest"
 WEBUI_IMAGE="ghcr.io/nesquena/hermes-webui:latest"
 
 # 5 team members: prefix → domain
@@ -253,13 +253,17 @@ spec:
       containers:
       - name: hermes-agent
         image: $IMAGE
-        imagePullPolicy: Never
+        imagePullPolicy: Always
         args: [gateway, run]
         env:
         - name: HERMES_DASHBOARD
           value: "1"
         - name: HERMES_DASHBOARD_INSECURE
           value: "1"
+        - name: HERMES_DASHBOARD_BASIC_AUTH_USERNAME
+          value: "admin"
+        - name: HERMES_DASHBOARD_BASIC_AUTH_PASSWORD
+          value: "admin"
         - name: HERMES_UID
           value: "1000"
         - name: HERMES_GID

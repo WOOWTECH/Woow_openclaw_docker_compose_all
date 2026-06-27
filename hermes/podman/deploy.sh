@@ -38,7 +38,7 @@ podman exec hermes-agent sh -c '
 echo "Step 4: Install ddgs web search..."
 podman exec hermes-agent sh -c '
   SITE=$(/opt/hermes/.venv/bin/python3 -c "import site;print(site.getsitepackages()[0])" 2>/dev/null)
-  pip install --break-system-packages -q --target="$SITE" ddgs 2>/dev/null
+  uv pip install --target="$SITE" ddgs 2>/dev/null
   /opt/hermes/.venv/bin/python3 -c "from ddgs import DDGS; print(\"ddgs OK\")" 2>&1 | grep OK
 '
 

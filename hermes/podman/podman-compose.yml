@@ -20,7 +20,7 @@ x-podman:
 services:
   # ── 1. Hermes Agent (Gateway:8642 + Dashboard:9119) ──
   hermes-agent:
-    image: nousresearch/hermes-agent:latest
+    image: docker.io/nousresearch/hermes-agent:latest
     container_name: hermes-agent
     ports:
       - "18642:8642"

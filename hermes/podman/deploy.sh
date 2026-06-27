@@ -46,6 +46,21 @@ podman exec hermes-agent sh -c '
 echo "Step 5: Agent source copy..."
 podman exec hermes-agent sh -c 'test -d /opt/data/hermes-agent || (cp -a /opt/hermes /opt/data/hermes-agent && rm -rf /opt/data/hermes-agent/.git)'
 
+# Step 5b: Install agent into WebUI venv (required for WebUI local-agent chat)
+echo "Step 5b: Install agent into WebUI venv..."
+podman exec hermes-webui sh -c '
+  test -d /home/hermeswebui/.hermes/hermes-agent || exit 0
+  /app/venv/bin/python -c "import run_agent" 2>/dev/null && exit 0
+  cd /home/hermeswebui/.hermes/hermes-agent && /app/venv/bin/pip install -e . 2>&1 | tail -1
+'
+# Pre-provision browser (Node+Chrome) as the webui runtime user so first chat is fast
+podman exec -d --user hermeswebui hermes-webui sh -c '
+  export HOME=/home/hermeswebui PATH=/home/hermeswebui/.hermes/node/bin:$PATH
+  command -v agent-browser >/dev/null 2>&1 || exit 0
+  test -d /home/hermeswebui/.agent-browser/browsers && exit 0
+  agent-browser install > /home/hermeswebui/.hermes/browser_install.log 2>&1
+'
+
 # Step 6: TUI PVC fix
 echo "Step 6: TUI PVC setup..."
 podman exec hermes-agent sh -c '
@@ -88,6 +103,7 @@ podman exec hermes-agent sh -c '
   sed -i "/^  - hermes-cli$/d" /opt/data/config.yaml 2>/dev/null
   # Write .env for TUI
   echo "MINIMAX_API_KEY=$(printenv MINIMAX_API_KEY)" > /opt/data/.env
+  echo "OPENROUTER_API_KEY=$(printenv OPENROUTER_API_KEY)" >> /opt/data/.env
   # Enable extra toolsets
   hermes tools enable video 2>/dev/null | tail -1
   hermes tools enable moa 2>/dev/null | tail -1

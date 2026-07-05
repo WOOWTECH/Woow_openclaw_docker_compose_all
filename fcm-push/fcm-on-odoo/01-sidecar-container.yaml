@@ -1,0 +1,76 @@
+# fcm-sidecar container template for the Odoo pod (05-odoo.yaml overlay).
+#
+# This file is NOT applied standalone — it is a REFERENCE for patching
+# the sidecar container + volumes into an existing tenant's 05-odoo.yaml.
+#
+# TEMPLATE variables:
+#   $NAMESPACE — the tenant's k8s namespace (e.g. bnidistrict-odoo)
+#   $TENANT    — the tenant_id registered in namespace_tenant_map
+#
+# Prerequisites:
+#   1. ServiceAccount fcm-sidecar created in $NAMESPACE (00-sa.yaml)
+#   2. imagePullSecret ghcr-pull created in $NAMESPACE
+#   3. namespace_tenant_map row: ($NAMESPACE, $TENANT) inserted in central postgres
+#   4. Pod spec must set: serviceAccountName: fcm-sidecar
+#   5. Pod-level securityContext must add: supplementalGroups: [10002]
+#      (so Odoo uid=100 can read the fcm socket at mode 0660, group 10002)
+#
+# SH-1: capabilities.add:[IPC_LOCK] is NOT required — mlockall was removed.
+# Anti-swap relies on node-layer (k8s NoSwap default + VmSwap==0 verification).
+
+# --- Add this container to spec.template.spec.containers[] ---
+# - name: fcm-sidecar
+#   image: ghcr.io/woowtech/fcm-sidecar:dev
+#   imagePullPolicy: Always
+#   env:
+#     - name: FCM_SIDECAR_ENROLL_ENDPOINT
+#       value: "http://whitelist-service.woow-fcm-central.svc.cluster.local:8000/v1/enroll"
+#     - name: FCM_SIDECAR_SA_TOKEN_PATH
+#       value: "/var/run/secrets/tokens/enroll-token"
+#     - name: FCM_SIDECAR_CENTRAL_ENDPOINT
+#       value: "http://token-vending-service.woow-fcm-central.svc.cluster.local:8001/v1/issue-fcm-token"
+#     - name: FCM_SIDECAR_STATE_DIR
+#       value: "/var/lib/fcm-sidecar"
+#     - name: FCM_SIDECAR_RUNTIME_DIR
+#       value: "/run/fcm-sidecar"
+#   securityContext:
+#     runAsUser: 10001
+#     runAsGroup: 10002
+#     allowPrivilegeEscalation: false
+#     capabilities:
+#       drop: ["ALL"]
+#     seccompProfile:
+#       type: RuntimeDefault
+#   resources:
+#     requests:
+#       cpu: 50m
+#       memory: 64Mi
+#     limits:
+#       cpu: 200m
+#       memory: 128Mi
+#   volumeMounts:
+#     - name: fcm-state
+#       mountPath: /var/lib/fcm-sidecar
+#     - name: fcm-run
+#       mountPath: /run/fcm-sidecar
+#     - name: sa-token
+#       mountPath: /var/run/secrets/tokens
+#       readOnly: true
+
+# --- Add these volumes to spec.template.spec.volumes[] ---
+# - name: fcm-state
+#   emptyDir: {}
+# - name: fcm-run
+#   emptyDir: {}
+# - name: sa-token
+#   projected:
+#     sources:
+#       - serviceAccountToken:
+#           path: enroll-token
+#           audience: central
+#           expirationSeconds: 3600
+
+# --- Add to the Odoo container's volumeMounts[] ---
+# - name: fcm-run
+#   mountPath: /run/fcm-sidecar
+#   readOnly: true

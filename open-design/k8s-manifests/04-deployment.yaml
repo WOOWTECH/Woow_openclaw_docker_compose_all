@@ -31,12 +31,6 @@ spec:
           ports:
             - containerPort: 7457
               name: http
-          env:
-            - name: ANTHROPIC_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: od-secrets
-                  key: ANTHROPIC_API_KEY
           envFrom:
             - configMapRef:
                 name: od-config

@@ -1,0 +1,25 @@
+# NetworkPolicy: Allow ingress only from cloudflare namespace (shared tunnel)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: open-design-policy
+  namespace: open-design
+spec:
+  podSelector:
+    matchLabels:
+      app: open-design
+  policyTypes:
+    - Ingress
+  ingress:
+    # Allow traffic from cloudflare namespace (shared tunnel)
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: cloudflare
+      ports:
+        - port: 7457
+    # Allow traffic from within the namespace
+    - from:
+        - podSelector: {}
+      ports:
+        - port: 7457

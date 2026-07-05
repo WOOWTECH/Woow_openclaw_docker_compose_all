@@ -1,0 +1,7 @@
+# Real secrets — NEVER commit these
+secrets/
+*sa-key.json
+*master_sa.json
+*.pat
+.env
+*.pem

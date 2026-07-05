@@ -1,0 +1,87 @@
+# NetworkPolicy for woow-fcm-central.
+# Matches existing cluster patterns (markstudio-odoo, openclaw-tenant-1).
+#
+# postgres: ingress only from whitelist-service and TVS pods (within namespace).
+# whitelist-service: ingress from fcm-sidecar pods in ANY namespace (cross-ns enroll).
+# token-vending-service: ingress from fcm-sidecar pods in ANY namespace (cross-ns token issue).
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: postgres-policy
+  namespace: woow-fcm-central
+  labels:
+    app.kubernetes.io/part-of: woow-fcm-central
+spec:
+  podSelector:
+    matchLabels:
+      app: postgres
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: whitelist-service
+        - podSelector:
+            matchLabels:
+              app: token-vending-service
+      ports:
+        - port: 5432
+          protocol: TCP
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: whitelist-service-policy
+  namespace: woow-fcm-central
+  labels:
+    app.kubernetes.io/part-of: woow-fcm-central
+spec:
+  podSelector:
+    matchLabels:
+      app: whitelist-service
+  policyTypes:
+    - Ingress
+  ingress:
+    # From fcm-sidecar pods in ANY namespace (self-enrollment POST /v1/enroll)
+    - from:
+        - namespaceSelector: {}
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/component: fcm-sidecar
+      ports:
+        - port: 8000
+          protocol: TCP
+    # From TVS within the namespace (whitelist check-and-claim)
+    - from:
+        - podSelector:
+            matchLabels:
+              app: token-vending-service
+      ports:
+        - port: 8000
+          protocol: TCP
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: tvs-policy
+  namespace: woow-fcm-central
+  labels:
+    app.kubernetes.io/part-of: woow-fcm-central
+spec:
+  podSelector:
+    matchLabels:
+      app: token-vending-service
+  policyTypes:
+    - Ingress
+  ingress:
+    # From fcm-sidecar pods in ANY namespace (POST /v1/issue-fcm-token)
+    - from:
+        - namespaceSelector: {}
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/component: fcm-sidecar
+      ports:
+        - port: 8001
+          protocol: TCP

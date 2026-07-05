@@ -1,0 +1,14 @@
+# ServiceAccount for the fcm-sidecar in a tenant namespace.
+#
+# The SA name MUST be "fcm-sidecar" — central's K8sTokenReviewVerifier
+# checks the subject is system:serviceaccount:<ns>:fcm-sidecar.
+#
+# TEMPLATE: replace $NAMESPACE with the tenant's k8s namespace.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: fcm-sidecar
+  namespace: $NAMESPACE
+  labels:
+    app.kubernetes.io/part-of: $NAMESPACE
+    app.kubernetes.io/component: fcm-sidecar

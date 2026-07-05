@@ -19,12 +19,14 @@ spec:
       labels:
         app: open-design
     spec:
+      nodeSelector:
+        kubernetes.io/hostname: "woowtechcluster1-aorus-15p-xd"
       securityContext:
         fsGroup: 1001
       terminationGracePeriodSeconds: 30
       containers:
         - name: open-design
-          image: open-design:latest
+          image: localhost/open-design:latest
           imagePullPolicy: Never
           ports:
             - containerPort: 7457

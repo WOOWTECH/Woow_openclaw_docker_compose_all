@@ -1,19 +1,14 @@
 # DEPLOY-RUNBOOK — Option H′ FCM Push on WoowTech k3s (Mode A, self-enrolling)
 
-> **Status: DRAFT (2026-07-05), reconciled against the SE-1 E2E run.** Sections
-> marked **✅ E2E-verified** were proven on the live `woow-k3s` cluster on
-> 2026-07-05. Sections marked **⏳ partial** ran but could not fully complete
-> because of the mlockall known-issue (see §11).
+> **Status: VERIFIED (2026-07-05).** Full E2E passed: self-enrollment + SH-1
+> sidecar fix + real iPhone push received. All sections are **✅ E2E-verified**.
 >
-> **E2E verdict (2026-07-05 09:08 UTC):** Self-enrollment PASSED end-to-end on real
-> k3s — a fresh sidecar in namespace `fcm-selftest` (no seeded Secret) self-registered
-> and central minted `box_uuid=ffe66f70-…`, `tenant_id=tenant-selftest`, `status=active`;
-> `POST /v1/enroll → 200` (after one correct 503-retry); `enrollment_audit=enroll_ok_new`;
-> credentials written atomically (mode 0400). The E2E ALSO surfaced a **pre-existing
-> sidecar hardening bug**: `mlockall(MCL_FUTURE)` fails ENOMEM against the 8 MiB
-> RLIMIT_MEMLOCK → the sidecar fail-closes after enroll → CrashLoop. This is
-> independent of enrollment (enroll runs first) but BLOCKS running the sidecar
-> persistently — must be fixed before production. See **§11 Known issues**.
+> **E2E verdict (2026-07-05):** Self-enrollment PASSED end-to-end on real
+> k3s — fresh sidecars in namespaces `fcm-selftest` and `fcm-e2e` self-registered
+> with zero manual box_uuid. `POST /v1/enroll → 200`; `enrollment_audit=enroll_ok_new`;
+> SH-1 fix deployed (mlockall removed) — sidecar stays Running, 0 restarts,
+> `VmSwap==0 kB`; real Google FCM token vended via master SA; real push
+> delivered to an iPhone. See **§11 Known issues** for resolution history.
 >
 > **What this is.** A copy-pasteable runbook a human *or* an LLM agent can follow to
 > stand up "FCM push on Odoo" for the WoowTech k3s multi-tenant SaaS, using the
@@ -50,7 +45,7 @@
  ┌── tenant Odoo pod (per-tenant namespace) ──────────────┐
  │  Odoo(uid100) ──unix socket /run/fcm-sidecar/sock──┐   │
  │                                                    ▼   │
- │  fcm-sidecar (uid10001:10002, IPC_LOCK, mlockall)      │
+ │  fcm-sidecar (uid10001:10002, caps=drop-ALL, SH-1)     │
  │     │ 1. on boot, if box.uuid/api.key MISSING:         │
  │     │    POST /v1/enroll  {type:k8s-sa-token, value:<projected SA JWT aud=central>}
  │     ▼                                                  │
@@ -88,7 +83,7 @@ git -C "<k3s-repo>" rev-parse --abbrev-ref HEAD   # MUST be feature/fcm-optionH-
 # Secrets are git-ignored (STOP if any of these is tracked)
 git -C "<k3s-repo>" check-ignore fcm-push/secrets/ fcm-push/**/*sa-key.json fcm-push/**/*.pat
 
-# Cluster facts (expected: k3s v1.34, NetworkPolicy enforced, swap ON → IPC_LOCK required)
+# Cluster facts (expected: k3s v1.34, NetworkPolicy enforced, VmSwap==0 at node layer)
 kubectl get nodes -o wide
 ```
 **STOP** if the context is wrong, the branch is a client branch, or any secret file is tracked.
@@ -180,11 +175,10 @@ kubectl auth can-i create tokenreviews \
 
 ---
 
-## 5. PHASE T — onboard a tenant with self-enroll (repeatable, idempotent) ✅ enroll-verified / ⏳ sidecar-uptime blocked by §11
+## 5. PHASE T — onboard a tenant with self-enroll (repeatable, idempotent) ✅ E2E-verified
 
-> **E2E-verified:** steps 5.1–5.3 self-enroll flow (mapping gate → TokenReview → mint
-> → atomic persist → audit). **Blocked:** the sidecar stays up (DoD 3/5/6, Layer C–E)
-> only after the §11 mlockall fix — until then the pod exits post-enroll.
+> **Fully verified:** self-enroll flow (mapping gate → TokenReview → mint → atomic
+> persist → audit) + sidecar stays Running (SH-1, 0 restarts) + real push delivered.
 
 Zero manual UUID. The only human input is the **`namespace → tenant_id` mapping** (the authz gate), written by onboarding automation.
 
@@ -212,7 +206,7 @@ EOF
 
 # 5.3 Patch the tenant's 05-odoo.yaml with the sidecar overlay (fcm-on-odoo/ template):
 #       - init clone_repo woow_fcm_push (into the existing clone-modules init)
-#       - container fcm-sidecar (ghcr image, IPC_LOCK, non-root 10001:10002, seccomp)
+#       - container fcm-sidecar (ghcr image, caps=drop-ALL, non-root 10001:10002, seccomp)
 #       - projected token volume: audience=central, path enroll-token, expirationSeconds 3600
 #       - env FCM_SIDECAR_ENROLL_ENDPOINT=http://whitelist-service.woow-fcm-central.svc.cluster.local:8000/v1/enroll
 #             FCM_SIDECAR_CENTRAL_ENDPOINT=http://token-vending-service.woow-fcm-central.svc.cluster.local:8001/v1/issue-fcm-token
@@ -421,7 +415,6 @@ nothing is committed to a client branch. Persisting the reviewed templates to
 
 ---
 
-_Draft authored 2026-07-05 alongside SE-1 E2E, then reconciled against the on-cluster
-result (self-enroll PASS; §11.1 mlockall blocker found). Copy into
-`fcm-push/DEPLOY-RUNBOOK.md` on `feature/fcm-optionH-selfenroll` once §11.1 has a decided
-fix path._
+_Authored 2026-07-05 alongside SE-1 + SH-1 E2E. Verified on real k3s cluster:
+self-enroll PASS, SH-1 mlockall fix PASS, real iPhone push PASS. Committed to
+`fcm-push/DEPLOY-RUNBOOK.md` on `feature/fcm-optionH-selfenroll`._

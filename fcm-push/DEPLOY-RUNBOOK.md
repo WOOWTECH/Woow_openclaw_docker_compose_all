@@ -32,7 +32,7 @@
 | Design / PRD / SE-1 story | `optionH-prime-implementation` | `docs/` |
 
 > **Git-hygiene rule (non-negotiable):** the per-tenant sidecar overlay
-> (`fcm-on-odoo/05-odoo.sidecar-overlay.yaml`) is a **TEMPLATE**. It is committed
+> (`fcm-on-odoo/01-sidecar-overlay.reference.yaml`) is a **TEMPLATE**. It is committed
 > ONLY on `feature/fcm-optionH-selfenroll`. It is **never** committed onto a client
 > branch — when a real client adopts FCM, their onboarding applies the overlay onto
 > that client's own branch. Client branches stay byte-for-byte unchanged by this work.
@@ -379,7 +379,7 @@ fcm-push/
     08-rbac-tokenreview.yaml         # SE-1 addition (system:auth-delegator)
     run-migration.sh
   fcm-on-odoo/                       # per-tenant sidecar OVERLAY *template* (applied per client later)
-    05-odoo.sidecar-overlay.yaml     # a COPY of a client 05-odoo.yaml + sidecar, $TENANT placeholders
+    01-sidecar-overlay.reference.yaml     # a COPY of a client 05-odoo.yaml + sidecar, $TENANT placeholders
     fcm-sidecar-sa.yaml
   DEPLOY-RUNBOOK.md  README.md  .gitignore
 ```
@@ -390,7 +390,7 @@ fcm-push/
   **template** in `fcm-on-odoo/`, adopted per client during that client's onboarding (§5).
 - Central deploys with `kubectl apply -f fcm-push/woow-fcm-central/`. Existing deployments are
   untouched because it's a brand-new namespace + a brand-new directory.
-- **SH-1 template change:** the sidecar container in `05-odoo.sidecar-overlay.yaml` **drops
+- **SH-1 template change:** the sidecar container in `01-sidecar-overlay.reference.yaml` **drops
   `capabilities.add: [IPC_LOCK]`** (no longer needed) and the tenant pods are marked no-swap.
 
 ### 12.2 Deploy cowork with the vibekanban build agent (post-SH-1 image rebuild)

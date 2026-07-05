@@ -37,6 +37,8 @@ spec:
           volumeMounts:
             - name: od-data
               mountPath: /app/.od
+            - name: od-home
+              mountPath: /home/opendesign
           resources:
             requests:
               cpu: 1000m
@@ -62,3 +64,6 @@ spec:
         - name: od-data
           persistentVolumeClaim:
             claimName: open-design-data-pvc
+        - name: od-home
+          persistentVolumeClaim:
+            claimName: open-design-home-pvc

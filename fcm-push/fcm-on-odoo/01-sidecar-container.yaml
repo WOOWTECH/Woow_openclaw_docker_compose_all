@@ -1,24 +1,176 @@
-# fcm-sidecar container template for the Odoo pod (05-odoo.yaml overlay).
+# fcm-sidecar overlay for the Odoo pod (05-odoo.yaml).
 #
 # This file is NOT applied standalone — it is a REFERENCE for patching
-# the sidecar container + volumes into an existing tenant's 05-odoo.yaml.
+# the FCM sidecar + init containers + volumes into an existing tenant's
+# 05-odoo.yaml. Proven end-to-end on k3s v1.34 (fcm-e2e namespace).
 #
 # TEMPLATE variables:
 #   $NAMESPACE — the tenant's k8s namespace (e.g. bnidistrict-odoo)
 #   $TENANT    — the tenant_id registered in namespace_tenant_map
+#   $DB_NAME / $DB_HOST / $DB_USER / $DB_PASS — tenant's Odoo DB
+#   $FIREBASE_PROJECT_ID — e.g. woow-odoo-de2cb
 #
 # Prerequisites:
 #   1. ServiceAccount fcm-sidecar created in $NAMESPACE (00-sa.yaml)
 #   2. imagePullSecret ghcr-pull created in $NAMESPACE
-#   3. namespace_tenant_map row: ($NAMESPACE, $TENANT) inserted in central postgres
-#   4. Pod spec must set: serviceAccountName: fcm-sidecar
-#   5. Pod-level securityContext must add: supplementalGroups: [10002]
+#   3. github-token secret created in $NAMESPACE (for private repo clone)
+#   4. namespace_tenant_map row: ($NAMESPACE, $TENANT) in central postgres
+#   5. Pod spec must set: serviceAccountName: fcm-sidecar
+#   6. Pod-level securityContext must add: supplementalGroups: [10002]
 #      (so Odoo uid=100 can read the fcm socket at mode 0660, group 10002)
+#   7. Odoo container's volumeMounts must add: fcm-run readOnly
 #
 # SH-1: capabilities.add:[IPC_LOCK] is NOT required — mlockall was removed.
 # Anti-swap relies on node-layer (k8s NoSwap default + VmSwap==0 verification).
+#
+# IMPORTANT: Odoo 18 image runs as uid=100 (not 101). All chown in init
+# containers must use 100:101. The fsGroup=101 sets group on volumes.
 
-# --- Add this container to spec.template.spec.containers[] ---
+# =====================================================================
+# INIT CONTAINERS — add AFTER existing fix-permissions + wait-for-postgres
+# ORDER MATTERS: clone -> pip-deps -> verify-deps -> init-db(install module)
+# =====================================================================
+
+# --- 1. clone-fcm-plugin: git clone the FCM plugin into /mnt/extra-addons ---
+#     (append to existing clone-modules if one exists, or add as new)
+#
+# - name: clone-fcm-plugin
+#   image: alpine/git:latest
+#   command:
+#     - sh
+#     - -c
+#     - |
+#       cd /mnt/extra-addons
+#       if [ -d "woow_fcm_push/.git" ]; then
+#         echo "[clone] woow_fcm_push already cloned, pulling..."
+#         cd woow_fcm_push && git pull --ff-only 2>/dev/null || true
+#       else
+#         echo "[clone] Cloning woow_fcm_push (feature/optionH-prime)..."
+#         rm -rf woow_fcm_push 2>/dev/null || true
+#         if [ -n "${GITHUB_TOKEN}" ]; then
+#           git clone --depth 1 -b feature/optionH-prime \
+#             "https://${GITHUB_TOKEN}@github.com/WOOWTECH/woow_odoo_fcm_push.git" woow_fcm_push
+#         else
+#           git clone --depth 1 -b feature/optionH-prime \
+#             https://github.com/WOOWTECH/woow_odoo_fcm_push.git woow_fcm_push
+#         fi
+#       fi
+#       echo "[clone] Done."
+#       ls -la /mnt/extra-addons/woow_fcm_push/
+#   env:
+#     - name: GITHUB_TOKEN
+#       valueFrom:
+#         secretKeyRef:
+#           name: github-token
+#           key: token
+#           optional: true
+#   volumeMounts:
+#     - name: odoo-addons
+#       mountPath: /mnt/extra-addons
+#   resources:
+#     limits:
+#       cpu: 200m
+#       memory: 128Mi
+
+# --- 2. install-plugin-deps: pip install from the plugin's requirements ---
+#     GENERIC: reads requirements.txt from the cloned plugin, not hardcoded.
+#     Runs as root (runAsUser: 0) to pip install, then chown 100:101.
+#     Target is the PVC at /var/lib/odoo/.local/ so it survives pod restarts.
+#
+# - name: install-plugin-deps
+#   image: odoo:18.0
+#   command:
+#     - sh
+#     - -c
+#     - |
+#       echo "=== Installing Python deps for woow_fcm_push ==="
+#       REQS="/mnt/extra-addons/woow_fcm_push/requirements.txt"
+#       SITE="/var/lib/odoo/.local/lib/python3.12/site-packages"
+#       if [ -f "$REQS" ]; then
+#         pip3 install --break-system-packages --target="$SITE" -r "$REQS" 2>&1 | tail -5
+#       else
+#         pip3 install --break-system-packages --target="$SITE" requests_unixsocket 2>&1 | tail -3
+#       fi
+#       echo "=== Fixing ownership (Odoo runs as uid=100, NOT 101) ==="
+#       chown -R 100:101 /var/lib/odoo
+#       echo "Done."
+#   securityContext:
+#     runAsUser: 0
+#   volumeMounts:
+#     - name: odoo-data
+#       mountPath: /var/lib/odoo
+#     - name: odoo-addons
+#       mountPath: /mnt/extra-addons
+#   resources:
+#     limits:
+#       cpu: 200m
+#       memory: 128Mi
+
+# --- 3. verify-deps: readiness gate — FAIL the pod if import is broken ---
+#     Non-zero exit prevents Odoo from starting with a missing dependency.
+#
+# - name: verify-deps
+#   image: odoo:18.0
+#   command:
+#     - python3
+#     - -c
+#     - "import requests_unixsocket; print('verify-deps: requests_unixsocket OK')"
+#   volumeMounts:
+#     - name: odoo-data
+#       mountPath: /var/lib/odoo
+#   resources:
+#     limits:
+#       cpu: 50m
+#       memory: 64Mi
+
+# --- 4. init-db-fcm: install the module + set firebase_project_id ---
+#     IDEMPOTENT — Odoo skips already-installed modules.
+#     Replace $DB_NAME, $DB_HOST, $DB_USER, $DB_PASS, $FIREBASE_PROJECT_ID.
+#
+# - name: init-db-fcm
+#   image: odoo:18.0
+#   command:
+#     - sh
+#     - -c
+#     - |
+#       echo "=== Installing woow_fcm_push module ==="
+#       odoo -d $DB_NAME -i woow_fcm_push --stop-after-init \
+#         -c /etc/odoo/odoo.conf --no-http
+#       echo "=== Setting firebase_project_id ==="
+#       python3 -c "
+#       import psycopg2
+#       conn = psycopg2.connect(
+#           host='$DB_HOST', dbname='$DB_NAME',
+#           user='$DB_USER', password='$DB_PASS')
+#       cur = conn.cursor()
+#       cur.execute(
+#           \"INSERT INTO ir_config_parameter \"
+#           \"(key, value, create_uid, write_uid, create_date, write_date) \"
+#           \"VALUES ('woow_fcm_push.firebase_project_id', \"
+#           \"'$FIREBASE_PROJECT_ID', 1, 1, NOW(), NOW()) \"
+#           \"ON CONFLICT (key) DO UPDATE \"
+#           \"SET value='$FIREBASE_PROJECT_ID'\")
+#       conn.commit(); conn.close()
+#       print('firebase_project_id set')
+#       "
+#   volumeMounts:
+#     - name: odoo-config
+#       mountPath: /etc/odoo/odoo.conf
+#       subPath: odoo.conf
+#       readOnly: true
+#     - name: odoo-data
+#       mountPath: /var/lib/odoo
+#     - name: odoo-addons
+#       mountPath: /mnt/extra-addons
+#   resources:
+#     limits:
+#       cpu: "1"
+#       memory: 2Gi
+
+# =====================================================================
+# CONTAINER: fcm-sidecar — add to spec.template.spec.containers[]
+# =====================================================================
+
 # - name: fcm-sidecar
 #   image: ghcr.io/woowtech/fcm-sidecar:dev
 #   imagePullPolicy: Always
@@ -57,7 +209,10 @@
 #       mountPath: /var/run/secrets/tokens
 #       readOnly: true
 
-# --- Add these volumes to spec.template.spec.volumes[] ---
+# =====================================================================
+# VOLUMES — add to spec.template.spec.volumes[]
+# =====================================================================
+
 # - name: fcm-state
 #   emptyDir: {}
 # - name: fcm-run
@@ -70,7 +225,10 @@
 #           audience: central
 #           expirationSeconds: 3600
 
-# --- Add to the Odoo container's volumeMounts[] ---
+# =====================================================================
+# ODOO CONTAINER PATCH — add to the odoo container's volumeMounts[]
+# =====================================================================
+
 # - name: fcm-run
 #   mountPath: /run/fcm-sidecar
 #   readOnly: true

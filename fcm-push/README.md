@@ -47,16 +47,18 @@ K8s manifests for WoowTech's Option H-prime FCM push notification system on k3s.
 ```bash
 kubectl apply -f fcm-push/woow-fcm-central/
 # Then inject real secrets (see 01-secrets.yaml header comments)
-# Then run migration:
+# Then run migration (default = alembic upgrade head):
 bash fcm-push/woow-fcm-central/run-migration.sh "$REAL_PG_PASSWORD"
+# Raw SQL fallback (explicit opt-in, no pip needed):
+# bash fcm-push/woow-fcm-central/run-migration.sh --raw-sql "$REAL_PG_PASSWORD"
 ```
 
 ### Per-tenant sidecar (self-enroll, zero manual box_uuid)
 
 1. Create SA: `kubectl apply -f fcm-on-odoo/00-sa.yaml` (replace `$NAMESPACE`)
-2. Create ghcr-pull secret in the tenant namespace
+2. Create ghcr-pull + github-token secrets in the tenant namespace (see `02-github-token-secret.yaml`)
 3. Insert mapping: `INSERT INTO namespace_tenant_map (namespace, tenant_id, created_by) VALUES ('$NAMESPACE', '$TENANT', 'operator')`
-4. Patch the tenant's `05-odoo.yaml` per `fcm-on-odoo/01-sidecar-container.yaml`
+4. Patch the tenant's `05-odoo.yaml` per `fcm-on-odoo/01-sidecar-overlay.reference.yaml`
 5. The sidecar self-enrolls on first boot — no manual box_uuid needed
 
 ## Security notes
@@ -75,3 +77,4 @@ bash fcm-push/woow-fcm-central/run-migration.sh "$REAL_PG_PASSWORD"
 - k3s v1.34.3+k3s1 (10-node cluster, Ubuntu 24.04)
 - Self-enrollment E2E: `POST /v1/enroll` → 200, `enroll_ok_new` + `enroll_ok_rotate`
 - Pod stays Running (0 restarts) with SH-1 hardening fix
+- Full broadcast E2E: real Odoo 18 tenant (fcm-e2e) + real master SA + real iPhone push received

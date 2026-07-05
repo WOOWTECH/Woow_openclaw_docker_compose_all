@@ -10,3 +10,5 @@ data:
   OD_ALLOWED_ORIGINS: "https://open-design.woowtech.io"
   OD_PORT: "7457"
   OD_BIND_HOST: "0.0.0.0"
+  # Auth handled by Cloudflare Tunnel — disable daemon-level API auth
+  OD_DISABLE_API_AUTH: "1"

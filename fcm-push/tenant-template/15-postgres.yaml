@@ -1,0 +1,97 @@
+# PostgreSQL 16 for the tenant Odoo database (Service + Deployment).
+#
+# PLACEHOLDERS:
+#   __TENANT__  = tenant slug / resource prefix.
+#
+# REQUIRES (create BEFORE apply — see DEPLOY-RUNBOOK.md Phase 3):
+#   Secret __TENANT__-postgres-secret with keys:
+#     POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB
+#   (POSTGRES_USER == POSTGRES_DB == __DBNAME__; POSTGRES_PASSWORD == __DBPASS__)
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: __TENANT__-postgres-svc
+  namespace: __TENANT__
+  labels:
+    app: __TENANT__-postgres
+    app.kubernetes.io/part-of: __TENANT__
+spec:
+  type: ClusterIP
+  selector:
+    app: __TENANT__-postgres
+  ports:
+    - port: 5432
+      targetPort: 5432
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: __TENANT__-postgres
+  namespace: __TENANT__
+  labels:
+    app: __TENANT__-postgres
+    app.kubernetes.io/part-of: __TENANT__
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: __TENANT__-postgres
+  template:
+    metadata:
+      labels:
+        app: __TENANT__-postgres
+        app.kubernetes.io/part-of: __TENANT__
+    spec:
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: "true"
+      containers:
+        - name: postgres
+          image: postgres:16-alpine
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  key: POSTGRES_USER
+                  name: __TENANT__-postgres-secret
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: POSTGRES_PASSWORD
+                  name: __TENANT__-postgres-secret
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  key: POSTGRES_DB
+                  name: __TENANT__-postgres-secret
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          livenessProbe:
+            exec:
+              command: ["sh", "-c", "pg_isready -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\""]
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command: ["sh", "-c", "pg_isready -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\""]
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgres-data
+      volumes:
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: __TENANT__-db-pvc

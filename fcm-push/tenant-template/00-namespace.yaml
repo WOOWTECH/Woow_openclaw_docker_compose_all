@@ -1,0 +1,17 @@
+# Tenant namespace for a fresh Odoo 18 + FCM push tenant.
+#
+# PLACEHOLDERS (substitute BEFORE apply — see tenant-template/README.md):
+#   __TENANT__  = DNS-safe tenant slug, also the namespace name and the prefix
+#                 for every resource (e.g. "bnidistrict").
+#
+# The pod-security labels match the woow-fcm-central convention.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: __TENANT__
+  labels:
+    app.kubernetes.io/part-of: __TENANT__
+    app.kubernetes.io/managed-by: kubectl
+    kubernetes.io/metadata.name: __TENANT__
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/warn: restricted

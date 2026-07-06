@@ -1,0 +1,72 @@
+# Tenant NetworkPolicy (recommended; the fcm-e2e reference ran without one but
+# production tenants should be scoped). NetworkPolicy is enforced on this k3s
+# cluster. These policies select the tenant's pods (part-of __TENANT__) and:
+#   EGRESS  : DNS, intra-namespace (odoo<->postgres, cloudflared->odoo),
+#             central enroll/issue (8000/8001), and TCP 443 to the internet
+#             (git clone, pip, Cloudflare edge, fcm.googleapis.com).
+#   INGRESS : intra-namespace only (cloudflared -> nginx:8080, odoo -> postgres).
+#
+# NOTE: `kubectl port-forward` bypasses NetworkPolicy, so VERIFY steps still work.
+# NOTE: if this tenant is exposed by NodePort/LoadBalancer instead of a
+#       Cloudflare tunnel, add an ingress rule for the external source.
+#
+# PLACEHOLDERS:
+#   __TENANT__  = tenant slug / resource prefix (== namespace).
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: __TENANT__-egress
+  namespace: __TENANT__
+  labels:
+    app.kubernetes.io/part-of: __TENANT__
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/part-of: __TENANT__
+  policyTypes:
+    - Egress
+  egress:
+    # DNS
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - { protocol: UDP, port: 53 }
+        - { protocol: TCP, port: 53 }
+    # Intra-namespace (odoo -> postgres:5432, cloudflared -> odoo)
+    - to:
+        - podSelector: {}
+    # Central self-enroll + token vending
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: woow-fcm-central
+      ports:
+        - { protocol: TCP, port: 8000 }
+        - { protocol: TCP, port: 8001 }
+    # Outbound HTTPS to the internet (git clone, pip, Cloudflare edge, FCM API)
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+      ports:
+        - { protocol: TCP, port: 443 }
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: __TENANT__-ingress
+  namespace: __TENANT__
+  labels:
+    app.kubernetes.io/part-of: __TENANT__
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/part-of: __TENANT__
+  policyTypes:
+    - Ingress
+  ingress:
+    # Intra-namespace only
+    - from:
+        - podSelector: {}

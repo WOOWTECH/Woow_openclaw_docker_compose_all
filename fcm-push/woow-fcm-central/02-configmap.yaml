@@ -1,0 +1,23 @@
+# ConfigMap — copied from central/deploy/k8s/configmap-env.yaml verbatim.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: central-env
+  namespace: woow-fcm-central
+  labels:
+    app.kubernetes.io/part-of: woow-fcm-central
+data:
+  LOG_LEVEL: "INFO"
+  POSTGRES_DB: "fcm_central"
+  POSTGRES_USER: "fcm_central"
+  WHITELIST_SERVICE_PORT: "8000"
+  DB_POOL_MIN: "10"
+  DB_POOL_MAX: "100"
+  TRUSTED_PROXY_CIDRS: ""
+  CSRF_COOKIE_SECURE: "false"
+  ADMIN_SESSION_COOKIE_SECURE: "false"
+  ADMIN_SESSION_TTL_S: "28800"
+  AUDIT_PENDING_PATH: "/var/lib/whitelist/audit-pending.jsonl"
+  TVS_PORT: "8001"
+  MASTER_SA_PATH: "/etc/fcm/master-sa/fcm_master_sa.json"
+  WHITELIST_SERVICE_URL: "http://whitelist-service:8000"

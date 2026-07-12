@@ -20,10 +20,16 @@ echo "============================================================"
 echo "  Hermes Post-Deploy Setup: $NS"
 echo "============================================================"
 
-# 1. Copy golden config.yaml
-info "Applying golden config.yaml (495 lines)..."
-cat "$SCRIPT_DIR/golden-config.yaml" | $KC exec -i deploy/hermes -c hermes-agent -- sh -c 'cat > /opt/data/config.yaml && chmod 666 /opt/data/config.yaml'
-ok "config.yaml applied (cron_mode=auto, full settings)"
+# 1. Copy golden config.yaml (with API key substitution)
+info "Applying golden config.yaml..."
+OPENROUTER_KEY="${OPENROUTER_API_KEY:-}"
+if [ -n "$OPENROUTER_KEY" ]; then
+    sed "s|__OPENROUTER_API_KEY__|${OPENROUTER_KEY}|g" "$SCRIPT_DIR/golden-config.yaml" | $KC exec -i deploy/hermes -c hermes-agent -- sh -c 'cat > /opt/data/config.yaml && chmod 666 /opt/data/config.yaml'
+    ok "config.yaml applied (with model_routes API keys)"
+else
+    cat "$SCRIPT_DIR/golden-config.yaml" | $KC exec -i deploy/hermes -c hermes-agent -- sh -c 'cat > /opt/data/config.yaml && chmod 666 /opt/data/config.yaml'
+    ok "config.yaml applied (model_routes need OPENROUTER_API_KEY)"
+fi
 
 # 2. Copy golden settings.json (hidden_tabs: kanban, todos)
 info "Applying golden settings.json (hidden_tabs)..."

@@ -1,0 +1,1 @@
+完成。WAV 已轉為 MP3，存到 `/tmp/tone440.mp3`（25KB，39.3kbps）。

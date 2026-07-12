@@ -1,0 +1,6 @@
+完成。
+
+**生成結果：**
+- 5 張 PNG 圖片（640x480）：`/tmp/frames/frame_001.png` ~ `frame_005.png`
+  - 依序：紅、綠、藍、黃、紫
+- 影片：`/tmp/slideshow.mp4`（1.8KB，每張停留 2 秒，x264 編碼）

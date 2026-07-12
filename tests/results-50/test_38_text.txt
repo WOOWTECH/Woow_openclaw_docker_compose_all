@@ -1,0 +1,4 @@
+已生成測試影片 `/tmp/testvideo_audio.mp4`：
+- 畫面：640x480，30fps，5 秒測試圖案（testsrc）
+- 音訊：440Hz 正弦波，5 秒 AAC 編碼
+- 檔案大小：79KB

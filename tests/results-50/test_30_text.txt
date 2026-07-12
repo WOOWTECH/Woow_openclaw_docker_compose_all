@@ -1,0 +1,1 @@
+完成。前 2 秒已裁切存到 `/tmp/tone_cut.wav`（176KB，mono，44100Hz）。

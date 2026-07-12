@@ -1,0 +1,11 @@
+/tmp 底下有 **7 個 Office 文件**：
+
+| 檔案 | 副檔名 |
+|------|--------|
+| proj_pres.pptx | .pptx |
+| proj_schedule.xlsx | .xlsx |
+| proj_req.docx | .docx |
+| plan2026.pptx | .pptx |
+| sales.xlsx | .xlsx |
+| contract.docx | .docx |
+| ai_report.docx | .docx |

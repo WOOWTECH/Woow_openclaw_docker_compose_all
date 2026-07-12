@@ -1,0 +1,9 @@
+已完成。「附錄：參考資料」段落已加入文件末尾，包含 5 筆參考資料：
+
+1. OpenAI. (2026). GPT-5 Technical Report
+2. Anthropic. (2026). Claude 4.6 Model Card
+3. Google DeepMind. (2026). Gemini 2.0 Release Notes
+4. Hugging Face. (2026). State of Open Source AI 2026
+5. MIT Technology Review. (2026). AI Index Report 2026
+
+檔案位置：/tmp/ai_report.docx

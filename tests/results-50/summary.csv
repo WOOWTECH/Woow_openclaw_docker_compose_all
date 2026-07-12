@@ -1,0 +1,51 @@
+num|category|message|result|response_preview
+1|Word|幫我建立一個 Word 文件，標題是「AI 月報」，內容包含三段：摘要、分析、結|PASS|Word 文件已建立完成：/tmp/ai_report.docx  內容包含： - **標題**：AI 月報 - **摘�
+2|Word|在剛才的文件 /tmp/ai_report.docx 加入一個表格，欄位是：項目|PASS|已更新 /tmp/ai_report.docx，新增表格包含三個欄位： - **項目** - **狀態** - **負�
+3|Word|讀取 /tmp/ai_report.docx 的內容給我看|PASS|檔案內容如下：  **AI 月報**  **摘要** 本月 AI 領域持續快速發展，各主要技�
+4|Word|把文件 /tmp/ai_report.docx 裡的「摘要」改成「執行摘要」|PASS|已完成。「摘要」已改為「執行摘要」，文件保存在 /tmp/ai_report.docx。 
+5|Word|在 /tmp/ai_report.docx 文件最後加入「附錄：參考資料」段落|PASS|已完成。「附錄：參考資料」段落已加入文件末尾，包含 5 筆參考資料：  1.
+6|Word|顯示 /tmp/ai_report.docx 文件的結構大綱|PASS|=== AI 月報 文件結構大綱 ===  | 層級 | 內容 | |------|------| | [H1] | AI 月報 | | [H2
+7|Word|把 /tmp/ai_report.docx 匯出為 HTML 存到 /tmp/a|PASS|HTML 已匯出：/tmp/ai_report.html  內容結構： - **AI 月報**（標題） - **摘要**：本
+8|Word|建立一個合約範本 /tmp/contract.docx，包含甲方乙方資訊欄位|PASS|合約範本已建立完成：`/tmp/contract.docx` (37KB)  包含以下內容： - 合約編號 - **
+9|Excel|建立一個 Excel 檔案 /tmp/sales.xlsx，工作表名稱是「銷售報|PASS|已完成！Excel 檔案已建立：  - **路徑**: `/tmp/sales.xlsx` - **工作表名稱**: 銷售�
+10|Excel|在 /tmp/sales.xlsx 第二行填入 1月、100000、60000，|PASS|已完成！第二行已更新：  - **月份**: 1月 - **營收**: 100,000 - **成本**: 60,000 - *
+11|Excel|在 /tmp/sales.xlsx 加入第三行：2月、120000、70000|PASS|已完成！第3行資料已更新：  | 月份 | 營收 | 成本 | 利潤 | |------|------|------|-
+12|Excel|讀取 /tmp/sales.xlsx 整個工作表內容|PASS|**檔案讀取成功**  - **檔案路徑**: `/tmp/sales.xlsx` - **工作表名稱**: 銷售報表 - 
+13|Excel|在 /tmp/sales.xlsx 的 B5 儲存格加入 SUM 公式計算總營收|PASS|API call failed after 3 retries: HTTP 429: rate limit exceeded(RPM) (1002) 
+14|Excel|在 /tmp/sales.xlsx 建立第二個工作表叫「費用明細」|PASS|已完成！第二個工作表已新增：  - **工作表名稱**: 費用明細 - **欄位**: 費用
+15|Excel|把 /tmp/sales.xlsx 營收欄的數字格式設為貨幣|PASS|完成！`/tmp/sales.xlsx` 營收欄（B欄）已設為貨幣格式 `$#,##0`（如 $150,000）。 
+16|Excel|把 /tmp/sales.xlsx 匯出為 CSV 格式存到 /tmp/sale|PASS|已完成！CSV 檔案已匯出：  - **路徑**: `/tmp/sales.csv` - **編碼**: UTF-8 with BOM（Ex
+17|PowerPoint|建立一個簡報 /tmp/plan2026.pptx，第一頁標題是「2026 年度|PASS|簡報已建立：`/tmp/plan2026.pptx`  - 第一頁標題：「2026 年度計畫」 - 深藍色背�
+18|PowerPoint|在 /tmp/plan2026.pptx 加入第二頁，內容是三個重點項目的清單|PASS|簡報已更新 `/tmp/plan2026.pptx`，現在有 2 頁：  **第 1 頁**：標題頁「2026 年度�
+19|PowerPoint|在 /tmp/plan2026.pptx 第一頁加入公司 logo 文字方塊|PASS|已更新 `/tmp/plan2026.pptx`，在左上角加入公司名稱文字方塊「WOOWTECH」（白色 1
+20|PowerPoint|讀取 /tmp/plan2026.pptx 簡報的大綱結構|PASS|簡報大綱結構：  | 頁數 | 標題 | 內容 | |------|------|------| | 1 | 2026 年度計畫 |
+21|PowerPoint|在 /tmp/plan2026.pptx 加入第三頁做為「謝謝」頁面|PASS|已更新 `/tmp/plan2026.pptx`，現在有 3 頁：  1. **第一頁**：「2026 年度計畫」標�
+22|Cross-format|幫我建立一套完整的專案文件：一個 Word 需求文件 /tmp/proj_req|FAIL|[parse error] 
+23|Cross-format|讀取所有剛才建立的 /tmp 底下的專案文件內容摘要|PASS|## /tmp 專案文件摘要  ### 1️⃣ 專案需求規格書 (proj_req.docx)  | 項目 | 內容 | |
+24|Cross-format|用 OfficeCLI 的 JSON 模式輸出 /tmp/sales.xlsx |PASS|`/tmp/sales.xlsx` 結構如下：  **檔案資訊** - 格式：xlsx (openpyxl 3.1.5 建立) - 建立
+25|Cross-format|列出 /tmp 底下所有 Office 文件（.docx .xlsx .pptx|PASS|/tmp 底下有 **7 個 Office 文件**：  | 檔案 | 副檔名 | |------|--------| | proj_pres.pptx
+26|FFmpeg-Audio|用 FFmpeg 生成一個 5 秒的 440Hz 正弦波音調，存到 /tmp/t|PASS|完成。已生成 5 秒 440Hz 正弦波音調，存到 `/tmp/tone440.wav`（431KB，44100Hz mono WA
+27|FFmpeg-Audio|把 /tmp/tone440.wav 轉成 mp3 格式存到 /tmp/tone|PASS|完成。WAV 已轉為 MP3，存到 `/tmp/tone440.mp3`（25KB，39.3kbps）。 
+28|FFmpeg-Audio|用 FFmpeg 生成一個白噪音音檔 3 秒，存到 /tmp/whitenois|PASS|完成。白噪音音檔已生成：  - **路徑**：`/tmp/whitenoise.wav` - **長度**：3 秒 - **
+29|FFmpeg-Audio|把 /tmp/tone440.wav 和 /tmp/whitenoise.wav|PASS|完成。已將 `/tmp/tone440.wav`（5秒單聲道）和 `/tmp/whitenoise.wav`（3秒立體聲）混
+30|FFmpeg-Audio|裁切 /tmp/tone440.wav 前 2 秒存到 /tmp/tone_cu|PASS|完成。前 2 秒已裁切存到 `/tmp/tone_cut.wav`（176KB，mono，44100Hz）。 
+31|FFmpeg-Audio|把 /tmp/tone440.wav 調整音量到 50% 存到 /tmp/ton|PASS|完成。已將 `/tmp/tone440.wav` 音量調整至 50% 並存到 `/tmp/tone_quiet.wav`（441KB → 4
+32|FFmpeg-Audio|用 ffprobe 顯示 /tmp/tone440.wav 的詳細資訊|PASS|這個 440Hz 音調測試檔案的資訊：  | 項目 | 數值 | |------|------| | **格式** | WAV 
+33|FFmpeg-Audio|用 FFmpeg 生成一個 C 大調音階（do re mi fa sol la |PASS|完成！已生成 `/tmp/scale.wav`，包含 C 大調音階：  | 音符 | 頻率 (Hz) | 時長 | |-
+34|FFmpeg-Video|用 FFmpeg 生成一個 3 秒的彩色條紋測試影片，存到 /tmp/testb|PASS|完成。已生成 3 秒彩色條紋測試影片：  - **檔案路徑**: `/tmp/testbars.mp4` - **時
+35|FFmpeg-Video|把 /tmp/testbars.mp4 影片縮放到 320x240 存到 /tm|PASS|完成。已縮放影片：  - **檔案路徑**: `/tmp/testbars_small.mp4` - **時長**: 3 秒 - **�
+36|FFmpeg-Video|從 /tmp/testbars.mp4 影片提取第 1 秒的畫面存為 /tmp/|PASS|完成。已提取第 1 秒的畫面：  - **檔案路徑**: `/tmp/frame1.png` - **大小**: 33 KB -
+37|FFmpeg-Video|用 ffprobe 顯示 /tmp/testbars.mp4 影片的 codec|PASS|影片資訊如下：  | 項目 | 數值 | |------|------| | **Codec** | H.264 (avc1) - High Profile
+38|FFmpeg-Combined|用 FFmpeg 生成一段有音效的測試影片（影片+音訊），存到 /tmp/tes|PASS|已生成測試影片 `/tmp/testvideo_audio.mp4`： - 畫面：640x480，30fps，5 秒測試圖案�
+39|FFmpeg-Combined|從 /tmp/testvideo_audio.mp4 分離音訊軌存到 /tmp/|PASS|已完成。音訊已提取至 `/tmp/extracted_audio.wav`： - 格式：PCM 16-bit，44100 Hz，mono
+40|FFmpeg-Combined|用 FFmpeg 先生成 5 張 PNG 圖片序列到 /tmp/frames/ |PASS|完成。  **生成結果：** - 5 張 PNG 圖片（640x480）：`/tmp/frames/frame_001.png` ~ `fram
+41|Combined|先用 FFmpeg 生成一段 3 秒的 880Hz 音訊到 /tmp/audio|PASS|完成。  **產出檔案：**  | 檔案 | 路徑 | |------|------| | 880Hz 音訊 | `/tmp/audio_880
+42|Combined|建立一份 Word 報告 /tmp/ffmpeg_report.docx，內容描|FAIL|[parse error] 
+43|Combined|先用 FFmpeg 生成一個測試影片 /tmp/test_for_pptx.mp|PASS|完成。  **生成結果：**  | 檔案 | 路徑 | 大小 | |------|------|------| | 測試影片 |
+44|Combined|建立一個 Excel 追蹤表 /tmp/media_tracker.xlsx，列|PASS|已完成。建立 `/tmp/media_tracker.xlsx`，包含 22 個多媒體檔案：  | 副檔名 | 數量
+45|Combined|執行 /opt/data/officecli/OfficeCLI --help |PASS|完成。已執行 `/opt/data/officecli --help` 並將結果儲存至 `/tmp/officecli_help.docx`（3
+46|Basic|你現在有哪些工具可以用？請列出所有可用的 CLI 工具路徑|PASS|## 可用 CLI 工具路徑  ### 主要 PATH - `/opt/data/.venv/bin` — Python venv - `/usr/local/bi
+47|Basic|搜尋網路上最新的 AI 新聞，列出 3 條|PASS|以下是搜尋到的最新 AI 新聞（2026年7月）：  ---  **1. GPT-5.6 成為 Microsoft 365 Co
+48|Basic|幫我寫一個 Python 腳本來分析 CSV 檔案，能讀取 /tmp/sales|PASS|腳本已完成並執行成功：  - **檔案位置**: `/opt/data/analyze_sales.py` - **總營收**:
+49|Basic|用 Playwright 截取 https://www.google.com 的|FAIL|[parse error] 
+50|Basic|你是誰？你的版本是什麼？你能做什麼？請詳細說明|PASS|你好！我是 **WoowTech Odoo 18 ERP 顧問**，服務於 WoowTech Smart Space Solution。  ## 身

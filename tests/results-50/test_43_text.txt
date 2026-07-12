@@ -1,0 +1,21 @@
+完成。
+
+**生成結果：**
+
+| 檔案 | 路徑 | 大小 |
+|------|------|------|
+| 測試影片 | `/tmp/test_for_pptx.mp4` | 3.8 MB |
+| PowerPoint | `/tmp/video_spec.pptx` | 28 KB |
+
+**影片規格：**
+- 解析度：1920 x 1080
+- Codec：h264 (libx264, High Profile)
+- 檔案大小：3.89 MB (3,976,812 bytes)
+- 格式：MP4
+- 幀率：30 fps
+- 像素格式：yuv420p
+- 位元率：~6.36 Mbps
+- 時長：5 秒
+
+⚠️ File-mutation verifier: 1 file(s) were NOT modified this turn despite any wording above that may suggest otherwise. Run `git status` or `read_file` to confirm.
+  • `/tmp/make_pptx.py` — [write_file] Write denied: '`/tmp/make_pptx.py`' is a protected system/credential file.

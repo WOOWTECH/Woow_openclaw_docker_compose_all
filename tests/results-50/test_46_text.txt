@@ -1,0 +1,32 @@
+## 可用 CLI 工具路徑
+
+### 主要 PATH
+- `/opt/data/.venv/bin` — Python venv
+- `/usr/local/bin` — 本地安裝
+- `/usr/bin` — 系統工具
+- `/bin` — 基本工具
+
+### 常見 CLI 工具
+
+| 工具 | 路徑 |
+|------|------|
+| **網路** | |
+| curl | `/usr/bin/curl` |
+| wget | (無) |
+| ssh/scp/sftp | `/usr/bin/ssh` |
+| **版本控制** | |
+| git | `/usr/bin/git` |
+| **系統工具** | |
+| bash/sh | `/usr/bin/bash`, `/usr/bin/sh` |
+| awk/sed/grep/find | `/usr/bin/*` |
+| tar/zip/gzip/xz | `/usr/bin/*` |
+| **開發** | |
+| gcc/make/cmake | `/usr/bin/gcc`, `/usr/bin/make`, `/usr/bin/cmake` |
+| perl | `/usr/bin/perl` |
+| python3 | `/opt/data/.venv/bin/python3` |
+| **額外** | |
+| hermes | `/usr/local/bin/hermes` |
+| node/npm | `/usr/local/bin/node`, `/usr/local/bin/npm` |
+| uv/uvx | `/usr/local/bin/uv`, `/usr/local/bin/uvx` |
+
+**注意**：這台機器缺少 `jq`、`wget`，需要用 `curl` 代替。

@@ -1,0 +1,4 @@
+已完成。音訊已提取至 `/tmp/extracted_audio.wav`：
+- 格式：PCM 16-bit，44100 Hz，mono
+- 時長：5 秒
+- 檔案大小：433KB

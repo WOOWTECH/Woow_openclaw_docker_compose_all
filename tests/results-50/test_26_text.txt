@@ -1,0 +1,1 @@
+完成。已生成 5 秒 440Hz 正弦波音調，存到 `/tmp/tone440.wav`（431KB，44100Hz mono WAV）。

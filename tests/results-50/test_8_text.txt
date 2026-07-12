@@ -1,0 +1,12 @@
+合約範本已建立完成：`/tmp/contract.docx` (37KB)
+
+包含以下內容：
+- 合約編號
+- **甲方資訊**：公司名稱、統一編號、法定代表人、聯絡地址、聯絡電話、電子郵件
+- **乙方資訊**：公司名稱、統一編號、法定代表人、聯絡地址、聯絡電話、電子郵件
+- **合約基本資訊**：合約名稱、合約金額、合約起始日、合約終止日
+- **合約條款**：8 條預留空間
+- **簽名欄**：甲方簽章、乙方簽章、日期
+
+⚠️ File-mutation verifier: 1 file(s) were NOT modified this turn despite any wording above that may suggest otherwise. Run `git status` or `read_file` to confirm.
+  • `/tmp/create_contract.py` — [write_file] Write denied: '`/tmp/create_contract.py`' is a protected system/credential file.

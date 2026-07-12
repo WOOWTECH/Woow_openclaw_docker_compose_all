@@ -1,0 +1,1 @@
+完成。已將 `/tmp/tone440.wav`（5秒單聲道）和 `/tmp/whitenoise.wav`（3秒立體聲）混合合併為 `/tmp/merged.wav`（5秒單聲道，431KB）。

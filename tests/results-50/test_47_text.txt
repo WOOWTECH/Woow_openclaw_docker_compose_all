@@ -1,0 +1,16 @@
+以下是搜尋到的最新 AI 新聞（2026年7月）：
+
+---
+
+**1. GPT-5.6 成為 Microsoft 365 Copilot 預設模型**
+OpenAI 2026/7/9 宣布 GPT-5.6 成為 Microsoft 365 Copilot 的首選模型，同時推出 GPT-5.6 旗艦模型，強調其前沿智慧能力可隨使用者野心擴展。
+
+**2. Anthropic 推出 Claude Sonnet 5 並公開 Claude Code 開發故事**
+Anthropic 2026/6/30 發布 Claude Sonnet 5，提供前沿級效能涵蓋程式開發、代理任務和專業工作。同時公布 Claude Code 從內部 CLI 到產品的開發歷程。
+
+**3. Anthropic 邀請公眾提出 AI 尖銳問題**
+Anthropic 2026/7/9 宣布「邀請尖銳問題」計畫，公開徵求大眾對 AI 最困難的問題，並承諾展示他們如何處理這些問題。同日也宣布前聯準會主席 Ben Bernanke 加入 Anthropic 的 Long-Term Benefit Trust。
+
+---
+
+以上資訊來源：OpenAI Blog (openai.com/blog)、Anthropic Newsroom (anthropic.com/news)

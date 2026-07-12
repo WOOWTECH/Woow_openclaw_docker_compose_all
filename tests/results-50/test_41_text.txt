@@ -1,0 +1,17 @@
+完成。
+
+**產出檔案：**
+
+| 檔案 | 路徑 |
+|------|------|
+| 880Hz 音訊 | `/tmp/audio_880.wav` (529KB, 3秒, WAV PCM s16le, 44100Hz, stereo) |
+| Excel 記錄 | `/tmp/audio_log.xlsx` |
+
+**Excel 內容：**
+
+| 音檔名稱 | 長度(秒) | 格式 |
+|----------|----------|------|
+| audio_880.wav | 3.0 | WAV (PCM s16le, 44100Hz, stereo, 16-bit) |
+
+⚠️ File-mutation verifier: 1 file(s) were NOT modified this turn despite any wording above that may suggest otherwise. Run `git status` or `read_file` to confirm.
+  • `/tmp/make_excel.py` — [write_file] Write denied: '`/tmp/make_excel.py`' is a protected system/credential file.

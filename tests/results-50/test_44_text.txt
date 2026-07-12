@@ -1,0 +1,13 @@
+已完成。建立 `/tmp/media_tracker.xlsx`，包含 22 個多媒體檔案：
+
+| 副檔名 | 數量 | 最大檔案 |
+|--------|------|----------|
+| .wav   | 11   | audio_880.wav (517KB) |
+| .mp4   | 6    | test_for_pptx.mp4 (3.9MB) |
+| .png   | 5    | frame1.png (33KB) |
+| .mp3   | 1    | tone440.mp3 (24KB) |
+
+Excel 包含 3 欄：檔名、路徑、大小(位元組)，並有標題列格式化。
+
+⚠️ File-mutation verifier: 1 file(s) were NOT modified this turn despite any wording above that may suggest otherwise. Run `git status` or `read_file` to confirm.
+  • `/tmp/scan_media.py` — [write_file] Write denied: '`/tmp/scan_media.py`' is a protected system/credential file.

@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Add @openai: prefixed model_routes to Hermes Gateway config.yaml.
+"""Add @openai: and @openai-api: prefixed model_routes to Hermes Gateway config.yaml.
 
-Problem: WebUI sends model IDs like @openai:gpt-4o-mini but Gateway's
-model_routes only have bare keys (gpt-4o-mini), so _resolve_route()
-returns None and falls back to default MiniMax-M1.
+Problem: WebUI sends model IDs like @openai:gpt-4o-mini (new sessions) or
+@openai-api:gpt-4o-mini (old sessions) but Gateway's model_routes only have
+bare keys (gpt-4o-mini), so _resolve_route() returns None and falls back to
+default MiniMax-M1.
 
-Fix: Add @openai:* prefixed routes pointing to OpenRouter.
+Fix: Add both @openai:* and @openai-api:* prefixed routes pointing to OpenRouter.
 
 Usage (inside container):
   python3 /tmp/fix-model-routes.py [/opt/data/config.yaml]
@@ -22,20 +23,29 @@ MODELS = [
     'gpt-4.1', 'gpt-4o', 'gpt-4o-mini'
 ]
 
+# Both prefixes: @openai: (new catalog IDs) and @openai-api: (old session IDs)
+PREFIXES = ['@openai:', '@openai-api:']
+
 with open(CONFIG, 'r') as f:
     content = f.read()
 
-if '@openai:' in content:
-    print("Already patched — @openai: routes exist")
-    sys.exit(0)
-
-# Build YAML block
+# Build YAML block for missing prefixes
 route_lines = []
-for m in MODELS:
-    route_lines.append(f'          "@openai:{m}":')
-    route_lines.append(f'            model: openai/{m}')
-    route_lines.append(f'            base_url: https://openrouter.ai/api/v1')
-    route_lines.append(f'            api_key: {OPENROUTER_KEY}')
+added = 0
+for prefix in PREFIXES:
+    if prefix in content:
+        print(f"Skipping {prefix} routes (already exist)")
+        continue
+    for m in MODELS:
+        route_lines.append(f'          "{prefix}{m}":')
+        route_lines.append(f'            model: openai/{m}')
+        route_lines.append(f'            base_url: https://openrouter.ai/api/v1')
+        route_lines.append(f'            api_key: {OPENROUTER_KEY}')
+        added += 1
+
+if added == 0:
+    print("Already patched — both @openai: and @openai-api: routes exist")
+    sys.exit(0)
 
 insertion = '\n'.join(route_lines)
 
@@ -59,4 +69,4 @@ lines.insert(insert_idx + 1, insertion)
 with open(CONFIG, 'w') as f:
     f.write('\n'.join(lines))
 
-print(f"Added {len(MODELS)} @openai: model routes")
+print(f"Added {added} model routes ({added // len(MODELS)} prefixes x {len(MODELS)} models)")

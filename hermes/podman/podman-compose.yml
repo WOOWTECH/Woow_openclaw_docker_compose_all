@@ -44,6 +44,7 @@ services:
       - HERMES_GID=${HERMES_GID:-1000}
       - MINIMAX_API_KEY=${MINIMAX_API_KEY}
       - PLAYWRIGHT_BROWSERS_PATH=/opt/data/playwright-browsers
+      - DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true
       - NODE_OPTIONS=--max-old-space-size=4096
       - PATH=/opt/data/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     volumes:

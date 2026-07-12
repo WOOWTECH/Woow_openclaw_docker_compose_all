@@ -6,7 +6,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENV_FILE="${SCRIPT_DIR}/.env"
 
 echo "═══════════════════════════════════════"
-echo "  Hermes Agent v0.17.0 — Podman Deploy"
+echo "  Hermes Agent — Podman Deploy (OfficeCLI+FFmpeg)"
 echo "═══════════════════════════════════════"
 
 # Step 1: Generate .env if missing
@@ -40,6 +40,19 @@ podman exec hermes-agent sh -c '
   SITE=$(/opt/hermes/.venv/bin/python3 -c "import site;print(site.getsitepackages()[0])" 2>/dev/null)
   uv pip install --target="$SITE" ddgs 2>/dev/null
   /opt/hermes/.venv/bin/python3 -c "from ddgs import DDGS; print(\"ddgs OK\")" 2>&1 | grep OK
+'
+
+# Step 4b: Install OfficeCLI (Office document automation)
+echo "Step 4b: Install OfficeCLI..."
+podman exec hermes-agent sh -c '
+  if [ ! -f /opt/data/officecli ]; then
+    curl -L --fail -o /opt/data/officecli "https://github.com/iOfficeAI/OfficeCLI/releases/download/v1.0.135/officecli-linux-x64" 2>/dev/null
+    chmod +x /opt/data/officecli
+    echo "  OfficeCLI downloaded"
+  fi
+  ln -sf /opt/data/officecli /usr/local/bin/officecli 2>/dev/null
+  export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true
+  officecli --version 2>/dev/null && echo "  OfficeCLI OK" || echo "  OfficeCLI install failed"
 '
 
 # Step 5: Agent source copy (for WebUI gateway mode)
@@ -119,6 +132,19 @@ if [ -d "${SCRIPT_DIR}/icons" ]; then
     sleep 30
 fi
 
+# Step 11b: Model routing fix (@openai: prefix support)
+echo "Step 11b: Model routing fix..."
+podman cp "${SCRIPT_DIR}/../template/fix-model-routes.py" hermes-agent:/tmp/fix-model-routes.py 2>/dev/null || true
+podman exec hermes-agent python3 /tmp/fix-model-routes.py 2>/dev/null || echo "  (model routes: no model_routes section yet)"
+
+# Step 11c: .env fingerprint patch (Dashboard→WebUI model sync)
+echo "Step 11c: .env fingerprint patch..."
+podman cp "${SCRIPT_DIR}/../template/apply-env-fingerprint-patch.py" hermes-webui:/tmp/apply-env-patch.py 2>/dev/null || true
+# Apply to both possible code locations (/app and /apptoo)
+for CFG_DIR in /app /apptoo; do
+    podman exec hermes-webui sh -c "test -f ${CFG_DIR}/api/config.py && sed -i 's|CFG = .*|CFG = \"${CFG_DIR}/api/config.py\"|' /tmp/apply-env-patch.py && python3 /tmp/apply-env-patch.py" 2>/dev/null || true
+done
+
 # Step 12: Enable all skills
 echo "Step 12: Enable skills..."
 PW=$(grep WEBUI_PASSWORD .env 2>/dev/null | cut -d= -f2 || echo admin)
@@ -137,7 +163,7 @@ podman exec hermes-agent sh -c 'rm -f /opt/data/.skills_prompt_snapshot.json /op
 
 echo ""
 echo "═══════════════════════════════════════"
-echo "  部署完成！Hermes Agent v0.17.0"
+echo "  部署完成！Hermes Agent (OfficeCLI + FFmpeg)"
 echo "═══════════════════════════════════════"
 echo "  WebUI:     http://localhost:18787"
 echo "  Dashboard: http://localhost:19119"

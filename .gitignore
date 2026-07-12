@@ -54,3 +54,6 @@ hermes/instances/**/cf-config.json
 
 # Screenshots (temp)
 *.png
+
+# Playwright MCP artifacts
+.playwright-mcp/

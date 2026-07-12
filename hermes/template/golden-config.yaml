@@ -542,8 +542,8 @@ platforms:
           model: openai/gpt-5.5
           base_url: https://openrouter.ai/api/v1
           api_key: __OPENROUTER_API_KEY__
-        "@openai:gpt-5.5-mini":
-          model: openai/gpt-5.5-mini
+        "@openai:gpt-5.5-pro":
+          model: openai/gpt-5.5-pro
           base_url: https://openrouter.ai/api/v1
           api_key: __OPENROUTER_API_KEY__
         "@openai:gpt-5.4-mini":
@@ -552,6 +552,10 @@ platforms:
           api_key: __OPENROUTER_API_KEY__
         "@openai:gpt-5.4":
           model: openai/gpt-5.4
+          base_url: https://openrouter.ai/api/v1
+          api_key: __OPENROUTER_API_KEY__
+        "@openai:gpt-5.4-nano":
+          model: openai/gpt-5.4-nano
           base_url: https://openrouter.ai/api/v1
           api_key: __OPENROUTER_API_KEY__
         "@openai:gpt-5-mini":
@@ -578,13 +582,13 @@ platforms:
           model: openai/gpt-4o-mini
           base_url: https://openrouter.ai/api/v1
           api_key: __OPENROUTER_API_KEY__
-        # Backward-compatible routes: WebUI sessions may persist @openai-api: prefix
+        # Backward-compatible routes: WebUI model picker uses @openai-api: prefix
         "@openai-api:gpt-5.5":
           model: openai/gpt-5.5
           base_url: https://openrouter.ai/api/v1
           api_key: __OPENROUTER_API_KEY__
-        "@openai-api:gpt-5.5-mini":
-          model: openai/gpt-5.5-mini
+        "@openai-api:gpt-5.5-pro":
+          model: openai/gpt-5.5-pro
           base_url: https://openrouter.ai/api/v1
           api_key: __OPENROUTER_API_KEY__
         "@openai-api:gpt-5.4-mini":
@@ -593,6 +597,10 @@ platforms:
           api_key: __OPENROUTER_API_KEY__
         "@openai-api:gpt-5.4":
           model: openai/gpt-5.4
+          base_url: https://openrouter.ai/api/v1
+          api_key: __OPENROUTER_API_KEY__
+        "@openai-api:gpt-5.4-nano":
+          model: openai/gpt-5.4-nano
           base_url: https://openrouter.ai/api/v1
           api_key: __OPENROUTER_API_KEY__
         "@openai-api:gpt-5-mini":

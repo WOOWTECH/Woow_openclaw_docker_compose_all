@@ -43,6 +43,7 @@ services:
       - HERMES_UID=${HERMES_UID:-1000}
       - HERMES_GID=${HERMES_GID:-1000}
       - MINIMAX_API_KEY=${MINIMAX_API_KEY}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
       - PLAYWRIGHT_BROWSERS_PATH=/opt/data/playwright-browsers
       - DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true
       - NODE_OPTIONS=--max-old-space-size=4096
@@ -80,6 +81,7 @@ services:
       - HERMES_HOME=/home/hermeswebui/.hermes
       - GATEWAY_HEALTH_URL=http://hermes-agent:8642
       - MINIMAX_API_KEY=${MINIMAX_API_KEY}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
       - WANTED_UID=${HERMES_UID:-1000}
       - WANTED_GID=${HERMES_GID:-1000}
       - HERMES_WEBUI_PASSWORD=${WEBUI_PASSWORD:-admin}

@@ -1,0 +1,347 @@
+# Tenant Odoo 18 Deployment WITH the FCM push sidecar (self-enroll model).
+# Derived from the live, working fcm-e2e namespace (dumped + cleaned 2026-07-07).
+#
+# PLACEHOLDERS (substitute BEFORE apply):
+#   __TENANT__            = tenant slug / resource prefix (e.g. "bnidistrict").
+#   __DBNAME__            = postgres db AND role name (alphanumeric, NO dashes).
+#   __DBPASS__            = postgres password (rendered at deploy time; never commit).
+#   __FIREBASE_PROJECT__  = Firebase project id (e.g. "woow-odoo-de2cb").
+#
+# STRUCTURE (do not drop pieces — each is load-bearing):
+#   5 initContainers : fix-permissions -> wait-for-postgres -> clone-modules
+#                      -> install-pip-deps -> init-db(base + woow_fcm_push + firebase param)
+#   3 containers     : odoo(uid100) | nginx | fcm-sidecar(uid10001:10002, self-enroll)
+#   8 volumes        : odoo-data, odoo-addons, odoo-config, nginx-config, nginx-cache,
+#                      fcm-state, fcm-run, sa-token(projected, audience=central)
+#
+# SECURITY INVARIANTS (see DEPLOY-RUNBOOK.md Phase 0 / Security section):
+#   - serviceAccountName: fcm-sidecar          (central pins this exact name)
+#   - sa-token projected volume audience: central   (central verifies aud=central)
+#   - supplementalGroups: [10002]              (Odoo uid100 reads /run/fcm-sidecar/sock)
+#   - fcm-sidecar drops ALL caps; NO IPC_LOCK (SH-1: mlockall removed, anti-swap=node layer)
+#   - Odoo mounts /run/fcm-sidecar readOnly
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: __TENANT__-odoo
+  namespace: __TENANT__
+  labels:
+    app.kubernetes.io/name: odoo
+    app.kubernetes.io/part-of: __TENANT__
+    app.kubernetes.io/version: '18.0'
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: odoo
+      app.kubernetes.io/part-of: __TENANT__
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: fcm-sidecar   # matches central NetworkPolicy podSelector
+        app.kubernetes.io/name: odoo
+        app.kubernetes.io/part-of: __TENANT__
+        app.kubernetes.io/version: '18.0'
+    spec:
+      serviceAccountName: fcm-sidecar
+      imagePullSecrets:
+        - name: ghcr-pull
+      securityContext:
+        fsGroup: 101
+        supplementalGroups:
+          - 10002
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: 'true'
+      terminationGracePeriodSeconds: 30
+      initContainers:
+        # 1. fix-permissions — Odoo image runs as uid=100 gid=101; the sessions
+        #    dir needs mode 0700 owned by uid=100.
+        - name: fix-permissions
+          image: busybox:1.36
+          imagePullPolicy: IfNotPresent
+          command: ["sh", "-c", "chown -R 100:101 /var/lib/odoo"]
+          securityContext:
+            runAsUser: 0
+          resources:
+            limits: { cpu: 50m, memory: 32Mi }
+          volumeMounts:
+            - mountPath: /var/lib/odoo
+              name: odoo-data
+        # 2. wait-for-postgres
+        - name: wait-for-postgres
+          image: busybox:1.36
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - -c
+            - |
+              echo "Waiting for PostgreSQL..."
+              until nc -z __TENANT__-postgres-svc 5432; do
+                echo "  not ready - sleeping"
+                sleep 2
+              done
+              echo "PostgreSQL ready!"
+          resources:
+            requests: { cpu: 10m, memory: 16Mi }
+            limits: { cpu: 50m, memory: 32Mi }
+        # 3. clone-modules — git-clone the FCM Odoo plugin into /mnt/extra-addons.
+        #    Uses the private github-token secret (optional: falls back to
+        #    unauthenticated clone if absent). Re-running = git pull (redeploy the
+        #    plugin by restarting the pod).
+        - name: clone-modules
+          image: alpine/git:latest
+          imagePullPolicy: Always
+          command:
+            - sh
+            - -c
+            - |
+              cd /mnt/extra-addons
+              if [ -d "woow_fcm_push/.git" ]; then
+                echo "[clone] woow_fcm_push already cloned, pulling..."
+                cd woow_fcm_push && git pull --ff-only 2>/dev/null || true
+              else
+                echo "[clone] Cloning woow_fcm_push (feature/optionH-prime)..."
+                rm -rf woow_fcm_push 2>/dev/null || true
+                if [ -n "${GITHUB_TOKEN}" ]; then
+                  git clone --depth 1 -b feature/optionH-prime \
+                    "https://${GITHUB_TOKEN}@github.com/WOOWTECH/woow_odoo_fcm_push.git" woow_fcm_push
+                else
+                  git clone --depth 1 -b feature/optionH-prime \
+                    https://github.com/WOOWTECH/woow_odoo_fcm_push.git woow_fcm_push
+                fi
+              fi
+              echo "[clone] Done. Contents:"
+              ls -la /mnt/extra-addons/woow_fcm_push/
+          env:
+            - name: GITHUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: token
+                  name: github-token
+                  optional: true
+          resources:
+            limits: { cpu: 200m, memory: 128Mi }
+          volumeMounts:
+            - mountPath: /mnt/extra-addons
+              name: odoo-addons
+        # 4. install-pip-deps — plugin needs requests_unixsocket. Runs as root to
+        #    write to the user site-packages on the PVC, then restores ownership.
+        - name: install-pip-deps
+          image: odoo:18.0
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - -c
+            - |
+              echo "=== Installing Python deps for woow_fcm_push ==="
+              REQS="/mnt/extra-addons/woow_fcm_push/requirements.txt"
+              SITE="/var/lib/odoo/.local/lib/python3.12/site-packages"
+              if [ -f "$REQS" ]; then
+                pip3 install --break-system-packages --target="$SITE" -r "$REQS" 2>&1 | tail -5
+              else
+                pip3 install --break-system-packages --target="$SITE" requests_unixsocket 2>&1 | tail -3
+              fi
+              echo "=== Fixing ownership (Odoo runs as uid=100) ==="
+              chown -R 100:101 /var/lib/odoo
+              echo "Done."
+          securityContext:
+            runAsUser: 0
+          resources:
+            limits: { cpu: 200m, memory: 128Mi }
+          volumeMounts:
+            - mountPath: /var/lib/odoo
+              name: odoo-data
+            - mountPath: /mnt/extra-addons
+              name: odoo-addons
+        # 5. init-db — idempotent: init base if the DB is empty, install (or skip
+        #    if already installed) woow_fcm_push, and set the firebase_project_id
+        #    system parameter. Odoo skips already-installed modules, so this is
+        #    safe on every restart. To force a plugin schema upgrade after a code
+        #    change, change "-i" to "-u" once.
+        - name: init-db
+          image: odoo:18.0
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - -c
+            - |
+              set -e
+              echo "=== Checking database status ==="
+              DB_READY=$(python3 -c "
+              import psycopg2
+              try:
+                  conn = psycopg2.connect(host='__TENANT__-postgres-svc', dbname='__DBNAME__', user='__DBNAME__', password='__DBPASS__')
+                  cur = conn.cursor()
+                  cur.execute(\"SELECT count(*) FROM information_schema.tables WHERE table_schema='public' AND table_name='ir_module_module'\")
+                  count = cur.fetchone()[0]
+                  conn.close()
+                  print('yes' if count > 0 else 'no')
+              except Exception:
+                  print('no')
+              " 2>/dev/null || echo "no")
+
+              if [ "$DB_READY" != "yes" ]; then
+                echo "=== Initializing Odoo database with base module ==="
+                odoo -d __DBNAME__ -i base --stop-after-init -c /etc/odoo/odoo.conf
+              else
+                echo "Database already initialized."
+              fi
+
+              echo "=== Installing woow_fcm_push module (skipped if already installed) ==="
+              odoo -d __DBNAME__ -i woow_fcm_push --stop-after-init -c /etc/odoo/odoo.conf --no-http
+
+              echo "=== Setting woow_fcm_push.firebase_project_id ==="
+              python3 -c "
+              import psycopg2
+              conn = psycopg2.connect(host='__TENANT__-postgres-svc', dbname='__DBNAME__', user='__DBNAME__', password='__DBPASS__')
+              cur = conn.cursor()
+              cur.execute(\"INSERT INTO ir_config_parameter (key, value, create_uid, write_uid, create_date, write_date) VALUES ('woow_fcm_push.firebase_project_id','__FIREBASE_PROJECT__',1,1,NOW(),NOW()) ON CONFLICT (key) DO UPDATE SET value='__FIREBASE_PROJECT__'\")
+              conn.commit(); conn.close()
+              print('firebase_project_id set to __FIREBASE_PROJECT__')
+              "
+              echo "=== init-db complete ==="
+          resources:
+            limits: { cpu: "1", memory: 2Gi }
+          volumeMounts:
+            - mountPath: /etc/odoo/odoo.conf
+              name: odoo-config
+              readOnly: true
+              subPath: odoo.conf
+            - mountPath: /var/lib/odoo
+              name: odoo-data
+            - mountPath: /mnt/extra-addons
+              name: odoo-addons
+      containers:
+        # --- Odoo application ---
+        - name: odoo
+          image: odoo:18.0
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: HOST
+              value: __TENANT__-postgres-svc
+            - name: PORT
+              value: '5432'
+            - name: USER
+              valueFrom:
+                secretKeyRef:
+                  key: POSTGRES_USER
+                  name: __TENANT__-postgres-secret
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: POSTGRES_PASSWORD
+                  name: __TENANT__-postgres-secret
+          ports:
+            - { containerPort: 8069, name: odoo-http, protocol: TCP }
+            - { containerPort: 8072, name: odoo-lp, protocol: TCP }
+          startupProbe:
+            httpGet: { path: /web/health, port: 8069 }
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 30
+          livenessProbe:
+            httpGet: { path: /web/health, port: 8069 }
+            initialDelaySeconds: 120
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet: { path: /web/health, port: 8069 }
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          resources:
+            requests: { cpu: 500m, memory: 1Gi }
+            limits: { cpu: '2', memory: 3Gi }
+          volumeMounts:
+            - mountPath: /var/lib/odoo
+              name: odoo-data
+            - mountPath: /mnt/extra-addons
+              name: odoo-addons
+            - mountPath: /etc/odoo/odoo.conf
+              name: odoo-config
+              readOnly: true
+              subPath: odoo.conf
+            - mountPath: /run/fcm-sidecar
+              name: fcm-run
+              readOnly: true
+        # --- nginx reverse proxy (asset cache + websocket) ---
+        - name: nginx
+          image: nginx:1.27-alpine
+          imagePullPolicy: IfNotPresent
+          ports:
+            - { containerPort: 8080, name: nginx-http, protocol: TCP }
+          resources:
+            requests: { cpu: 50m, memory: 64Mi }
+            limits: { cpu: 500m, memory: 256Mi }
+          volumeMounts:
+            - mountPath: /etc/nginx/nginx.conf
+              name: nginx-config
+              readOnly: true
+              subPath: nginx.conf
+            - mountPath: /var/cache/nginx
+              name: nginx-cache
+        # --- fcm-sidecar (self-enroll -> vend FCM bearer over unix socket) ---
+        - name: fcm-sidecar
+          image: ghcr.io/woowtech/fcm-sidecar:dev
+          imagePullPolicy: Always
+          env:
+            - name: FCM_SIDECAR_ENROLL_ENDPOINT
+              value: http://whitelist-service.woow-fcm-central.svc.cluster.local:8000/v1/enroll
+            - name: FCM_SIDECAR_SA_TOKEN_PATH
+              value: /var/run/secrets/tokens/enroll-token
+            - name: FCM_SIDECAR_CENTRAL_ENDPOINT
+              value: http://token-vending-service.woow-fcm-central.svc.cluster.local:8001/v1/issue-fcm-token
+            - name: FCM_SIDECAR_STATE_DIR
+              value: /var/lib/fcm-sidecar
+            - name: FCM_SIDECAR_RUNTIME_DIR
+              value: /run/fcm-sidecar
+          securityContext:
+            runAsUser: 10001
+            runAsGroup: 10002
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests: { cpu: 50m, memory: 64Mi }
+            limits: { cpu: 200m, memory: 128Mi }
+          volumeMounts:
+            - mountPath: /var/lib/fcm-sidecar
+              name: fcm-state
+            - mountPath: /run/fcm-sidecar
+              name: fcm-run
+            - mountPath: /var/run/secrets/tokens
+              name: sa-token
+              readOnly: true
+      volumes:
+        - name: odoo-data
+          persistentVolumeClaim:
+            claimName: __TENANT__-odoo-data
+        - name: odoo-addons
+          persistentVolumeClaim:
+            claimName: __TENANT__-odoo-addons
+        - name: odoo-config
+          configMap:
+            name: __TENANT__-odoo-config
+        - name: nginx-config
+          configMap:
+            name: __TENANT__-nginx-config
+        - name: nginx-cache
+          emptyDir: {}
+        - name: fcm-state
+          emptyDir: {}
+        - name: fcm-run
+          emptyDir: {}
+        - name: sa-token
+          projected:
+            sources:
+              - serviceAccountToken:
+                  audience: central
+                  expirationSeconds: 3600
+                  path: enroll-token

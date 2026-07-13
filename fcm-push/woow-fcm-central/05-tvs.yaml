@@ -1,0 +1,102 @@
+# token-vending-service Deployment + Service — from central/deploy/k8s/token-vending-service-deployment.yaml
+# Added: nodeSelector, app.kubernetes.io labels.
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: token-vending-service
+  namespace: woow-fcm-central
+  labels:
+    app: token-vending-service
+    app.kubernetes.io/part-of: woow-fcm-central
+spec:
+  type: ClusterIP
+  selector:
+    app: token-vending-service
+  ports:
+    - name: http
+      port: 8001
+      targetPort: 8001
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: token-vending-service
+  namespace: woow-fcm-central
+  labels:
+    app: token-vending-service
+    app.kubernetes.io/part-of: woow-fcm-central
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: token-vending-service
+  template:
+    metadata:
+      labels:
+        app: token-vending-service
+        app.kubernetes.io/part-of: woow-fcm-central
+    spec:
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: "true"
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: token-vending-service
+          image: ghcr.io/woowtech/token-vending-service:dev
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8001
+          envFrom:
+            - configMapRef:
+                name: central-env
+          env:
+            - name: PORT
+              value: "8001"
+          volumeMounts:
+            - name: fcm-master-sa
+              mountPath: /etc/fcm/master-sa
+              readOnly: true
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8001
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 6
+          livenessProbe:
+            tcpSocket:
+              port: 8001
+            initialDelaySeconds: 20
+            periodSeconds: 15
+            timeoutSeconds: 3
+            failureThreshold: 4
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+      imagePullSecrets:
+        - name: ghcr-pull
+      volumes:
+        - name: fcm-master-sa
+          secret:
+            secretName: fcm-master-sa
+            defaultMode: 256  # 0400 octal
+            items:
+              - key: fcm_master_sa.json
+                path: fcm_master_sa.json

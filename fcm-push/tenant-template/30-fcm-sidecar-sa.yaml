@@ -1,0 +1,15 @@
+# ServiceAccount for the fcm-sidecar. The name MUST be exactly "fcm-sidecar":
+# central's K8sTokenReviewVerifier pins the subject to
+# system:serviceaccount:<namespace>:fcm-sidecar. Renaming it breaks self-enroll
+# (central returns 401).
+#
+# PLACEHOLDERS:
+#   __TENANT__  = tenant slug / resource prefix (== namespace).
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: fcm-sidecar
+  namespace: __TENANT__
+  labels:
+    app.kubernetes.io/part-of: __TENANT__
+    app.kubernetes.io/component: fcm-sidecar

@@ -1,0 +1,21 @@
+# Tenant Odoo Service. nginx (8080) is the public entrypoint; 8069/8072 exposed
+# for direct/longpolling use. Selector matches the Odoo pod labels in 20-odoo.yaml.
+#
+# PLACEHOLDERS:
+#   __TENANT__  = tenant slug / resource prefix.
+apiVersion: v1
+kind: Service
+metadata:
+  name: __TENANT__-odoo-svc
+  namespace: __TENANT__
+  labels:
+    app.kubernetes.io/part-of: __TENANT__
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: odoo
+    app.kubernetes.io/part-of: __TENANT__
+  ports:
+    - { name: http, port: 8069, targetPort: 8069 }
+    - { name: longpolling, port: 8072, targetPort: 8072 }
+    - { name: nginx, port: 8080, targetPort: 8080 }

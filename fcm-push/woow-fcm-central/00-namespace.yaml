@@ -1,0 +1,12 @@
+# woow-fcm-central namespace — adapted from central/deploy/k8s/namespace.yaml
+# Added: app.kubernetes.io labels matching k3s cluster convention.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: woow-fcm-central
+  labels:
+    app.kubernetes.io/part-of: woow-fcm-central
+    app.kubernetes.io/managed-by: kubectl
+    kubernetes.io/metadata.name: woow-fcm-central
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/warn: restricted

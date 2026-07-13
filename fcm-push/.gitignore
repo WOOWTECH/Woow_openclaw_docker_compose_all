@@ -1,0 +1,11 @@
+# Real secrets — NEVER commit these
+secrets/
+*sa-key.json
+*master_sa.json
+*.pat
+.env
+*.pem
+
+# Rendered per-tenant manifests (hold db passwords) — never commit
+fcm-tenant-*/
+rendered/

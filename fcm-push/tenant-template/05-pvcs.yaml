@@ -1,0 +1,50 @@
+# PersistentVolumeClaims for the tenant.
+#
+# PLACEHOLDERS:
+#   __TENANT__  = tenant slug / resource prefix.
+#
+# storageClassName nfs-data is the cluster's shared NFS provisioner
+# (cluster.local/nfs-provisioner-nfs-subdir-external-provisioner). Verified
+# present on the k3s cluster; do NOT change unless the cluster changes.
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: __TENANT__-odoo-data
+  namespace: __TENANT__
+  labels:
+    app.kubernetes.io/part-of: __TENANT__
+spec:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: nfs-data
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: __TENANT__-odoo-addons
+  namespace: __TENANT__
+  labels:
+    app.kubernetes.io/part-of: __TENANT__
+spec:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: nfs-data
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: __TENANT__-db-pvc
+  namespace: __TENANT__
+  labels:
+    app.kubernetes.io/part-of: __TENANT__
+spec:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: nfs-data
+  resources:
+    requests:
+      storage: 5Gi

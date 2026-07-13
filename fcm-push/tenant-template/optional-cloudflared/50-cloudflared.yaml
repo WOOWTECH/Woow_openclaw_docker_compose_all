@@ -1,0 +1,51 @@
+# OPTIONAL — Cloudflare Tunnel for public HTTPS ingress to the tenant Odoo.
+#
+# This lives in a SUBDIRECTORY on purpose: `kubectl apply -f tenant-template/`
+# is NON-recursive, so this file is NOT applied by the main tenant apply. Apply
+# it explicitly ONLY if the tenant needs a public URL:
+#     kubectl apply -f tenant-template/optional-cloudflared/
+#
+# REQUIRES (create BEFORE apply):
+#   Secret __TENANT__-cf-tunnel-token with key TUNNEL_TOKEN (from the Cloudflare
+#   Zero Trust dashboard for the tunnel that routes __DOMAIN__ -> __TENANT__-odoo-svc:8080).
+#
+# PLACEHOLDERS:
+#   __TENANT__  = tenant slug / resource prefix.
+#   __DOMAIN__  = public FQDN (configured on the Cloudflare side, not in this file;
+#                 shown here only as a reminder of what the tunnel serves).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: __TENANT__-cloudflared
+  namespace: __TENANT__
+  labels:
+    app: cloudflared
+    app.kubernetes.io/part-of: __TENANT__
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudflared
+      app.kubernetes.io/part-of: __TENANT__
+  template:
+    metadata:
+      labels:
+        app: cloudflared
+        app.kubernetes.io/part-of: __TENANT__
+    spec:
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: 'true'
+      containers:
+        - name: cloudflared
+          image: cloudflare/cloudflared:latest
+          imagePullPolicy: Always
+          args: ["tunnel", "--no-autoupdate", "run", "--token", "$(TUNNEL_TOKEN)"]
+          env:
+            - name: TUNNEL_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: TUNNEL_TOKEN
+                  name: __TENANT__-cf-tunnel-token
+          resources:
+            requests: { cpu: 50m, memory: 64Mi }
+            limits: { cpu: 200m, memory: 256Mi }

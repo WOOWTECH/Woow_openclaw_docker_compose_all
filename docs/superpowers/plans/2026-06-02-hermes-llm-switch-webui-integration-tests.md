@@ -105,7 +105,7 @@ export CURL_RESOLVE=""
 # export CURL_RESOLVE="--resolve ${DOMAIN}:443:<CLUSTER_IP>"
 
 # WebUI password
-export WEBUI_PASSWORD="woowtech"
+export WEBUI_PASSWORD="${WEBUI_PASSWORD}"
 
 # LLM defaults
 export DEFAULT_LLM_PROVIDER="minimax"
@@ -586,7 +586,7 @@ Extended Playwright tests that navigate to every major WebGUI page/feature after
 import { test, expect } from '@playwright/test';
 
 const BASE = process.env.HERMES_TEST_URL || 'http://localhost:18787';
-const PASSWORD = 'woowtech';
+const PASSWORD = process.env.WEBUI_PASSWORD || 'changeme';
 
 /**
  * Helper: login to WebUI if password form is present

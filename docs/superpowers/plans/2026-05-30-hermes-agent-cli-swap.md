@@ -168,17 +168,17 @@ Expected: playwright works, chromium in `/opt/playwright-browsers`, kubectl/psql
 - [ ] **Step 1: Tag and push to remote registry**
 
 ```bash
-docker tag docker.io/woowtech/hermes-agent-custom:latest 10.43.52.5:5000/hermes-agent-custom:latest
-docker push 10.43.52.5:5000/hermes-agent-custom:latest
+docker tag docker.io/woowtech/hermes-agent-custom:latest <REGISTRY_IP>:5000/hermes-agent-custom:latest
+docker push <REGISTRY_IP>:5000/hermes-agent-custom:latest
 ```
 
-Note: `10.43.52.5:5000` is the woow-k3s in-cluster registry (distinct from `10.43.80.213:5000` on the local cluster). Requires VPN connectivity.
+Note: `<REGISTRY_IP>:5000` is the woow-k3s in-cluster registry. Requires VPN connectivity.
 
 - [ ] **Step 2: Pull image on all 4 remote nodes via ctr**
 
 ```bash
-for NODE_IP in 192.168.10.21 192.168.10.22 192.168.10.23 192.168.10.24; do
-  ssh $NODE_IP "sudo ctr -n k8s.io images pull --plain-http 10.43.52.5:5000/hermes-agent-custom:latest" &
+for NODE_IP in <NODE1_IP> <NODE2_IP> <NODE3_IP> <NODE4_IP>; do
+  ssh $NODE_IP "sudo ctr -n k8s.io images pull --plain-http <REGISTRY_IP>:5000/hermes-agent-custom:latest" &
 done
 wait
 ```

@@ -12,7 +12,7 @@ bash deploy-woowtech-hermes.sh clienta-hermes clienta-hermes.woowtech.io woow-k3
 ```
 
 ## 目標叢集
-- 預設部署到 **woow-k3s** 遠端叢集 (114.32.21.18)
+- 預設部署到 **woow-k3s** 遠端叢集 (&lt;CLUSTER_IP&gt;)
 - 可用第三個參數指定其他 context
 
 ## 雙 GUI 架構 (Dashboard + WebUI)

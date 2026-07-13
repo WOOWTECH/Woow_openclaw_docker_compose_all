@@ -6,7 +6,7 @@ set -euo pipefail
 CONTEXT="woow-k3s"
 NS="apporoalan-hermes"
 K="kubectl --context $CONTEXT -n $NS"
-NEW_API_KEY="REDACTED_MINIMAX_KEY_3"
+NEW_API_KEY="${MINIMAX_API_KEY:?Set MINIMAX_API_KEY env var before running}"
 NEW_KEY_B64=$(echo -n "$NEW_API_KEY" | base64 -w0)
 API_SERVER_KEY_B64=$(echo -n "$(openssl rand -hex 32)" | base64 -w0)
 IMAGE="nousresearch/hermes-agent:latest"

@@ -4,7 +4,7 @@
 > **執行者**：Claude Opus 4.6 ↔ Hermes Agent (Minimax M2.7)
 > **目標系統**：WoowTech Odoo 18 ERP (https://aiot.woowtech.io)
 > **操作平台**：WoowTech Hermes WebUI (https://woowtech-hermes.woowtech.io)
-> **遠端叢集**：woow-k3s (IP: 114.32.21.18)
+> **遠端叢集**：woow-k3s (IP: &lt;CLUSTER_IP&gt;)
 
 ---
 
@@ -72,7 +72,7 @@ Profile: hermes (13 tasks)
 ### 階段 B：Odoo 任務狀態更新（對話 2）
 
 **對話指令**：
-> 「我需要你幫我整理 Odoo 18 裡面三個最大的專案。URL: https://aiot.woowtech.io/jsonrpc, DB: odoo, Login: redacted@example.com, API Key: REDACTED_ODOO_API_KEY_1, UID: 2。按 Phase 1-3 進行，直接用 JSON-RPC write 方法更新任務的 state。」
+> 「我需要你幫我整理 Odoo 18 裡面三個最大的專案。URL: https://<ODOO_HOST>/jsonrpc, DB: odoo, Login: <REDACTED_EMAIL>, API Key: <REDACTED>, UID: 2。按 Phase 1-3 進行，直接用 JSON-RPC write 方法更新任務的 state。」
 
 **Agent 執行過程**（20 個工具呼叫，約 4 分鐘）：
 
@@ -317,7 +317,7 @@ for t in in_progress_no_deadline:
 | Hermes Agent | v0.15 (hermes-agent-custom) |
 | Hermes WebUI | ghcr.io/nesquena/hermes-webui:latest |
 | LLM 模型 | Minimax M2.7 Highspeed |
-| K8s 叢集 | woow-k3s (4 nodes, 114.32.21.18) |
+| K8s 叢集 | woow-k3s (4 nodes, &lt;CLUSTER_IP&gt;) |
 | Pod 架構 | 合一式 (Agent + WebUI 同一 Pod, 2/2 containers) |
 | Odoo 版本 | 18 (https://aiot.woowtech.io) |
 | Odoo DB | odoo |

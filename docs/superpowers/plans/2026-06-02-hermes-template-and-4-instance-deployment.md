@@ -19,8 +19,8 @@
 | All 12 manifests | `namespace: hermes` | `__NAMESPACE__` |
 | 02-configmap.yaml | `hermes-woowtechjac.woowtech.io` | `__DOMAIN__` |
 | 02-configmap.yaml | `hermes-postgresql-svc` | Stays same (internal service name) |
-| 06-hermes-agent.yaml | `10.43.80.213:5000/hermes-agent-custom:latest` | `__AGENT_IMAGE__` |
-| 07-hermes-webui.yaml | `HERMES_WEBUI_PASSWORD: "woowtech"` | `__WEBUI_PASSWORD__` |
+| 06-hermes-agent.yaml | *(internal registry image)* | `__AGENT_IMAGE__` |
+| 07-hermes-webui.yaml | `HERMES_WEBUI_PASSWORD: "***"` | `__WEBUI_PASSWORD__` |
 | 09-ingress.yaml | `hermes-woowtechjac.woowtech.io` | `__DOMAIN__` |
 | 01a-rbac.yaml | ClusterRole name `hermes-agent-cluster-reader` | `__NAMESPACE__-agent-cluster-reader` |
 | 01a-rbac.yaml | ClusterRoleBinding name | `__NAMESPACE__-agent-cluster-reader-binding` |

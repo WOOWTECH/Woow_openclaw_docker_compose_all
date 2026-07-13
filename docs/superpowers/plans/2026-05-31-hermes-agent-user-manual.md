@@ -69,7 +69,7 @@ playwright-cli screenshot --filename=docs/hermes/images/ch02_01_login_page.png
 - [ ] **Step 2: Fill password and capture**
 
 ```bash
-playwright-cli fill "getByRole('textbox', { name: 'Password' })" "woowtech"
+playwright-cli fill "getByRole('textbox', { name: 'Password' })" "${WEBUI_PASSWORD}"
 playwright-cli screenshot --filename=docs/hermes/images/ch02_02_login_filled.png
 ```
 
@@ -239,7 +239,7 @@ playwright-cli resize 375 812
 playwright-cli goto https://woowtech-hermes.woowtech.io
 playwright-cli screenshot --filename=docs/hermes/images/ch24_01_mobile_login.png
 # Login
-playwright-cli fill "getByRole('textbox', { name: 'Password' })" "woowtech" --submit
+playwright-cli fill "getByRole('textbox', { name: 'Password' })" "${WEBUI_PASSWORD}" --submit
 playwright-cli screenshot --filename=docs/hermes/images/ch24_02_mobile_chat.png
 # Open nav
 playwright-cli screenshot --filename=docs/hermes/images/ch24_03_mobile_nav.png

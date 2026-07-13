@@ -30,7 +30,7 @@ spec:
       serviceAccountName: hermes-agent-sa
       containers:
         - name: hermes-agent
-          image: 10.43.80.213:5000/hermes-agent-custom:latest
+          image: nousresearch/hermes-agent:latest
           imagePullPolicy: Never
           args:
             - gateway

@@ -1,6 +1,6 @@
 {
-  "default_agent_image": "10.43.80.213:5000/hermes-agent-custom:latest",
-  "default_webui_password": "woowtech",
+  "default_agent_image": "nousresearch/hermes-agent:latest",
+  "default_webui_password": "__WEBUI_PASSWORD__",
   "default_llm_provider": "minimax",
   "default_llm_model": "minimax/MiniMax-M2.7",
   "instances": {

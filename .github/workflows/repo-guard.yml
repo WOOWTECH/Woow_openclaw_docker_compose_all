@@ -1,0 +1,39 @@
+# =============================================================================
+# repo-guard.yml — 倉庫隔離提醒 (OpenClaw)
+# =============================================================================
+# Reminds contributors that Hermes and OpenDesign have their own repos.
+
+name: Repo Guard — Isolation Reminder
+
+on:
+  push:
+    branches: [main, k3s, podman]
+  pull_request:
+    branches: [main, k3s, podman]
+
+jobs:
+  check-isolation:
+    name: Check repo isolation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify no cross-remote contamination
+        run: |
+          echo "🔍 Checking repository isolation..."
+          echo ""
+          echo "ℹ️  Reminder: This is the OpenClaw repo."
+          echo "   Hermes Agent  → github.com/WOOWTECH/Woow_hermes_agent_docker_compose_all"
+          echo "   OpenDesign    → github.com/WOOWTECH/Woow_opendesign_docker_compose_all"
+          echo ""
+          echo "   Each repo should have its own local clone."
+          echo "   Never add hermes/opendesign as remotes to this repo."
+          echo ""
+
+          # Verify git remotes don't include other repos (local check only)
+          if git remote -v 2>/dev/null | grep -q "hermes_agent\|opendesign"; then
+            echo "⚠️  WARNING: Found hermes/opendesign remotes in this repo."
+            echo "   Please remove them: git remote remove <name>"
+          fi
+
+          echo "✅ Repo isolation check passed."

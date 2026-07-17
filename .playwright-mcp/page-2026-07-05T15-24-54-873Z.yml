@@ -1,0 +1,30 @@
+- generic [active] [ref=e1]:
+  - alert [ref=e3]
+  - generic [ref=e4]:
+    - banner "Workspace tabs" [ref=e5]:
+      - tablist "Open workspaces" [ref=e6]:
+        - tab "Welcome to Open Design" [selected] [ref=e7]:
+          - button "Welcome to Open Design" [ref=e8]:
+            - img [ref=e10]
+            - generic [ref=e12]: Welcome to Open Design
+        - button "New tab" [disabled] [ref=e13]:
+          - img [ref=e14]
+    - main "Welcome to Open Design" [ref=e18]:
+      - region "Welcome to Open Design" [ref=e19]:
+        - generic [ref=e46]:
+          - generic [ref=e47]:
+            - button "Back" [ref=e48] [cursor=pointer]:
+              - img [ref=e49]
+              - generic [ref=e51]: Back
+            - generic [ref=e52]:
+              - heading "Local coding agent" [level=2] [ref=e53]
+              - paragraph [ref=e54]: Use an installed CLI such as Claude Code, Codex, Cursor, Gemini, or OpenCode.
+            - generic [ref=e56]:
+              - generic [ref=e57]:
+                - generic [ref=e58]:
+                  - strong [ref=e59]: Local CLI
+                  - paragraph [ref=e60]: Pick the CLI that runs your prompts.
+                - button "↻ Rescan" [ref=e61] [cursor=pointer]
+              - generic [ref=e62]: No agents detected yet. Install one of Claude Code, Codex, Devin for Terminal, OpenCode, Cursor Agent, Qwen, or GitHub Copilot CLI, then click Rescan.
+          - button "Continue" [disabled] [ref=e64]:
+            - generic [ref=e65]: Continue

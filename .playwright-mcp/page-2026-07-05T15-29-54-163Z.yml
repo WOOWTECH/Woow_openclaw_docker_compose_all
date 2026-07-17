@@ -1,0 +1,49 @@
+- generic [active] [ref=f3e1]:
+  - alert [ref=f3e3]
+  - generic [ref=f3e4]:
+    - banner "Workspace tabs" [ref=f3e5]:
+      - tablist "Open workspaces" [ref=f3e6]:
+        - tab "Welcome to Open Design" [selected] [ref=f3e7]:
+          - button "Welcome to Open Design" [ref=f3e8]:
+            - img [ref=f3e10]
+            - generic [ref=f3e12]: Welcome to Open Design
+        - button "New tab" [disabled] [ref=f3e13]:
+          - img [ref=f3e14]
+    - main "Welcome to Open Design" [ref=f3e18]:
+      - region "Welcome to Open Design" [ref=f3e19]:
+        - generic [ref=f3e46]:
+          - generic [ref=f3e47]:
+            - button "Back" [ref=f3e48] [cursor=pointer]:
+              - img [ref=f3e49]
+              - generic [ref=f3e51]: Back
+            - generic [ref=f3e52]:
+              - heading "Local coding agent" [level=2] [ref=f3e53]
+              - paragraph [ref=f3e54]: Use an installed CLI such as Claude Code, Codex, Cursor, Gemini, or OpenCode.
+            - generic [ref=f3e56]:
+              - generic [ref=f3e57]:
+                - generic [ref=f3e58]:
+                  - strong [ref=f3e59]: Local CLI
+                  - paragraph [ref=f3e60]: Pick the CLI that runs your prompts.
+                - button "↻ Rescan" [ref=f3e61] [cursor=pointer]
+              - generic [ref=f3e62]:
+                - button "Claude Code 2.1.201 (Claude Code)" [pressed] [ref=f3e63] [cursor=pointer]:
+                  - img [ref=f3e64]
+                  - generic [ref=f3e65]:
+                    - strong [ref=f3e66]: Claude Code
+                    - generic [ref=f3e67]: 2.1.201 (Claude Code)
+                - button "OpenCode 1.17.13" [ref=f3e68] [cursor=pointer]:
+                  - generic [ref=f3e70]:
+                    - strong [ref=f3e71]: OpenCode
+                    - generic [ref=f3e72]: 1.17.13
+                - button "BYOK OpenCode 1.17.13" [ref=f3e73] [cursor=pointer]:
+                  - generic [ref=f3e74]: B
+                  - generic [ref=f3e75]:
+                    - strong [ref=f3e76]: BYOK OpenCode
+                    - generic [ref=f3e77]: 1.17.13
+              - generic [ref=f3e78]:
+                - generic [ref=f3e79]: Model · Claude Code
+                - button "Default (CLI config)" [ref=f3e80] [cursor=pointer]:
+                  - generic [ref=f3e81]: Default (CLI config)
+                  - img [ref=f3e82]
+          - button "Continue" [ref=f3e85] [cursor=pointer]:
+            - generic [ref=f3e86]: Continue

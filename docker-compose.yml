@@ -1,80 +1,214 @@
-version: '3.8'
-name: openclaw
+# ============================================================
+# Vibe Kanban — Podman/Docker Compose Deployment
+# Feature parity with K3s deployment (7 pods, 8+ containers)
+# ============================================================
+# Usage:
+#   cp .env.example .env   # fill in secrets
+#   podman-compose up -d
+#   podman-compose logs -f
+# ============================================================
+
+name: vibe-kanban
 
 services:
-  # -------------------------------------------------------
-  # PostgreSQL 16 + pgvector (vector database)
-  # -------------------------------------------------------
+  # ── PostgreSQL 16 (wal_level=logical for ElectricSQL) ──
   db:
-    image: pgvector/pgvector:pg16
-    container_name: openclaw-db
+    image: docker.io/library/postgres:16-alpine
+    container_name: vk-db
     restart: unless-stopped
+    command: ["-c", "wal_level=logical"]
     environment:
-      - POSTGRES_DB=${POSTGRES_DB:-openclaw}
-      - POSTGRES_USER=${POSTGRES_USER:-openclaw}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: remote
+      POSTGRES_USER: remote
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?required}
+      PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
     networks:
-      - openclaw-net
+      - vk-net
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-openclaw} -d ${POSTGRES_DB:-openclaw}"]
+      test: ["CMD-SHELL", "pg_isready -U remote -d remote"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 10s
 
-  # -------------------------------------------------------
-  # OpenClaw AI Gateway (custom image with skill CLI deps)
-  # Build: podman compose build gateway
-  # Rebuild with upstream: podman compose build --pull gateway
-  # -------------------------------------------------------
-  gateway:
-    build:
-      context: ./gateway
-      args:
-        OPENCLAW_VERSION: ${OPENCLAW_VERSION:-latest}
-    image: openclaw-gateway-custom:${OPENCLAW_VERSION:-latest}
-    container_name: openclaw-gateway
-    restart: unless-stopped
-    command: node openclaw.mjs gateway --allow-unconfigured --bind lan --port 18789
-    ports:
-      - "${GATEWAY_PORT:-18789}:18789"
-    environment:
-      - DATABASE_URL=postgresql://${POSTGRES_USER:-openclaw}:${POSTGRES_PASSWORD:?required}@db:5432/${POSTGRES_DB:-openclaw}
-      # AI provider API keys (set values in .env file)
-      - MINIMAX_API_KEY=${MINIMAX_API_KEY:-}
-      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
-      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
-      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
-      - QWEN_API_KEY=${QWEN_API_KEY:-}
-      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
-      - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
+  # ── Init: install 50+ CLI tools (runs once, then exits) ──
+  init:
+    image: docker.io/library/ubuntu:24.04
+    container_name: vk-init
+    command: ["bash", "/scripts/install-tools.sh"]
     volumes:
-      - ./data/openclaw:/home/node/.openclaw
-      - ./data/whisper-cache:/home/node/.cache/whisper
+      - ./data/workspace:/var/tmp/vibe-kanban
+      - ./scripts/install-tools.sh:/scripts/install-tools.sh:ro
     networks:
-      - openclaw-net
+      - vk-net
+
+  # ── VK Remote (API server) ──
+  remote:
+    image: localhost/vk-remote:v0.1.43
+    container_name: vk-remote
+    restart: unless-stopped
+    ports:
+      - "${REMOTE_PORT:-8081}:8081"
+    environment:
+      RUST_LOG: "info,remote=info"
+      SERVER_LISTEN_ADDR: "0.0.0.0:8081"
+      SERVER_DATABASE_URL: ${SERVER_DATABASE_URL:?required}
+      ELECTRIC_URL: "http://electric:3000"
+      ELECTRIC_ROLE_PASSWORD: ${ELECTRIC_ROLE_PASSWORD:?required}
+      SERVER_PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost:8081}
+      VIBEKANBAN_REMOTE_JWT_SECRET: ${VIBEKANBAN_REMOTE_JWT_SECRET:?required}
+      SELF_HOST_LOCAL_AUTH_EMAIL: ${SELF_HOST_LOCAL_AUTH_EMAIL:?required}
+      SELF_HOST_LOCAL_AUTH_PASSWORD: ${SELF_HOST_LOCAL_AUTH_PASSWORD:?required}
+      GITHUB_OAUTH_CLIENT_ID: ""
+      GITHUB_OAUTH_CLIENT_SECRET: ""
+      GOOGLE_OAUTH_CLIENT_ID: ""
+      GOOGLE_OAUTH_CLIENT_SECRET: ""
+    networks:
+      - vk-net
     depends_on:
       db:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:8081/v1/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 15s
 
-  # -------------------------------------------------------
-  # Cloudflare Tunnel (persistent edge connector)
-  # Start with: podman-compose -f docker-compose.yml -f docker-compose.tunnel.yml up -d cloudflared
-  # -------------------------------------------------------
-  cloudflared:
-    image: cloudflare/cloudflared:latest
-    container_name: openclaw-tunnel
+  # ── ElectricSQL (real-time sync engine) ──
+  electric:
+    image: docker.io/electricsql/electric:1.4.13
+    container_name: vk-electric
     restart: unless-stopped
-    command: tunnel run
+    working_dir: /app
     environment:
-      - TUNNEL_TOKEN=${CF_TUNNEL_TOKEN:-}
+      DATABASE_URL: ${ELECTRIC_DATABASE_URL:?required}
+      ELECTRIC_ROLE_PASSWORD: ${ELECTRIC_ROLE_PASSWORD:?required}
+      PG_PROXY_PORT: "65432"
+      LOGICAL_PUBLISHER_HOST: "electric"
+      AUTH_MODE: "insecure"
+      ELECTRIC_INSECURE: "true"
+      ELECTRIC_MANUAL_TABLE_PUBLISHING: "true"
+      ELECTRIC_USAGE_REPORTING: "false"
+      ELECTRIC_FEATURE_FLAGS: "allow_subqueries,tagged_subqueries"
+    volumes:
+      - ./data/electric:/app/persistent
     networks:
-      - openclaw-net
+      - vk-net
     depends_on:
-      - gateway
+      remote:
+        condition: service_healthy
+
+  # ── VK Relay ──
+  relay:
+    image: localhost/vk-relay:v0.1.43
+    container_name: vk-relay
+    restart: unless-stopped
+    environment:
+      RUST_LOG: "info,relay=info"
+      RELAY_LISTEN_ADDR: "0.0.0.0:8082"
+      SERVER_DATABASE_URL: ${SERVER_DATABASE_URL:?required}
+      VIBEKANBAN_REMOTE_JWT_SECRET: ${VIBEKANBAN_REMOTE_JWT_SECRET:?required}
+    networks:
+      - vk-net
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:8082/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
+  # ── VK Host (main container — exposes all sidecar ports) ──
+  host:
+    image: localhost/vk-host:v0.1.43
+    container_name: vk-host
+    restart: unless-stopped
+    ports:
+      - "${HOST_PORT:-3000}:3000"         # Host UI
+      - "${OPENCHAMBER_PORT:-3080}:3080"   # OpenChamber
+      - "${MCP_ADMIN_PORT:-8080}:8080"     # MCP Admin GUI
+      - "${MCP_SSE_PORT:-8000}:8000"       # MCP StreamableHttp
+    environment:
+      RUST_LOG: info
+      HOST: "0.0.0.0"
+      PORT: "3000"
+      VK_SHARED_API_BASE: ${PUBLIC_BASE_URL:-http://localhost:8081}
+      VK_SHARED_RELAY_API_BASE: ${RELAY_PUBLIC_URL:-http://localhost:8082}
+      PATH: "/var/tmp/vibe-kanban/.tools/bin:/var/tmp/vibe-kanban/.bin:/home/appuser/.opencode/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      MINIMAX_API_KEY: ${MINIMAX_API_KEY:-}
+      PLAYWRIGHT_BROWSERS_PATH: "/var/tmp/vibe-kanban/.tools/pw-browsers"
+      LD_LIBRARY_PATH: "/var/tmp/vibe-kanban/.tools/lib"
+      DOTNET_ROOT: "/var/tmp/vibe-kanban/.tools/dotnet"
+      DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: "true"
+      VIRTUAL_ENV: "/var/tmp/vibe-kanban/.tools/venv"
+    volumes:
+      - ./data/workspace:/var/tmp/vibe-kanban
+      - ./data/workspace/.openchamber-config/opencode:/home/appuser/.config/opencode
+      - ./data/workspace/.host-repos:/home/appuser/repos
+      - ./data/workspace/.host-local:/home/appuser/.local
+    networks:
+      - vk-net
+    depends_on:
+      init:
+        condition: service_completed_successfully
+      relay:
+        condition: service_healthy
+
+  # ── OpenChamber sidecar (OpenCode Web GUI) ──
+  openchamber:
+    image: localhost/openchamber:latest
+    container_name: vk-openchamber
+    restart: unless-stopped
+    network_mode: "service:host"
+    command: ["bash", "/scripts/openchamber-start.sh"]
+    environment:
+      OPENCHAMBER_UI_PASSWORD: ${OPENCHAMBER_UI_PASSWORD:-lemon0116}
+      OPENCHAMBER_HOST: "0.0.0.0"
+      MINIMAX_API_KEY: ${MINIMAX_API_KEY:-}
+    volumes:
+      - ./data/workspace:/home/openchamber/workspaces
+      - ./data/workspace/.openchamber-config/opencode:/home/openchamber/.config/opencode
+      - ./data/workspace/.openchamber-config/openchamber:/home/openchamber/.config/openchamber
+      - ./data/workspace/.openchamber-config/opencode-share:/home/openchamber/.local/share/opencode
+      - ./data/workspace/.openchamber-config/opencode-state:/home/openchamber/.local/state/opencode
+      - ./scripts/openchamber-start.sh:/scripts/openchamber-start.sh:ro
+    depends_on:
+      host:
+        condition: service_started
+
+  # ── MCP Service sidecar (Admin GUI + StreamableHttp bridge) ──
+  mcp-service:
+    image: localhost/vk-mcp:v1.0
+    container_name: vk-mcp-service
+    restart: unless-stopped
+    network_mode: "service:host"
+    environment:
+      VIBE_BACKEND_URL: "http://localhost:3000"
+      MCP_AUTH_TOKEN: ${MCP_AUTH_TOKEN:-6325ad639d4722df2e2eddb2f53e5fcd53d243fa0675ad103ca255a354f26dea}
+      MCP_SERVER_PORT: "8000"
+    depends_on:
+      host:
+        condition: service_started
+
+  # ── Cloudflare Tunnel ──
+  cloudflared:
+    image: docker.io/cloudflare/cloudflared:latest
+    container_name: vk-cloudflared
+    restart: unless-stopped
+    command: ["tunnel", "--no-autoupdate", "run"]
+    environment:
+      TUNNEL_TOKEN: ${CF_TUNNEL_TOKEN:-}
+    networks:
+      - vk-net
+    depends_on:
+      - host
 
 networks:
-  openclaw-net:
-    name: openclaw-network
+  vk-net:
+    name: vk-network
     driver: bridge

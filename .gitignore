@@ -1,28 +1,18 @@
-# Environment files with secrets / 含敏感資訊的環境變數檔
+# Runtime data
+data/
 .env
 
-# Data directories (bind mounts) / 資料目錄（掛載用）
-data/
+# IDE
+.vscode/
+.idea/
 
-# Backup files / 備份檔案
-*.tar.gz
-*.sql
-backups/
-
-# OS generated files
+# OS
 .DS_Store
 Thumbs.db
 
-# IDE files
-.idea/
-.vscode/
-*.swp
-*.swo
+# Playwright
+.playwright-mcp/
+screenshots/
 
-# Logs / 日誌
-*.log
-
-# Python
-__pycache__/
-*.pyc
-*.pyo
+# Vibe attachments
+.vibe-attachments/

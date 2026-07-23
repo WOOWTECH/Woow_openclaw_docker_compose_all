@@ -1,11 +1,11 @@
 ---
 name: mcp-dashboard-oauth
-status: backlog
+status: active
 created: 2026-07-23T03:59:57Z
-updated: 2026-07-23T03:59:57Z
+updated: 2026-07-23T05:38:20Z
 progress: 0%
 prd: .claude/prds/mcp-dashboard-oauth.md
-github: (will be set on sync)
+github: https://github.com/WOOWTECH/Woow_hermes_agent_docker_compose_all/issues/1
 ---
 
 # Epic: mcp-dashboard-oauth
